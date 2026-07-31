@@ -1,0 +1,216 @@
+#!/usr/bin/env bash
+# check_whitespace - trailing whitespace and leading spaces on project-owned text
+#
+# Scope: Surmount-authored text files (markdown, Lean, Nix, scripts, workflows,
+# SOURCE pins we write, word lists, justfile, gitignore). Skips vendor blobs:
+# ref/semver submodule, PDF artifacts, RFC plain text under ref/, binaries.
+#
+# Rules:
+#   1. No trailing space or tab at end of line (before LF).
+#   2. Leading indentation uses tab (0x09) only; a line must not start with space.
+# Spaces mid-line (prose, table cell padding) are allowed.
+#
+# Usage:
+#   check_whitespace [path ...]
+#   With no paths, scans the repository tree under REPO_ROOT (or cwd).
+#
+# Exit 0 on success, 1 on findings, 2 on usage errors.
+
+set -euo pipefail
+
+prog_name="$(basename "$0")"
+fail_count=0
+
+resolve_root() {
+	if [[ -n "${REPO_ROOT:-}" ]]; then
+		printf '%s\n' "$REPO_ROOT"
+		return 0
+	fi
+	if [[ -f "${PWD}/flake.nix" ]]; then
+		printf '%s\n' "$PWD"
+		return 0
+	fi
+	local script_dir
+	script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	printf '%s\n' "$(cd "${script_dir}/.." && pwd)"
+}
+
+# True when path is a vendor / non-owned artifact we must not rewrite or gate.
+is_skipped_path() {
+	local rel="$1"
+	case "$rel" in
+		ref/semver|ref/semver/*) return 0 ;;
+		*.pdf) return 0 ;;
+		*/rfc2119.txt|rfc2119.txt) return 0 ;;
+		.git|/*/.git/*) return 0 ;;
+		.direnv|.direnv/*) return 0 ;;
+		lean/.lake|lean/.lake/*) return 0 ;;
+		result|result/*|result-*) return 0 ;;
+		.pre-commit-config.yaml) return 0 ;;
+		flake.lock) return 0 ;;
+	esac
+	return 1
+}
+
+# True when basename/extension is a project-owned text kind.
+is_owned_kind() {
+	local rel="$1"
+	local base
+	base="$(basename "$rel")"
+	case "$base" in
+		justfile|.gitignore|.gitmodules|SOURCE|aspell_words.txt)
+			return 0
+			;;
+	esac
+	case "$rel" in
+		*.md|*.lean|*.nix|*.toml|*.yml|*.yaml|*.txt)
+			return 0
+			;;
+		scripts/*)
+			return 0
+			;;
+		.github/*)
+			return 0
+			;;
+	esac
+	return 1
+}
+
+
+# Formats that forbid or strongly reject tab indentation (language / YAML).
+skips_leading_space_rule() {
+	local rel="$1"
+	case "$rel" in
+		*.lean|*.yml|*.yaml)
+			return 0
+			;;
+	esac
+	return 1
+}
+
+is_text_file() {
+	local f="$1"
+	local raw stripped
+	[[ -f "$f" && -r "$f" ]] || return 1
+	raw="$(head -c 8192 "$f" | wc -c)"
+	stripped="$(head -c 8192 "$f" | tr -d '\000' | wc -c)"
+	if [[ "$raw" -ne "$stripped" ]]; then
+		return 1
+	fi
+	return 0
+}
+
+diag() {
+	printf '%s\n' "$1" >&2
+	fail_count=$((fail_count + 1))
+}
+
+check_file() {
+	local file="$1"
+	local rel="$2"
+	local ln content
+
+	if ! is_text_file "$file"; then
+		return 0
+	fi
+
+	ln=0
+	# Read line by line; strip CR if any for detection of content (CR is separate ASCII rule for specs).
+	while IFS= read -r content || [[ -n "$content" ]]; do
+		ln=$((ln + 1))
+		# Trailing whitespace: space or tab at end of the physical line.
+		# bash read strips trailing delimiter but keeps spaces; use pattern.
+		if [[ "$content" =~ [[:space:]]$ ]]; then
+			# Distinguish: only space/tab at end (not other weirdness)
+			if [[ "$content" =~ [$' \t']$ ]]; then
+				diag "${file}:${ln}: trailing whitespace (space or tab before end of line)"
+			fi
+		fi
+		# Leading space (not tab). Lean and YAML require space indent.
+		if ! skips_leading_space_rule "$rel"; then
+			if [[ "$content" == ' '* ]]; then
+				diag "${file}:${ln}: leading space indentation (use tab for leading indent)"
+			fi
+		fi
+	done <"$file"
+}
+
+collect_default_files() {
+	local root="$1"
+	local f rel
+	# find project text; exclude .git and vendor via is_skipped_path
+	while IFS= read -r -d '' f; do
+		rel="${f#"${root}/"}"
+		if is_skipped_path "$rel"; then
+			continue
+		fi
+		if is_owned_kind "$rel"; then
+			printf '%s\n' "$f"
+		fi
+	done < <(find "$root" \
+		\( -path "${root}/.git" -o -path "${root}/.direnv" -o -path "${root}/lean/.lake" -o -path "${root}/ref/semver" -o -name 'result' -o -name 'result-*' \) -prune -o \
+		-type f -print0 2>/dev/null | LC_ALL=C sort -z)
+}
+
+usage() {
+	cat <<EOF
+Usage: ${prog_name} [path ...]
+
+Check project-owned text for trailing whitespace and leading spaces.
+Default discovery walks the repository (skips ref/semver, PDFs, RFC txt, .git).
+
+Environment: REPO_ROOT
+EOF
+}
+
+main() {
+	if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+		usage
+		exit 0
+	fi
+
+	local root
+	root="$(resolve_root)"
+
+	local -a files=()
+	if (($# > 0)); then
+		files=("$@")
+	else
+		local f
+		while IFS= read -r f; do
+			[[ -n "$f" ]] || continue
+			files+=("$f")
+		done < <(collect_default_files "$root")
+	fi
+
+	if ((${#files[@]} == 0)); then
+		printf '%s: no files to check under %s\n' "$prog_name" "$root" >&2
+		exit 0
+	fi
+
+	local path rel
+	for path in "${files[@]}"; do
+		if [[ "$path" == /* ]]; then
+			rel="${path#"${root}/"}"
+		else
+			rel="$path"
+		fi
+		if is_skipped_path "$rel"; then
+			continue
+		fi
+		# When paths are explicit (pre-commit), still only gate owned text kinds.
+		if ! is_owned_kind "$rel"; then
+			continue
+		fi
+		check_file "$path" "$rel"
+	done
+
+	if ((fail_count > 0)); then
+		printf '%s: %d issue(s) found\n' "$prog_name" "$fail_count" >&2
+		exit 1
+	fi
+	printf '%s: OK (%d file(s))\n' "$prog_name" "${#files[@]}"
+	exit 0
+}
+
+main "$@"

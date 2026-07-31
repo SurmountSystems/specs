@@ -1,0 +1,3 @@
+[submodule "ref/semver"]
+	path = ref/semver
+	url = https://github.com/semver/semver.git

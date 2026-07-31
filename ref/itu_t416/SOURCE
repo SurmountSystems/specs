@@ -1,0 +1,56 @@
+ITU-T T.416 - Open Document Architecture (ODA) and Interchange Format:
+Character Content Architectures
+======================================================================
+
+Standard:
+	ITU-T Recommendation T.416 (03/93)
+	Identical text also published as ISO/IEC International Standard 8613-6
+
+Canonical info page:
+	https://www.itu.int/rec/T-REC-T.416-199303-I/en
+	(also https://www.itu.int/rec/T-REC-T.416/ )
+
+Canonical PDF download (official ITU free download):
+	https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-T.416-199303-I!!PDF-E&type=items
+
+Retrieval date:
+	2026-07-30
+
+Vendored file:
+	T-REC-T.416-199303-I.pdf
+
+SHA-256 of vendored file:
+	3337680cb61970a39d753237738aa824325101ee57ee9eca972729d11fe7d97a
+
+Form:
+	Form 2 official publisher artifact pin (PDF from ITU).
+	Committed directly in the Surmount git tree as ordinary files under
+	ref/itu_t416/ (not a git submodule). Satisfies the ref/ process rule.
+	There is no publisher-maintained canonical git repository for this
+	Recommendation. Third-party mirrors and reformats are not the ITU
+	publisher source.
+
+Copyright and redistribution:
+	1. ITU provides free download of most Recommendations as PDF from its
+			website. This pin is that free official ITU PDF, unmodified.
+	2. Surmount does not claim ownership of the ITU or ISO text. The pin is
+			a local freeze of the reviewed bytes for exact citation in this
+			repository.
+	3. Do not invent a free-for-all SPDX identifier. Copyright remains with
+			the publishers (ITU / ISO as applicable). Hyperlinks to the ITU page
+			and download remain first-class.
+	4. ISO/IEC may sell separate editions of 8613-6. This repository pins the
+			free ITU dual text that DOGE cites as ITU-T T.416 / ISO/IEC 8613-6,
+			not a paid ISO store artifact.
+	5. This pin is the official PDF, unmodified. Do not edit the PDF.
+
+Notes:
+	1. Dual designation: the PDF states the identical text is also published
+			as ISO/IEC International Standard 8613-6.
+	2. Canonical hyperlinks above remain first-class for the living publisher
+			location; this pin freezes the reviewed bytes for this repository.
+	3. Cite Recommendation identity, edition (03/93), URL, retrieval date,
+			and checksum from Surmount specs. Local path: ref/itu_t416.
+	4. Refresh only by re-fetching the official PDF from the ITU download URL
+			and updating this SOURCE file.
+	5. Per-entry summary and reasoning: ref/README.md.

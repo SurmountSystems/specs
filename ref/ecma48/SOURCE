@@ -1,0 +1,49 @@
+ECMA-48 - Control Functions for Coded Character Sets
+====================================================
+
+Standard:
+	ECMA-48, 5th edition, June 1991 (reprinted June 1998)
+
+Canonical page:
+	https://ecma-international.org/publications-and-standards/standards/ecma-48/
+
+Canonical PDF URL (download link on that page):
+	https://ecma-international.org/wp-content/uploads/ECMA-48_5th_edition_june_1991.pdf
+
+Retrieval date:
+	2026-07-30
+
+Vendored file:
+	ECMA-48_5th_edition_june_1991.pdf
+
+SHA-256 of vendored file:
+	9577ad2514c411584b274ef7a4b3238c80aa93defbb349b18b8c78f78873f450
+
+Form:
+	Form 2 official publisher artifact pin (PDF from Ecma International).
+	Committed directly in the Surmount git tree as ordinary files under
+	ref/ecma48/ (not a git submodule). Satisfies the ref/ process rule.
+	Community reformats are not the Ecma publisher source. There is no
+	publisher-maintained canonical git repository treated as authoritative for
+	this PDF-era standard.
+
+Copyright and redistribution:
+	1. Ecma International publishes this standard free of charge on its website.
+	2. The PDF itself states that files of the standard can be freely downloaded
+			from the Ecma web site.
+	3. Ecma text copyright policy (default notice) permits copying, publishing,
+			and distributing Ecma standards unchanged, with copyright notice retained.
+			See: https://ecma-international.org/policies/by-ipr/ecma-text-copyright-policy/
+	4. Ecma prefers authentic downloads from its website for usage statistics,
+			but republication of the unchanged document is allowed under that policy.
+	5. This pin is the official PDF, unmodified. Do not edit the PDF.
+	6. Surmount does not own the Ecma text; the pin is a local freeze of the
+			official artifact.
+
+Notes:
+	1. Related ISO designation: ISO/IEC 6429.
+	2. Canonical hyperlinks above remain first-class for the living publisher
+			location; this pin freezes the reviewed bytes for this repository.
+	3. Cite edition, URL, retrieval date, and checksum from Surmount specs.
+	4. Refresh only by re-fetching the official PDF and updating this SOURCE file.
+	5. Per-entry summary and reasoning: ref/README.md.

@@ -1,0 +1,381 @@
+#!/usr/bin/env bash
+# check_spec_rules - LEGACY bash helper for 0000_spec.md document rules
+#
+# Primary authority is the Lean checker: lean/ (binary name spec_check),
+# packaged as packages.spec_check / apps.check in flake.nix. Prefer that for
+# CI and pre-commit. This script remains for American English spelling via
+# aspell and as a secondary fallback (packages.check_spec_rules_legacy).
+#
+# Rules (see 0000_spec.md):
+#   1. American English spelling and wording
+#   2. Pure ASCII only
+#   3. Avoid excess hyphenation and kebab case (this checker fails on
+#      lowercase identifiers with 2 or more hyphens, i.e. 3+ segments such
+#      as foo-bar-baz). Single-hyphen compounds (pre-commit, git-hooks) are
+#      allowed to reduce false positives.
+#   4. Prefer numbered or lettered lists over markdown bullet markers
+#   5. High precision (diagnostics include file:line)
+#   6. No trailing whitespace; no leading space indent (tabs for indent)
+#
+# Usage:
+#   check_spec_rules [path ...]
+#   With no paths, scans *.md under the repository root (and docs/ if present).
+#
+# Environment:
+#   ASPELL_WORDS  Path to aspell personal word list (default: aspell_words.txt
+#                 next to this script's parent directory, then cwd).
+#   REPO_ROOT     Override repository root for default file discovery.
+#
+# UNLICENSE.md is excluded from style, spelling, list, and kebab checks.
+# ASCII is still checked for that file when it is explicitly listed or
+# discovered, unless SKIP_UNLICENSE_ASCII=1.
+
+set -euo pipefail
+
+prog_name="$(basename "$0")"
+fail_count=0
+
+# Resolve repo root: REPO_ROOT, or parent of scripts/, or cwd.
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+default_repo_root="$(cd "${script_dir}/.." && pwd)"
+repo_root="${REPO_ROOT:-$default_repo_root}"
+
+find_wordlist() {
+	if [[ -n "${ASPELL_WORDS:-}" && -f "${ASPELL_WORDS}" ]]; then
+		printf '%s\n' "${ASPELL_WORDS}"
+		return 0
+	fi
+	if [[ -f "${repo_root}/aspell_words.txt" ]]; then
+		printf '%s\n' "${repo_root}/aspell_words.txt"
+		return 0
+	fi
+	if [[ -f "${PWD}/aspell_words.txt" ]]; then
+		printf '%s\n' "${PWD}/aspell_words.txt"
+		return 0
+	fi
+	return 1
+}
+
+is_style_excluded() {
+	local base
+	base="$(basename "$1")"
+	case "$base" in
+		UNLICENSE.md|UNLICENSE|LICENSE|LICENSE.md)
+			return 0
+			;;
+	esac
+	return 1
+}
+
+is_markdown() {
+	local f="$1"
+	case "$f" in
+		*.md|*.markdown|*.mdown)
+			return 0
+			;;
+	esac
+	# Also accept extensionless only if file is regular text named like a spec
+	return 1
+}
+
+is_text_file() {
+	local f="$1"
+	local raw stripped
+	[[ -f "$f" && -r "$f" ]] || return 1
+	# Reject if a NUL byte appears in the first 8KiB.
+	# Compare byte counts before/after deleting NUL (grep -F $'\0' is unreliable).
+	raw="$(head -c 8192 "$f" | wc -c)"
+	stripped="$(head -c 8192 "$f" | tr -d '\000' | wc -c)"
+	if [[ "$raw" -ne "$stripped" ]]; then
+		return 1
+	fi
+	return 0
+}
+
+diag() {
+	# file:line: message
+	printf '%s\n' "$1" >&2
+	fail_count=$((fail_count + 1))
+}
+
+# Strip fenced code blocks (``` ... ```) for style checks. Prints remaining
+# lines with original line numbers as: N<TAB>content
+# Also strips YAML front matter between leading --- markers if present.
+lines_outside_fences() {
+	local file="$1"
+	awk '
+		BEGIN { in_fence = 0; in_front = 0; line = 0 }
+		{
+			line++
+			# YAML front matter only at start
+			if (line == 1 && $0 == "---") { in_front = 1; next }
+			if (in_front) {
+				if ($0 == "---") { in_front = 0 }
+				next
+			}
+			if ($0 ~ /^```/) {
+				in_fence = !in_fence
+				next
+			}
+			if (!in_fence) {
+				printf "%d\t%s\n", line, $0
+			}
+		}
+	' "$file"
+}
+
+# Remove inline code spans (backtick pairs) from a single line for kebab scan.
+strip_inline_code() {
+	# Remove `...` segments; leave a space so words do not glue together
+	sed -E 's/`[^`]*`/ /g'
+}
+
+# Remove markdown URLs and autolinks to avoid path false positives.
+strip_urls() {
+	sed -E \
+		-e 's/\[[^]]*\]\([^)]*\)/ /g' \
+		-e 's/<https?:\/\/[^>]+>/ /g' \
+		-e 's/https?:\/\/[^[:space:]>]+/ /g'
+}
+
+check_ascii() {
+	local file="$1"
+	local hits
+	# Bytes outside 0x00-0x7F: use LC_ALL=C and a pattern for high bytes.
+	# Also report non-printable control chars except tab (0x09) and newline/CR.
+	# Spec says pure ASCII; we allow tab and the usual line endings.
+	hits="$(LC_ALL=C grep -n '[^[:print:][:space:]]\|[^ -~\t]' "$file" 2>/dev/null || true)"
+	# grep -P for high bytes is more reliable:
+	if command -v perl >/dev/null 2>&1; then
+		hits="$(perl -ne 'print "$.:$_" if /[^\x09\x0a\x0d\x20-\x7e]/' "$file" || true)"
+	else
+		# Fallback: flag any line with a non-ASCII byte
+		hits="$(LC_ALL=C grep -n $'[^\t\r\n -~]' "$file" 2>/dev/null || true)"
+	fi
+	if [[ -n "$hits" ]]; then
+		while IFS= read -r line; do
+			[[ -z "$line" ]] && continue
+			local ln content
+			ln="${line%%:*}"
+			content="${line#*:}"
+			# Truncate long content for display
+			content="${content:0:80}"
+			diag "${file}:${ln}: non-ASCII or disallowed control character: ${content}"
+		done <<<"$hits"
+	fi
+}
+
+
+check_trailing_ws() {
+	local file="$1"
+	local ln content
+	ln=0
+	while IFS= read -r content || [[ -n "$content" ]]; do
+		ln=$((ln + 1))
+		if [[ "$content" =~ [$' \t']$ ]]; then
+			diag "${file}:${ln}: trailing whitespace (space or tab before end of line)"
+		fi
+	done <"$file"
+}
+
+check_leading_spaces() {
+	local file="$1"
+	local ln content
+	ln=0
+	while IFS= read -r content || [[ -n "$content" ]]; do
+		ln=$((ln + 1))
+		if [[ "$content" == ' '* ]]; then
+			diag "${file}:${ln}: leading space indentation (use tab for leading indent)"
+		fi
+	done <"$file"
+}
+
+check_bullets() {
+	local file="$1"
+	local ln content
+	while IFS=$'\t' read -r ln content; do
+		# Markdown bullet: optional indent, then -, *, or + followed by space.
+		# Do not flag table separator lines (---) or setext underlines.
+		# Do not flag horizontal rules of only dashes.
+		if [[ "$content" =~ ^[[:space:]]*[-*+][[:space:]] ]]; then
+			# Allow a lone "- " that is actually an empty list? Still a bullet.
+			# Table rows start with |, not bullet markers.
+			diag "${file}:${ln}: markdown bullet list marker (prefer numbered or lettered lists): ${content}"
+		fi
+	done < <(lines_outside_fences "$file")
+}
+
+check_kebab() {
+	local file="$1"
+	local ln content cleaned matches m
+	# Match lowercase kebab with 2+ hyphens (3+ segments): foo-bar-baz
+	local re='[a-z][a-z0-9]*(-[a-z0-9]+){2,}'
+	while IFS=$'\t' read -r ln content; do
+		cleaned="$(printf '%s\n' "$content" | strip_inline_code | strip_urls)"
+		# Skip pure table separator / underline lines (pipes, dashes, colons, spaces)
+		if printf '%s\n' "$cleaned" | grep -qE '^[[:space:]]*[|: -]+[[:space:]]*$'; then
+			continue
+		fi
+		matches="$(printf '%s\n' "$cleaned" | grep -oE "$re" 2>/dev/null || true)"
+		if [[ -n "$matches" ]]; then
+			while IFS= read -r m; do
+				[[ -z "$m" ]] && continue
+				diag "${file}:${ln}: excess kebab case (2+ hyphens): ${m}"
+			done <<<"$matches"
+		fi
+	done < <(lines_outside_fences "$file")
+}
+
+check_spelling() {
+	local file="$1"
+	local wordlist="$2"
+	local misspelled word aspell_err status
+	if ! command -v aspell >/dev/null 2>&1; then
+		diag "${file}:1: aspell not found on PATH; cannot check American English spelling"
+		return 0
+	fi
+	# aspell list prints misspelled words, one per line.
+	# Capture stderr so a bad personal dictionary fails loudly.
+	aspell_err="$(mktemp)"
+	status=0
+	misspelled="$(
+		aspell list --lang=en_US --mode=markdown \
+			--home-dir="$(dirname "$wordlist")" \
+			--personal="$(basename "$wordlist")" \
+			<"$file" 2>"$aspell_err" | sort -u
+	)" || status=$?
+	if [[ -s "$aspell_err" ]]; then
+		diag "${file}:1: aspell error: $(tr '\n' ' ' <"$aspell_err")"
+		rm -f "$aspell_err"
+		return 0
+	fi
+	rm -f "$aspell_err"
+	# status non-zero with empty stderr can still be fine for empty input
+	if [[ -z "$misspelled" ]]; then
+		return 0
+	fi
+	while IFS= read -r word; do
+		[[ -z "$word" ]] && continue
+		# Skip pure hex tokens (color tables, binary fields) and pure digits.
+		if [[ "$word" =~ ^[0-9A-Fa-f]{2,}$ ]]; then
+			continue
+		fi
+		if [[ "$word" =~ ^[0-9]+$ ]]; then
+			continue
+		fi
+		# Locate first occurrence for a line number (best effort)
+		local ln
+		ln="$(grep -n -F -m1 "$word" "$file" 2>/dev/null | head -1 | cut -d: -f1 || true)"
+		if [[ -z "$ln" ]]; then
+			ln="?"
+		fi
+		diag "${file}:${ln}: spelling (en_US): ${word}"
+	done <<<"$misspelled"
+}
+
+collect_default_files() {
+	local -a found=()
+	local f
+	# Root level markdown
+	shopt -s nullglob
+	for f in "${repo_root}"/*.md; do
+		found+=("$f")
+	done
+	# Optional docs/ tree
+	if [[ -d "${repo_root}/docs" ]]; then
+		while IFS= read -r -d '' f; do
+			found+=("$f")
+		done < <(find "${repo_root}/docs" -type f \( -name '*.md' -o -name '*.markdown' \) -print0 2>/dev/null)
+	fi
+	shopt -u nullglob
+	if ((${#found[@]} == 0)); then
+		return 0
+	fi
+	printf '%s\0' "${found[@]}"
+}
+
+check_file() {
+	local file="$1"
+	local wordlist="$2"
+
+	if [[ ! -f "$file" ]]; then
+		diag "${file}:1: not a regular file"
+		return 0
+	fi
+	if ! is_text_file "$file"; then
+		# Skip binaries silently when discovered; warn if user passed explicitly
+		return 0
+	fi
+	if ! is_markdown "$file"; then
+		return 0
+	fi
+
+	# ASCII for all markdown including UNLICENSE (standard legal text is ASCII)
+	check_ascii "$file"
+	check_trailing_ws "$file"
+	check_leading_spaces "$file"
+
+	if is_style_excluded "$file"; then
+		return 0
+	fi
+
+	check_bullets "$file"
+	check_kebab "$file"
+	check_spelling "$file" "$wordlist"
+}
+
+usage() {
+	cat <<EOF
+Usage: ${prog_name} [path ...]
+
+Enforce Surmount spec spec (0000_spec.md) form rules on markdown files:
+	ASCII only, American English (aspell en_US), no bullet lists outside
+	code fences, no excess kebab case (3+ hyphenated segments).
+
+With no paths, scans *.md in the repository root and under docs/.
+
+UNLICENSE.md is excluded from style, spelling, list, and kebab checks.
+EOF
+}
+
+main() {
+	if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+		usage
+		exit 0
+	fi
+
+	local wordlist
+	if ! wordlist="$(find_wordlist)"; then
+		printf '%s: error: aspell personal word list not found (set ASPELL_WORDS or add aspell_words.txt)\n' "$prog_name" >&2
+		exit 2
+	fi
+
+	local -a files=()
+	if (($# > 0)); then
+		files=("$@")
+	else
+		local f
+		while IFS= read -r -d '' f; do
+			files+=("$f")
+		done < <(collect_default_files)
+	fi
+
+	if ((${#files[@]} == 0)); then
+		printf '%s: no markdown files to check\n' "$prog_name" >&2
+		exit 0
+	fi
+
+	local path
+	for path in "${files[@]}"; do
+		check_file "$path" "$wordlist"
+	done
+
+	if ((fail_count > 0)); then
+		printf '%s: %d issue(s) found\n' "$prog_name" "$fail_count" >&2
+		exit 1
+	fi
+	printf '%s: OK (%d file(s))\n' "$prog_name" "${#files[@]}"
+	exit 0
+}
+
+main "$@"

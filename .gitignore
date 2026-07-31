@@ -1,0 +1,13 @@
+# Nix build results
+result
+result-*
+
+# direnv
+.direnv
+
+# git-hooks.nix generates this from flake config; do not commit
+.pre-commit-config.yaml
+
+# Lean / Lake local build products (never ship host-linked caches)
+lean/.lake/
+lean/lake-manifest.json

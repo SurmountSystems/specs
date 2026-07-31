@@ -1,0 +1,24 @@
+# Same validation gate as local Nix: nix flake check (see README).
+# Nix is first-class. CI calls Nix directly; just is optional local sugar only.
+name: check
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: nix flake check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Flake check
+        run: nix flake check "path:${{ github.workspace }}" --print-build-logs

@@ -1,0 +1,39 @@
+Semantic Versioning (SemVer)
+============================
+
+Canonical git repository:
+	https://github.com/semver/semver
+
+Local path:
+	ref/semver (git submodule)
+
+This metadata file:
+	ref/semver.SOURCE (sibling of the submodule directory; not inside it)
+
+Pin recorded in this tree:
+	Tag:    v2.0.0
+	Commit: 7c834b3f3a4940d77ab593bc32583004d6a426a9
+
+Why this pin:
+	v2.0.0 is the stable published SemVer 2.0.0 specification release. The
+	repository tip advances with site and tooling changes; Surmount specs cite
+	the 2.0.0 document, so the submodule is pinned to that tag rather than main.
+
+Form:
+	Form 1 git submodule from the standard's canonical publisher repository.
+
+License:
+	The upstream semver.md document states Creative Commons Attribution 3.0
+	(CC BY 3.0), http://creativecommons.org/licenses/by/3.0/ . Surmount does
+	not own that text; this is a pin of the publisher tree. See also
+	ref/README.md and the License section of ref/semver/semver.md.
+
+How to re-check the pin (from repo root; requires git permission when used
+by an agent):
+	1. git -C ref/semver describe --tags --always
+	2. git -C ref/semver rev-parse HEAD
+
+Do not edit files inside this submodule. Cite the tag/commit instead.
+Do not place Surmount-only metadata inside the submodule working tree.
+Canonical upstream URL remains first-class; the submodule freezes the
+reviewed pin for this repository.
