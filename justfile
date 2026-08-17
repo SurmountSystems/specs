@@ -16,6 +16,6 @@ default:
 check:
 	nix flake check "path:{{justfile_directory()}}" --print-build-logs
 
-# Enter the development shell (Lean, just, aspellWithDicts, git, checkers).
+# Enter the development shell (lean4, just, git, spec_check, aspellWithDicts).
 dev:
 	nix develop "path:{{justfile_directory()}}"

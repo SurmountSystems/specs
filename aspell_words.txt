@@ -1,9 +1,10 @@
-personal_ws-1.1 en 126
+personal_ws-1.1 en 127
 Acknowledgments
 ANSI
 APIs
 ASCII
 aspell
+aspellWithDicts
 basename
 basenames
 BG

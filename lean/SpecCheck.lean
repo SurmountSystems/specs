@@ -1,7 +1,8 @@
 /-
-  SpecCheck: mechanical form rule checks for Surmount markdown specs.
+  SpecCheck: mechanical form rule checks for Surmount numbered specs.
 
-  Rules (see 0000_spec.md):
+  Default discovery is root numbered specs only (NNNN_*.md). Full suite
+  (see 0000_spec.md):
   1. Pure ASCII (tab, LF, printable 0x20-0x7E only)
   2. No markdown bullet list markers outside fenced code
   3. No excess kebab case (lowercase token with 2+ hyphens) outside fences
@@ -10,9 +11,15 @@
   5. No trailing whitespace (space or tab before LF)
   6. Leading indentation uses tab only (no leading space)
   7. No hard-wrapped prose outside fences (numbered specs)
+  8. American English spelling via aspell (en_US) when AspellHome is provided
 
-  UNLICENSE.md / LICENSE* are style-excluded (ASCII still checked).
-  README.md is not in scope for the RFC 2119 citation requirement.
+  Project-wide trailing whitespace and tab indent on non-spec project text are
+  enforced by pure Nix (nix/whitespace.nix / checks.whitespace), not by Lean.
+  When paths are passed explicitly, this module may still apply ASCII/whitespace
+  checks to owned text kinds for convenience; that is not the project-wide gate.
+
+  UNLICENSE.md / LICENSE* are style-excluded (ASCII and whitespace still checked
+  when passed). README.md is not required to cite RFC 2119.
 
   Implementation: line-based with fence tracking (not a full markdown parser).
   Char lists and Nat indices keep Lean 4.30 APIs simple.
@@ -581,18 +588,25 @@ def checkHardWrap (file : String) (content : String) : List Diag :=
             prev := some (ln, line)
     return out
 
-/-- Run all applicable checks on one file's bytes. -/
-def checkFileContent (file : String) (basename : String) (bs : ByteArray) : List Diag :=
-  let asciiDiags := checkAscii file bs
-  if !(isPureAscii bs) then
+/--
+  Run checks on one file's bytes.
+
+  `fullStyle`: numbered-spec suite (bullets, kebab, RFC 2119, hard wrap).
+  `checkLeading`: when false, skip leading-space rule (Lean / YAML tooling).
+  `checkAsciiFlag`: when false, skip pure-ASCII gate (Lean sources).
+-/
+def checkFileContent (file : String) (basename : String) (bs : ByteArray)
+    (fullStyle : Bool) (checkLeading : Bool) (checkAsciiFlag : Bool) : List Diag :=
+  let asciiDiags := if checkAsciiFlag then checkAscii file bs else []
+  if checkAsciiFlag && !(isPureAscii bs) then
     asciiDiags
   else
+    -- Byte-to-Char map is enough for line-based whitespace even when UTF-8 ops appear in Lean.
     let content := asciiToString bs
-    -- Whitespace rules apply to all markdown (including license files).
-    let wsDiags :=
-      checkTrailingWs file content ++
-        checkLeadingSpaces file content
-    if isStyleExcluded basename then
+    let trailing := checkTrailingWs file content
+    let leading := if checkLeading then checkLeadingSpaces file content else []
+    let wsDiags := trailing ++ leading
+    if !fullStyle || isStyleExcluded basename then
       asciiDiags ++ wsDiags
     else
       let styleDiags :=
@@ -611,9 +625,92 @@ def baseName (path : String) : String :=
   | p :: _ => p
   | [] => path
 
+/-- Normalize path separators to `/` and drop a trailing slash (except root). -/
+def normalizeRel (rel : String) : String :=
+  let r := rel.replace "\\" "/"
+  if r.length > 1 && r.endsWith "/" then
+    String.ofList (r.toList.dropLast)
+  else
+    r
+
+/-- Relative path of `path` under `repoRoot`, or the path string if not under root. -/
+def relPathString (repoRoot : System.FilePath) (path : System.FilePath) : String :=
+  let pathS := normalizeRel path.toString
+  let rootS := normalizeRel repoRoot.toString
+  if pathS == rootS then
+    "."
+  else if pathS.startsWith (rootS ++ "/") then
+    let prefixLen := rootS.length + 1
+    String.ofList (pathS.toList.drop prefixLen)
+  else if !(pathS.startsWith "/") then
+    pathS
+  else
+    pathS
+
+/-- Vendor / generated paths that must not be form-checked. -/
+def isSkippedRel (rel : String) : Bool :=
+  let r := normalizeRel rel
+  if r == "ref/semver" || r.startsWith "ref/semver/" then true
+  else if r.endsWith ".pdf" then true
+  else if r.endsWith "/rfc2119.txt" || r == "rfc2119.txt" then true
+  else if r == ".pre-commit-config.yaml" then true
+  else if r == "flake.lock" then true
+  else if r == "lake-manifest.json" || r.endsWith "/lake-manifest.json" then true
+  else if r == ".git" || r.startsWith ".git/" then true
+  else if r == ".direnv" || r.startsWith ".direnv/" then true
+  else if r == ".lake" || r.startsWith ".lake/" then true
+  else if r == "lean/.lake" || r.startsWith "lean/.lake/" then true
+  else if r == "result" || r.startsWith "result/" then true
+  else if r.startsWith "result-" then true
+  else false
+
+/--
+  Project-owned text kinds: Surmount-authored sources and pins, not vendor blobs.
+  Includes numbered and other markdown, Lean, Nix, workflows under .github/, SOURCE, etc.
+-/
+def isOwnedKind (rel : String) : Bool :=
+  let r := normalizeRel rel
+  let base := baseName r
+  if base == "justfile" || base == ".gitignore" || base == ".gitmodules" ||
+      base == "SOURCE" || base == "aspell_words.txt" || base == "lean-toolchain" then
+    true
+  else if base.endsWith ".md" || base.endsWith ".markdown" || base.endsWith ".mdown" ||
+      base.endsWith ".lean" || base.endsWith ".nix" || base.endsWith ".toml" ||
+      base.endsWith ".yml" || base.endsWith ".yaml" || base.endsWith ".txt" ||
+      base.endsWith ".SOURCE" then
+    true
+  else if r.startsWith ".github/" then
+    true
+  else
+    false
+
+/-- Lean and YAML require space indentation; do not flag leading spaces. -/
+def skipsLeadingSpaceRule (rel : String) : Bool :=
+  let base := baseName (normalizeRel rel)
+  base.endsWith ".lean" || base.endsWith ".yml" || base.endsWith ".yaml"
+
+/--
+  Pure-ASCII gate for owned text. Skipped for Lean sources (Unicode operators
+  such as left-arrow and le are normal in Lean). Markdown and other owned text
+  stay under the ASCII rule.
+-/
+def wantsAsciiCheck (rel : String) : Bool :=
+  let base := baseName (normalizeRel rel)
+  !base.endsWith ".lean"
+
+/-- True if early bytes look like a binary (NUL present). -/
+def isBinaryBytes (bs : ByteArray) : Bool :=
+  Id.run do
+    let n := min bs.size 8192
+    for i in [0:n] do
+      if bs.get! i == 0 then
+        return true
+    return false
+
 /--
   Root-level numbered specs only: `NNNN_descriptive_name.md` matching
   isNumberedSpecName. Skips README, UNLICENSE, AGENTS, and other root markdown.
+  This is the default discovery set for `spec_check` with no path args.
 -/
 def collectRootNumberedSpecs (repoRoot : System.FilePath) : IO (Array System.FilePath) := do
   let mut out : Array System.FilePath := #[]
@@ -624,21 +721,142 @@ def collectRootNumberedSpecs (repoRoot : System.FilePath) : IO (Array System.Fil
       out := out.push (repoRoot / name)
   return out
 
-/-- Collect default paths: numbered specs at repository root only. -/
-def collectDefaultFiles (repoRoot : System.FilePath) : IO (Array System.FilePath) :=
-  collectRootNumberedSpecs repoRoot
+/-- Writable aspell home (personal word list copy; store tree is read-only). -/
+structure AspellHome where
+  homeDir : System.FilePath
+  personal : String := "aspell_words.txt"
+  deriving Repr
 
-/-- Check one path; empty diagnostics if skip (dir / non-md). -/
-def checkPath (path : System.FilePath) : IO (List Diag) := do
+/-- Skip spelling when SPECS_SPELLING=0 or SPECS_SKIP_SPELLING=1. -/
+def spellingSkipRequested : IO Bool := do
+  match (← IO.getEnv "SPECS_SPELLING") with
+  | some "0" => return true
+  | _ =>
+    match (← IO.getEnv "SPECS_SKIP_SPELLING") with
+    | some "1" => return true
+    | _ => return false
+
+/-- True when token is only hex digits and length at least 2 (color tables, etc.). -/
+def isPureHexToken (s : String) : Bool :=
+  let cs := s.toList
+  cs.length ≥ 2 && cs.all fun c =>
+    c.isDigit || ('a' ≤ c && c ≤ 'f') || ('A' ≤ c && c ≤ 'F')
+
+/-- True when token is only decimal digits. -/
+def isPureDigitToken (s : String) : Bool :=
+  let cs := s.toList
+  !cs.isEmpty && cs.all Char.isDigit
+
+/--
+  Ensure `aspell` is on PATH and copy root `aspell_words.txt` into a writable
+  temp home (aspell may rewrite the personal list).
+-/
+def prepareAspellHome (repoRoot : System.FilePath) : IO (Except String AspellHome) := do
+  let aspellOk ←
+    try
+      let out ← IO.Process.output { cmd := "aspell", args := #["--version"] }
+      pure (out.exitCode == 0)
+    catch _ =>
+      pure false
+  if !aspellOk then
+    return .error
+      "spec_check: aspell not found on PATH; flake check / nix develop must provide aspellWithDicts (en_US). Set SPECS_SPELLING=0 or SPECS_SKIP_SPELLING=1 to skip spelling."
+  let wordList := repoRoot / "aspell_words.txt"
+  if !(← wordList.pathExists) then
+    return .error "spec_check: missing aspell_words.txt at repository root"
+  let tmp ← IO.FS.createTempDir
+  let personal := "aspell_words.txt"
+  let body ← IO.FS.readFile wordList
+  IO.FS.writeFile (tmp / personal) body
+  return .ok { homeDir := tmp, personal := personal }
+
+/-- ASCII whitespace trim without deprecated String.trim. -/
+def asciiTrim (s : String) : String :=
+  String.ofList (dropTrailingSpace (dropLeadingSpace s.toList))
+
+/-- 1-based line of first occurrence of `word` as a substring; none if not found. -/
+def firstLineOfSubstring (content : String) (word : String) : Option Nat :=
+  if word.isEmpty then
+    none
+  else
+    Id.run do
+      let mut ln : Nat := 0
+      for line in splitLines content do
+        ln := ln + 1
+        if containsSub line word then
+          return some ln
+      return none
+
+/--
+  Run `aspell list --lang=en_US --mode=markdown` on file content.
+  Skips pure-hex (length ≥ 2) and pure-digit tokens. One diagnostic per unique word.
+  Line is the first content line where the word appears as a substring, if findable.
+-/
+def checkSpelling (home : AspellHome) (file : String) (content : String) : IO (List Diag) := do
+  let out ← IO.Process.output {
+    cmd := "aspell"
+    args := #[
+      "list",
+      "--lang=en_US",
+      "--mode=markdown",
+      s!"--home-dir={home.homeDir.toString}",
+      s!"--personal={home.personal}"
+    ]
+  } content
+  let stdoutTrim := asciiTrim out.stdout
+  if out.exitCode != 0 && stdoutTrim.isEmpty then
+    return [{
+      file := file
+      line := none
+      message := s!"spelling (en_US): aspell failed (exit {out.exitCode}): {asciiTrim out.stderr}"
+    }]
+  let mut outDiags : List Diag := []
+  let mut seen : List String := []
+  for line in out.stdout.splitOn "\n" do
+    let word := asciiTrim line
+    if !word.isEmpty && !isPureHexToken word && !isPureDigitToken word && !seen.contains word then
+      seen := seen ++ [word]
+      outDiags := outDiags ++ [{
+        file := file
+        line := firstLineOfSubstring content word
+        message := s!"spelling (en_US): {word}"
+      }]
+  return outDiags
+
+/-- Check one path with the rule set implied by basename / relative path. -/
+def checkPath (repoRoot : System.FilePath) (path : System.FilePath)
+    (aspell? : Option AspellHome := none) : IO (List Diag) := do
   let pathStr := path.toString
   if !(← path.pathExists) then
     return [{ file := pathStr, line := some 1, message := "not a regular file" }]
   if (← path.isDir) then
     return []
-  let base := baseName pathStr
-  if !isMarkdownName base then
+  let rel := relPathString repoRoot path
+  if isSkippedRel rel then
+    return []
+  if !isOwnedKind rel then
+    -- Explicit non-owned paths are ignored (pre-commit may pass noise).
     return []
   let bs ← IO.FS.readBinFile path
-  return checkFileContent pathStr base bs
+  if isBinaryBytes bs then
+    return []
+  let base := baseName pathStr
+  let fullStyle := isNumberedSpecName base
+  let checkLeading := !skipsLeadingSpaceRule rel
+  let checkAsciiFlag := wantsAsciiCheck rel
+  let formDiags := checkFileContent pathStr base bs fullStyle checkLeading checkAsciiFlag
+  -- American English spelling on numbered specs when aspell home is provided.
+  if isNumberedSpecName base then
+    match aspell? with
+    | none => return formDiags
+    | some home =>
+      if isPureAscii bs then
+        let content := asciiToString bs
+        let spellDiags ← checkSpelling home pathStr content
+        return formDiags ++ spellDiags
+      else
+        return formDiags
+  else
+    return formDiags
 
 end SpecCheck

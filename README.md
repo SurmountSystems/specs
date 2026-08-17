@@ -11,6 +11,7 @@ This repository holds small, precise specifications maintained by Surmount. Each
 5. [RFC 2119 requirement keywords](#5-rfc-2119-requirement-keywords)
 6. [External references (`ref/`)](#6-external-references-ref)
 7. [Validation (Lean and Nix)](#7-validation-lean-and-nix)
+	1. [Why Lean vs pure Nix](#721-why-lean-vs-pure-nix)
 8. [Development shell and pre-commit](#8-development-shell-and-pre-commit)
 9. [License](#9-license)
 
@@ -53,6 +54,7 @@ Standard legal text in [UNLICENSE.md](UNLICENSE.md) is excluded from style, spel
 4. First publication of a specification SHALL be version 1.0.0.
 5. Specs MAY carry a SemVer version line (see the pattern in 0000). Do not invent fake version history or claim publication the operator has not declared.
 6. After publication, incompatible changes raise MAJOR; backward compatible additions raise MINOR; compatible fixes raise PATCH, as SemVer describes.
+7. The Lean tool `spec_check` has its own SemVer, independent of numbered-spec SemVer. A bump to the tool does not imply a bump to `0000_spec.md` or any other numbered spec, and the reverse is also true. The tool is at **1.0.0** as its first intentional tool release.
 
 ## 5. RFC 2119 requirement keywords
 
@@ -90,45 +92,46 @@ git submodule update --init --recursive
 
 ### 7.1 Local and CI gate (Nix first-class)
 
-**Nix is the first-class interface** for validation. The canonical command for local work and GitHub Actions is:
+**Nix is the first-class interface** for validation. There is no `scripts/` bash gatekeeper. The canonical command for local work and GitHub Actions is:
 
 ```bash
 nix flake check "path:$PWD" --print-build-logs
 ```
 
-CI installs Nix and runs that command directly (workflow: `.github/workflows/check.yml`). It does **not** install or invoke `just`.
+CI installs Nix and runs that command directly (workflow: `.github/workflows/check.yml`). Checkout initializes Form 1 git submodules; Form 2 pins need no submodule init. It does **not** install or invoke `just`.
 
 `just` is optional local sugar only. `just check` runs the same Nix flake check line; you do not need `just` if you call Nix yourself. Prefer `path:` when local flake files may be untracked so pure git-tree eval is not required.
 
-What the flake checks cover:
+On a single-architecture host, `nix flake check` may warn that it omitted checks for incompatible systems. That omit warning is normal and not a failure.
 
-1. **`checks.numbered_specs`** - primary content gate. Discovers repository-root numbered specs only and runs Lean `spec_check` plus legacy aspell spelling.
-2. **`checks.spec_check`** - Lean-only default discovery (same numbered set).
-3. **`checks.whitespace`** - trailing whitespace and tab-only leading indent on project-owned text (skips vendor blobs under `ref/semver`, PDFs, and RFC plain text; Lean and YAML may use space indent).
-4. **`checks.pre-commit-check`** - sandboxed pre-commit suite (Lean hook on numbered specs; whitespace hook on project text).
+What the flake checks cover (separate checks; `nix flake check` runs all of them):
 
-Numbered specs matched for that gate:
+1. **`checks.spec_check`** - Lean form rules and American English spelling on repository-root numbered specs. Thin `runCommand` puts the `packages.spec_check` binary and `pkgs.aspellWithDicts` on PATH, sets `REPO_ROOT`, and runs `spec_check`. No discovery or aspell loops in shell; spelling is inside Lean.
+2. **`checks.whitespace`** - pure Nix evaluation of project-owned text for trailing whitespace and tab-only leading indent (skips vendor blobs under `ref/semver`, PDFs, and RFC plain text; Lean and YAML may use space indent). Non-empty violations fail evaluation with `throw`; success is a no-shell `writeText` marker. No bash script.
+3. **`checks.pre-commit-check`** - sandboxed pre-commit suite (Lean hook on numbered specs only; spelling rides along when aspell is on PATH from the dev shell). Project-wide whitespace is the pure Nix flake check, not a bash pre-commit hook.
+
+Numbered specs matched for Lean and spelling:
 
 1. Glob at repository root: `[0-9][0-9][0-9][0-9]_*.md`
 2. Basename regex: `^[0-9]{4}_[A-Za-z0-9_]+\.md$`
 3. Examples: `0000_spec.md`, `0001_DOGE.md`
 4. Not in the default scan: `README.md`, `AGENTS.md`, `UNLICENSE.md`, and anything under subdirectories
 
-Package entry point used by the primary check:
-
-```bash
-nix run "path:$PWD#check_numbered_specs"
-# or, after nix develop:
-check_numbered_specs
-```
-
 Optional convenience: `just` with no arguments lists recipes (`just --list` / `just -l`). See the root `justfile`.
 
-### 7.2 Authoritative checker (Lean)
+### 7.2 Authoritative checkers (Lean form rules and spelling; pure Nix whitespace)
 
-The authoritative automated checker for mechanical form rules from the Surmount spec spec is the Lean 4 program under `lean/` (`spec_check`), packaged through this repository's Nix flake (packages, flake checks, development shell, and pre-commit hook).
+**Lean** (`lean/` binary `spec_check`, packaged as the only flake software package) is authoritative for mechanical form rules and American English spelling on **numbered specs**. Tool SemVer for `spec_check` is independent of numbered-spec SemVer; the tool is at 1.0.0 as its first intentional tool release (see section 4).
 
-Lean coverage:
+**Dual whitespace (both stay on purpose)**
+
+| Surface | Who enforces it | Why it stays |
+|---------|-----------------|--------------|
+| Trailing whitespace and tab-only leading indent on numbered specs | Lean `spec_check` (form suite; pre-commit and `checks.spec_check`) | Same binary as ASCII, bullets, kebab, hard wrap, spelling; line diagnostics for authors |
+| Same class of rules on Surmount-authored text tree-wide | Pure Nix `checks.whitespace` (`nix/whitespace.nix`) | Process-free evaluation gate; no second language; covers README, AGENTS, flake, SOURCE pins, not only specs |
+| Overlap on numbered specs | Both run on `nix flake check` | Intentional. Do not drop Lean whitespace "because Nix covers the tree," and do not move tree-wide whitespace into Lean "for symmetry." Rationale: section 7.2.1 |
+
+Lean coverage on numbered specs:
 
 1. Pure ASCII (tab, LF, printable 0x20-0x7E; no CR or high bytes).
 2. No markdown bullet list markers (`-`, `*`, `+`) outside fenced code.
@@ -137,14 +140,80 @@ Lean coverage:
 5. No trailing whitespace (space or tab before end of line).
 6. No leading space indentation (use tabs for nested markdown indent).
 7. No hard-wrapped prose on numbered specs (heuristic outside fences and tables; see `0000_spec.md` Clause 6.4).
+8. American English spelling via `aspell list --lang=en_US --mode=markdown` with personal dictionary `aspell_words.txt` (pure hex and pure digit tokens skipped). Requires `aspell` with en_US on PATH; flake `checks.spec_check` and `nix develop` supply `pkgs.aspellWithDicts`. Skip with `SPECS_SPELLING=0` or `SPECS_SKIP_SPELLING=1`. There is no separate `checks.spelling` and no `nix/spelling-check.nix`.
 
-Project-wide whitespace (package `check_whitespace` / `nix run path:$PWD#check_whitespace`):
+**Project-wide whitespace** is a separate **pure Nix** check (`nix/whitespace.nix`, flake output `checks.whitespace`). It is not bash and not Lean.
 
-1. Same trailing-whitespace and leading-space rules on Surmount-authored text (`*.md`, `*.nix`, scripts, SOURCE pins we write, and similar).
+1. Same trailing-whitespace and leading-space rules on Surmount-authored text (`*.md`, `*.nix`, SOURCE pins we write, and similar).
 2. Skips vendor material: `ref/semver/**`, `*.pdf`, `ref/**/rfc2119.txt`.
 3. Lean (`.lean`) and YAML (`.yml` / `.yaml`) are exempt from the leading-space ban because those languages reject tab indent. They still must not have trailing whitespace.
+4. On `nix flake check`, a non-empty violation list fails Nix evaluation (`throw` with all messages). Success uses `pkgs.writeText` (no shell builder). Debug with `nix eval "path:$PWD#lib.whitespaceViolations"`.
 
-With no paths, `spec_check` discovers only root numbered specs (same naming scheme). Spelling (American English via `aspell` and `aspell_words.txt`) remains on the legacy bash helper until ported; `check_numbered_specs` runs both.
+Use `pkgs.aspellWithDicts` (English dictionaries bundled with the aspell wrapper). Bare `nix shell nixpkgs#aspell` or pairing `aspell` with `aspellDicts.en` as separate packages is not enough: aspell will report that no word lists can be found for `en_US`.
+
+With no paths, `spec_check` discovers only root numbered specs (same naming scheme).
+
+#### Hard-wrap author tips
+
+The Lean hard-wrap heuristic (normative algorithm in `0000_spec.md` Clause 6.4) fails when two consecutive non-empty body lines look like a mid-sentence column wrap: the first line does not end with `.`, `!`, `?`, or `:`, and the next line starts with a lowercase letter. Fenced code and table rows are exempt.
+
+What usually trips it:
+
+1. A paragraph broken for column width so the continuation starts with a lowercase word on the next physical line.
+2. A list item body split the same way across two physical lines.
+
+How to fix:
+
+1. Join each paragraph (and each list item body) into one physical line. Let the editor soft-wrap.
+2. Keep deliberate structure breaks: blank lines between paragraphs, one list item per line, headings, fences, tables.
+3. A short full sentence that ends with `.` on its own line is fine even when the next line starts a new sentence with a capital letter.
+
+Example that fails the heuristic (do not write this in numbered specs):
+
+```text
+This sentence was broken for column width in the middle
+of a thought and the next line starts lowercase.
+```
+
+Example that passes (one physical line per paragraph; shown wrapped only in this README for display if your viewer wraps):
+
+```text
+This sentence stays on one physical line so soft wrap is the reader's choice.
+```
+
+### 7.2.1 Why Lean vs pure Nix
+
+This section records the design reasoning so future contributors do not "simplify" the wrong layer.
+
+**Short answer:** pure Nix is right for simple, process-free, tree-wide rules. Lean is right for the numbered-spec form suite and for anything that must run an external program (aspell). The flake is the interface; bash and Python are not check implementations.
+
+| Concern | Pure Nix? | Where it lives |
+|---------|-----------|----------------|
+| Trailing whitespace / tab leading indent (whole tree) | Yes | `nix/whitespace.nix`, `checks.whitespace` |
+| ASCII, bullets, kebab, RFC 2119 cite, hard wrap on `NNNN_*.md` | Possible, not chosen | Lean `spec_check` (maintainability) |
+| Spelling with aspell | No as pure eval | Lean calls `aspell` on PATH |
+| Fat shell/python loops in `runCommand` or `scripts/` | Forbidden | Never |
+
+**Why pure Nix for project-wide whitespace**
+
+1. The rule set is small (trailing space/tab; leading space ban with known exemptions).
+2. Implementation needs only fileset discovery, `readFile`, and line scans.
+3. Evaluation *is* the check: empty list plus `writeText` success, or `throw` with diagnostics. No builder shell, no second language.
+
+**Why Lean for numbered-spec form rules and spelling**
+
+1. **Spelling cannot be pure Nix evaluation.** Pure eval does not spawn processes. Automated en_US spelling needs `aspell`. Acceptable shapes: a real binary that calls it (current Lean path), or drop spelling from the gate. Unacceptable: multi-line bash/python policy inside a derivation builder.
+2. **Form rules beyond whitespace are a small linter** (fence tracking, strip inline code and URLs, excess kebab, hard-wrap heuristic, RFC citation). Those *can* be written in pure Nix the same way whitespace is, but they become long, slow to evaluate, and hard to test and debug in the evaluator. A packaged program with line diagnostics fits pre-commit and local authoring.
+3. **One binary owns the numbered-spec suite** (discovery of root `NNNN_*.md`, form rules, optional spelling skip via env). Nix packages it and runs a thin check; check policy does not live in shell strings.
+4. **Flake stays idiomatic:** packages/apps = Lean binary only; checks = pure whitespace + thin invoke of that binary + pre-commit; no `writeShellApplication` gatekeeper packages.
+
+**What not to do without an explicit decision**
+
+1. Do not reintroduce bash-in-Nix or Python-in-Nix as the implementation of checks.
+2. Do not move tree-wide whitespace into Lean only for symmetry with form rules.
+3. Do not assume "everything should be pure Nix" or "everything should be Lean." Match the rule to the mechanism: pure data rules to pure Nix; process-backed or multi-pass form policy to the Lean binary (or another real language package if the operator chooses to replace Lean later).
+
+Agent-facing copy of this split: `AGENTS.md` (Machine validation / Why Lean vs pure Nix). Keep both in sync when the authority model changes.
 
 ### 7.3 Run Lean directly
 
@@ -156,37 +225,37 @@ cd lean && lake build
 ./.lake/build/bin/spec_check 0000_spec.md 0001_DOGE.md
 ```
 
-`scripts/run_checks` prefers `spec_check` on `PATH`, then a local lake build, then the legacy bash script.
+Or via the flake (default package and default app are both the Lean binary):
+
+```bash
+nix build "path:$PWD#spec_check" -L
+nix run "path:$PWD#spec_check"
+nix run "path:$PWD#spec_check" -- 0000_spec.md
+```
 
 Exit status is nonzero when any check fails. Diagnostics go to stderr as `file:line: message`.
 
-### 7.4 Legacy bash helper (spelling)
-
-`scripts/check_spec_rules` still provides bash checks including `aspell` spelling (American English `en_US`, personal list `aspell_words.txt`). Nix exposes it as `check_spec_rules_legacy`. The combined gate `check_numbered_specs` invokes this path for spelling after Lean passes.
-
-Spelling under Nix uses `pkgs.aspellWithDicts` (English dictionaries bundled with the aspell wrapper). Bare `nix shell nixpkgs#aspell` or pairing `aspell` with `aspellDicts.en` as separate packages is not enough: aspell will report that no word lists can be found for `en_US`. The flake packages and `nix develop` shell already wire `aspellWithDicts`. The legacy package wrapper puts `aspell` on `PATH` when you run the binary (`nix run ...#check_spec_rules_legacy`); opening a bare `nix shell ...#check_spec_rules_legacy` does not put `aspell` on `PATH` by itself.
+### 7.4 Run via Nix
 
 ```bash
-./scripts/check_spec_rules
-# Prefer path: when local flake files may be untracked (pure eval / git tree):
-nix run "path:$PWD#check_spec_rules_legacy" -- 0000_spec.md
-nix run "path:$PWD#check_numbered_specs"
-```
-
-### 7.5 Run via Nix
-
-```bash
-# Canonical gate (local and CI):
+# Canonical gate (local and CI): all flake checks
 nix flake check "path:$PWD" --print-build-logs
 # Optional sugar (same command):
 just check
-nix run "path:$PWD#check_numbered_specs"
+# Lean binary only:
 nix run "path:$PWD#spec_check"
 nix build "path:$PWD#spec_check" -L
-nix build "path:$PWD#checks.$(nix eval --impure --raw --expr builtins.currentSystem).numbered_specs" -L
+# Individual checks (system name varies):
+nix build "path:$PWD#checks.$(nix eval --impure --raw --expr builtins.currentSystem).spec_check" -L
+nix build "path:$PWD#checks.$(nix eval --impure --raw --expr builtins.currentSystem).whitespace" -L
 ```
 
-Package names: `spec_check` (Lean binary), `check_numbered_specs` (Lean + aspell on root numbered specs), `check_whitespace` (project text trailing/leading whitespace), `check_spec_rules` (Lean wrapper), `check_spec_rules_legacy` (bash + aspell).
+Flake layout:
+
+1. **packages**: only `spec_check` (Lean binary; also `default`).
+2. **apps**: only `spec_check` (also `default` -> same binary path).
+3. **checks**: `spec_check` (form rules + spelling), `whitespace`, `pre-commit-check` (each independent; no bash-orchestrated aggregate package).
+4. No `writeShellApplication` packages and no `scripts/` validation tools.
 
 ## 8. Development shell and pre-commit
 
@@ -205,11 +274,11 @@ nix develop "path:$PWD"
 nix develop "path:$PWD" -c pre-commit run --all-files
 ```
 
-3. Tools on the shell `PATH` include `just`, `lean` / `lake` (nixpkgs lean4), `spec_check`, `check_numbered_specs`, `check_whitespace`, `check_spec_rules` (Lean wrapper), the legacy bash checker, `aspell` via `aspellWithDicts` (`en_US`), and `git`.
+3. Tools on the shell `PATH` include `just`, `lean` / `lake` (nixpkgs lean4), `spec_check`, `aspell` via `aspellWithDicts` (`en_US`) for local ad-hoc use, and `git`. Spelling and project-wide whitespace are flake checks, not shell package aliases. Use `nix flake check` for the full gate, or `nix eval "path:$PWD#lib.whitespaceViolations"` to debug whitespace.
 
-The pre-commit Lean hook matches only numbered specs (`^[0-9]{4}_[A-Za-z0-9_]+\.md$`), so README, AGENTS, and UNLICENSE are not subject to full RFC 2119 / style rules unless you pass them to a checker explicitly. The whitespace pre-commit hook runs `check_whitespace` on passed filenames (and flake check `checks.whitespace` scans the tree).
+The pre-commit Lean hook matches only numbered specs (`^[0-9]{4}_[A-Za-z0-9_]+\.md$`), so README, AGENTS, and UNLICENSE are not subject to full RFC 2119 / style rules unless you pass them to `spec_check` explicitly. Project-wide whitespace is enforced by pure Nix `checks.whitespace` on `nix flake check`, not by a bash pre-commit hook.
 
-Hook configuration is generated from `flake.nix`. Prefer the flake and this README over hard-coding third party hook product names as process law.
+`.pre-commit-config.yaml` is generated by git-hooks.nix when you enter `nix develop` (it is typically a store symlink, not a hand-maintained source file). Do **not** hand-edit that file; change hook definitions in `flake.nix` and re-enter the development shell so the generated config refreshes. Prefer the flake and this README over hard-coding third party hook product names as process law.
 
 ## 9. License
 

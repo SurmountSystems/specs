@@ -1,5 +1,5 @@
 name = "SpecCheck"
-version = "0.1.0"
+version = "1.0.0"
 defaultTargets = ["spec_check"]
 
 [[lean_lib]]
@@ -8,3 +8,7 @@ name = "SpecCheck"
 [[lean_exe]]
 name = "spec_check"
 root = "Main"
+
+[[lean_exe]]
+name = "spec_check_tests"
+root = "SpecCheckTests"
