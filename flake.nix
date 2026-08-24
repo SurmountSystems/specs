@@ -123,6 +123,7 @@
 			);
 
 			# Only the Lean binary (default -> same).
+			# nix flake check requires apps.*.meta (at least meta.description).
 			apps = forAllSystems (
 				system:
 				let
@@ -130,6 +131,9 @@
 					app = {
 						type = "app";
 						program = "${spec}/bin/spec_check";
+						meta = {
+							description = "Run Lean spec_check on numbered Surmount specs (form rules and spelling)";
+						};
 					};
 				in
 				{
