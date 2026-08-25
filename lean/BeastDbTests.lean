@@ -1,0 +1,182 @@
+/-
+  Runtime checks for the beastdb meaning model (0003_beastdb.md).
+  Theorems in BeastDb.lean already fail to typecheck if the model is
+  widened (wrong product capitalization as the name, SSSSS numbered 0003,
+  traditional FFI permitted, schema optional). This executable re-checks
+  the decidable facts so a silent `sorry` or a Bool regression prints FAIL
+  lines, matching spec_check_tests style.
+-/
+
+import BeastDb
+import SpecRegistry
+
+open BeastDb
+open SpecRegistry
+
+structure Case where
+  name : String
+  ok : Bool
+  detail : String := ""
+  deriving Repr
+
+def expectTrue (name : String) (b : Bool) : Case :=
+  { name := name, ok := b, detail := if b then "" else "expected true" }
+
+def expectFalse (name : String) (b : Bool) : Case :=
+  { name := name, ok := !b, detail := if !b then "" else "expected false" }
+
+def expectEqNat (name : String) (got want : Nat) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectEqString (name : String) (got want : String) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectEmpty {α : Type} [Repr α] (name : String) (xs : List α) : Case :=
+  if xs.isEmpty then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected empty, got {repr xs}" }
+
+def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
+  if xs.isEmpty then
+    { name := name, ok := false, detail := "expected diagnostics, got none" }
+  else
+    { name := name, ok := true }
+
+def runCases : List Case :=
+  [
+    expectEqString "product name is beastdb" productName "beastdb",
+    expectEqString "library name is libbeastdb" libraryName "libbeastdb",
+    expectEqNat "beastdb is specification 0003" specNumber 3,
+    expectTrue "beastdb is not specification 0002" (specNumber != 2),
+    expectTrue "beastdb is not specification 0004" (specNumber != 4),
+    expectEqString "spec file is 0003_beastdb.md" specFileName "0003_beastdb.md",
+    expectEqNat "Systems Lean is specification 0002" systemsLeanSpecNumber 2,
+    expectEqNat "SSSSS is specification 0004" ssssSpecNumber 4,
+    expectTrue "SSSSS is not specification 0003" (ssssSpecNumber != 3),
+    expectEqNat "fargo is planned as 0005" fargoPlannedSpecNumber 5,
+    expectFalse "Carbonado is not assigned" carbonadoAssigned,
+    expectFalse "this spec does not claim an implementation exists"
+      specClaimsImplementationExists,
+    expectTrue "canonical language claim is ok" languageCanonical.ok,
+    expectFalse "BeastDB as product name is not ok" languageWrongName.ok,
+    expectFalse "LibBeastDB as library name is not ok" languageWrongLibrary.ok,
+    expectFalse "subset only Slake typecheck is not ok"
+      languageSubsetTypecheck.ok,
+    expectFalse "missing Slake bootstrap is not ok" languageMissingBootstrap.ok,
+    expectFalse "missing CompCert step is not ok" languageMissingCompCert.ok,
+    expectFalse "garbage collection on the wire is not ok" languageGcWire.ok,
+    expectTrue "canonical concurrency is ok" concurrencyCanonical.requiredOk,
+    expectTrue "optional extra writers still satisfy required concurrency"
+      concurrencyWithMultiWriter.requiredOk,
+    expectFalse "more than one writer is not required for conformance"
+      multiWriterRequiredForConformance,
+    expectFalse "missing ACID is not ok" concurrencyNoAcid.requiredOk,
+    expectFalse "locked trie is not ok" concurrencyLockedTrie.requiredOk,
+    expectFalse "missing SWMR is not ok" concurrencyNoSwmr.requiredOk,
+    expectFalse "missing fencing by generation is not ok"
+      concurrencyNoFence.requiredOk,
+    expectTrue "canonical layout is ok" layoutCanonical.ok,
+    expectFalse "missing mmap is not ok" layoutNoMmap.ok,
+    expectEqNat "exactly two schema modes" SchemaMode.all.length 2,
+    expectTrue "canonical schema is ok" schemaCanonical.ok,
+    expectFalse "optional schema is not ok" schemaOptional.ok,
+    expectFalse "one schema mode is not ok" schemaOneMode.ok,
+    expectFalse "unproven migration is not ok" schemaUnprovenMigration.ok,
+    expectTrue "fargo compatibility is permitted"
+      (CompatibilityPath.permitted .fargo),
+    expectFalse "traditional foreign function interface is not permitted"
+      (CompatibilityPath.permitted .traditionalForeignFunctionInterface),
+    expectTrue "canonical access is ok" accessCanonical.ok,
+    expectFalse "traditional FFI access is not ok" accessTraditionalFfi.ok,
+    expectTrue "canonical stack role is ok" stackRoleCanonical.ok,
+    expectTrue "canonical scope for a store that is local first is ok" scopeCanonical.ok,
+    expectFalse "network peering claim is not ok" scopeNetwork.ok,
+    expectFalse "Carbonado is not in beastdb scope" carbonadoInScope,
+    expectTrue "canonical product conforms" canonicalProduct.conforms,
+    expectFalse "subset typecheck does not conform"
+      productSubsetTypecheck.conforms,
+    expectFalse "traditional FFI does not conform"
+      productTraditionalFfi.conforms,
+    expectFalse "schemaless product does not conform"
+      productSchemaless.conforms,
+    expectFalse "network claims do not conform" productNetwork.conforms,
+    expectFalse "wrong product name does not conform"
+      productWrongName.conforms,
+    expectFalse "missing ACID does not conform" productNoAcid.conforms,
+    expectTrue "optional extra writers still conform"
+      productOptionalMultiWriter.conforms,
+    -- Registry scan fixtures (stale numbers and wrong capitalization).
+    expectNonEmpty "stale 0003_SSSSS token fails"
+      (scanContent "0002_Systems_Lean.md"
+        "planned file name `0003_SSSSS.md` is stale.\n"),
+    expectEmpty "published 0004_SSSSS token passes"
+      (scanContent "0002_Systems_Lean.md"
+        "specified in `0004_SSSSS.md`.\n"),
+    expectNonEmpty "stale 0003_systems_lean token fails"
+      (scanContent "0003_beastdb.md" "see 0003_systems_lean.md for language.\n"),
+    expectNonEmpty "beastdb as 0002 filename fails"
+      (scanContent "0003_beastdb.md" "wrong file 0002_beastdb.md\n"),
+    expectNonEmpty "beastdb as 0004 filename fails"
+      (scanContent "0003_beastdb.md" "wrong file 0004_beastdb.md\n"),
+    expectNonEmpty "unassigned 0006 filename token fails"
+      (scanContent "0003_beastdb.md" "do not cite 0006_carbonado.md\n"),
+    expectEmpty "correct 0003_beastdb token passes"
+      (scanContent "0003_beastdb.md"
+        "This specification is number 0003. File 0003_beastdb.md.\n"),
+    expectNonEmpty "identity sentence with wrong number fails"
+      (scanContent "0002_Systems_Lean.md"
+        "This specification is number 0003.\n"),
+    expectNonEmpty "BeastDB capitalization fails"
+      (scanContent "0003_beastdb.md" "The product BeastDB is wrongly capped.\n"),
+    expectNonEmpty "BEASTDB capitalization fails"
+      (scanContent "0003_beastdb.md" "The product BEASTDB is wrongly capped.\n"),
+    expectNonEmpty "Beastdb capitalization fails"
+      (scanContent "0003_beastdb.md" "The product Beastdb is wrongly capped.\n"),
+    expectNonEmpty "spaced Beast DB fails"
+      (scanContent "0003_beastdb.md" "The product Beast DB is wrongly spaced.\n"),
+    expectNonEmpty "LibBeastDB library name fails"
+      (scanContent "0003_beastdb.md" "Do not name it LibBeastDB.\n"),
+    expectEmpty "lowercase beastdb and libbeastdb pass"
+      (scanContent "0003_beastdb.md"
+        "The product beastdb ships as libbeastdb.\n"),
+    expectNonEmpty "missing published 0003 basename fails"
+      (findingsForBasenames
+        ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md"]),
+    expectNonEmpty "wrong published 0003 basename fails"
+      (findingsForBasenames
+        ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
+          "0003_SSSSS.md"]),
+    expectEmpty "all published basenames pass"
+      (findingsForBasenames
+        ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
+          "0003_beastdb.md", "0004_SSSSS.md"]),
+    expectNonEmpty "planned file present fails"
+      (findingsForPlannedPresent ["0005_fargo.md"]),
+    expectTrue "registry numbers are unique" (!hasDupNumbers),
+    expectTrue "registry file names are unique" (!hasDupFilenames)
+  ]
+
+def main (_args : List String) : IO UInt32 := do
+  let mut failed : Nat := 0
+  for c in runCases do
+    if c.ok then
+      IO.println s!"PASS {c.name}"
+    else
+      failed := failed + 1
+      if c.detail.isEmpty then
+        IO.eprintln s!"FAIL {c.name}"
+      else
+        IO.eprintln s!"FAIL {c.name}: {c.detail}"
+  if failed == 0 then
+    IO.println s!"All {runCases.length} tests passed."
+    return 0
+  else
+    IO.eprintln s!"{failed} of {runCases.length} tests failed."
+    return 1

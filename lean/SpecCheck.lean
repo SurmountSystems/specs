@@ -1,27 +1,27 @@
 /-
-  SpecCheck: mechanical form rule checks for Surmount numbered specs.
+  SpecCheck: mechanical form rule checks for Surmount numbered specifications.
 
-  Default discovery is root numbered specs only (NNNN_*.md). Full suite
+  Default discovery is numbered specifications at the root only (NNNN_*.md). Full suite
   (see 0000_spec.md):
   1. Pure ASCII (tab, LF, printable 0x20-0x7E only)
   2. No markdown bullet list markers outside fenced code
-  3. No excess kebab case (lowercase token with 2+ hyphens) outside fences
+  3. No excess hyphenated tokens (lowercase token with 2+ hyphens) outside fences
     and outside inline code / URLs
-  4. In-scope specs (NNNN_*.md) MUST cite RFC 2119 (or RFC2119)
+  4. In scope specs (NNNN_*.md) MUST cite RFC 2119 (or RFC2119)
   5. No trailing whitespace (space or tab before LF)
-  6. Leading indentation uses tab only (no leading space)
-  7. No hard-wrapped prose outside fences (numbered specs)
+  6. Leading indentation uses tabs only (no leading space)
+  7. No prose wrapped to a column outside fences (numbered specifications)
   8. American English spelling via aspell (en_US) when AspellHome is provided
 
-  Project-wide trailing whitespace and tab indent on non-spec project text are
+  Trailing whitespace and tab indent on project text that is not a specification are
   enforced by pure Nix (nix/whitespace.nix / checks.whitespace), not by Lean.
   When paths are passed explicitly, this module may still apply ASCII/whitespace
-  checks to owned text kinds for convenience; that is not the project-wide gate.
+  checks to owned text kinds for convenience; that is not the gate across the project.
 
-  UNLICENSE.md / LICENSE* are style-excluded (ASCII and whitespace still checked
+  UNLICENSE.md / LICENSE* are style excluded (ASCII and whitespace still checked)
   when passed). README.md is not required to cite RFC 2119.
 
-  Implementation: line-based with fence tracking (not a full markdown parser).
+  Implementation: line based with fence tracking (not a full markdown parser).
   Char lists and Nat indices keep Lean 4.30 APIs simple.
 -/
 
@@ -39,7 +39,7 @@ def Diag.format (d : Diag) : String :=
   | some n => s!"{d.file}:{n}: {d.message}"
   | none   => s!"{d.file}: {d.message}"
 
-/-- Bytes allowed by pure-ASCII rule: HT, LF, printable ASCII. No CR. -/
+/-- Bytes allowed by pure ASCII rule: HT, LF, printable ASCII. No CR. -/
 def isAllowedAsciiByte (b : UInt8) : Bool :=
   let n := b.toNat
   n == 9 || n == 10 || (32 ≤ n && n ≤ 126)
@@ -74,7 +74,7 @@ def checkAscii (file : String) (bs : ByteArray) : List Diag :=
         out := out ++ [{
           file := file
           line := some ln
-          message := s!"non-ASCII or disallowed control character (byte {b.toNat})"
+          message := s!"non ASCII or disallowed control character (byte {b.toNat})"
         }]
         while i < bs.size && bs.get! i != 10 do
           i := i + 1
@@ -82,7 +82,7 @@ def checkAscii (file : String) (bs : ByteArray) : List Diag :=
         i := i + 1
     return out
 
-/-- Decode pure-ASCII bytes to a String (one Char per byte). -/
+/-- Decode pure ASCII bytes to a String (one Char per byte). -/
 def asciiToString (bs : ByteArray) : String :=
   Id.run do
     let mut cs : Array Char := #[]
@@ -94,7 +94,7 @@ def asciiToString (bs : ByteArray) : String :=
 def splitLines (s : String) : List String :=
   s.splitOn "\n"
 
-/-- True for style-excluded basenames (license text). -/
+/-- True for style excluded basenames (license text). -/
 def isStyleExcluded (basename : String) : Bool :=
   basename == "UNLICENSE.md" || basename == "UNLICENSE" ||
   basename == "LICENSE" || basename == "LICENSE.md"
@@ -124,7 +124,7 @@ def isNumberedSpecName (basename : String) : Bool :=
           !rest.isEmpty && rest.all isSpecNameChar
       | _ => false
 
-/-- True for in-scope numbered specs (same as isNumberedSpecName). -/
+/-- True for numbered specifications that are in scope (same as isNumberedSpecName). -/
 def isInScopeSpec (basename : String) : Bool :=
   isNumberedSpecName basename
 
@@ -368,11 +368,11 @@ def checkKebab (file : String) (content : String) : List Diag :=
           out := out ++ [{
             file := file
             line := some ln
-            message := s!"excess kebab case (2+ hyphens): {tok}"
+            message := s!"excess hyphenated token (2+ hyphens): {tok}"
           }]
     return out
 
-/-- Case-insensitive ASCII upper for one char. -/
+/-- Case insensitive ASCII upper for one char. -/
 def asciiUpperChar (c : Char) : Char :=
   if 'a' ≤ c && c ≤ 'z' then Char.ofNat (c.toNat - 32) else c
 
@@ -403,7 +403,7 @@ def checkRfc2119 (file : String) (basename : String) (content : String) : List D
   else [{
     file := file
     line := some 1
-    message := "in-scope spec (NNNN_*.md) must cite RFC 2119 (or RFC2119)"
+    message := "in scope spec (NNNN_*.md) must cite RFC 2119 (or RFC2119)"
   }]
 
 /-- True if the line ends with space or tab. -/
@@ -446,7 +446,7 @@ def checkLeadingSpaces (file : String) (content : String) : List Diag :=
         out := out ++ [{
           file := file
           line := some ln
-          message := "leading space indentation (use tab for leading indent)"
+          message := "leading indent with spaces (use tab for leading indent)"
         }]
     return out
 
@@ -454,19 +454,19 @@ def checkLeadingSpaces (file : String) (content : String) : List Diag :=
 def dropTrailingSpace (cs : List Char) : List Char :=
   (cs.reverse.dropWhile (fun c => c == ' ' || c == '\t')).reverse
 
-/-- Last non-ws char of line, if any. -/
+/-- Last non whitespace char of line, if any. -/
 def lastNonWsChar (line : String) : Option Char :=
   match dropTrailingSpace line.toList with
   | [] => none
   | cs => cs.getLast?
 
-/-- First non-ws char of line, if any. -/
+/-- First non whitespace char of line, if any. -/
 def firstNonWsChar (line : String) : Option Char :=
   match dropLeadingSpace line.toList with
   | [] => none
   | c :: _ => some c
 
-/-- Line ends a sentence or closed structure for hard-wrap heuristic. -/
+/-- Line ends a sentence or closed structure for the heuristic for wrapping to a column. -/
 def endsClosedForWrap (line : String) : Bool :=
   match lastNonWsChar line with
   | none => true
@@ -506,7 +506,7 @@ def isThematicLine (line : String) : Bool :=
       rest.all (fun c => c == c0) &&
       (c0 :: rest).length ≥ 3
 
-/-- HTML-ish line. -/
+/-- HTML like line. -/
 def isHtmlLine (line : String) : Bool :=
   match dropLeadingSpace line.toList with
   | '<' :: _ => true
@@ -547,8 +547,8 @@ def isStructuralWrapLine (line : String) : Bool :=
     startsWithFence line.toList
 
 /-
-  Hard-wrap heuristic outside fenced code:
-  two consecutive non-empty body lines where the first does not end a
+  Heuristic for wrapping to a column, outside fenced code:
+  two consecutive body lines that are not empty where the first does not end a
   sentence/structure (. ! ? :) and the second continues with a lowercase letter.
   Fences, tables, headings, and blockquotes break pairs. List item markers on
   the second line start a new item (not a wrap). List item lines may themselves
@@ -579,7 +579,7 @@ def checkHardWrap (file : String) (content : String) : List Diag :=
                 out := out ++ [{
                   file := file
                   line := some pln
-                  message := s!"hard-wrapped prose (line continues on {ln}; keep one physical line per paragraph or list item)"
+                  message := s!"prose wrapped to a column (line continues on {ln}; keep one physical line per paragraph or list item)"
                 }]
                 prev := some (ln, line)
               else
@@ -591,9 +591,9 @@ def checkHardWrap (file : String) (content : String) : List Diag :=
 /--
   Run checks on one file's bytes.
 
-  `fullStyle`: numbered-spec suite (bullets, kebab, RFC 2119, hard wrap).
-  `checkLeading`: when false, skip leading-space rule (Lean / YAML tooling).
-  `checkAsciiFlag`: when false, skip pure-ASCII gate (Lean sources).
+  `fullStyle`: suite for numbered specifications (bullets, kebab, RFC 2119, wrapping to a column).
+  `checkLeading`: when false, skip leading space rule (Lean / YAML tooling).
+  `checkAsciiFlag`: when false, skip pure ASCII gate (Lean sources).
 -/
 def checkFileContent (file : String) (basename : String) (bs : ByteArray)
     (fullStyle : Bool) (checkLeading : Bool) (checkAsciiFlag : Bool) : List Diag :=
@@ -601,7 +601,7 @@ def checkFileContent (file : String) (basename : String) (bs : ByteArray)
   if checkAsciiFlag && !(isPureAscii bs) then
     asciiDiags
   else
-    -- Byte-to-Char map is enough for line-based whitespace even when UTF-8 ops appear in Lean.
+    -- Byte to Char map is enough for line based whitespace even when UTF-8 ops appear in Lean.
     let content := asciiToString bs
     let trailing := checkTrailingWs file content
     let leading := if checkLeading then checkLeadingSpaces file content else []
@@ -647,7 +647,7 @@ def relPathString (repoRoot : System.FilePath) (path : System.FilePath) : String
   else
     pathS
 
-/-- Vendor / generated paths that must not be form-checked. -/
+/-- Vendor / generated paths that must not be form checked. -/
 def isSkippedRel (rel : String) : Bool :=
   let r := normalizeRel rel
   if r == "ref/semver" || r.startsWith "ref/semver/" then true
@@ -665,7 +665,7 @@ def isSkippedRel (rel : String) : Bool :=
   else false
 
 /--
-  Project-owned text kinds: Surmount-authored sources and pins, not vendor blobs.
+  Project owned text kinds: Surmount authored sources and pins, not vendor blobs.
   Includes numbered and other markdown, Lean, Nix, workflows under .github/, SOURCE, etc.
 -/
 def isOwnedKind (rel : String) : Bool :=
@@ -690,8 +690,8 @@ def skipsLeadingSpaceRule (rel : String) : Bool :=
   base.endsWith ".lean" || base.endsWith ".yml" || base.endsWith ".yaml"
 
 /--
-  Pure-ASCII gate for owned text. Skipped for Lean sources (Unicode operators
-  such as left-arrow and le are normal in Lean). Markdown and other owned text
+  Pure ASCII gate for owned text. Skipped for Lean sources (Unicode operators
+  such as left arrow and le are normal in Lean). Markdown and other owned text
   stay under the ASCII rule.
 -/
 def wantsAsciiCheck (rel : String) : Bool :=
@@ -708,7 +708,7 @@ def isBinaryBytes (bs : ByteArray) : Bool :=
     return false
 
 /--
-  Root-level numbered specs only: `NNNN_descriptive_name.md` matching
+  Numbered specifications at the root only: `NNNN_descriptive_name.md` matching
   isNumberedSpecName. Skips README, UNLICENSE, AGENTS, and other root markdown.
   This is the default discovery set for `spec_check` with no path args.
 -/
@@ -721,7 +721,7 @@ def collectRootNumberedSpecs (repoRoot : System.FilePath) : IO (Array System.Fil
       out := out.push (repoRoot / name)
   return out
 
-/-- Writable aspell home (personal word list copy; store tree is read-only). -/
+/-- Writable aspell home (personal word list copy; store tree is read only). -/
 structure AspellHome where
   homeDir : System.FilePath
   personal : String := "aspell_words.txt"
@@ -789,7 +789,7 @@ def firstLineOfSubstring (content : String) (word : String) : Option Nat :=
 
 /--
   Run `aspell list --lang=en_US --mode=markdown` on file content.
-  Skips pure-hex (length ≥ 2) and pure-digit tokens. One diagnostic per unique word.
+  Skips pure hex (length ≥ 2) and pure digit tokens. One diagnostic per unique word.
   Line is the first content line where the word appears as a substring, if findable.
 -/
 def checkSpelling (home : AspellHome) (file : String) (content : String) : IO (List Diag) := do
@@ -835,7 +835,7 @@ def checkPath (repoRoot : System.FilePath) (path : System.FilePath)
   if isSkippedRel rel then
     return []
   if !isOwnedKind rel then
-    -- Explicit non-owned paths are ignored (pre-commit may pass noise).
+    -- Explicit non owned paths are ignored (pre-commit may pass noise).
     return []
   let bs ← IO.FS.readBinFile path
   if isBinaryBytes bs then
@@ -845,7 +845,7 @@ def checkPath (repoRoot : System.FilePath) (path : System.FilePath)
   let checkLeading := !skipsLeadingSpaceRule rel
   let checkAsciiFlag := wantsAsciiCheck rel
   let formDiags := checkFileContent pathStr base bs fullStyle checkLeading checkAsciiFlag
-  -- American English spelling on numbered specs when aspell home is provided.
+  -- American English spelling on numbered specifications when aspell home is provided.
   if isNumberedSpecName base then
     match aspell? with
     | none => return formDiags

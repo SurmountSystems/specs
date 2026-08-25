@@ -5,6 +5,18 @@ defaultTargets = ["spec_check"]
 [[lean_lib]]
 name = "SpecCheck"
 
+[[lean_lib]]
+name = "SystemsLean"
+
+[[lean_lib]]
+name = "SpecRegistry"
+
+[[lean_lib]]
+name = "BeastDb"
+
+[[lean_lib]]
+name = "Sssss"
+
 [[lean_exe]]
 name = "spec_check"
 root = "Main"
@@ -12,3 +24,15 @@ root = "Main"
 [[lean_exe]]
 name = "spec_check_tests"
 root = "SpecCheckTests"
+
+[[lean_exe]]
+name = "systems_lean_tests"
+root = "SystemsLeanTests"
+
+[[lean_exe]]
+name = "beastdb_tests"
+root = "BeastDbTests"
+
+[[lean_exe]]
+name = "sssss_tests"
+root = "SssssTests"

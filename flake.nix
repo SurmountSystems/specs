@@ -115,9 +115,33 @@
 						binName = "spec_check_tests";
 						description = "Lean unit tests for SpecCheck form-rule helpers";
 					};
+
+					# Companion meaning-model tests for 0002_Systems_Lean.md (not form rules).
+					systems_lean_tests = mkLeanBin {
+						pname = "systems_lean_tests";
+						lakeTarget = "systems_lean_tests";
+						binName = "systems_lean_tests";
+						description = "Lean tests for the Systems Lean meaning model (spec 0002)";
+					};
+
+					# Companion meaning-model tests for 0003_beastdb.md (not form rules).
+					beastdb_tests = mkLeanBin {
+						pname = "beastdb_tests";
+						lakeTarget = "beastdb_tests";
+						binName = "beastdb_tests";
+						description = "Lean tests for the beastdb meaning model (spec 0003) and the numbered-spec registry";
+					};
+
+					# Companion meaning-model tests for 0004_SSSSS.md (not form rules).
+					sssss_tests = mkLeanBin {
+						pname = "sssss_tests";
+						lakeTarget = "sssss_tests";
+						binName = "sssss_tests";
+						description = "Lean tests for the SSSSS meaning model (spec 0004) and the numbered-spec registry";
+					};
 				in
 				{
-					inherit spec_check spec_check_tests;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests;
 					default = spec_check;
 				}
 			);
@@ -217,6 +241,48 @@
 								mkdir -p "$out"
 								echo ok > "$out/result"
 							'';
+
+					# Systems Lean meaning proofs (0002); not a second markdown linter.
+					systems_lean_tests =
+						pkgs.runCommand "systems_lean_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.systems_lean_tests
+								];
+							}
+							''
+								systems_lean_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# beastdb meaning proofs (0003) and registry fixtures; not a second markdown linter.
+					beastdb_tests =
+						pkgs.runCommand "beastdb_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.beastdb_tests
+								];
+							}
+							''
+								beastdb_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# SSSSS meaning proofs (0004) and registry fixtures; not a second markdown linter.
+					sssss_tests =
+						pkgs.runCommand "sssss_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.sssss_tests
+								];
+							}
+							''
+								sssss_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
 				in
 				{
 					inherit
@@ -224,6 +290,9 @@
 						whitespace
 						spec_check
 						spec_check_tests
+						systems_lean_tests
+						beastdb_tests
+						sssss_tests
 						;
 				}
 			);

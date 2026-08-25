@@ -1,5 +1,5 @@
 /-
-  Hermetic string-fixture tests for SpecCheck pure helpers.
+  Hermetic string fixture tests for SpecCheck pure helpers.
   Exit 0 when all pass; exit 1 with FAIL lines on any failure.
 -/
 
@@ -47,7 +47,7 @@ def expectNone (name : String) (got : Option Nat) : Case :=
   | none => { name := name, ok := true }
   | some n => { name := name, ok := false, detail := s!"expected none, got {n}" }
 
-/-- Encode pure-ASCII string to ByteArray for checkFileContent. -/
+/-- Encode pure ASCII string to ByteArray for checkFileContent. -/
 def asciiBytes (s : String) : ByteArray :=
   Id.run do
     let mut ba := ByteArray.empty
@@ -81,29 +81,29 @@ def runCases : List Case :=
     expectNonEmpty "bullet outside fence fails" (checkBullets f bulletOut),
     expectEmpty "bullet inside fence passes" (checkBullets f bulletIn),
     -- Kebab
-    expectNonEmpty "excess kebab in prose fails" (checkKebab f kebabProse),
-    expectEmpty "kebab in URL passes" (checkKebab f kebabUrl),
-    expectEmpty "kebab in inline code passes" (checkKebab f kebabCode),
+    expectNonEmpty "excess hyphenated token in prose fails" (checkKebab f kebabProse),
+    expectEmpty "hyphenated token in URL passes" (checkKebab f kebabUrl),
+    expectEmpty "hyphenated token in inline code passes" (checkKebab f kebabCode),
     -- RFC 2119 (basename must be numbered)
     expectNonEmpty "missing RFC 2119 fails"
       (checkRfc2119 numbered numbered noRfc),
     expectEmpty "present RFC 2119 passes"
       (checkRfc2119 numbered numbered withRfc),
-    expectEmpty "non-numbered basename skips RFC"
+    expectEmpty "basename that is not numbered skips RFC"
       (checkRfc2119 "README.md" "README.md" noRfc),
     -- Hard wrap
-    expectNonEmpty "hard wrap open line fails" (checkHardWrap f wrapBad),
+    expectNonEmpty "open line wrapped to a column fails" (checkHardWrap f wrapBad),
     expectEmpty "sentence ending with period passes wrap" (checkHardWrap f wrapOk),
     -- Trailing / leading space
     expectNonEmpty "trailing space fails" (checkTrailingWs f trail),
     expectNonEmpty "leading space fails" (checkLeadingSpaces f lead),
     expectEmpty "clean trailing ws passes" (checkTrailingWs f cleanWs),
-    expectEmpty "tab leading indent passes leading-space" (checkLeadingSpaces f cleanWs),
+    expectEmpty "tab leading indent passes leading space" (checkLeadingSpaces f cleanWs),
     -- Hex / digit spelling filters
     expectTrue "isPureHexToken abcd" (isPureHexToken "abcd"),
     expectTrue "isPureHexToken 0a1B" (isPureHexToken "0a1B"),
     expectFalse "isPureHexToken single digit" (isPureHexToken "a"),
-    expectFalse "isPureHexToken non-hex" (isPureHexToken "hello"),
+    expectFalse "isPureHexToken non hex" (isPureHexToken "hello"),
     expectTrue "isPureDigitToken 42" (isPureDigitToken "42"),
     expectFalse "isPureDigitToken empty" (isPureDigitToken ""),
     expectFalse "isPureDigitToken mixed" (isPureDigitToken "12a"),
