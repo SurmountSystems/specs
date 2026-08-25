@@ -24,7 +24,7 @@ This subsection is informative. It records how this specification relates to mac
 In dependently typed languages, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. This repository keeps that split on purpose, following the same spirit as Formal Vibefication (see Clause 8): people read numbered markdown; Lean checks a model of selected clauses.
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
-2. Companion Lean modules under `lean/` (the Systems Lean meaning model, distinct from the `spec_check` form checker) encode selected claims such as the multiplicity set, erasure of multiplicity 0, the freestanding product wire, residual honesty, CompCert verified compilation as a required validation step, bootstrapping a Slake compiler that fully typechecks as a required validation step, the novel language set, hygiene including product tree `ref/` directory names, stack targeting, this document's identity as specification 0002, the fact that the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md` (not 0003), and the fact that beastdb is specified in `0003_beastdb.md`.
+2. Companion Lean modules under `lean/` (the Systems Lean meaning model, distinct from the `spec_check` form checker) encode selected claims such as the multiplicity set, erasure of multiplicity 0, the freestanding product wire, residual honesty, CompCert verified compilation as a required validation step, bootstrapping a Slake compiler that fully typechecks as a required validation step, the novel language set, hygiene including product tree `ref/` directory names, stack targeting, this document's identity as specification 0002, the fact that the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md` (not 0003), the fact that beastdb is specified in `0003_beastdb.md`, and the fact that Recursive Self Improvement is specified in `0006_RSI.md`.
 3. Those modules prove facts about the model. They do not replace this document. This document does not replace those modules.
 4. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Meaning proofs MUST NOT be treated as a second markdown form checker.
 
@@ -42,7 +42,7 @@ This specifications repository's `ref/` holds 0000 Clause 12 citation pins of th
 
 ### 2.2 Pins in the Systems Lean product tree
 
-The Systems Lean product tree is the implementation home for Systems Lean and Slake. Form 1 pins named in this clause are directories in that product tree, not in this specifications repository.
+The Systems Lean product tree is the implementation home for Systems Lean and Slake. That product tree is `/home/hunter/Projects/ai/iso`. Lean 4, CompCert, Idris 2, and Rust are already git submodules there. Form 1 pins named in this clause are directories in that product tree, not in this specifications repository. This specifications repository MUST NOT copy those four trees into this repository's `ref/`.
 
 1. Lean 4 compiler source. Publisher git: https://github.com/leanprover/lean4.git . Form 1 pin in the product tree: `ref/lean4`. Developer docs in that pin: `ref/lean4/doc/`. The Lean 4 language reference is a separate publisher work, published at [Lean 4 Language Reference](https://lean-lang.org/doc/reference/latest/) (accessed: 2026-08-24). The product tree's `ref/lean4/README.md` and `ref/lean4/doc/dev/ffi.md` link that reference. This document does not claim the language reference is a second Form 1 directory under the product tree `ref/`.
 2. Idris 2 Quantitative Type Theory documentation. Publisher git: https://github.com/idris-lang/Idris2.git . Form 1 pin in the product tree: `ref/Idris2`. Local QTT and multiplicity text in that pin: `ref/Idris2/docs/source/tutorial/multiplicities.rst` (multiplicities 0, 1, and unrestricted) and `ref/Idris2/docs/source/implementation/overview.rst` (core TT based on quantitative type theory). Published HTML: [Idris 2 documentation](https://idris2.readthedocs.io/en/latest/) (accessed: 2026-08-24). Those Idris documents cite Atkey and McBride, Quantitative Type Theory, https://bentnib.org/quantitative-type-theory.html ; that paper is not a Form 1 pin under the product tree `ref/`.
@@ -129,6 +129,7 @@ These rules apply to novel Systems Lean and Slake source trees (product reposito
 
 1. Systems Lean is the REQUIRED implementation language for the core of beastdb (specified in `0003_beastdb.md`), the Lean Machine formalization layer, components of the Smart Symbolic Supercompiler specified in `0004_SSSSS.md` that are safety critical, and future high assurance rewrites under the FixOS vision.
 2. All such components MUST be able to target the freestanding Slake path.
+3. Recursive Self Improvement is specified in `0006_RSI.md`. That document is practice for Surmount specifications and agents. It is not a compiler requirement of this document.
 
 ## 5. Conformance
 
@@ -144,25 +145,46 @@ A Systems Lean implementation or Slake product conforms to this specification if
 
 Optional LLVM IR emission (Clause 4.2 item 3) is not required for conformance.
 
-## 6. Changelog
+## 6. Residual
+
+This section is normative for residual honesty of this document. Silence about an unpublished specification, an unassigned number, or an unimplemented requirement named in this document is nonconforming for this specification as a document.
+
+### 6.1 Product tree and language pins
+
+1. Systems Lean and Slake work is ongoing and is not ready for use. This document MUST NOT be read as claiming that Systems Lean or Slake never started or do not exist.
+2. The Systems Lean product tree that already holds Lean 4, CompCert, Idris 2, and Rust as git submodules is `/home/hunter/Projects/ai/iso`. This specifications repository MUST NOT copy those four trees into this repository's `ref/`. Existing pins of this repository remain. New pins are added when the cited artifact is present.
+3. Recursive Self Improvement is specified in `0006_RSI.md`. That document is practice for Surmount specifications and agents. It is not a compiler requirement of this document.
+
+### 6.2 Unassigned names
+
+1. Lean Machine is named as a substrate. It has no numbered specification and no assigned number.
+2. fargo, Carbonado, and SSSP are not specified here and have no assigned numbers.
+
+### 6.3 Product requirements that are not ready for use
+
+CompCert verified compilation of the freestanding C emit and a bootstrapped Slake compiler that fully typechecks are required validation steps. They are not claimed done. Byte identity of emit is required for a conforming product and is not claimed true.
+
+## 7. Changelog
 
 ### 1.0.0 - 20260824
 
 First publication. Defines Systems Lean as Lean 4 with linear and affine ownership and Quantitative Type Theory multiplicities 0, 1, and omega; names Slake as the freestanding compiler product; requires a freestanding product wire without managed Lean runtime or garbage collection; requires residual honesty; states Unlicense and language set hygiene for novel Systems Lean and Slake source trees; and requires named high assurance stack components to be able to target Slake.
 
-This unpublished 1.0.0 also records: CompCert verified compilation of the freestanding C emit is a required core validation step, not comparison language; bootstrapping a Slake compiler that fully typechecks is a required core validation step; Lean 4, Idris 2, CompCert, and Rust Form 1 pins live in the Systems Lean product tree (`ref/lean4`, `ref/Idris2`, `ref/CompCert`, `ref/rust`) and are not pins of this specifications repository's `ref/`; the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md` (not 0003, and not this document); beastdb is specified in `0003_beastdb.md`.
+This unpublished 1.0.0 also records: CompCert verified compilation of the freestanding C emit is a required core validation step, not comparison language; bootstrapping a Slake compiler that fully typechecks is a required core validation step; Lean 4, Idris 2, CompCert, and Rust Form 1 pins live in the Systems Lean product tree (`ref/lean4`, `ref/Idris2`, `ref/CompCert`, `ref/rust`) and are not pins of this specifications repository's `ref/`; the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md` (not 0003, and not this document); beastdb is specified in `0003_beastdb.md`; Recursive Self Improvement is specified in `0006_RSI.md` and is not a compiler requirement of this document.
 
 This specification is number 0002. The Smart Symbolic Supercompiler is specified in `0004_SSSSS.md` and is not this document. It is not specification 0003.
 
 This unpublished 1.0.0 also records that hyphenated modifiers in prose were rephrased into ordinary English. Deleting the hyphen and leaving the same two words is not enough.
 
+This unpublished 1.0.0 also records that citations of Keagan McLelland (Proof of Keags) research SHALL keep the publisher links on those pages (back linking).
+
 No prior public release of this specification exists.
 
-## 7. Copyright
+## 8. Copyright
 
 This work is released into the public domain under the Unlicense. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository. Novel Systems Lean source is likewise Unlicensed. Upstream components retain their original licenses.
 
-## 8. Acknowledgments
+## 9. Acknowledgments
 
 Author: Hunter "cryptoquick" Beast.
 
@@ -172,6 +194,6 @@ This work is significantly inspired by the research and public talks of Keagan M
 2. Taking "Don't Trust. Verify." Seriously (2026-07-20) - https://proofofkeags.com/research/2026-07-20-taking-dont-trust-verify-seriously.html
 3. Formal Verification of Bitcoin BitDevs talk (2026-07-14) - https://www.youtube.com/watch?v=E0VjopN2sgg
 
-Those pages and that talk are research and presentation. They are not external specifications under `0000_spec.md` Clause 12.
+Those pages and that talk are research and presentation. They are not external specifications under `0000_spec.md` Clause 12. Citations of this work SHALL keep those publisher links (back linking).
 
 The author first encountered a clear explanation of the Curry-Howard isomorphism through the work of Keagan McLelland.

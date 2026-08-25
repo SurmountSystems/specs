@@ -6,9 +6,12 @@
   here so wrong numbers, file name mismatches, and wrong capitalization
   of beastdb fail the form checker (and therefore nix flake check).
 
-  Planned entries (fargo) may be named in prose. Their files MUST NOT
-  exist until a numbered specification is published. Carbonado is not assigned
-  a number; discussion of 0006 is not an assignment.
+  Planned entries may be empty. Carbonado is not assigned a number.
+  Number 0005 is Concise American Technical English (CATE). Number 0006
+  is Recursive Self Improvement (RSI). Discussion of Carbonado as a
+  possible 0006 was never an assignment. Number 0007 is Continuous
+  Integration (CI). fargo, SSSP, and Lean Machine have no assigned
+  numbers. Existing `ref/` pins remain; new pins are added when present.
 -/
 
 namespace SpecRegistry
@@ -26,7 +29,9 @@ def dogeSpecNumber : Nat := 1
 def systemsLeanSpecNumber : Nat := 2
 def beastdbSpecNumber : Nat := 3
 def ssssSpecNumber : Nat := 4
-def fargoPlannedSpecNumber : Nat := 5
+def cateSpecNumber : Nat := 5
+def rsiSpecNumber : Nat := 6
+def ciSpecNumber : Nat := 7
 
 def publishedEntries : List RegistryEntry :=
   [ { number := 0
@@ -48,13 +53,22 @@ def publishedEntries : List RegistryEntry :=
     , { number := 4
         fileName := "0004_SSSSS.md"
         productName := "SSSSS"
+        published := true }
+    , { number := 5
+        fileName := "0005_CATE.md"
+        productName := "CATE"
+        published := true }
+    , { number := 6
+        fileName := "0006_RSI.md"
+        productName := "RSI"
+        published := true }
+    , { number := 7
+        fileName := "0007_CI.md"
+        productName := "CI"
         published := true } ]
 
 def plannedEntries : List RegistryEntry :=
-  [ { number := 5
-      fileName := "0005_fargo.md"
-      productName := "fargo"
-      published := false } ]
+  []
 
 def allEntries : List RegistryEntry :=
   publishedEntries ++ plannedEntries
@@ -63,6 +77,21 @@ def allEntries : List RegistryEntry :=
 def carbonadoAssigned : Bool := false
 
 def carbonadoAssignedNumber : Option Nat := none
+
+/-- fargo has no assigned specification number. -/
+def fargoAssigned : Bool := false
+
+def fargoAssignedNumber : Option Nat := none
+
+/-- Surmount Systems System Prompt is named, not specified. -/
+def ssspAssigned : Bool := false
+
+def ssspAssignedNumber : Option Nat := none
+
+/-- Lean Machine is named, not specified. -/
+def leanMachineAssigned : Bool := false
+
+def leanMachineAssignedNumber : Option Nat := none
 
 theorem spec_spec_is_0000 : specSpecNumber = 0 := rfl
 
@@ -74,7 +103,42 @@ theorem beastdb_is_0003 : beastdbSpecNumber = 3 := rfl
 
 theorem ssss_is_0004 : ssssSpecNumber = 4 := rfl
 
-theorem fargo_planned_is_0005 : fargoPlannedSpecNumber = 5 := rfl
+theorem cate_is_0005 : cateSpecNumber = 5 := rfl
+
+theorem rsi_is_0006 : rsiSpecNumber = 6 := rfl
+
+/-- Fails if the model still numbers CATE as 0006. -/
+theorem cate_is_not_0006 : cateSpecNumber ≠ 6 := by decide
+
+theorem rsi_is_not_0005 : rsiSpecNumber ≠ 5 := by decide
+
+theorem ci_is_0007 : ciSpecNumber = 7 := rfl
+
+theorem ci_is_not_0005 : ciSpecNumber ≠ 5 := by decide
+
+theorem ci_is_not_0006 : ciSpecNumber ≠ 6 := by decide
+
+theorem cate_is_not_0000 : cateSpecNumber ≠ 0 := by decide
+
+theorem cate_is_not_rsi : cateSpecNumber ≠ rsiSpecNumber := by decide
+
+theorem fargo_not_assigned : fargoAssigned = false := rfl
+
+theorem fargo_number_none : fargoAssignedNumber = none := rfl
+
+theorem fargo_is_not_0005 : cateSpecNumber = 5 ∧ fargoAssigned = false :=
+  And.intro cate_is_0005 fargo_not_assigned
+
+theorem fargo_is_not_0006 : rsiSpecNumber = 6 ∧ fargoAssigned = false :=
+  And.intro rsi_is_0006 fargo_not_assigned
+
+theorem sssp_not_assigned : ssspAssigned = false := rfl
+
+theorem sssp_number_none : ssspAssignedNumber = none := rfl
+
+theorem lean_machine_not_assigned : leanMachineAssigned = false := rfl
+
+theorem lean_machine_number_none : leanMachineAssignedNumber = none := rfl
 
 theorem ssss_is_not_spec_0002 : ssssSpecNumber ≠ 2 := by decide
 
@@ -92,22 +156,31 @@ theorem carbonado_not_assigned : carbonadoAssigned = false := rfl
 
 theorem carbonado_number_none : carbonadoAssignedNumber = none := rfl
 
-theorem published_count_five : publishedEntries.length = 5 := rfl
+theorem published_count_eight : publishedEntries.length = 8 := rfl
 
-theorem planned_count_one : plannedEntries.length = 1 := rfl
+theorem planned_count_zero : plannedEntries.length = 0 := rfl
 
 theorem all_entry_numbers :
-    allEntries.map (fun e => e.number) = [0, 1, 2, 3, 4, 5] := rfl
+    allEntries.map (fun e => e.number) = [0, 1, 2, 3, 4, 5, 6, 7] := rfl
+
+/-- Encode helper: tests that every published file is present use this list. -/
+def publishedBasenames : List String :=
+  publishedEntries.map (fun e => e.fileName)
 
 theorem published_filenames :
     publishedEntries.map (fun e => e.fileName) =
       ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
-        "0003_beastdb.md", "0004_SSSSS.md"] :=
+        "0003_beastdb.md", "0004_SSSSS.md", "0005_CATE.md",
+        "0006_RSI.md", "0007_CI.md"] :=
+  rfl
+
+theorem published_basenames_are_entry_filenames :
+    publishedBasenames = publishedEntries.map (fun e => e.fileName) :=
   rfl
 
 theorem planned_filenames :
     plannedEntries.map (fun e => e.fileName) =
-      ["0005_fargo.md"] :=
+      [] :=
   rfl
 
 theorem beastdb_product_name :
@@ -154,9 +227,122 @@ theorem ssss_entry_filename :
       ["0004_SSSSS.md"] :=
   rfl
 
-theorem fargo_entry_unpublished :
+theorem cate_entry_published :
     (allEntries.filter (fun e => e.number == 5)).map (fun e => e.published) =
-      [false] :=
+      [true] :=
+  rfl
+
+theorem cate_entry_filename :
+    (allEntries.filter (fun e => e.number == 5)).map (fun e => e.fileName) =
+      ["0005_CATE.md"] :=
+  rfl
+
+theorem rsi_entry_published :
+    (allEntries.filter (fun e => e.number == 6)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem rsi_entry_filename :
+    (allEntries.filter (fun e => e.number == 6)).map (fun e => e.fileName) =
+      ["0006_RSI.md"] :=
+  rfl
+
+theorem ci_entry_published :
+    (allEntries.filter (fun e => e.number == 7)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem ci_entry_filename :
+    (allEntries.filter (fun e => e.number == 7)).map (fun e => e.fileName) =
+      ["0007_CI.md"] :=
+  rfl
+
+/-!
+  Residual honesty: beastdb, SSSSS, Slake, and CI are ongoing and not
+  ready for use. Do not encode them as never started or as ready.
+-/
+
+inductive ProductProgress where
+  | claimsNeverStarted
+  | ongoingNotReadyForUse
+  | claimsReadyForUse
+  deriving DecidableEq, Repr, BEq
+
+def ProductProgress.honestWhenWorkExists : ProductProgress → Bool
+  | .ongoingNotReadyForUse => true
+  | .claimsNeverStarted => false
+  | .claimsReadyForUse => false
+
+def beastdbProgress : ProductProgress := .ongoingNotReadyForUse
+
+def sssssProgress : ProductProgress := .ongoingNotReadyForUse
+
+def slakeProgress : ProductProgress := .ongoingNotReadyForUse
+
+def ciProductProgress : ProductProgress := .ongoingNotReadyForUse
+
+theorem beastdb_ongoing_not_ready :
+    beastdbProgress.honestWhenWorkExists = true :=
+  rfl
+
+theorem sssss_ongoing_not_ready :
+    sssssProgress.honestWhenWorkExists = true :=
+  rfl
+
+theorem slake_ongoing_not_ready :
+    slakeProgress.honestWhenWorkExists = true :=
+  rfl
+
+theorem ci_product_ongoing_not_ready :
+    ciProductProgress.honestWhenWorkExists = true :=
+  rfl
+
+theorem never_started_is_not_honest_when_work_exists :
+    ProductProgress.claimsNeverStarted.honestWhenWorkExists = false :=
+  rfl
+
+theorem ready_for_use_is_not_honest_yet :
+    ProductProgress.claimsReadyForUse.honestWhenWorkExists = false :=
+  rfl
+
+/-- Byte identity of Slake emit is required and not claimed true. -/
+def byteIdentityClaimedTrue : Bool := false
+
+theorem byte_identity_not_claimed_true :
+    byteIdentityClaimedTrue = false :=
+  rfl
+
+/-- Systems Lean product tree that already holds the four language pins. -/
+def systemsLeanProductTreePath : String := "/home/hunter/Projects/ai/iso"
+
+theorem systems_lean_product_tree_is_iso :
+    systemsLeanProductTreePath = "/home/hunter/Projects/ai/iso" :=
+  rfl
+
+/-- Existing pins remain. New pins are added when the cited artifact is present. -/
+def keepExistingRefPins : Bool := true
+
+def addNewRefPinsWhenPresent : Bool := true
+
+def requiredThisRepoRefPins : List String :=
+  ["rfc2119", "semver", "ecma48", "itu_t416"]
+
+/-- Lean 4, Idris 2, CompCert, and Rust MUST NOT be copied into this `ref/`. -/
+def forbiddenThisRepoRefPins : List String :=
+  ["lean4", "Idris2", "CompCert", "rust"]
+
+def pdfPermissionNotePresent : Bool := false
+
+theorem keep_existing_ref_pins : keepExistingRefPins = true := rfl
+
+theorem add_new_ref_pins_when_present : addNewRefPinsWhenPresent = true := rfl
+
+theorem required_ref_pin_count : requiredThisRepoRefPins.length = 4 := rfl
+
+theorem forbidden_ref_pin_count : forbiddenThisRepoRefPins.length = 4 := rfl
+
+theorem pdf_permission_note_not_yet_written :
+    pdfPermissionNotePresent = false :=
   rfl
 
 /-!
@@ -488,6 +674,92 @@ def scanTokensOnLine (file : String) (lineNo : Nat) (line : String) : List Findi
           }]
     return out
 
+def dropLeadingSpace (cs : List Char) : List Char :=
+  cs.dropWhile (fun c => c == ' ' || c == '\t')
+
+def dropTrailingSpace (cs : List Char) : List Char :=
+  (cs.reverse.dropWhile (fun c => c == ' ' || c == '\t')).reverse
+
+def isAtxHeading (line : String) : Bool :=
+  match dropLeadingSpace line.toList with
+  | '#' :: _ => true
+  | _ => false
+
+/-- Title after `#` marks, with leading section numbers such as `6.` or `20.4` dropped. -/
+def residualHeadingBody (line : String) : Option String :=
+  if !isAtxHeading line then
+    none
+  else
+    let afterHash :=
+      dropLeadingSpace (
+        (dropLeadingSpace line.toList).dropWhile (fun c => c == '#'))
+    let title := dropTrailingSpace afterHash
+    let body :=
+      title.dropWhile (fun c => c.isDigit || c == '.' || c == ' ' || c == '\t')
+    some (String.ofList body)
+
+def startsWithChars (s : String) (pre : String) : Bool :=
+  let sc := s.toList
+  let pc := pre.toList
+  if sc.length < pc.length then
+    false
+  else
+    (sc.take pc.length) == pc
+
+/-- True for markdown headings titled Residual (0005_CATE.md Clause 4.5). -/
+def isResidualHeading (line : String) : Bool :=
+  match residualHeadingBody line with
+  | none => false
+  | some body =>
+    body == "Residual" || startsWithChars body "Residual "
+
+def plannedTokenOnLine (line : String) : Option SpecToken :=
+  Id.run do
+    for tok in findSpecTokens line do
+      match entryByNumber tok.number with
+      | some e =>
+        if !e.published then
+          return some tok
+      | none =>
+        pure ()
+    return none
+
+/--
+  CATE residual heading (0005_CATE.md Clause 4.5): numbered specifications
+  other than 0000 that contain a planned or unpublished `NNNN_*.md` token
+  MUST have a heading titled Residual. 0000 is the form spec and is exempt.
+-/
+def scanPlannedResidual (fileName : String) (content : String) : List Finding :=
+  match fileNumberOfName fileName with
+  | none => []
+  | some 0 => []
+  | some _ =>
+    Id.run do
+      let mut hasResidual := false
+      let mut firstPlanned : Option (Nat × SpecToken) := none
+      let mut ln : Nat := 0
+      for line in splitLines content do
+        ln := ln + 1
+        if isResidualHeading line then
+          hasResidual := true
+        match plannedTokenOnLine line, firstPlanned with
+        | some tok, none =>
+          firstPlanned := some (ln, tok)
+        | _, _ =>
+          pure ()
+      match firstPlanned with
+      | none => []
+      | some (pln, tok) =>
+        if hasResidual then
+          []
+        else
+          [{
+            file := fileName
+            line := some pln
+            message :=
+              s!"planned specification token {tok.fileName} requires a Residual heading or clause in this file (CATE)"
+          }]
+
 /-- Scan one numbered specification file's text. -/
 def scanContent (fileName : String) (content : String) : List Finding :=
   Id.run do
@@ -509,6 +781,7 @@ def scanContent (fileName : String) (content : String) : List Finding :=
           }]
       | _, _ =>
         pure ()
+    out := out ++ scanPlannedResidual fileName content
     return out
 
 /--
@@ -596,6 +869,25 @@ def checkRepo (repoRoot : System.FilePath) : IO (List Finding) := do
     let name := baseName p.toString
     let content ← IO.FS.readFile p
     out := out ++ scanContent name content
+  if keepExistingRefPins then
+    for name in requiredThisRepoRefPins do
+      let pin := repoRoot / "ref" / name
+      if !(← pin.pathExists) then
+        out := out ++ [{
+          file := s!"ref/{name}"
+          line := none
+          message :=
+            s!"existing pin ref/{name} MUST remain; directory is missing"
+        }]
+  for name in forbiddenThisRepoRefPins do
+    let pin := repoRoot / "ref" / name
+    if (← pin.pathExists) then
+      out := out ++ [{
+        file := s!"ref/{name}"
+        line := none
+        message :=
+          s!"this specifications repository MUST NOT pin {name} under ref/; those Form 1 pins live in the Systems Lean product tree"
+      }]
   return out
 
 end SpecRegistry

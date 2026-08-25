@@ -75,6 +75,15 @@ def runCases : List Case :=
   let trail := "line with trailing space \n"
   let lead := " space-indented line\n"
   let cleanWs := "no trailing\n\tok tab indent\n"
+  -- CATE leftover unstack
+  let leftoverNonMd := "Do not write non markdown tooling.\n"
+  let leftoverMustLike := "Do not write must like wording.\n"
+  let leftoverLfOnly := "Files SHALL use line endings that are LF only (no CR).\n"
+  let leftoverLockFree := "Do not write lock free tries as the fix.\n"
+  let leftoverTypeChecking := "Do not write fully type checking Slake.\n"
+  let leftoverInFence := "```\nnon markdown\nmust like\nLF only\nlock free tries\nfully type checking\n```\n"
+  let leftoverInCode := "Say `non markdown` and `LF only` as bad examples.\n"
+  let leftoverAllowed := "This uses high assurance, 3 bit color, and time series access.\n"
 
   [
     -- Bullets
@@ -117,7 +126,55 @@ def runCases : List Case :=
       (checkFileContent numbered numbered (asciiBytes bulletOut) true true true),
     expectEmpty "checkFileContent clean numbered with RFC"
       (checkFileContent numbered numbered
-        (asciiBytes "Title.\n\nKeywords from RFC 2119.\n") true true true)
+        (asciiBytes "Title.\n\nKeywords from RFC 2119.\n") true true true),
+    -- CATE leftover unstack
+    expectNonEmpty "leftover unstack non markdown fails"
+      (checkLeftoverUnstack f leftoverNonMd),
+    expectNonEmpty "leftover unstack must like fails"
+      (checkLeftoverUnstack f leftoverMustLike),
+    expectNonEmpty "leftover unstack LF only fails"
+      (checkLeftoverUnstack f leftoverLfOnly),
+    expectNonEmpty "leftover unstack lock free tries fails"
+      (checkLeftoverUnstack f leftoverLockFree),
+    expectNonEmpty "leftover unstack fully type checking fails"
+      (checkLeftoverUnstack f leftoverTypeChecking),
+    expectEmpty "leftover unstack inside fence passes"
+      (checkLeftoverUnstack f leftoverInFence),
+    expectEmpty "leftover unstack in inline code passes"
+      (checkLeftoverUnstack f leftoverInCode),
+    expectEmpty "high assurance 3 bit time series pass leftover unstack"
+      (checkLeftoverUnstack f leftoverAllowed),
+    expectEmpty "fully typechecks is not leftover unstack"
+      (checkLeftoverUnstack f
+        "bootstrapped Slake that fully typechecks as required.\n"),
+    expectEmpty "lock free without tries is not leftover unstack"
+      (checkLeftoverUnstack f "do not write lock free as a leftover pair.\n"),
+    expectNonEmpty "checkFileContent leftover unstack full style"
+      (checkFileContent numbered numbered (asciiBytes leftoverNonMd) true true true),
+    -- Keagan / proofofkeags back linking
+    expectNonEmpty "Keagan without proofofkeags.com fails"
+      (checkKeaganBacklink numbered numbered
+        "Inspired by Keagan McLelland (Proof of Keags).\n"),
+    expectNonEmpty "proofofkeags without .com fails"
+      (checkKeaganBacklink numbered numbered
+        "See proofofkeags essays without a site link.\n"),
+    expectEmpty "Keagan with proofofkeags.com passes"
+      (checkKeaganBacklink numbered numbered
+        "Inspired by Keagan. See https://proofofkeags.com/research/x.html\n"),
+    expectEmpty "no Keagan mention skips backlink"
+      (checkKeaganBacklink numbered numbered
+        "This document uses keywords from RFC 2119.\n"),
+    expectEmpty "basename that is not numbered skips Keagan backlink"
+      (checkKeaganBacklink "README.md" "README.md"
+        "Inspired by Keagan McLelland (Proof of Keags).\n"),
+    expectNonEmpty "checkFileContent Keagan without URL full style"
+      (checkFileContent numbered numbered
+        (asciiBytes "Title.\n\nKeywords from RFC 2119.\n\nInspired by Keagan.\n")
+        true true true),
+    expectEmpty "checkFileContent Keagan with URL and RFC"
+      (checkFileContent numbered numbered
+        (asciiBytes "Title.\n\nKeywords from RFC 2119.\n\nInspired by Keagan. See https://proofofkeags.com/x .\n")
+        true true true)
   ]
 
 def main (_args : List String) : IO UInt32 := do

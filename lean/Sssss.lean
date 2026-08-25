@@ -43,9 +43,17 @@ theorem ssss_is_not_0003 :
     SpecRegistry.ssssSpecNumber ≠ 3 :=
   SpecRegistry.ssss_is_not_spec_0003
 
-theorem fargo_planned_is_0005 :
-    SpecRegistry.fargoPlannedSpecNumber = 5 :=
-  SpecRegistry.fargo_planned_is_0005
+theorem rsi_is_0006 :
+    SpecRegistry.rsiSpecNumber = 6 :=
+  SpecRegistry.rsi_is_0006
+
+theorem cate_is_0005 :
+    SpecRegistry.cateSpecNumber = 5 :=
+  SpecRegistry.cate_is_0005
+
+theorem fargo_is_not_spec_0005 :
+    SpecRegistry.fargoAssigned = false :=
+  SpecRegistry.fargo_not_assigned
 
 theorem carbonado_unassigned :
     SpecRegistry.carbonadoAssigned = false :=

@@ -58,7 +58,9 @@ def runCases : List Case :=
     expectEqNat "beastdb is specification 0003" beastdbSpecNumber 3,
     expectTrue "SSSSS is not specification 0002" (ssssSpecNumber != 2),
     expectTrue "SSSSS is not specification 0003" (ssssSpecNumber != 3),
-    expectEqNat "fargo is planned as 0005" fargoPlannedSpecNumber 5,
+    expectEqNat "RSI is specification 0006" rsiSpecNumber 6,
+    expectEqNat "CATE is specification 0005" cateSpecNumber 5,
+    expectFalse "fargo is not assigned" fargoAssigned,
     expectFalse "Carbonado is not assigned" carbonadoAssigned,
     expectFalse "this spec does not claim an implementation exists"
       specClaimsImplementationExists,
@@ -156,12 +158,12 @@ def runCases : List Case :=
       (findingsForBasenames
         ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
           "0003_beastdb.md"]),
-    expectEmpty "all published basenames including 0004 pass"
-      (findingsForBasenames
-        ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
-          "0003_beastdb.md", "0004_SSSSS.md"]),
-    expectNonEmpty "planned fargo file present fails"
-      (findingsForPlannedPresent ["0005_fargo.md"]),
+    expectEmpty "all published basenames including 0007 pass"
+      (findingsForBasenames publishedBasenames),
+    expectNonEmpty "stale 0005_fargo token fails"
+      (scanContent "0004_SSSSS.md" "planned file name `0005_fargo.md` is stale.\n"),
+    expectEmpty "planned list empty produces no presence findings"
+      (findingsForPlannedPresent []),
     expectTrue "registry numbers are unique" (!hasDupNumbers),
     expectTrue "registry file names are unique" (!hasDupFilenames)
   ]

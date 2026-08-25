@@ -6,7 +6,7 @@ argument-hint: spec draft or NNNN name
 
 # surmount-specify
 
-Encode or revise a numbered specification in this repository. This is the Grok Build skill for that work. Authority for form is `0000_spec.md`. Authority for stack numbers is `AGENTS.md` plus `lean/SpecRegistry.lean`. Do not paste those files into chat.
+Encode or revise a numbered specification in this repository. This is the Grok Build skill for that work. Authority for form is `0000_spec.md`. Concise American Technical English (CATE) is numbered specification `0005_CATE.md` (not specification 0006). `0000_spec.md` keeps a short pointer only. Authority for stack numbers is `AGENTS.md` plus `lean/SpecRegistry.lean`. Do not paste those files into chat. Read `0005_CATE.md`. Lean `spec_check` leftover unstack and residual heading checks ride along with form rules.
 
 This skill is this repository only. Home: `.agents/skills/surmount-specify/`. Not `~/.grok` (host Grok config). Not `.grok/skills/` (not the project skill home). Do not copy it to `~/.agents/skills`.
 
@@ -36,29 +36,33 @@ Repair the pasted draft against living files before writing `NNNN_*.md`.
 
 1. Filename is `NNNN_descriptive_name.md` at repository root only. Match `^[0-9]{4}_[A-Za-z0-9_]+\.md$`.
 2. First publication is version 1.0.0. Do not invent 0.x or a 1.0.1 that was never published. Changelog stays in that unpublished 1.0.0 until the operator publishes.
-3. Stack numbers: read `AGENTS.md` and `lean/SpecRegistry.lean`. Do not guess. Today: 0000 spec spec, 0001 DOGE, 0002 Systems Lean, 0003 beastdb, 0004 SSSSS published (`0004_SSSSS.md`), 0005 fargo planned, Carbonado unassigned.
-4. Do not create planned files (`0005_fargo.md`, any Carbonado numbered file) unless the operator asks.
+3. Stack numbers: read `AGENTS.md` and `lean/SpecRegistry.lean`. Do not guess. Today: 0000 spec spec, 0001 DOGE, 0002 Systems Lean, 0003 beastdb, 0004 SSSSS, 0005 CATE published (`0005_CATE.md`), 0006 RSI published (`0006_RSI.md`), 0007 CI published (`0007_CI.md`). CATE is not 0006. CI is not 0005 and not 0006. `0000_spec.md` points at 0005. fargo has no assigned number. Carbonado unassigned. SSSP and Lean Machine unassigned.
+4. Do not create `0005_fargo.md`. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is CI. Do not invent a new number for fargo. Do not create `0006_fargo.md`. Do not create any Carbonado numbered file unless the operator asks.
 5. Product name **beastdb** is always the lowercase closed form in normative text, package names, and CLIs. `libbeastdb` is the library name. Mixed case, `Beast DB`, `beast-db`, and `LibBeastDB` fail `spec_check`.
 6. Compiler name is Slake.
 7. Drop "when present under ref/" weasels. Either cite a real pin (this repo `ref/` or a product tree Form 1 path named as such) or name the thing as informative prior art and list the missing pin in residual.
 8. Comparison language is not a core validation step. If the operator says CompCert or Slake bootstrap typecheck is required, encode it as REQUIRED and as a conformance conjunct.
-9. Spec versus proof (Formal Vibefication): numbered markdown is the contract people read. Lean theorems do not go in the spec body. Companion model under `lean/`. `spec_check` remains form (ASCII, tabs, RFC 2119, spelling, wrapping to a column, kebab, bullets, registry scan).
+9. Spec versus proof (Formal Vibefication): numbered markdown is the contract people read. Lean theorems do not go in the spec body. Companion model under `lean/`. `spec_check` remains form (ASCII, tabs, RFC 2119, spelling, wrapping to a column, kebab, bullets, leftover unstack, residual heading, registry scan, Keagan back linking).
 10. Do not claim a conforming implementation exists unless the operator says the product exists.
+11. CATE: complete American English thoughts; questions to humans name file or clause, current wording, why it matters, and options, use ordinary English, define a new phrase in the same sentence when one is introduced, and say what we will do for each option; leftover unstack is nonconforming (do not delete the hyphen and leave the same two words); residual in full when the document names unpublished specs, unassigned numbers, unpinned prior art, unimplemented requirements, or out of scope items. CATE does not replace RFC 2119. beastdb, SSSSS, Slake, and CI are ongoing and not ready for use. Do not write that they never started or do not exist.
+12. If a spec cites Proof of Keags or Formal Vibefication, keep the canonical URL on https://proofofkeags.com . Do not cite those ideas without a backlink.
 
 ## Encode loop (L3)
 
-1. Read `0000_spec.md`, the nearest existing numbered specification (`0002_Systems_Lean.md` or `0003_beastdb.md`), `AGENTS.md`, `RESIDUAL.md`, `lean/SpecRegistry.lean`.
+1. Read `0000_spec.md`, `0005_CATE.md`, the nearest existing numbered specification (`0002_Systems_Lean.md` or `0003_beastdb.md`), `AGENTS.md`, `RESIDUAL.md`, `lean/SpecRegistry.lean`.
 2. Write the numbered specification with all of these: an RFC 2119 keyword paragraph, a SemVer cite (`ref/semver`), an RFC 2119 cite (`ref/rfc2119`), a changelog, Unlicense text, an informative subsection that says the numbered markdown is the contract that humans read and Lean theorems are a separate model of selected clauses rather than the spec itself, and a Required Conformance clause that holds if and only if every listed item holds (not a loose claim that the product should probably conform).
 3. Form: tabs for leading indent, do not wrap to a column, ASCII (word omega, not a Greek letter; `...` not unicode ellipsis), numbered or lettered lists (no `-`/`*`/`+` outside fences), aspell via `aspell_words.txt`.
 4. Dedicated **Residual** clause in the spec. Complete sentences. List unpublished specs, unassigned numbers, unpinned prior art, unimplemented requirements, and out of scope items this document names. A parenthetical planned file name in Scope is not enough. Update root `RESIDUAL.md` in the same effort.
 5. Companion Lean meaning model for selected clauses (pattern: `lean/SystemsLean.lean`, `lean/BeastDb.lean`). No `sorry`. No mathlib. Wire a Lake executable and a flake check. Unrestricted multiplicity constructor is `unrestricted` (avoid Lean's `omega` tactic).
-6. Update `SpecRegistry.lean` if numbers or file names changed. Stale tokens such as `0003_SSSSS` or `0003_systems_lean` must fail the scan.
+6. Update `SpecRegistry.lean` if numbers or file names changed. Stale tokens such as `0003_SSSSS` or `0003_systems_lean` must fail the scan. Tests that every published file is present SHALL use `publishedBasenames` rather than a hardcoded list in each meaning model suite.
 7. Update README in the same effort (spec list, checks, residual). Update AGENTS if stack numbers or the Lean versus Nix split changed.
 8. Gate: `nix flake check "path:$PWD" --print-build-logs`. Iterate until green. No new Python or shell checkers that float free of Nix.
+9. Always self improve the encode process in the same effort when friction appears (hyphen leftovers, incomplete questions, README wording that does not match the registry). Prove the improvement with a Lean check or a skill step, not a chat reminder.
+10. Reports that describe a change: when the operator asked for size, run `scc --exclude-dir ref,.git,result,lean/.lake,.direnv --exclude-ext pdf .` before and after, including the COCOMO block. COCOMO is fun and is not a real cost or schedule. Do not pass `--no-cocomo`. When the operator asked for git status, run `git status --short`. Do not `git add` or `git commit`.
 
 ## Residual (must be complete)
 
-Silence is nonconforming. Write residual on disk same turn: spec residual clause, `RESIDUAL.md`, and `~/.agents/reports/` when the list must survive compaction. Complete American English thoughts. Do not mention leftover work only in passing.
+Silence is nonconforming. Write residual on disk same turn: spec residual clause, `RESIDUAL.md`, and `~/.agents/reports/` when the list must survive compaction. Complete American English thoughts. Do not mention leftover work only in passing. If this specification (other than 0000) contains a planned or unpublished `NNNN_*.md` token, include a markdown heading titled Residual. `spec_check` fails that file without that heading.
 
 ## Todos
 

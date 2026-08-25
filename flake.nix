@@ -139,9 +139,41 @@
 						binName = "sssss_tests";
 						description = "Lean tests for the SSSSS meaning model (spec 0004) and the numbered-spec registry";
 					};
+
+					# Companion meaning-model tests for 0005_CATE.md (not form rules).
+					cate_tests = mkLeanBin {
+						pname = "cate_tests";
+						lakeTarget = "cate_tests";
+						binName = "cate_tests";
+						description = "Lean tests for the CATE meaning model (spec 0005)";
+					};
+
+					# Companion meaning-model tests for 0006_RSI.md (not form rules).
+					rsi_tests = mkLeanBin {
+						pname = "rsi_tests";
+						lakeTarget = "rsi_tests";
+						binName = "rsi_tests";
+						description = "Lean tests for the RSI meaning model (spec 0006)";
+					};
+
+					# Companion meaning-model tests for 0007_CI.md (not form rules).
+					ci_tests = mkLeanBin {
+						pname = "ci_tests";
+						lakeTarget = "ci_tests";
+						binName = "ci_tests";
+						description = "Lean tests for the CI meaning model (spec 0007)";
+					};
+
+					# Isomorphism between aspell_words.txt and VOCABULARY.md.
+					vocab_aspell_tests = mkLeanBin {
+						pname = "vocab_aspell_tests";
+						lakeTarget = "vocab_aspell_tests";
+						binName = "vocab_aspell_tests";
+						description = "Lean tests that VOCABULARY.md is an isomorphism of aspell_words.txt";
+					};
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests;
 					default = spec_check;
 				}
 			);
@@ -283,6 +315,64 @@
 								mkdir -p "$out"
 								echo ok > "$out/result"
 							'';
+
+					# CATE meaning proofs (0006); not a second markdown linter.
+					cate_tests =
+						pkgs.runCommand "cate_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.cate_tests
+								];
+							}
+							''
+								cate_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# RSI meaning proofs (0005); not a second markdown linter.
+					rsi_tests =
+						pkgs.runCommand "rsi_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.rsi_tests
+								];
+							}
+							''
+								rsi_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# CI meaning proofs (0007); not a second markdown linter.
+					ci_tests =
+						pkgs.runCommand "ci_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.ci_tests
+								];
+							}
+							''
+								ci_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# aspell list and VOCABULARY.md are inverse maps (same tokens, L_n ids).
+					vocab_aspell_tests =
+						pkgs.runCommand "vocab_aspell_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.vocab_aspell_tests
+								];
+							}
+							''
+								export REPO_ROOT=${./.}
+								cd "$REPO_ROOT"
+								vocab_aspell_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
 				in
 				{
 					inherit
@@ -293,6 +383,10 @@
 						systems_lean_tests
 						beastdb_tests
 						sssss_tests
+						cate_tests
+						rsi_tests
+						ci_tests
+						vocab_aspell_tests
 						;
 				}
 			);

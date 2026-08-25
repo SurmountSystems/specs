@@ -12,6 +12,12 @@
   6. Leading indentation uses tabs only (no leading space)
   7. No prose wrapped to a column outside fences (numbered specifications)
   8. American English spelling via aspell (en_US) when AspellHome is provided
+  9. CATE leftover unstack phrases in prose outside fences and inline code
+    (0005_CATE.md Clause 3.5): non markdown, must like, LF only,
+    lock free tries, fully type checking. Does not flag high assurance,
+    3 bit, or time series.
+  10. Numbered specifications that name Keagan or proofofkeags MUST also
+    contain proofofkeags.com (back linking).
 
   Trailing whitespace and tab indent on project text that is not a specification are
   enforced by pure Nix (nix/whitespace.nix / checks.whitespace), not by Lean.
@@ -392,6 +398,34 @@ def containsSub (hay : String) (needle : String) : Bool :=
         i := i + 1
       return false
 
+/--
+  CATE leftover unstack floor (0005_CATE.md Clause 3.5).
+  Deleting a hyphen and leaving the same two words is nonconforming.
+  Checked in numbered specification prose outside fences and inline code.
+  This list is a floor, not a complete English checker.
+-/
+def leftoverUnstackPhrases : List String :=
+  ["non markdown", "must like", "LF only", "lock free tries",
+    "fully type checking"]
+
+def checkLeftoverUnstack (file : String) (content : String) : List Diag :=
+  Id.run do
+    let mut out : List Diag := []
+    for pair in linesOutsideFences content do
+      let (ln, line) := pair
+      let cleaned := stripUrls (stripInlineCode line)
+      let hay := asciiUpper cleaned
+      for phrase in leftoverUnstackPhrases do
+        if containsSub hay (asciiUpper phrase) then
+          out := out ++ [{
+            file := file
+            line := some ln
+            message :=
+              "CATE leftover unstack phrase in prose (rephrase; " ++
+                s!"do not delete the hyphen and leave the same two words): {phrase}"
+          }]
+    return out
+
 /-- Document cites RFC 2119 (with or without internal space). -/
 def hasRfc2119Citation (content : String) : Bool :=
   let u := asciiUpper content
@@ -405,6 +439,30 @@ def checkRfc2119 (file : String) (basename : String) (content : String) : List D
     line := some 1
     message := "in scope spec (NNNN_*.md) must cite RFC 2119 (or RFC2119)"
   }]
+
+/-- True when the file names Keagan or proofofkeags (any ASCII case). -/
+def mentionsKeaganOrProofOfKeags (content : String) : Bool :=
+  let u := asciiUpper content
+  containsSub u "KEAGAN" || containsSub u "PROOFOFKEAGS"
+
+/-- True when the file contains the canonical host proofofkeags.com (any ASCII case). -/
+def hasProofOfKeagsDotCom (content : String) : Bool :=
+  containsSub (asciiUpper content) "PROOFOFKEAGS.COM"
+
+/--
+  Numbered specifications that name Keagan or proofofkeags MUST also contain
+  proofofkeags.com. File-level: the URL may sit on a later line than the name.
+-/
+def checkKeaganBacklink (file : String) (basename : String) (content : String) : List Diag :=
+  if !isInScopeSpec basename then []
+  else if mentionsKeaganOrProofOfKeags content && !hasProofOfKeagsDotCom content then
+    [{
+      file := file
+      line := some 1
+      message :=
+        "numbered specification that names Keagan or proofofkeags must also contain proofofkeags.com (back linking)"
+    }]
+  else []
 
 /-- True if the line ends with space or tab. -/
 def hasTrailingWs (line : String) : Bool :=
@@ -615,7 +673,11 @@ def checkFileContent (file : String) (basename : String) (bs : ByteArray)
           checkRfc2119 file basename content
       let wrapDiags :=
         if isInScopeSpec basename then checkHardWrap file content else []
-      asciiDiags ++ wsDiags ++ styleDiags ++ wrapDiags
+      let cateDiags :=
+        if isInScopeSpec basename then checkLeftoverUnstack file content else []
+      let keaganDiags :=
+        if isInScopeSpec basename then checkKeaganBacklink file basename content else []
+      asciiDiags ++ wsDiags ++ styleDiags ++ wrapDiags ++ cateDiags ++ keaganDiags
 
 /-- Basename of a path string (last component after / or \\). -/
 def baseName (path : String) : String :=

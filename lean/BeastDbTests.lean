@@ -60,7 +60,9 @@ def runCases : List Case :=
     expectEqNat "Systems Lean is specification 0002" systemsLeanSpecNumber 2,
     expectEqNat "SSSSS is specification 0004" ssssSpecNumber 4,
     expectTrue "SSSSS is not specification 0003" (ssssSpecNumber != 3),
-    expectEqNat "fargo is planned as 0005" fargoPlannedSpecNumber 5,
+    expectEqNat "RSI is specification 0006" rsiSpecNumber 6,
+    expectEqNat "CATE is specification 0005" cateSpecNumber 5,
+    expectFalse "fargo is not assigned" fargoAssigned,
     expectFalse "Carbonado is not assigned" carbonadoAssigned,
     expectFalse "this spec does not claim an implementation exists"
       specClaimsImplementationExists,
@@ -154,11 +156,44 @@ def runCases : List Case :=
         ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
           "0003_SSSSS.md"]),
     expectEmpty "all published basenames pass"
+      (findingsForBasenames publishedBasenames),
+    expectNonEmpty "missing published 0005 basename fails"
       (findingsForBasenames
         ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
           "0003_beastdb.md", "0004_SSSSS.md"]),
-    expectNonEmpty "planned file present fails"
-      (findingsForPlannedPresent ["0005_fargo.md"]),
+    expectNonEmpty "stale 0005_fargo basename fails"
+      (findingsForBasenames
+        ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
+          "0003_beastdb.md", "0004_SSSSS.md", "0005_fargo.md"]),
+    expectEmpty "planned list empty produces no presence findings"
+      (findingsForPlannedPresent []),
+    expectTrue "heading titled Residual is detected"
+      (isResidualHeading "## 6. Residual"),
+    expectTrue "heading Residual with following words is detected"
+      (isResidualHeading "### 6.1 Residual honesty of this document"),
+    expectFalse "ordinary heading is not Residual"
+      (isResidualHeading "## 5. Conformance"),
+    expectEmpty "0003 with no unpublished token needs no Residual heading"
+      (scanPlannedResidual "0003_beastdb.md"
+        "fargo has no assigned specification number.\n"),
+    expectEmpty "0000 is exempt from planned residual heading"
+      (scanPlannedResidual "0000_spec.md"
+        "Number 0005 is Concise American Technical English.\n"),
+    expectEmpty "0001 without planned tokens needs no Residual heading"
+      (scanPlannedResidual "0001_DOGE.md"
+        "This specification is number 0001.\n"),
+    expectNonEmpty "stale 0005_fargo token in 0003 fails"
+      (scanContent "0003_beastdb.md"
+        "later planned file `0005_fargo.md`.\n"),
+    expectEmpty "published 0006_RSI token in 0003 passes"
+      (scanContent "0003_beastdb.md"
+        "Recursive Self Improvement is specified in `0006_RSI.md`.\n"),
+    expectNonEmpty "stale 0005_RSI token in 0003 fails"
+      (scanContent "0003_beastdb.md"
+        "Recursive Self Improvement is specified in `0005_RSI.md`.\n"),
+    expectNonEmpty "stale 0006_CATE token in 0003 fails"
+      (scanContent "0003_beastdb.md"
+        "CATE is specified in `0006_CATE.md`.\n"),
     expectTrue "registry numbers are unique" (!hasDupNumbers),
     expectTrue "registry file names are unique" (!hasDupFilenames)
   ]

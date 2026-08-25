@@ -25,7 +25,7 @@ This subsection is informative. It records how this specification relates to mac
 In dependently typed languages, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. This repository keeps that split on purpose, following the same spirit as Formal Vibefication as cited by [0002_Systems_Lean.md](0002_Systems_Lean.md): people read numbered markdown; Lean checks a model of selected clauses.
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
-2. Companion Lean modules under `lean/` (the SSSSS meaning model, distinct from the `spec_check` form checker) encode selected claims such as this document's identity as specification 0004 with file name `0004_SSSSS.md`, Systems Lean as specification 0002, beastdb as specification 0003, fargo planned as 0005, sequential WordID rather than hashing as primary identity, LanguageID prefix only on language change, a language run as a LanguageID plus a WordID list, the Rosetta relation shape and provenance tags, pipeline determinism given the same vocabulary and relation set, durable state in beastdb, neural proposals reduced to sequential integers before acceptance, and natural language translation marked provisional unless proven or high confidence.
+2. Companion Lean modules under `lean/` (the SSSSS meaning model, distinct from the `spec_check` form checker) encode selected claims such as this document's identity as specification 0004 with file name `0004_SSSSS.md`, Systems Lean as specification 0002, beastdb as specification 0003, Recursive Self Improvement as specification 0006, fargo as not specification 0005, sequential WordID rather than hashing as primary identity, LanguageID prefix only on language change, a language run as a LanguageID plus a WordID list, the Rosetta relation shape and provenance tags, pipeline determinism given the same vocabulary and relation set, durable state in beastdb, neural proposals reduced to sequential integers before acceptance, and natural language translation marked provisional unless proven or high confidence.
 3. A Lean registry under `lean/` encodes published and planned specification numbers, file names, and product names, and the form checker scans numbered markdown so wrong numbers, file name mismatches, a Systems Lean file name attached to specification number 0003, and wrong capitalization of beastdb fail `nix flake check`.
 4. Those modules prove facts about the model. They do not replace this document. This document does not replace those modules.
 5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Meaning proofs MUST NOT be treated as a second markdown form checker.
@@ -41,7 +41,7 @@ The product short name is five consecutive S letters: SSSSS. Those five letters 
 1. Form rules remain [0000_spec.md](0000_spec.md).
 2. Systems Lean and Slake remain [0002_Systems_Lean.md](0002_Systems_Lean.md).
 3. beastdb remains [0003_beastdb.md](0003_beastdb.md).
-4. fargo remains a later specification (planned file name `0005_fargo.md`; unpublished). This document does not require fargo.
+4. fargo remains a later specification. fargo has no assigned specification number. This document does not require fargo. Recursive Self Improvement is specified in `0006_RSI.md`.
 5. Lean Machine is named as a substrate in Scope. It has no numbered specification in this repository and no assigned number.
 6. Network peering, replication, high availability, and distribution are out of scope here. Those topics belong to the Carbonado Network Protocol, which has no numbered specification in this repository and no assigned number.
 
@@ -240,7 +240,7 @@ This section is normative for residual honesty of this document. It does not add
 
 ### 6.1 Unpublished specifications and unassigned numbers
 
-1. The fargo planned file name is `0005_fargo.md`. That file MUST NOT be treated as published. This repository does not contain that file. This document does not assign it a shipped version. This document does not require fargo.
+1. fargo has no assigned specification number. A previous plan that assigned number 0005 to fargo is withdrawn. Number 0005 is Concise American Technical English (`0005_CATE.md`). Number 0006 is Recursive Self Improvement (`0006_RSI.md`). This document does not invent a new number for fargo. This document does not require fargo.
 2. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. That mention is not an assignment. This document does not create a file for it.
 
 ### 6.2 Lean Machine unnumbered
@@ -251,12 +251,12 @@ This section is normative for residual honesty of this document. It does not add
 
 1. `0000_spec.md` Clause 12 binds external specifications this specifications repository cites to `ref/` in this repository.
 2. Lean 4, Idris 2, CompCert, and Rust are cited by [0002_Systems_Lean.md](0002_Systems_Lean.md) as Form 1 pins of the Systems Lean product tree, not of this specifications repository's `ref/`. This document does not move those pins here.
-3. There is no SSSSS product tree pin in this repository. This document does not claim that an SSSSS product tree exists.
+3. There is no SSSSS product tree pin in this repository. SSSSS work is ongoing and is not ready for use. This document MUST NOT be read as claiming that SSSSS never started or does not exist.
 4. beastdb is specified in this repository as `0003_beastdb.md`. That numbered specification is not a `ref/` pin of an upstream store.
 
-### 6.4 Unimplemented product requirements
+### 6.4 Product requirements that are not ready for use
 
-This document specifies SSSSS. It MUST NOT be read as claiming that a conforming implementation exists. The following are requirements in Clause 4, not done work:
+This document specifies SSSSS. The work is ongoing and is not ready for use. It MUST NOT be read as claiming that SSSSS never started or does not exist. The following are requirements in Clause 4, not done work:
 
 1. Encoding as sequential language runs with LanguageID prefix only on change.
 2. Sequential LanguageID and sequential WordID as primary identity, including the hashing ban as a requirement (not as proof that an engine already obeys it).
@@ -283,9 +283,11 @@ This document specifies SSSSS. It MUST NOT be read as claiming that a conforming
 
 First publication of this specification text. Defines SSSSS as specification 0004 with file name `0004_SSSSS.md`; requires sequential language runs with LanguageID prefix only on change; requires 64 bit sequential LanguageID and per language sequential WordID as primary identity and forbids hashing as primary identity; states combined capacity `2^64` languages times `2^64` WordIDs; requires Rosetta relations with RelationType and provenance `neural-proposed`, `human-confirmed`, or `Lean-proven`; requires a deterministic pipeline given the same vocabulary and relation set; permits neural proposals only after reduction to sequential integers; permits natural language translation as best effort work that MUST be marked provisional unless Lean proven or high confidence; requires durable state in beastdb as specified in `0003_beastdb.md`; requires a Systems Lean core as specified in `0002_Systems_Lean.md`; and requires CompCert verified compilation and a bootstrapped Slake that fully typechecks for SSSSS components that are safety critical, that run in environments with tight resources, and that are freestanding, with residual honesty not substituting for those steps.
 
-This 1.0.0 also records: this document does not claim a conforming implementation exists; Lean Machine has no numbered specification; fargo remains unpublished as `0005_fargo.md` and is not required here; the Carbonado Network Protocol has no assigned number; the five consecutive S letters are an informative cultural marker and not a conformance item.
+This 1.0.0 also records: this document does not claim a conforming implementation exists; Lean Machine has no numbered specification; fargo has no assigned specification number and is not required here; Recursive Self Improvement is specified in `0006_RSI.md`; the Carbonado Network Protocol has no assigned number; the five consecutive S letters are an informative cultural marker and not a conformance item.
 
 This unpublished 1.0.0 also records that hyphenated modifiers in prose were rephrased into ordinary English. Deleting the hyphen and leaving the same two words is not enough.
+
+This unpublished 1.0.0 also records that citations of Keagan McLelland (Proof of Keags) research SHALL keep the publisher links on those pages (back linking).
 
 No prior public release of this specification exists.
 
@@ -303,6 +305,6 @@ This work is significantly inspired by the research and public talks of Keagan M
 2. Taking "Don't Trust. Verify." Seriously (2026-07-20) - https://proofofkeags.com/research/2026-07-20-taking-dont-trust-verify-seriously.html
 3. Formal Verification of Bitcoin BitDevs talk (2026-07-14) - https://www.youtube.com/watch?v=E0VjopN2sgg
 
-Those pages and that talk are research and presentation. They are not external specifications under `0000_spec.md` Clause 12.
+Those pages and that talk are research and presentation. They are not external specifications under `0000_spec.md` Clause 12. Citations of this work SHALL keep those publisher links (back linking).
 
 The author first encountered a clear explanation of the Curry-Howard isomorphism through the work of Keagan McLelland.

@@ -17,6 +17,19 @@ name = "BeastDb"
 [[lean_lib]]
 name = "Sssss"
 
+[[lean_lib]]
+name = "Cate"
+
+[[lean_lib]]
+name = "Rsi"
+roots = ["Rsi", "Vocabulary"]
+
+[[lean_lib]]
+name = "Ci"
+
+[[lean_lib]]
+name = "VocabAspell"
+
 [[lean_exe]]
 name = "spec_check"
 root = "Main"
@@ -36,3 +49,19 @@ root = "BeastDbTests"
 [[lean_exe]]
 name = "sssss_tests"
 root = "SssssTests"
+
+[[lean_exe]]
+name = "cate_tests"
+root = "CateTests"
+
+[[lean_exe]]
+name = "rsi_tests"
+root = "RsiTests"
+
+[[lean_exe]]
+name = "ci_tests"
+root = "CiTests"
+
+[[lean_exe]]
+name = "vocab_aspell_tests"
+root = "VocabAspellTests"

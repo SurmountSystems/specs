@@ -6,7 +6,7 @@
 
 ## 1. Scope
 
-This document specifies beastdb, the durable ordered store required by Surmount high assurance components. The Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`. Interoperability through fargo is specified later (planned file name `0005_fargo.md`; that specification has not been published and this document does not assign it a shipped version).
+This document specifies beastdb, the durable ordered store required by Surmount high assurance components. The Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`. Recursive Self Improvement is specified in `0006_RSI.md`. Interoperability through fargo is specified later. fargo has no assigned specification number. That specification has not been published and this document does not assign it a shipped version.
 
 The product name is always the lowercase form beastdb.
 
@@ -44,7 +44,7 @@ In dependently typed languages, a specification (what must be true) and a proof 
 1. Form rules remain [0000_spec.md](0000_spec.md).
 2. Systems Lean and Slake remain [0002_Systems_Lean.md](0002_Systems_Lean.md).
 3. The Smart Symbolic Supercompiler remains [0004_SSSSS.md](0004_SSSSS.md).
-4. fargo remains a later specification (planned file name `0005_fargo.md`; unpublished).
+4. fargo remains a later specification. fargo has no assigned specification number. That specification has not been published.
 5. Network peering, replication, high availability, and distribution are out of scope here. Those topics belong to the Carbonado Network Protocol, which has no numbered specification in this repository and no assigned number (see Clause 6).
 
 ## 2. Normative references
@@ -128,7 +128,7 @@ A schema derived from stored data and then declared so later access and migratio
 
 ### 3.13 fargo
 
-The Surmount interoperability layer to be specified in a later numbered specification (planned file name `0005_fargo.md`; that specification has not been published and this document does not assign it a shipped version). Compatibility with other stores and language ecosystems SHALL go through fargo (Clause 4.5).
+The Surmount interoperability layer to be specified in a later numbered specification. fargo has no assigned specification number. That specification has not been published and this document does not assign it a shipped version. Compatibility with other stores and language ecosystems SHALL go through fargo (Clause 4.5).
 
 ### 3.14 LanguageID
 
@@ -199,7 +199,7 @@ A language native binding layer that calls into libbeastdb (or a shim) through t
 1. A conforming implementation MUST provide access by ordered keys and values.
 2. A conforming implementation MUST provide time series access.
 3. A conforming implementation MUST provide vector access.
-4. Compatibility with SQLite, RocksDB, and other stores named as prior art in Clause 2.3, and compatibility with other language ecosystems, SHALL be expressed through fargo (Clause 3.13; planned file name `0005_fargo.md`; unpublished).
+4. Compatibility with SQLite, RocksDB, and other stores named as prior art in Clause 2.3, and compatibility with other language ecosystems, SHALL be expressed through fargo (Clause 3.13; unpublished; no assigned specification number).
 5. A conforming implementation MUST NOT use a traditional foreign function interface (Clause 3.20) as the interoperability path. There is no traditional foreign function binding layer in this design. Interoperability goes through fargo.
 6. Exact layout of time series points and vectors is defined by the implementation provided items 1 through 3 hold.
 7. Items 1 through 5 are requirements. This document does not claim access by ordered keys and values, time series access, vector access, or fargo shims are implemented. fargo itself has no numbered specification file in this repository.
@@ -243,7 +243,7 @@ This section is normative for residual honesty of this document. It does not add
 ### 6.1 Related specifications and unassigned numbers
 
 1. The Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`. That specification does not claim a conforming SSSSS implementation exists.
-2. The fargo planned file name is `0005_fargo.md`. That file MUST NOT be treated as published. This repository does not contain that file. This document does not assign it a shipped version. Clause 4.5 names fargo as the interoperability path; that is a requirement on a future product, not a claim that fargo is specified or implemented.
+2. fargo has no assigned specification number. A previous plan that assigned number 0005 to fargo is withdrawn. Number 0005 is Concise American Technical English (`0005_CATE.md`). Number 0006 is Recursive Self Improvement (`0006_RSI.md`). This document does not invent a new number for fargo. Clause 4.5 names fargo as the interoperability path; that is a requirement on a future product, not a claim that fargo is specified or implemented.
 3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. That mention is not an assignment. This document does not create a file for it.
 
 ### 6.2 Unpinned prior art
@@ -254,16 +254,16 @@ This section is normative for residual honesty of this document. It does not add
 
 1. `0000_spec.md` Clause 12 binds external specifications this specifications repository cites to `ref/` in this repository.
 2. Lean 4, Idris 2, CompCert, and Rust are cited by [0002_Systems_Lean.md](0002_Systems_Lean.md) as Form 1 pins of the Systems Lean product tree, not of this specifications repository's `ref/`. This document does not move those pins here.
-3. There is no beastdb product tree pin in this repository. This document does not claim that a beastdb product tree exists.
+3. There is no beastdb product tree pin in this repository. beastdb work is ongoing and is not ready for use. This document MUST NOT be read as claiming that beastdb never started or does not exist.
 
-### 6.4 Unimplemented product requirements
+### 6.4 Product requirements that are not ready for use
 
-This document specifies beastdb. It MUST NOT be read as claiming that a conforming implementation exists. The following are requirements in Clause 4, not done work:
+This document specifies beastdb. The work is ongoing and is not ready for use. It MUST NOT be read as claiming that beastdb never started or does not exist. The following are requirements in Clause 4, not done work:
 
 1. Proven ACID transactions.
 2. Tries that do not use locks.
 3. SWMR as the required default concurrency.
-4. Optional access by more than one writer on disjoint leaves (allowed, not required, and not implemented by this document).
+4. Optional access by more than one writer on disjoint leaves (allowed, not required, and not specified as done work here).
 5. Structural operations fenced by generation.
 6. mmap of the durable image.
 7. SIMD scans and bulk operations.
@@ -290,7 +290,7 @@ This document specifies beastdb. It MUST NOT be read as claiming that a conformi
 
 First publication of this specification text. Defines beastdb as specification 0003 with file name `0003_beastdb.md` and lowercase product name beastdb; names libbeastdb as the freestanding product library; requires Systems Lean, a bootstrapped Slake that fully typechecks, and CompCert verified compilation as in `0002_Systems_Lean.md`; requires proven ACID, tries that do not use locks, SWMR, optional access by more than one writer on disjoint leaves, and fencing by generation; requires mmap, SIMD, zerocopy, LanguageID, WordID, and a representable Rosetta mapping; requires mandatory schema with predefined and inferred modes and proven migrations; requires access by ordered keys and values, time series access, and vector access with interoperability through fargo rather than a traditional foreign function interface; requires libbeastdb as the durable store target for later high assurance components including the Smart Symbolic Supercompiler; and limits this specification to a store that is local first.
 
-This unpublished 1.0.0 also records: this document does not claim a conforming implementation exists; LMDB, LevelDB, RocksDB, SQLite, and heed are informative prior art and not Clause 12 pins of this repository; the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`; planned file name `0005_fargo.md` is unpublished and is not created here; the Carbonado Network Protocol has no assigned number.
+This unpublished 1.0.0 also records: this document does not claim a conforming implementation exists; LMDB, LevelDB, RocksDB, SQLite, and heed are informative prior art and not Clause 12 pins of this repository; the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`; Recursive Self Improvement is specified in `0006_RSI.md`; fargo has no assigned specification number; the Carbonado Network Protocol has no assigned number.
 
 This unpublished 1.0.0 also records that hyphenated modifiers in prose were rephrased into ordinary English. Deleting the hyphen and leaving the same two words is not enough.
 

@@ -13,15 +13,35 @@
 
 This rule is stricter than the global agent default. In this repo it wins.
 
+## Proof of Keags research (back linking)
+
+When citing, quoting, or building on research by Keagan McLelland (Proof of Keags), ALWAYS include a markdown link to the canonical URL on https://proofofkeags.com . Do not cite those ideas without a backlink. This is not an Unlicense grant. This is not permission to vendor those essays as Form 2 copies under `ref/`.
+
 ## Plain English
 
 Write so a tired human can read it. No decoder ring jargon ("soft labeling", "join artifact", step codes). Name the real thing.
 
 When asking the operator a decision, write a complete American English question. Say which file or clause, quote the current wording, say why the choice matters, and name the options. Do not send a half label such as "Keep or replace coined labels?" as if that were the question.
 
+## Concise American Technical English (CATE)
+
+CATE is numbered specification `0005_CATE.md` (first publication 1.0.0, stack number corrected to 0005 in 1.1.0). It is not numbered specification 0006. Number 0006 is Recursive Self Improvement (`0006_RSI.md`). `0000_spec.md` (SemVer 1.3.0) keeps a short pointer only and does not restate CATE. fargo has no assigned number. Read `0005_CATE.md` before encoding or revising a numbered specification. Lean `spec_check` leftover unstack and residual heading checks ride along with form rules. Companion meaning proofs live under `lean/Cate.lean`.
+
+## Always self improve the encode process
+
+When friction appears in the same encode effort (hyphen leftovers, incomplete questions, README wording that does not match the registry), improve the encode process in that same effort. Prove the improvement with a Lean check or a skill step, not a chat reminder.
+
+Independent work streams SHALL run as parallel subagents. Do not serialize two jobs that do not share a write set. When two specs must land in one effort, spawn one subagent per spec on disjoint files, then one pass on shared files (registry, README, this file, residual, flake).
+
+Reports that describe a change: when the operator asked for size, run `scc --exclude-dir ref,.git,result,lean/.lake,.direnv --exclude-ext pdf .` before and after, including the COCOMO block. COCOMO is fun and is not a real cost or schedule. Do not pass `--no-cocomo`. When the operator asked for git status, run `git status --short`. Do not `git add` or `git commit`. Git remains forbidden in this repository unless the operator explicitly asked for that git work.
+
+## Always use better tools
+
+If a Lean theorem can state the claim, do not fall back to a shovel test or a Python checker. Improve `spec_check` or a companion meaning model rather than a disposable script. The Lean 4 agent skill pack is the git submodule at `skills/lean4-skills`. The Grok Build wrapper is `/lean4` at `.agents/skills/lean4/SKILL.md`.
+
 ## Reduce hyphenation in prose
 
-Prefer ordinary English over hyphenated compounds. People who are not writing legal captions rarely hyphenate. Do not write lawyerly modifiers such as `high-assurance` or `lock-free`. Do not "fix" them by deleting the hyphen and leaving the same two words (`high assurance`, `lock free`, `non markdown`, `must like`, `LF only`). Rephrase so a person would actually say it (`high assurance` can stay when it is already natural; `tooling that is not markdown`; `rules that sound like MUST`; `line endings that are LF only (no CR)`). Keep a hyphen only when the token is a filename, a URL, a code identifier, or an official designation that is spelled with a hyphen (for example `ITU-T`). This applies to numbered specifications, README, this file, `RESIDUAL.md`, and project skills.
+Prefer ordinary English over hyphenated compounds. People who are not writing legal captions rarely hyphenate. Do not write lawyerly modifiers such as `high-assurance`, `best-effort`, `self-improving`, `lock-free`, or `safety-critical`. Do not "fix" them by deleting the hyphen and leaving the same two words (`lock free`, `non markdown`, `must like`, `LF only`). Rephrase so a person would actually say it (`high assurance` may stay when it already reads as English; `tooling that is not markdown`; `tries that do not use locks` rather than `lock free tries`; `bootstrapped Slake that fully typechecks` rather than `fully type checking Slake`; `line endings that use LF and never CR`). Keep a hyphen only when the token is a filename, a URL, a code identifier, or an official designation that is spelled with a hyphen (for example `ITU-T`). This applies to numbered specifications, README, this file, `RESIDUAL.md`, and project skills. The leftover unstack floor list lives in `0005_CATE.md`.
 
 ## Do not persist operator profanity
 
@@ -49,12 +69,15 @@ Stack numbers in this repository:
 3. 0002 = Systems Lean (`0002_Systems_Lean.md`)
 4. 0003 = beastdb (`0003_beastdb.md`). The product name is always the lowercase form `beastdb`. Never mixed case forms.
 5. 0004 = Smart Symbolic Supercompiler (`0004_SSSSS.md`)
-6. 0005 = fargo, planned file `0005_fargo.md` (**do not create the file**)
-7. Carbonado Network Protocol: deferred, discussed as a possible later 0006; **do not create a file**; **do not treat 0006 as assigned** until a numbered specification exists.
+6. 0005 = Concise American Technical English (`0005_CATE.md`)
+7. 0006 = Recursive Self Improvement (`0006_RSI.md`)
+8. 0007 = Continuous Integration and stack consistency (`0007_CI.md`)
+9. fargo has no assigned number. Do not create `0005_fargo.md`. Do not invent a new number for fargo. Do not create `0006_fargo.md`.
+10. Carbonado Network Protocol: deferred; **do not create a file**; Carbonado has no assigned number. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is CI. Do not steal 0005, 0006, or 0007 for fargo or Carbonado.
 
 ## Residual for numbered specifications (must be complete on disk)
 
-Residual for numbered specifications MUST be written in full on disk: a residual clause in the numbered specification and/or `RESIDUAL.md` at the repository root. A parenthetical planned file name in Scope is not enough by itself. List unpublished specifications, unassigned numbers, unpinned prior art, unimplemented product claims, and out of scope items the document names. Use complete sentences. Do not invent shipped versions for unpublished specs. Do not create numbered specification files the operator forbade (today: `0005_fargo.md` and any Carbonado numbered file).
+Residual for numbered specifications MUST be written in full on disk: a residual clause in the numbered specification and/or `RESIDUAL.md` at the repository root. A parenthetical planned file name in Scope is not enough by itself. List unpublished specifications, unassigned numbers, unpinned prior art, unimplemented product claims, and out of scope items the document names. Use complete sentences. Do not invent shipped versions for unpublished specs. Do not create numbered specification files the operator forbade (today: `0005_fargo.md` is withdrawn and must not exist; any Carbonado numbered file).
 
 ## Project skills live under `.agents/skills/`
 
@@ -63,6 +86,14 @@ Project skills for this repository MUST live under `.agents/skills/`. That is th
 ## Project skill `/surmount-specify`
 
 This repository's Grok Build skill for encoding numbered specifications is `.agents/skills/surmount-specify/SKILL.md`. Use `/surmount-specify` when pasting a spec draft or adding a numbered specification. It is this repository only. Form authority remains `0000_spec.md`. Stack number authority remains this file plus `lean/SpecRegistry.lean`.
+
+## Project skill `/rsi`
+
+This repository's Grok Build skill for building durable engineering tools per `0006_RSI.md` is `.agents/skills/rsi/SKILL.md`. Use `/rsi` when adding a Lean checker, a Nix check, a project skill, or a helper used next to a compiler that a later session can run. It is this repository only. CATE remains `0005_CATE.md`. It does not replace `0006_RSI.md`.
+
+## Project skill `/lean4`
+
+This repository's Grok Build skill for proving companion Lean meaning models is `.agents/skills/lean4/SKILL.md`. Use `/lean4` when writing or repairing `lean/*.lean`. The pack lives at `skills/lean4-skills` (MIT license; not under `ref/`; not a Clause 12 pin; not mathlib). The wrapper is a real file, not a symlink. Do not set the nested plugin tree as the only skill discovery root. Populate the submodule with `git submodule update --init skills/lean4-skills`.
 
 ## README stays current
 
@@ -86,10 +117,10 @@ When you change specs, validation, Nix, or process that the README describes, **
 2. Leading indentation uses tabs, not spaces. Spaces in the middle of a line and in tables are fine. No trailing whitespace.
 3. Lean sources and YAML use spaces for indent (language/tooling requirement). Numbered specs still use tabs.
 4. **Dual whitespace is intentional.** Both layers stay; do not drop one for "symmetry" or "dedup."
-	1. **Numbered specifications:** Lean `spec_check` enforces trailing whitespace and leading indent that uses tabs only as part of the form suite (with ASCII, bullets, kebab, wrapping to a column, RFC 2119, spelling).
+	1. **Numbered specifications:** Lean `spec_check` enforces trailing whitespace and leading indent that uses tabs only as part of the form suite (with ASCII, bullets, hyphenation, wrapping to a column, RFC 2119, spelling).
 	2. **Surmount authored text across the project:** pure Nix flake check (`nix/whitespace.nix`, `checks.whitespace`) enforces trailing whitespace and leading indent that uses tabs only on README, AGENTS, flake, SOURCE pins, and similar (not bash, not Lean).
 	3. Overlap on numbered specifications is expected on `nix flake check`. Rationale: `README.md` section 7.2 / 7.2.1 and the subsection below.
-5. **Form rules for numbered specifications** (ASCII, bullets, kebab, RFC 2119, wrapping to a column, and whitespace on those files): **Lean** `spec_check`, packaged through Nix. `nix flake check` runs Lean and pure Nix whitespace together.
+5. **Form rules for numbered specifications** (ASCII, bullets, hyphenation, RFC 2119, wrapping to a column, and whitespace on those files): **Lean** `spec_check`, packaged through Nix. `nix flake check` runs Lean and pure Nix whitespace together.
 
 ## Machine validation: Lean + Nix
 
@@ -97,7 +128,11 @@ Mechanical form rules for numbered specifications from the Surmount spec spec (`
 
 | Concern | Authority | Notes |
 |---------|-----------|--------|
-| Form rules + spelling on `NNNN_*.md` | Lean `spec_check` | Includes WS on those files; tool SemVer independent of spec SemVer (tool 1.0.0). Also runs the registry scan for numbered specifications (wrong numbers, file name mismatches, wrong `beastdb` capitalization). |
+| Form rules + spelling on `NNNN_*.md` | Lean `spec_check` | Includes WS on those files; tool SemVer independent of spec SemVer (tool 1.0.0). Also runs the registry scan for numbered specifications (wrong numbers, file name mismatches, wrong `beastdb` capitalization), CATE leftover unstack phrases, a Residual heading when a numbered specification other than 0000 contains a planned `NNNN_*.md` token, and a numbered specification that names Keagan or proofofkeags must also contain proofofkeags.com. |
+| CATE meaning (spec 0005) | Lean `Cate` library + `cate_tests` | Companion model of selected CATE clauses; not a second markdown linter; CATE is specification 0005; not specification 0006 |
+| RSI meaning (spec 0006) | Lean `Rsi` library (`Rsi.lean`, `Vocabulary.lean`) + `rsi_tests` | Companion model of selected RSI clauses and vocabulary tags for the same English word used in more than one tree; not a second markdown linter; RSI is specification 0006; CATE is not |
+| CI meaning (spec 0007) | Lean `Ci` library + `ci_tests` | Companion model of selected CI clauses; not a second markdown linter; CI is specification 0007; not specification 0005 and not specification 0006 |
+| aspell list and VOCABULARY.md | Lean `VocabAspell` library + `vocab_aspell_tests` | Inverse maps between `aspell_words.txt` tokens and `VOCABULARY.md` `L_n` ids; not a numbered specification; not ISO 24495 |
 | Systems Lean meaning (spec 0002) | Lean `SystemsLean` library + `systems_lean_tests` | Companion model of selected clauses; not a second markdown linter |
 | beastdb meaning (spec 0003) | Lean `BeastDb` library + `beastdb_tests` | Companion model of selected clauses plus registry fixtures; not a second markdown linter |
 | SSSSS meaning (spec 0004) | Lean `Sssss` library + `sssss_tests` | Companion model of selected clauses plus registry fixtures; not a second markdown linter |
@@ -118,14 +153,14 @@ This split is intentional. It is **not** "Nix cannot check text" and **not** "ev
 
 **What Lean (`spec_check`) is for**
 
-1. Mechanical form rules for numbered specifications: pure ASCII, no bullet lists outside fences, excess kebab (after stripping inline code and URLs), RFC 2119 citation, trailing WS and leading spaces on those files, heuristic for wrapping to a column.
+1. Mechanical form rules for numbered specifications: pure ASCII, no bullet lists outside fences, excess hyphenated tokens (after stripping inline code and URLs), leftover unstack phrases, Residual heading when a numbered specification other than 0000 contains a planned file token, RFC 2119 citation, trailing WS and leading spaces on those files, heuristic for wrapping to a column, and a numbered specification that names Keagan or proofofkeags must also contain proofofkeags.com.
 2. American English spelling by calling **aspell** as a real process (`IO.Process`), with personal list `aspell_words.txt`.
 3. A packaged binary pre-commit and humans can run with `file:line: message` diagnostics.
 
 **Why not pure Nix for the whole Lean suite**
 
 1. **Spelling cannot be pure evaluation.** Pure Nix does not run external programs. `aspell` requires a process. Options are: a real binary that calls it (Lean), a fat builder shell/python loop (forbidden here), or drop automated spelling.
-2. **Form rules 1-6 are possible in pure Nix** (same tools as whitespace) but they are text policy that takes more than one pass (fence tracking, URL/inline stripping, kebab scan, heuristic for wrapping to a column). That is a small linter. In pure Nix it tends to be long, slow to evaluate, hard to unit test, and painful to debug compared with a normal language.
+2. **Form rules 1-6 are possible in pure Nix** (same tools as whitespace) but they are text policy that takes more than one pass (fence tracking, URL/inline stripping, hyphenation scan, heuristic for wrapping to a column). That is a small linter. In pure Nix it tends to be long, slow to evaluate, hard to unit test, and painful to debug compared with a normal language.
 3. **Eval fail UX** (`throw` with a giant string) is fine for a short whitespace list. A binary exit code plus line diagnostics fits pre-commit and iterative authoring better for the full form suite.
 4. **Flake stays thin.** Nix owns packages, checks, dev shell, and pure whitespace. Check **policy** for numbered specifications lives in Lean, not in shell strings that span multiple lines inside `runCommand`.
 
@@ -154,8 +189,8 @@ CI (`.github/workflows/check.yml`) runs that Nix command directly after installi
 
 Flake layout:
 
-1. **packages / apps**: Lean `spec_check` is the default package and the default app (form rules, spelling, and the registry scan for numbered specifications). Hermetic test binaries `spec_check_tests`, `systems_lean_tests`, `beastdb_tests`, and `sssss_tests` are additional packages, not additional apps.
-2. **checks** (separate; flake check runs all): `spec_check` (Lean form rules + spelling + registry scan for numbered specifications via thin `runCommand` with package binary and `aspellWithDicts` on PATH), `spec_check_tests` (form helper unit tests), `systems_lean_tests` (companion meaning proofs for `0002_Systems_Lean.md`; not form rules), `beastdb_tests` (companion meaning proofs for `0003_beastdb.md` and registry fixtures; not form rules), `sssss_tests` (companion meaning proofs for `0004_SSSSS.md` and registry fixtures; not form rules), `whitespace` (pure Nix; `nix/whitespace.nix`; success is `writeText`, failure is `throw`), `pre-commit-check` (Lean hook on numbered specifications; spelling rides along when aspell is on PATH).
+1. **packages / apps**: Lean `spec_check` is the default package and the default app (form rules, spelling, and the registry scan for numbered specifications). Hermetic test binaries `spec_check_tests`, `systems_lean_tests`, `beastdb_tests`, `sssss_tests`, `cate_tests`, `rsi_tests`, `ci_tests`, and `vocab_aspell_tests` are additional packages, not additional apps.
+2. **checks** (separate; flake check runs all): `spec_check` (Lean form rules + spelling + registry scan for numbered specifications via thin `runCommand` with package binary and `aspellWithDicts` on PATH), `spec_check_tests` (form helper unit tests, including leftover unstack), `systems_lean_tests` (companion meaning proofs for `0002_Systems_Lean.md`; not form rules), `beastdb_tests` (companion meaning proofs for `0003_beastdb.md` and registry fixtures, including residual heading; not form rules), `sssss_tests` (companion meaning proofs for `0004_SSSSS.md` and registry fixtures; not form rules), `cate_tests` (companion meaning proofs for `0005_CATE.md`; not form rules), `rsi_tests` (companion meaning proofs for `0006_RSI.md`; not form rules), `ci_tests` (companion meaning proofs for `0007_CI.md`; not form rules), `vocab_aspell_tests` (aspell list and VOCABULARY.md inverse maps; not a numbered specification), `whitespace` (pure Nix; `nix/whitespace.nix`; success is `writeText`, failure is `throw`), `pre-commit-check` (Lean hook on numbered specifications; spelling rides along when aspell is on PATH).
 3. Numbered specifications only for Lean form rules and spelling: `^[0-9]{4}_[A-Za-z0-9_]+\.md$` at repository root.
 4. Debug whitespace: `nix eval path:$PWD#lib.whitespaceViolations`.
-5. Run Lean alone: `nix run path:$PWD#spec_check` or `nix build path:$PWD#spec_check` (aspell must be on PATH for spelling, or set `SPECS_SPELLING=0` / `SPECS_SKIP_SPELLING=1` to skip). Meaning model tests: `nix build path:$PWD#systems_lean_tests`, `nix build path:$PWD#beastdb_tests`, and `nix build path:$PWD#sssss_tests` then run the installed binaries, or `nix flake check` which includes `checks.systems_lean_tests`, `checks.beastdb_tests`, and `checks.sssss_tests`.
+5. Run Lean alone: `nix run path:$PWD#spec_check` or `nix build path:$PWD#spec_check` (aspell must be on PATH for spelling, or set `SPECS_SPELLING=0` / `SPECS_SKIP_SPELLING=1` to skip). Meaning model tests: `nix build path:$PWD#systems_lean_tests`, `nix build path:$PWD#beastdb_tests`, `nix build path:$PWD#sssss_tests`, `nix build path:$PWD#cate_tests`, `nix build path:$PWD#rsi_tests`, and `nix build path:$PWD#ci_tests` then run the installed binaries. Vocabulary isomorphism: `nix build path:$PWD#vocab_aspell_tests` with `REPO_ROOT` set, or `nix flake check` which includes `checks.systems_lean_tests`, `checks.beastdb_tests`, `checks.sssss_tests`, `checks.cate_tests`, `checks.rsi_tests`, `checks.ci_tests`, and `checks.vocab_aspell_tests`.

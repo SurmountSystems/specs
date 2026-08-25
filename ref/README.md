@@ -185,6 +185,10 @@ Use this path when there is no canonical publisher git (or when official git is 
 3. Paths under `ref/` are not a claim that Surmount owns the upstream text.
 4. Never rewrite upstream wording in place to "fix" a citation.
 
+## Proof of Keags essays (not Clause 12)
+
+Essays and research by Keagan McLelland (Proof of Keags) are cited as research with backlinks to https://proofofkeags.com . They are not `0000_spec.md` Clause 12 pins. This repository does not keep local copies of those essays unless he later says we may. Back linking is the documented handling.
+
 ## Scope limits for agents
 
 1. Only use git for submodule setup when the operator has explicitly allowed it for `ref/` work.

@@ -31,8 +31,11 @@ def usage : String :=
   "  tabs only; no prose wrapped to a column.\n" ++
   "  American English spelling via aspell (en_US) when aspell is on PATH.\n" ++
   "  Number and file name registry: published specs match SpecRegistry;\n" ++
-  "  published 0004_SSSSS.md MUST exist; planned 0005_fargo.md MUST NOT;\n" ++
+  "  published 0005_CATE.md, 0006_RSI.md, and 0007_CI.md MUST exist; stale 0005_fargo.md MUST fail;\n" ++
   "  Carbonado is not assigned; beastdb capitalization MUST be lowercase.\n" ++
+  "  CATE leftover unstack phrases in numbered spec prose (0005_CATE.md);\n" ++
+  "  planned file tokens in numbered specs other than 0000 require a Residual heading.\n" ++
+  "  numbered specs that name Keagan or proofofkeags must also contain proofofkeags.com.\n" ++
   "\n" ++
   "With no paths, discovers numbered specifications at the root only (same naming scheme).\n" ++
   "UNLICENSE.md / LICENSE* get ASCII and whitespace only when passed explicitly\n" ++
