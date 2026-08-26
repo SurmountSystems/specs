@@ -220,6 +220,31 @@ theorem leftover_unstack_as_conforming_is_inconsistent
   rw [hNo] at h
   exact Bool.noConfusion h
 
+/--
+  Lean spec encodings are CATE on the leftover unstack floor.
+  Sibling encodedLines and marked spec encoding comments use
+  `Cate.leftoverUnstackPhrases` and the same scan as spec_check.
+  Complete sentence quality is not fully mechanical.
+-/
+def leanSpecEncodingsAreCateOnLeftoverUnstackFloor : Bool :=
+  SpecCheck.leftoverUnstackPhrases == Cate.leftoverUnstackPhrases &&
+    Cate.leanSpecEncodingsUseLeftoverUnstackFloor &&
+    !Cate.leftoverUnstackFloorIsCompleteEnglish &&
+    !Cate.HyphenRepair.leftoverUnstack.conforming &&
+    FormalVibeficationSpec.markedAsSpecEncoding &&
+    !FormalVibeficationSpec.markedAsProof &&
+    VocabularySpec.markedAsSpecEncoding &&
+    !VocabularySpec.markedAsProof &&
+    FormalVibeficationSpec.siblingLineEncodingsRequired
+
+theorem lean_spec_encodings_are_cate_on_leftover_unstack_floor :
+    leanSpecEncodingsAreCateOnLeftoverUnstackFloor = true :=
+  rfl
+
+theorem spec_check_leftover_unstack_phrases_are_cate :
+    SpecCheck.leftoverUnstackPhrases = Cate.leftoverUnstackPhrases :=
+  rfl
+
 /-!
   Cross-model agreement. If two models assigned different numbers, the
   equality would not typecheck, and assuming the inequality is False.
@@ -341,6 +366,7 @@ def stackIntegrates : Bool :=
     !SpecRegistry.fargoAssigned &&
     !SpecRegistry.ssspAssigned &&
     !Cate.HyphenRepair.leftoverUnstack.conforming &&
+    leanSpecEncodingsAreCateOnLeftoverUnstackFloor &&
     Ci.byteIdentity.requiredForSystemsLeanSlakeProduct &&
     !Ci.byteIdentity.claimedTrue &&
     SpecRegistry.beastdbProgress == .ongoingNotReadyForUse &&

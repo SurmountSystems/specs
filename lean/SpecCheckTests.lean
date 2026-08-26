@@ -4,6 +4,7 @@
 -/
 
 import SpecCheck
+import Cate
 
 open SpecCheck
 
@@ -149,6 +150,8 @@ def runCases : List Case :=
         "bootstrapped Slake that fully typechecks as required.\n"),
     expectEmpty "lock free without tries is not leftover unstack"
       (checkLeftoverUnstack f "do not write lock free as a leftover pair.\n"),
+    expectTrue "leftover unstack list is Cate.leftoverUnstackPhrases"
+      (leftoverUnstackPhrases == Cate.leftoverUnstackPhrases),
     expectNonEmpty "checkFileContent leftover unstack full style"
       (checkFileContent numbered numbered (asciiBytes leftoverNonMd) true true true),
     -- Keagan / proofofkeags back linking

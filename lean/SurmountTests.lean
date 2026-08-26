@@ -160,6 +160,10 @@ def runCases : List Case :=
     expectFalse "SSSP is not assigned" ssspAssigned,
     expectFalse "leftover unstack is not conforming"
       Cate.HyphenRepair.leftoverUnstack.conforming,
+    expectTrue "Lean spec encodings are CATE on the leftover unstack floor"
+      leanSpecEncodingsAreCateOnLeftoverUnstackFloor,
+    expectTrue "spec_check leftover unstack list is Cate"
+      (SpecCheck.leftoverUnstackPhrases == Cate.leftoverUnstackPhrases),
     expectTrue "CATE and RSI leftover unstack models agree"
       (Cate.HyphenRepair.leftoverUnstack.conforming ==
         Rsi.LeftoverUnstackRepair.leftoverUnstack.conforming),

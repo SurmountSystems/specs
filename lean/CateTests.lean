@@ -81,6 +81,10 @@ def runCases : List Case :=
     expectTrue "rephrased hyphen is conforming"
       HyphenRepair.rephrasedOrdinaryEnglish.conforming,
     expectEqNat "five leftover unstack phrases" leftoverUnstackPhrases.length 5,
+    expectFalse "leftover unstack floor is not complete English"
+      leftoverUnstackFloorIsCompleteEnglish,
+    expectTrue "Lean spec encodings use leftover unstack floor"
+      leanSpecEncodingsUseLeftoverUnstackFloor,
     expectEqNat "three allowed spaced phrases" allowedSpacedPhrases.length 3,
     expectFalse "residual silence is not conforming" residualSilent.conforming,
     expectTrue "residual written is conforming" residualWritten.conforming,

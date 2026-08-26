@@ -17,6 +17,9 @@
   This file does not prove that Slake emit already matches ELF. It does
   not prove that beastdb, SSSSS, Slake, or Continuous Integration are
   ready for use.
+
+  Comments in this module use the CATE leftover unstack floor. They do
+  not claim every comment is a complete American English thought.
 -/
 
 import SpecRegistry

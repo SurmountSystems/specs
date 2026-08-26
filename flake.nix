@@ -221,7 +221,7 @@
 						pname = "line_encodings_tests";
 						lakeTarget = "line_encodings_tests";
 						binName = "line_encodings_tests";
-						description = "Lean unit tests for sibling Spec_NNNN.lean line encodings";
+						description = "Lean unit tests for sibling Spec_NNNN.lean line encodings and leftover unstack floor";
 					};
 
 					# Runtime iso: each NNNN_*.md versus compiled Spec_NNNN.lean lines.
@@ -229,11 +229,27 @@
 						pname = "line_encodings_check";
 						lakeTarget = "line_encodings_check";
 						binName = "line_encodings_check";
-						description = "Lean checker that numbered specification markdown lines match sibling Spec_NNNN.lean encodings";
+						description = "Lean checker that numbered specification markdown lines match sibling Spec_NNNN.lean encodings and that those encodings use the CATE leftover unstack floor";
+					};
+
+					# Hermetic tests for unique English word tracking versus the CATE catalog.
+					word_stats_tests = mkLeanBin {
+						pname = "word_stats_tests";
+						lakeTarget = "word_stats_tests";
+						binName = "word_stats_tests";
+						description = "Lean unit tests for unique ASCII letter token tracking versus the CATE catalog and RFC 2119 requirement keywords";
+					};
+
+					# Runtime scan: Surmount authored markdown versus CATE catalog; WORD_STATS.md must match.
+					word_stats = mkLeanBin {
+						pname = "word_stats";
+						lakeTarget = "word_stats";
+						binName = "word_stats";
+						description = "Lean checker that WORD_STATS.md matches unique English word counts in Surmount authored markdown versus the CATE L_n catalog";
 					};
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests line_encodings_tests line_encodings_check;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests line_encodings_tests line_encodings_check word_stats_tests word_stats;
 					default = spec_check;
 				}
 			);
@@ -476,7 +492,7 @@
 								echo ok > "$out/result"
 							'';
 
-					# Sibling Spec_NNNN.lean lines match numbered markdown; not form rules.
+					# Sibling Spec_NNNN.lean lines match numbered markdown; leftover unstack floor on encodings.
 					line_encodings_check =
 						pkgs.runCommand "line_encodings_check"
 							{
@@ -488,6 +504,36 @@
 								export REPO_ROOT=${./.}
 								cd "$REPO_ROOT"
 								line_encodings_check
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Hermetic unique English word tracking fixtures; not a second markdown linter.
+					word_stats_tests =
+						pkgs.runCommand "word_stats_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.word_stats_tests
+								];
+							}
+							''
+								word_stats_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# WORD_STATS.md matches the current Surmount authored markdown scan.
+					word_stats =
+						pkgs.runCommand "word_stats"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.word_stats
+								];
+							}
+							''
+								export REPO_ROOT=${./.}
+								cd "$REPO_ROOT"
+								word_stats
 								mkdir -p "$out"
 								echo ok > "$out/result"
 							'';
@@ -509,6 +555,8 @@
 						formal_vibefication_tests
 						line_encodings_tests
 						line_encodings_check
+						word_stats_tests
+						word_stats
 						;
 				}
 			);

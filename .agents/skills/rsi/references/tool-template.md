@@ -11,6 +11,7 @@ Companion to `.agents/skills/rsi/SKILL.md`. Authority: `0006_RSI.md` Clauses 4.1
 | Trailing whitespace and tab indent across this repository | Pure Nix `checks.whitespace` | Moving that rule into Lean for symmetry |
 | Encoding a numbered specification | Project skill `/surmount-specify` | A disposable chat pass |
 | Isomorphism of numbered markdown lines and sibling `Spec_NNNN.lean` | Lean `line_encodings_check` over explicit `MdLine` or `String` literals | `include_str` of the markdown or a disposable job |
+| Unique English words in Surmount authored markdown versus the CATE catalog | Lean `word_stats` writing and checking root `WORD_STATS.md` | A disposable count or a second catalog |
 | Agent workflow a later session can run | Project skill under `.agents/skills/` | A reminder in chat |
 | Tests that compile in a product tree that already requires a remote builder | That builder | A weaker local compile invented as proof |
 | Proving companion Lean meaning models in this repository | Project skill `/lean4` (pack at `skills/lean4-skills`) | mathlib, `sorry`, or `lake build` as the only gate |

@@ -9,12 +9,21 @@
   be explicit Lean `MdLine` or `String` literals, one per physical
   markdown line. `include_str` is not a line encoding.
 
+  Compiled `encodedLines` SHALL NOT contain leftover unstack phrases in
+  prose outside fenced code and outside inline code. Comments in
+  `lean/FormalVibeficationSpec.lean` and `lean/VocabularySpec.lean`
+  SHALL NOT contain those leftover phrases. That scan uses
+  `Cate.leftoverUnstackPhrases` and `SpecCheck.checkLeftoverUnstack`.
+  It is a floor, not a complete English checker.
+
   This module is the durable checker library. It is not a numbered
   specification. It is not a proof module for any one spec.
 -/
 
 import MdLine
 import SpecRegistry
+import Cate
+import SpecCheck
 
 open MdLine
 
@@ -211,6 +220,111 @@ def findingsForIncludeStr (path : String) (src : String) : Array Finding :=
   (includeStrLineNumbers src).map fun n =>
     { path := path, line := n, message := includeStrFindingMessage }
 
+/-- Join compiled encodings into markdown text for leftover unstack scan. -/
+def encodedLinesToContent (lines : Array MdLine) : String :=
+  if lines.isEmpty then
+    ""
+  else
+    String.intercalate "\n" (lines.toList.map (fun l => l.text)) ++ "\n"
+
+def findingFromDiag (d : SpecCheck.Diag) : Finding :=
+  { path := d.file
+    line := match d.line with
+      | some n => n
+      | none => 1
+    message := d.message }
+
+/-- Leftover unstack in compiled encodedLines prose (same scan as spec_check). -/
+def findingsForLeftoverUnstackEncoded (path : String) (lines : Array MdLine) :
+    Array Finding :=
+  (SpecCheck.checkLeftoverUnstack path (encodedLinesToContent lines)).toArray.map
+    findingFromDiag
+
+/--
+  Replace Lean code and string contents with spaces and keep comments.
+  Newlines stay so physical line numbers stay aligned. Nested block
+  comments are counted.
+-/
+def keepLeanComments (src : String) : String :=
+  let cs := src.toList.toArray
+  Id.run do
+    let mut out : Array Char := Array.mkEmpty cs.size
+    let mut i : Nat := 0
+    let mut block : Nat := 0
+    let mut lineComment := false
+    let mut inString := false
+    let mut escape := false
+    while i < cs.size do
+      let c := cs[i]!
+      let c2 : Option Char :=
+        if i + 1 < cs.size then some (cs[i + 1]!) else none
+      if block > 0 then
+        match c, c2 with
+        | '/', some '-' =>
+          out := out.push '/'
+          out := out.push '-'
+          i := i + 2
+          block := block + 1
+        | '-', some '/' =>
+          out := out.push '-'
+          out := out.push '/'
+          i := i + 2
+          block := block - 1
+        | _, _ =>
+          out := out.push c
+          i := i + 1
+      else if lineComment then
+        out := out.push c
+        if c == '\n' then
+          lineComment := false
+        i := i + 1
+      else if inString then
+        if escape then
+          out := out.push (if c == '\n' then '\n' else ' ')
+          escape := false
+        else if c == '\\' then
+          out := out.push ' '
+          escape := true
+        else if c == '"' then
+          out := out.push '"'
+          inString := false
+        else
+          out := out.push (if c == '\n' then '\n' else ' ')
+        i := i + 1
+      else
+        match c, c2 with
+        | '-', some '-' =>
+          out := out.push '-'
+          out := out.push '-'
+          i := i + 2
+          lineComment := true
+        | '/', some '-' =>
+          out := out.push '/'
+          out := out.push '-'
+          i := i + 2
+          block := 1
+        | '"', _ =>
+          out := out.push c
+          inString := true
+          i := i + 1
+        | _, _ =>
+          out := out.push (if c == '\n' then '\n' else ' ')
+          i := i + 1
+    return String.ofList out.toList
+
+/-- Leftover unstack in Lean spec encoding comments (same scan as spec_check). -/
+def findingsForLeftoverUnstackComments (path : String) (src : String) :
+    Array Finding :=
+  (SpecCheck.checkLeftoverUnstack path (keepLeanComments src)).toArray.map
+    findingFromDiag
+
+/-- Marked meaning spec encodings whose comments use the leftover unstack floor. -/
+def meaningSpecEncodingRelPaths : Array String :=
+  #["lean/FormalVibeficationSpec.lean", "lean/VocabularySpec.lean"]
+
+def leftoverUnstackPhrasesAreCate : Bool :=
+  SpecCheck.leftoverUnstackPhrases == Cate.leftoverUnstackPhrases
+
 def findingsForDrift (mdPath : String) (drifts : Array LineDrift) : Array Finding :=
   drifts.map fun d =>
     match d with
@@ -257,6 +371,7 @@ def checkOne (repo : System.FilePath) (e : EncodedSpec) : IO (Array Finding) := 
       { path := e.siblingEncodingFileName
         line := 1
         message := "sibling encoding is mashed with proofs or is not marked as a spec encoding" }
+  out := out ++ findingsForLeftoverUnstackEncoded e.specFileName e.lines
   if !(← specPath.pathExists) then
     out := out.push
       { path := e.specFileName
@@ -307,6 +422,28 @@ def missingCompiled (published : List SpecRegistry.RegistryEntry) (compiled : Ar
               s!"published markdown has no compiled sibling encoding {expectedEncodingName e.number}" }
     return out
 
+def checkMeaningSpecEncodingComments (repo : System.FilePath) : IO (Array Finding) := do
+  let mut out : Array Finding := #[]
+  if !leftoverUnstackPhrasesAreCate then
+    out := out.push
+      { path := "lean/Cate.lean"
+        line := 1
+        message := "spec_check leftover unstack phrases drifted from Cate.leftoverUnstackPhrases" }
+  for rel in meaningSpecEncodingRelPaths do
+    let p := repo / rel
+    if !(← p.pathExists) then
+      out := out.push
+        { path := rel
+          line := 1
+          message := s!"missing meaning spec encoding {rel}" }
+    else
+      match (← readSiblingSource p) with
+      | .error msg =>
+        out := out.push { path := rel, line := 1, message := msg }
+      | .ok src =>
+        out := out ++ findingsForLeftoverUnstackComments rel src
+  return out
+
 def extraCompiled (published : List SpecRegistry.RegistryEntry) (compiled : Array EncodedSpec) :
     Array Finding :=
   Id.run do
@@ -342,6 +479,7 @@ def checkRepo (repo : System.FilePath) (compiled : Array EncodedSpec) : IO (Arra
   out := out ++ missingCompiled SpecRegistry.publishedEntries compiled
   out := out ++ extraCompiled SpecRegistry.publishedEntries compiled
   out := out ++ (← diskMarkdownWithoutEncoding repo compiled)
+  out := out ++ (← checkMeaningSpecEncodingComments repo)
   for e in compiled do
     out := out ++ (← checkOne repo e)
   return out

@@ -74,7 +74,7 @@ theorem carbonado_is_not_0006 :
 
 /-!
   Leftover unstack: deleting a hyphen and leaving the same two words
-  (for example lock free tries) is nonconforming.
+  (for example `lock free tries`) is nonconforming.
 -/
 
 inductive HyphenRepair where
@@ -96,13 +96,40 @@ theorem rephrased_hyphen_conforming :
     HyphenRepair.rephrasedOrdinaryEnglish.conforming = true :=
   rfl
 
-/-- Floor list mirrored by spec_check leftover unstack (not full English). -/
+/--
+  Floor list used by spec_check leftover unstack and by leftover unstack
+  on Lean spec encodings. Not a complete English checker.
+-/
 def leftoverUnstackPhrases : List String :=
   ["non markdown", "must like", "LF only", "lock free tries",
     "fully type checking"]
 
 theorem leftover_unstack_phrase_count :
     leftoverUnstackPhrases.length = 5 :=
+  rfl
+
+theorem leftover_unstack_phrases_are :
+    leftoverUnstackPhrases =
+      ["non markdown", "must like", "LF only", "lock free tries",
+        "fully type checking"] :=
+  rfl
+
+/-- The leftover unstack list is a floor, not a complete English checker. -/
+def leftoverUnstackFloorIsCompleteEnglish : Bool := false
+
+theorem leftover_unstack_floor_is_not_complete_english :
+    leftoverUnstackFloorIsCompleteEnglish = false :=
+  rfl
+
+/--
+  Sibling encodedLines and comments in marked spec encoding modules are
+  checked on this leftover unstack floor. Complete sentence quality is
+  not fully mechanical.
+-/
+def leanSpecEncodingsUseLeftoverUnstackFloor : Bool := true
+
+theorem lean_spec_encodings_use_leftover_unstack_floor :
+    leanSpecEncodingsUseLeftoverUnstackFloor = true :=
   rfl
 
 def allowedSpacedPhrases : List String :=

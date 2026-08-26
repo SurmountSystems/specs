@@ -34,6 +34,12 @@ def usage : String :=
   "The encoding must be explicit MdLine or String literals, one per\n" ++
   "physical markdown line. include_str is not a line encoding.\n" ++
   "Compiled encodedLines must still match the markdown bytes (LF lines).\n" ++
+  "Fail when compiled encodedLines contain leftover unstack phrases in\n" ++
+  "prose outside fenced code and inline code (Cate.leftoverUnstackPhrases,\n" ++
+  "same scan as spec_check).\n" ++
+  "Fail when comments in lean/FormalVibeficationSpec.lean or\n" ++
+  "lean/VocabularySpec.lean contain those leftover phrases.\n" ++
+  "That leftover unstack check is a floor, not complete English.\n" ++
   "Environment: REPO_ROOT overrides the default discovery root.\n"
 
 def resolveRepoRoot : IO System.FilePath := do

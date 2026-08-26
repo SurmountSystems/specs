@@ -158,7 +158,49 @@ def runCases : List Case :=
       includeStrFindingMessage,
     expectTrue "source without include_str has no include_str findings"
       (findingsForIncludeStr "Spec_0001.lean"
-        "def encodedLines : Array MdLine := #[{ number := 1, text := \"a\" }]\n").isEmpty
+        "def encodedLines : Array MdLine := #[{ number := 1, text := \"a\" }]\n").isEmpty,
+    expectTrue "spec_check leftover unstack list is Cate"
+      leftoverUnstackPhrasesAreCate,
+    expectEqNat "two meaning spec encoding comment paths"
+      meaningSpecEncodingRelPaths.size
+      2,
+    expectTrue "FormalVibeficationSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/FormalVibeficationSpec.lean"),
+    expectTrue "VocabularySpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/VocabularySpec.lean"),
+    expectNonEmpty "leftover unstack in encodedLines prose fails"
+      (findingsForLeftoverUnstackEncoded "0001_DOGE.md"
+        (encodeFile "Do not write non markdown tooling.\n")),
+    expectEmpty "leftover unstack in encodedLines fence passes"
+      (findingsForLeftoverUnstackEncoded "0005_CATE.md"
+        (encodeFile "```\nnon markdown\nmust like\nLF only\nlock free tries\nfully type checking\n```\n")),
+    expectEmpty "leftover unstack in encodedLines inline code passes"
+      (findingsForLeftoverUnstackEncoded "0000_spec.md"
+        (encodeFile "Say `non markdown` and `LF only` as bad examples.\n")),
+    expectEmpty "high assurance 3 bit time series pass encodedLines leftover unstack"
+      (findingsForLeftoverUnstackEncoded "0003_beastdb.md"
+        (encodeFile "This uses high assurance, 3 bit color, and time series access.\n")),
+    expectNonEmpty "leftover unstack in spec encoding block comments fails"
+      (findingsForLeftoverUnstackComments "lean/FormalVibeficationSpec.lean"
+        ("/-\n" ++
+          "  Do not write non markdown tooling.\n" ++
+          "-/\n" ++
+          "def specNumber : Nat := 8\n")),
+    expectNonEmpty "leftover unstack in spec encoding line comments fails"
+      (findingsForLeftoverUnstackComments "lean/VocabularySpec.lean"
+        "def specNumber : Nat := 5 -- must like wording is leftover unstack\n"),
+    expectEmpty "leftover unstack in Lean string is not a comment hit"
+      (findingsForLeftoverUnstackComments "lean/FormalVibeficationSpec.lean"
+        "def leftoverUnstackPhrases := [\"non markdown\"]\n"),
+    expectEmpty "leftover unstack in inline code inside comments passes"
+      (findingsForLeftoverUnstackComments "lean/VocabularySpec.lean"
+        "/-\n  Say `non markdown` as a bad example.\n-/\n"),
+    expectTrue "keepLeanComments keeps block comment body"
+      (((keepLeanComments
+          "/-\n  hello leftover\n-/\ndef x := 1\n").splitOn "hello leftover").length > 1),
+    expectTrue "keepLeanComments blanks Lean code"
+      (!(((keepLeanComments
+          "/-\n  comment\n-/\ndef non markdown := 1\n").splitOn "def non markdown").length > 1))
   ]
 
 def main (_args : List String) : IO UInt32 := do

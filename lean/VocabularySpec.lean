@@ -14,6 +14,9 @@
   0005_CATE.md, not the pointer file VOCABULARY.md.
 
   Number 0009 is withdrawn. This module is not ISO 24495.
+
+  Comments in this module use the CATE leftover unstack floor. They do
+  not claim every comment is a complete American English thought.
 -/
 
 import SpecRegistry

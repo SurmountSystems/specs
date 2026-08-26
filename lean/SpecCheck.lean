@@ -29,7 +29,10 @@
 
   Implementation: line based with fence tracking (not a full markdown parser).
   Char lists and Nat indices keep Lean 4.30 APIs simple.
+  Leftover unstack phrases are `Cate.leftoverUnstackPhrases` (one list).
 -/
+
+import Cate
 
 namespace SpecCheck
 
@@ -403,10 +406,11 @@ def containsSub (hay : String) (needle : String) : Bool :=
   Deleting a hyphen and leaving the same two words is nonconforming.
   Checked in numbered specification prose outside fences and inline code.
   This list is a floor, not a complete English checker.
+  The phrases live in `Cate.leftoverUnstackPhrases` so spec_check and
+  Lean spec encoding leftover unstack cannot drift.
 -/
 def leftoverUnstackPhrases : List String :=
-  ["non markdown", "must like", "LF only", "lock free tries",
-    "fully type checking"]
+  Cate.leftoverUnstackPhrases
 
 def checkLeftoverUnstack (file : String) (content : String) : List Diag :=
   Id.run do
