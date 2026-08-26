@@ -1,12 +1,12 @@
 ---
 name: lean4
-description: Prove companion Lean meaning models in this specs repository using the lean4-skills pack. Use when writing or repairing lean/*.lean, proving numbered specification meaning, running /lean4, or repairing SystemsLean, BeastDb, Sssss, Cate, Rsi, Ci, VocabAspell, or SpecRegistry.
+description: Prove companion Lean meaning models in this specs repository using the lean4-skills pack. Use when writing or repairing lean/*.lean, proving numbered specification meaning, running /lean4, or repairing SystemsLean, BeastDb, Sssss, Cate, Rsi, Ci, VocabAspell, SpecRegistry, FormalVibeficationSpec, FormalVibeficationProofs, or Surmount.
 argument-hint: Lean meaning model to prove
 ---
 
 # lean4
 
-Prove or repair companion Lean meaning models in this repository. Authority is `0006_RSI.md` (tools that build tools) and `0005_CATE.md`. Formal Vibefication: numbered specification markdown is the contract humans read; Lean is the model of selected clauses. This skill is this repository only. Home: `.agents/skills/lean4/`. Real file, not a symlink. Slash `/lean4`. Do not copy it to `~/.agents/skills`. Do not set the nested plugin tree as the only skill discovery root; that would hide `/rsi` and `/surmount-specify`.
+Prove or repair companion Lean meaning models in this repository. Authority is `0006_RSI.md` (tools that build tools), `0005_CATE.md`, and `0008_Formal_Vibefication.md`. Formal Vibefication: numbered specification markdown is the contract humans read; the specification is also encoded in Lean as declarations of what must be true; proofs live in separate Lean modules; Lean proofs are not the specification. This skill is this repository only. Home: `.agents/skills/lean4/`. Real file, not a symlink. Slash `/lean4`. Do not copy it to `~/.agents/skills`. Do not set the nested plugin tree as the only skill discovery root; that would hide `/rsi` and `/surmount-specify`.
 
 ## Pack
 
@@ -19,15 +19,21 @@ Read `skills/lean4-skills/plugins/lean4/skills/lean4/SKILL.md` and the prove, re
 3. No `sorry` in shipped theorems.
 4. The pack's mathlib search and mathlib style rules do not apply here as a dependency.
 
+## Surmount root proof
+
+1. Numbered specification `0010_Surmount_Systems.md` is the human contract for stack composition. Companion Lean is `lean/Surmount.lean` (`surmountSpecNumber = 10`, `formalVibeficationSpecNumber = 8`, `specFileName = "0010_Surmount_Systems.md"`, `surmount_integrates`, `thisRepoSeparates`, `productTreeUnifies`). Numbered markdown is the contract humans read. Spec encodings are Lean. Proofs are separate Lean modules. Every published numbered markdown file has a sibling `Spec_NNNN.lean` at the repository root; proofs of those line encodings live in `lean/Proofs_NNNN.lean`. Unification in a product tree is not a license to mix spec encodings with proofs in this repository, and is not a license to mix theorems into numbered markdown here. The gate is `nix flake check`.
+2. Formal Vibefication is specification 0008 (`0008_Formal_Vibefication.md`, `lean/FormalVibeficationSpec.lean`, `lean/FormalVibeficationProofs.lean`, sibling `Spec_0008.lean`). The word catalog is owned by CATE as specification 0005 (`0005_CATE.md`, `lean/VocabularySpec.lean`, `lean/VocabularyProofs.lean`, sibling `Spec_0005.lean`). Root `VOCABULARY.md` is a pointer. Number 0009 is withdrawn.
+
 ## Form versus meaning
 
 1. `spec_check` is form (ASCII, tabs, RFC 2119, spelling, leftover unstack, residual heading, registry scan).
-2. `SystemsLean`, `BeastDb`, `Sssss`, `Cate`, `Rsi`, `Ci`, and `VocabAspell` are meaning models.
+2. `SystemsLean`, `BeastDb`, `Sssss`, `Cate`, `Rsi`, `Ci`, `VocabularySpec`, `VocabularyProofs`, and `VocabAspell` are meaning models. Prefer the Formal Vibefication split for new encodings (`FormalVibeficationSpec` versus `FormalVibeficationProofs`, `VocabularySpec` versus `VocabularyProofs`).
 3. Registry scan is `SpecRegistry`.
+4. `Surmount` is the composition proof over those models (`lean/Surmount.lean`).
 
 ## Prove cycle
 
-Plan, then Work, then Checkpoint, then Review. Use the pack prove and autoprove loops for the Work step. Use the pack review and golf workflows after a checkpoint.
+Plan, then Work, then Checkpoint, then Review. Use the pack prove and autoprove loops for the Work step. Use the pack review and golf workflows after a checkpoint. Sibling line encodings and `lean/Proofs_NNNN.lean` follow this cycle. Do not mash those proofs into `Spec_NNNN.lean`. `include_str` is not a line encoding. Use explicit `MdLine` or `String` literals, one per physical markdown line.
 
 The gate is:
 

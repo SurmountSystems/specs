@@ -3,9 +3,12 @@
   (Continuous Integration and stack consistency).
 
   This module is not the specification. The numbered markdown is the contract
-  that humans read. spec_check remains the form checker (ASCII, tabs, RFC 2119,
-  spelling, leftover unstack, residual heading). These declarations encode
-  meaning so an inconsistent model is a type error or a failing test.
+  that humans read. Spec encodings state what must be true. Proofs of those
+  encodings belong in a separate module under Formal Vibefication
+  (`0008_Formal_Vibefication.md`); this file still mixes both and that mash
+  is remaining work. spec_check remains the form checker (ASCII, tabs,
+  RFC 2119, spelling, leftover unstack, residual heading). These declarations
+  encode meaning so an inconsistent model is a type error or a failing test.
 
   CI is numbered specification 0007. It is not specification 0005 (CATE) and
   it is not specification 0006 (RSI). fargo is not specification 0007.

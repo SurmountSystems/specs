@@ -55,6 +55,16 @@ def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
 def runCases : List Case :=
   [
     expectEqNat "CATE is specification 0005" specNumber 5,
+    expectEqNat "vocabulary ownership is specification 0005" vocabularySpecNumber 5,
+    expectTrue "vocabulary ownership equals CATE"
+      (vocabularySpecNumber == specNumber),
+    expectTrue "CATE owns the word catalog" ownsVocabularyCatalog,
+    expectTrue "number 0009 is withdrawn" numberNineWithdrawn,
+    expectNonEmpty "withdrawn 0009_VOCABULARY.md basename fails"
+      (findingsForBasenames (publishedBasenames ++ ["0009_VOCABULARY.md"])),
+    expectNonEmpty "withdrawn 0009_VOCABULARY token fails"
+      (scanContent "0005_CATE.md"
+        "do not create `0009_VOCABULARY.md`.\n"),
     expectFalse "CATE is not specification 0006" (specNumber == 6),
     expectEqString "spec file is 0005_CATE.md" specFileName "0005_CATE.md",
     expectTrue "CATE is a stack number" cateIsNewStackNumber,

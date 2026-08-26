@@ -1,4 +1,4 @@
-personal_ws-1.1 en 210
+personal_ws-1.1 en 213
 ABI
 AbsInt
 ACID
@@ -52,8 +52,10 @@ ECMA
 Ecma
 Emissive
 emissive
+encodings
 EOF
 EOL
+equalities
 fargo
 FFI
 FG
@@ -101,6 +103,7 @@ Lean
 LevelDB
 LF
 libbeastdb
+linter
 linux
 LLVM
 LMDB

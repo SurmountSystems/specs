@@ -24,7 +24,7 @@ This document does not claim that a conforming implementation exists.
 
 This subsection is informative. It records how this specification relates to machine checked proofs. It is not a form rule under `0000_spec.md`.
 
-In dependently typed languages, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. This repository keeps that split on purpose, following the same spirit as Formal Vibefication as cited by [0002_Systems_Lean.md](0002_Systems_Lean.md): people read numbered markdown; Lean checks a model of selected clauses.
+In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in `0008_Formal_Vibefication.md`, requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification.
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
 2. Companion Lean modules under `lean/` (the beastdb meaning model, distinct from the `spec_check` form checker) encode selected claims such as the lowercase product name, the freestanding library name libbeastdb, Systems Lean and Slake bootstrap typecheck, proven ACID and tries that do not use locks as required, mandatory schema with two modes, interoperability through fargo rather than a traditional foreign function interface, the scope of a store that is local first with network features out of scope, and this document's identity as specification 0003.

@@ -28,7 +28,37 @@ roots = ["Rsi", "Vocabulary"]
 name = "Ci"
 
 [[lean_lib]]
+name = "VocabularySpec"
+
+[[lean_lib]]
+name = "VocabularyProofs"
+
+[[lean_lib]]
 name = "VocabAspell"
+
+[[lean_lib]]
+name = "Surmount"
+
+[[lean_lib]]
+name = "FormalVibeficationSpec"
+
+[[lean_lib]]
+name = "FormalVibeficationProofs"
+
+[[lean_lib]]
+name = "MdLine"
+
+[[lean_lib]]
+name = "SpecEncodings"
+srcDir = ".."
+roots = ["Spec_0000", "Spec_0001", "Spec_0002", "Spec_0003", "Spec_0004", "Spec_0005", "Spec_0006", "Spec_0007", "Spec_0008", "Spec_0010"]
+
+[[lean_lib]]
+name = "LineEncodings"
+
+[[lean_lib]]
+name = "SpecProofs"
+roots = ["Proofs_0000", "Proofs_0001", "Proofs_0002", "Proofs_0003", "Proofs_0004", "Proofs_0005", "Proofs_0006", "Proofs_0007", "Proofs_0008", "Proofs_0010", "SpecProofs"]
 
 [[lean_exe]]
 name = "spec_check"
@@ -65,3 +95,19 @@ root = "CiTests"
 [[lean_exe]]
 name = "vocab_aspell_tests"
 root = "VocabAspellTests"
+
+[[lean_exe]]
+name = "surmount_tests"
+root = "SurmountTests"
+
+[[lean_exe]]
+name = "formal_vibefication_tests"
+root = "FormalVibeficationTests"
+
+[[lean_exe]]
+name = "line_encodings_check"
+root = "LineEncodingsCheck"
+
+[[lean_exe]]
+name = "line_encodings_tests"
+root = "LineEncodingsTests"

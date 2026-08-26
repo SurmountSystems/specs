@@ -3,9 +3,12 @@
   (Concise American Technical English).
 
   This module is not the specification. The numbered markdown is the contract
-  that humans read. spec_check remains the form checker (ASCII, tabs, RFC 2119,
-  spelling, leftover unstack, residual heading). These declarations encode
-  meaning so an inconsistent model is a type error or a failing test.
+  that humans read. Spec encodings state what must be true. Proofs of those
+  encodings belong in a separate module under Formal Vibefication
+  (`0008_Formal_Vibefication.md`); this file still mixes both and that mash
+  is remaining work. spec_check remains the form checker (ASCII, tabs,
+  RFC 2119, spelling, leftover unstack, residual heading). These declarations
+  encode meaning so an inconsistent model is a type error or a failing test.
 
   CATE is numbered specification 0005. It is not specification 0000 and it is
   not specification 0006. Number 0006 is Recursive Self Improvement (RSI).
@@ -37,6 +40,25 @@ theorem cate_is_not_rsi :
   decide
 
 theorem cate_is_new_stack_number : cateIsNewStackNumber = true := rfl
+
+/-- The word catalog is owned by this specification, not by a distinct 0009. -/
+def ownsVocabularyCatalog : Bool := true
+
+theorem cate_owns_vocabulary_catalog : ownsVocabularyCatalog = true := rfl
+
+theorem vocabulary_number_is_cate :
+    SpecRegistry.vocabularySpecNumber = specNumber :=
+  rfl
+
+def numberNineWithdrawn : Bool := true
+
+theorem number_nine_is_withdrawn : numberNineWithdrawn = true := rfl
+
+theorem mash_published_0009
+    (h : SpecRegistry.allEntries.any (fun e => e.number == 9) = true) : False := by
+  have hNo := SpecRegistry.number_9_not_published
+  rw [hNo] at h
+  exact Bool.noConfusion h
 
 theorem rsi_is_0006 :
     SpecRegistry.rsiSpecNumber = 6 :=
@@ -223,7 +245,7 @@ theorem complete_question_ok :
     completeQuestion.complete = true :=
   rfl
 
-/-- Spec markdown is the contract humans read. Lean is a separate model. -/
+/-- Spec markdown is the contract humans read. Lean encodings are not that markdown. -/
 def specMarkdownIsContract : Bool := true
 
 def meaningProofsAreSecondFormChecker : Bool := false

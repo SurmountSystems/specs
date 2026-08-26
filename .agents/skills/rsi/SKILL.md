@@ -37,7 +37,7 @@ Independent work streams with disjoint writes run as parallel tightly scoped age
 1. Name the job in ordinary English. If intent is ambiguous, stop and ask: name the file or clause, quote the current wording, say why the choice matters, name the options, define a new phrase in the same sentence when one is introduced, and say what we will do for each option (`0005_CATE.md`).
 2. Prefer a durable tool a later session can run (`0006_RSI.md` Clause 3.2) over a disposable job (Clause 3.3).
 3. Use the large language model as a tool factory (Clause 3.4): improve `spec_check`, a project skill, or a Nix package. Do not grow bash or Python as check policy.
-4. Pick the best available tool that can state the theorem or the contract (Clause 4.2). Language purity is not the reason. See `references/tool-template.md`.
+4. Pick the best available tool that can state the theorem or the contract (Clause 4.2). Language purity is not the reason. See `references/tool-template.md`. The isomorphism of numbered markdown lines and sibling `Spec_NNNN.lean` encodings is `line_encodings_check`. Those encodings are explicit `MdLine` or `String` literals, one per physical markdown line. `include_str` is not a line encoding.
 5. When the durable tool is Lean, follow `.agents/skills/lean4/SKILL.md`.
 6. Observe a failing test in the product tree for the named contract before the product edit that is meant to make that same test pass (Clause 4.3). Tests are contracts. Reconcile a contract change with `0006_RSI.md` or the named specification in the same effort. Do not reshape a test to finish green without a contract change.
 7. Write remaining work in full on disk in complete American English (Clause 4.5). Chat is not the residual record.
@@ -53,7 +53,7 @@ Independent work streams with disjoint writes run as parallel tightly scoped age
 2. Treat this specification as a claim that a model trains itself again.
 3. Treat this skill or `0006_RSI.md` as specifying SSSP.
 4. Use scripture named in `0006_RSI.md` Clause 1.4 as a conformance item for Slake, beastdb, or SSSSS.
-5. Invent `0005_fargo.md`, a number for fargo, or a Carbonado numbered file. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is Continuous Integration (`0007_CI.md`). Do not steal 0007 for fargo.
+5. Invent `0005_fargo.md`, a number for fargo, or a Carbonado numbered file. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0009 is withdrawn. Do not create `0009_VOCABULARY.md`. Do not steal 0007 or 0009 for fargo.
 6. Treat `bitmask-core`, `bitmask-next`, or RGB as deliverables of this skill.
 7. Fall back to a weaker testing workflow because it is familiar. If a stronger tool can state the theorem, use it.
 8. Prove tests that compile on this laptop when the project already requires a remote builder. Stop if that builder is unresponsive. This repository's gate remains `nix flake check`.

@@ -42,20 +42,45 @@
 				let
 					pkgs = nixpkgs.legacyPackages.${system};
 
-					# Drop host .lake caches from src so lake cannot replay host-linked
-					# objects (those pin /lib64/ld-linux and break the Nix sandbox).
+					# Lake lives in lean/. Sibling Spec_NNNN.lean encodings and the
+					# numbered markdown those encodings match sit at the repository root.
+					# include_str is not a line encoding.
+					# Drop host .lake caches so lake cannot replay host-linked objects
+					# (those pin /lib64/ld-linux and break the Nix sandbox).
 					leanSrc = pkgs.lib.cleanSourceWith {
 						name = "spec-check-lean-src";
-						src = ./lean;
+						src = ./.;
 						filter =
 							path: type:
 							let
 								base = baseNameOf path;
+								pathStr = toString path;
+								rootStr = toString ./.;
+								rel =
+									if pathStr == rootStr then
+										""
+									else if pkgs.lib.hasPrefix (rootStr + "/") pathStr then
+										pkgs.lib.removePrefix (rootStr + "/") pathStr
+									else
+										base;
+								isLeanTree =
+									rel == "lean"
+									|| pkgs.lib.hasPrefix "lean/" rel;
+								isLakeJunk =
+									base == ".lake"
+									|| rel == "lean/.lake"
+									|| pkgs.lib.hasPrefix "lean/.lake/" rel
+									|| base == "lake-manifest.json"
+									|| pkgs.lib.hasSuffix ".olean" base
+									|| pkgs.lib.hasSuffix ".ilean" base;
+								isRootSpecLean = builtins.match "Spec_[0-9][0-9][0-9][0-9]\\.lean" rel != null;
+								isRootNumberedMd = builtins.match "[0-9][0-9][0-9][0-9]_[A-Za-z0-9_]+\\.md" rel != null;
 							in
-							base != ".lake"
-							&& base != "lake-manifest.json"
-							&& !(pkgs.lib.hasSuffix ".olean" base)
-							&& !(pkgs.lib.hasSuffix ".ilean" base);
+							if type == "directory" then
+								(rel == "" || isLeanTree)
+								&& !isLakeJunk
+							else
+								(isLeanTree && !isLakeJunk) || isRootSpecLean || isRootNumberedMd;
 					};
 
 					# Shared Lean build env (sandbox-clean leanSrc; no host .lake).
@@ -83,15 +108,18 @@
 								runHook preBuild
 								export HOME="$TMPDIR"
 								export LEAN_CC="$CC"
-								# Belt and suspenders if a cache ever slips into src.
+								# Store copy is read only; Lake must write .lake under lean/.
+								chmod -R u+w .
+								cd lean
 								rm -rf .lake
 								lake build ${lakeTarget}
+								install -m755 .lake/build/bin/${binName} "$NIX_BUILD_TOP/${binName}"
 								runHook postBuild
 							'';
 							installPhase = ''
 								runHook preInstall
 								mkdir -p $out/bin
-								install -m755 .lake/build/bin/${binName} $out/bin/${binName}
+								install -m755 "$NIX_BUILD_TOP/${binName}" $out/bin/${binName}
 								runHook postInstall
 							'';
 							meta = with pkgs.lib; {
@@ -164,16 +192,48 @@
 						description = "Lean tests for the CI meaning model (spec 0007)";
 					};
 
-					# Isomorphism between aspell_words.txt and VOCABULARY.md.
+					# Isomorphism between aspell_words.txt and 0005_CATE.md catalog headings.
 					vocab_aspell_tests = mkLeanBin {
 						pname = "vocab_aspell_tests";
 						lakeTarget = "vocab_aspell_tests";
 						binName = "vocab_aspell_tests";
-						description = "Lean tests that VOCABULARY.md is an isomorphism of aspell_words.txt";
+						description = "Lean tests that 0005_CATE.md catalog headings are an isomorphism of aspell_words.txt";
+					};
+
+					# Composition proof over the numbered-spec meaning models (not form rules).
+					surmount_tests = mkLeanBin {
+						pname = "surmount_tests";
+						lakeTarget = "surmount_tests";
+						binName = "surmount_tests";
+						description = "Lean tests for the Surmount composition proof (spec 0010, stack identities, spec encoding versus proof split)";
+					};
+
+					# Spec encodings versus proofs for Formal Vibefication (spec 0008).
+					formal_vibefication_tests = mkLeanBin {
+						pname = "formal_vibefication_tests";
+						lakeTarget = "formal_vibefication_tests";
+						binName = "formal_vibefication_tests";
+						description = "Lean tests for Formal Vibefication spec encodings and separate proofs (spec 0008)";
+					};
+
+					# Hermetic tests for isomorphism of markdown lines and Lean encodings.
+					line_encodings_tests = mkLeanBin {
+						pname = "line_encodings_tests";
+						lakeTarget = "line_encodings_tests";
+						binName = "line_encodings_tests";
+						description = "Lean unit tests for sibling Spec_NNNN.lean line encodings";
+					};
+
+					# Runtime iso: each NNNN_*.md versus compiled Spec_NNNN.lean lines.
+					line_encodings_check = mkLeanBin {
+						pname = "line_encodings_check";
+						lakeTarget = "line_encodings_check";
+						binName = "line_encodings_check";
+						description = "Lean checker that numbered specification markdown lines match sibling Spec_NNNN.lean encodings";
 					};
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests line_encodings_tests line_encodings_check;
 					default = spec_check;
 				}
 			);
@@ -316,7 +376,7 @@
 								echo ok > "$out/result"
 							'';
 
-					# CATE meaning proofs (0006); not a second markdown linter.
+					# CATE meaning proofs (0005); not a second markdown linter.
 					cate_tests =
 						pkgs.runCommand "cate_tests"
 							{
@@ -330,7 +390,7 @@
 								echo ok > "$out/result"
 							'';
 
-					# RSI meaning proofs (0005); not a second markdown linter.
+					# RSI meaning proofs (0006); not a second markdown linter.
 					rsi_tests =
 						pkgs.runCommand "rsi_tests"
 							{
@@ -358,7 +418,7 @@
 								echo ok > "$out/result"
 							'';
 
-					# aspell list and VOCABULARY.md are inverse maps (same tokens, L_n ids).
+					# aspell list and 0005_CATE.md catalog headings are inverse maps (same tokens, L_n ids).
 					vocab_aspell_tests =
 						pkgs.runCommand "vocab_aspell_tests"
 							{
@@ -370,6 +430,64 @@
 								export REPO_ROOT=${./.}
 								cd "$REPO_ROOT"
 								vocab_aspell_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Surmount composition proof; not a second markdown linter.
+					surmount_tests =
+						pkgs.runCommand "surmount_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.surmount_tests
+								];
+							}
+							''
+								surmount_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Formal Vibefication spec encodings versus proofs; not a second markdown linter.
+					formal_vibefication_tests =
+						pkgs.runCommand "formal_vibefication_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.formal_vibefication_tests
+								];
+							}
+							''
+								formal_vibefication_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Hermetic line encoding fixtures; not a second markdown linter.
+					line_encodings_tests =
+						pkgs.runCommand "line_encodings_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.line_encodings_tests
+								];
+							}
+							''
+								line_encodings_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Sibling Spec_NNNN.lean lines match numbered markdown; not form rules.
+					line_encodings_check =
+						pkgs.runCommand "line_encodings_check"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.line_encodings_check
+								];
+							}
+							''
+								export REPO_ROOT=${./.}
+								cd "$REPO_ROOT"
+								line_encodings_check
 								mkdir -p "$out"
 								echo ok > "$out/result"
 							'';
@@ -387,6 +505,10 @@
 						rsi_tests
 						ci_tests
 						vocab_aspell_tests
+						surmount_tests
+						formal_vibefication_tests
+						line_encodings_tests
+						line_encodings_check
 						;
 				}
 			);

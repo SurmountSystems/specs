@@ -1,9 +1,10 @@
 /-
-  Runtime checks for the aspell / VOCABULARY.md isomorphism.
+  Runtime checks for the aspell / 0005_CATE.md catalog isomorphism.
 
   Theorems in VocabAspell.lean cover inverse maps, letter counts, and
   duplicate ids on finite lists. This executable re-checks those facts
   and reads both repository files under REPO_ROOT (or cwd).
+  Number 0009 is withdrawn. 0009_VOCABULARY.md MUST NOT exist.
 -/
 
 import SpecCheck
@@ -69,7 +70,13 @@ def hermeticCases : List Case :=
     expectTrue "malformed heading rejected"
       (parseHeading "### A_1 ABI" == none),
     expectTrue "header 210 parses"
-      (parseAspellHeader "personal_ws-1.1 en 210" == some 210)
+      (parseAspellHeader "personal_ws-1.1 en 210" == some 210),
+    expectEqString "runtime catalog is 0005_CATE.md"
+      vocabMarkdownFileName "0005_CATE.md",
+    expectTrue "CATE number equals vocabulary ownership"
+      (specFileName == "0005_CATE.md" && specNumber == 5),
+    expectTrue "runtime catalog is not the pointer"
+      (vocabMarkdownFileName != pointerFileName)
   ]
 
 def firstMismatch : List String → List String → Nat → Option (Nat × String × String)
@@ -114,13 +121,27 @@ def diagCases (diags : List Diag) : List Case :=
     { name := Diag.format d, ok := false, detail := d.message }
 
 def checkIsoFiles (repo : System.FilePath) : IO (List Case) := do
-  let vocabPath := repo / "VOCABULARY.md"
+  let vocabPath := repo / vocabMarkdownFileName
+  let pointerPath := repo / pointerFileName
   let aspellPath := repo / "aspell_words.txt"
+  let withdrawnPath := repo / "0009_VOCABULARY.md"
+  if (← withdrawnPath.pathExists) then
+    return [{
+      name := "0009_VOCABULARY.md must not exist"
+      ok := false
+      detail := s!"withdrawn file still present at {withdrawnPath}"
+    }]
   if !(← vocabPath.pathExists) then
     return [{
-      name := "VOCABULARY.md exists"
+      name := "0005_CATE.md exists"
       ok := false
       detail := s!"missing {vocabPath}"
+    }]
+  if !(← pointerPath.pathExists) then
+    return [{
+      name := "VOCABULARY.md pointer exists"
+      ok := false
+      detail := s!"missing {pointerPath}"
     }]
   if !(← aspellPath.pathExists) then
     return [{
@@ -131,13 +152,13 @@ def checkIsoFiles (repo : System.FilePath) : IO (List Case) := do
   let vocabBs ← IO.FS.readBinFile vocabPath
   let aspellBs ← IO.FS.readBinFile aspellPath
   let formDiags :=
-    checkAscii "VOCABULARY.md" vocabBs ++
+    checkAscii vocabMarkdownFileName vocabBs ++
       (if isPureAscii vocabBs then
         let content := asciiToString vocabBs
-        checkTrailingWs "VOCABULARY.md" content ++
-          checkLeadingSpaces "VOCABULARY.md" content ++
-          checkBullets "VOCABULARY.md" content ++
-          checkLeftoverUnstack "VOCABULARY.md" content
+        checkTrailingWs vocabMarkdownFileName content ++
+          checkLeadingSpaces vocabMarkdownFileName content ++
+          checkBullets vocabMarkdownFileName content ++
+          checkLeftoverUnstack vocabMarkdownFileName content
        else [])
   if !formDiags.isEmpty then
     return diagCases formDiags
@@ -150,13 +171,14 @@ def checkIsoFiles (repo : System.FilePath) : IO (List Case) := do
     match parseVocabEntries vocab with
     | .error (ln, msg) =>
       return [{
-        name := s!"VOCABULARY.md:{ln}"
+        name := s!"{vocabMarkdownFileName}:{ln}"
         ok := false
         detail := msg
       }]
     | .ok entries =>
       let mut cases : List Case := []
       cases := cases ++ [
+        expectTrue "withdrawn 0009_VOCABULARY.md is absent" true,
         expectEqNat "aspell header count equals word count"
           headerCount words.length,
         expectTrue "every aspell token has a letter"
@@ -208,7 +230,7 @@ def checkIsoFiles (repo : System.FilePath) : IO (List Case) := do
         cases := cases ++ [{
           name := "ofAspell words = vocabulary entries"
           ok := false
-          detail := "assigned ids do not match VOCABULARY.md headings"
+          detail := "assigned ids do not match 0005_CATE.md headings"
         }]
       else
         cases := cases ++ [

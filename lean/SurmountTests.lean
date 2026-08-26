@@ -1,0 +1,210 @@
+/-
+  Runtime checks for the Surmount composition model.
+  Theorems in Surmount.lean already fail to typecheck if the stack is
+  mashed (CATE numbered 0006, this repository treated as a product tree
+  that unifies spec and proof, leftover unstack treated as conforming,
+  byte identity claimed true, emit = ELF treated as proved). This
+  executable re-checks the decidable facts so a silent Bool regression
+  prints FAIL lines, matching spec_check_tests style.
+-/
+
+import Surmount
+import SpecRegistry
+import SystemsLean
+import BeastDb
+import Sssss
+import Cate
+import Rsi
+import Ci
+import SpecCheck
+import FormalVibeficationSpec
+import VocabularySpec
+import SpecProofs
+
+open Surmount
+open SpecRegistry
+
+structure Case where
+  name : String
+  ok : Bool
+  detail : String := ""
+  deriving Repr
+
+def expectTrue (name : String) (b : Bool) : Case :=
+  { name := name, ok := b, detail := if b then "" else "expected true" }
+
+def expectFalse (name : String) (b : Bool) : Case :=
+  { name := name, ok := !b, detail := if !b then "" else "expected false" }
+
+def expectEqNat (name : String) (got want : Nat) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectEqString (name : String) (got want : String) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectEmpty {α : Type} [Repr α] (name : String) (xs : List α) : Case :=
+  if xs.isEmpty then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected empty, got {repr xs}" }
+
+def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
+  if xs.isEmpty then
+    { name := name, ok := false, detail := "expected diagnostics, got none" }
+  else
+    { name := name, ok := true }
+
+def runCases : List Case :=
+  [
+    expectTrue "spec encoding is not the Lean proof"
+      (FormalVibeficationSpec.Layer.leanSpecEncoding !=
+        FormalVibeficationSpec.Layer.leanProof),
+    expectTrue "human markdown is not the Lean spec encoding"
+      (FormalVibeficationSpec.Layer.humanMarkdownContract !=
+        FormalVibeficationSpec.Layer.leanSpecEncoding),
+    expectTrue "human markdown is not the Lean proof"
+      (FormalVibeficationSpec.Layer.humanMarkdownContract !=
+        FormalVibeficationSpec.Layer.leanProof),
+    expectTrue "spec markdown is the contract humans read" specMarkdownIsContract,
+    expectFalse "companion Lean proof is not the spec" companionLeanIsTheSpec,
+    expectFalse "human markdown does not substitute for Lean spec encodings"
+      FormalVibeficationSpec.humanMarkdownSubstitutesForLeanSpecEncoding,
+    expectTrue "mashed spec and proof fixture is nonconforming"
+      (!FormalVibeficationSpec.conformingThisRepo
+        FormalVibeficationSpec.mashedFixture),
+    expectTrue "sibling line encodings are required"
+      FormalVibeficationSpec.siblingLineEncodingsRequired,
+    expectTrue "sibling proofs are separate modules"
+      FormalVibeficationSpec.siblingProofsAreSeparateModules,
+    expectFalse "mashed sibling encodings do not conform"
+      FormalVibeficationSpec.mashedSiblingEncodingAndProofsConform,
+    expectTrue "published sibling encodings are not mashed"
+      SpecProofs.encodingsNotMashed,
+    expectTrue "separate spec encoding and proof fixtures conform"
+      (FormalVibeficationSpec.conformingThisRepo
+          FormalVibeficationSpec.specEncodingFixture &&
+        FormalVibeficationSpec.conformingThisRepo
+          FormalVibeficationSpec.proofFixture),
+    expectFalse "this repository does not unify spec, proof, and implementation"
+      Ci.ProductHome.thisSpecificationsRepo.unifiesSpecProofImpl,
+    expectTrue "Systems Lean product tree unifies spec, proof, and implementation"
+      Ci.ProductHome.systemsLeanProductTree.unifiesSpecProofImpl,
+    expectTrue "this-repo split and product unification can both hold"
+      (!Ci.ProductHome.thisSpecificationsRepo.unifiesSpecProofImpl &&
+        Ci.ProductHome.systemsLeanProductTree.unifiesSpecProofImpl),
+    expectFalse "theorems are not dumped into numbered markdown here"
+      Ci.dumpTheoremsIntoNumberedMarkdown,
+    expectTrue "unique specification numbers" (!hasDupNumbers),
+    expectTrue "unique specification file names" (!hasDupFilenames),
+    expectEqNat "CATE is specification 0005" cateSpecNumber 5,
+    expectEqNat "RSI is specification 0006" rsiSpecNumber 6,
+    expectEqNat "CI is specification 0007" ciSpecNumber 7,
+    expectEqNat "Formal Vibefication is specification 0008"
+      Surmount.formalVibeficationSpecNumber 8,
+    expectEqNat "word catalog is owned by specification 0005"
+      Surmount.vocabularySpecNumber 5,
+    expectTrue "vocabulary ownership equals CATE"
+      (Surmount.vocabularySpecNumber == cateSpecNumber),
+    expectEqNat "Surmount Systems is specification 0010" surmountSpecNumber 10,
+    expectEqString "Surmount Systems file is 0010_Surmount_Systems.md"
+      specFileName "0010_Surmount_Systems.md",
+    expectEqNat "Surmount module agrees with registry"
+      surmountSpecNumber surmountSystemsSpecNumber,
+    expectEqNat "Formal Vibefication module agrees with registry"
+      Surmount.formalVibeficationSpecNumber
+        SpecRegistry.formalVibeficationSpecNumber,
+    expectTrue "number 0008 is in the registry"
+      (allEntries.any (fun e => e.number == 8)),
+    expectFalse "number 0009 is not in the registry"
+      (allEntries.any (fun e => e.number == 9)),
+    expectFalse "mash of 0009 as published is false"
+      VocabularySpec.numberNinePublished,
+    expectNonEmpty "wrong 0008 filename token fails"
+      (scanContent "0010_Surmount_Systems.md"
+        "do not cite 0008_unused.md\n"),
+    expectEmpty "correct 0008_Formal_Vibefication token passes"
+      (scanContent "0008_Formal_Vibefication.md"
+        "This specification is number 0008. File 0008_Formal_Vibefication.md.\n"),
+    expectNonEmpty "wrong 0009 filename token fails"
+      (scanContent "0010_Surmount_Systems.md"
+        "do not cite 0009_unused.md\n"),
+    expectNonEmpty "withdrawn 0009_VOCABULARY token fails"
+      (scanContent "0005_CATE.md"
+        "do not create `0009_VOCABULARY.md`.\n"),
+    expectEmpty "correct 0010_Surmount_Systems token passes"
+      (scanContent "0010_Surmount_Systems.md"
+        "This specification is number 0010. File 0010_Surmount_Systems.md.\n"),
+    expectNonEmpty "wrong published 0008 basename fails"
+      (findingsForBasenames (publishedBasenames ++ ["0008_unused.md"])),
+    expectNonEmpty "withdrawn 0009_VOCABULARY.md basename fails"
+      (findingsForBasenames (publishedBasenames ++ ["0009_VOCABULARY.md"])),
+    expectEmpty "all published basenames including 0010 pass"
+      (findingsForBasenames publishedBasenames),
+    expectEqNat "SSSSS is specification 0004" ssssSpecNumber 4,
+    expectEqNat "beastdb is specification 0003" beastdbSpecNumber 3,
+    expectEqNat "Systems Lean is specification 0002" systemsLeanSpecNumber 2,
+    expectEqNat "Cate module agrees with registry" Cate.specNumber cateSpecNumber,
+    expectEqNat "Rsi module agrees with registry" Rsi.specNumber rsiSpecNumber,
+    expectEqNat "Ci module agrees with registry" Ci.specNumber ciSpecNumber,
+    expectEqNat "Sssss module agrees with registry" Sssss.specNumber ssssSpecNumber,
+    expectEqNat "BeastDb module agrees with registry" BeastDb.specNumber beastdbSpecNumber,
+    expectEqNat "SystemsLean module agrees with registry"
+      SystemsLean.systemsLeanSpecNumber systemsLeanSpecNumber,
+    expectFalse "fargo is not assigned" fargoAssigned,
+    expectFalse "SSSP is not assigned" ssspAssigned,
+    expectFalse "leftover unstack is not conforming"
+      Cate.HyphenRepair.leftoverUnstack.conforming,
+    expectTrue "CATE and RSI leftover unstack models agree"
+      (Cate.HyphenRepair.leftoverUnstack.conforming ==
+        Rsi.LeftoverUnstackRepair.leftoverUnstack.conforming),
+    expectTrue "byte identity is required for the product"
+      Ci.byteIdentity.requiredForSystemsLeanSlakeProduct,
+    expectFalse "byte identity is not claimed true" Ci.byteIdentity.claimedTrue,
+    expectFalse "emit equal to ELF is not a proved identity" Ci.emitEqualsElfProved,
+    expectTrue "Ci and SpecRegistry agree that byte identity is not claimed true"
+      (Ci.byteIdentity.claimedTrue == byteIdentityClaimedTrue),
+    expectTrue "beastdb is ongoing and not ready for use"
+      (beastdbProgress == .ongoingNotReadyForUse),
+    expectTrue "SSSSS is ongoing and not ready for use"
+      (sssssProgress == .ongoingNotReadyForUse),
+    expectTrue "Slake is ongoing and not ready for use"
+      (slakeProgress == .ongoingNotReadyForUse),
+    expectTrue "CI product is ongoing and not ready for use"
+      (ciProductProgress == .ongoingNotReadyForUse),
+    expectTrue "beastdb residual honesty" beastdbProgress.honestWhenWorkExists,
+    expectTrue "Keagan backlink rule exists" keaganBacklinkRuleExists,
+    expectEqString "Keagan canonical host" keaganCanonicalHost "proofofkeags.com",
+    expectNonEmpty "Keagan without proofofkeags.com fails the form checker"
+      (SpecCheck.checkKeaganBacklink "0005_CATE.md" "0005_CATE.md"
+        "Inspired by Keagan McLelland (Proof of Keags).\n"),
+    expectEmpty "Keagan with proofofkeags.com passes the form checker"
+      (SpecCheck.checkKeaganBacklink "0005_CATE.md" "0005_CATE.md"
+        "Inspired by Keagan. See https://proofofkeags.com/research/x.html\n"),
+    expectTrue "VOCABULARY fixture is well formed"
+      (VocabularySpec.wellFormed VocabularySpec.fixtureEntries),
+    expectTrue "stack identities compose" stackIntegrates
+  ]
+
+def main (_args : List String) : IO UInt32 := do
+  let mut failed : Nat := 0
+  for c in runCases do
+    if c.ok then
+      IO.println s!"PASS {c.name}"
+    else
+      failed := failed + 1
+      if c.detail.isEmpty then
+        IO.eprintln s!"FAIL {c.name}"
+      else
+        IO.eprintln s!"FAIL {c.name}: {c.detail}"
+  if failed == 0 then
+    IO.println s!"All {runCases.length} tests passed."
+    return 0
+  else
+    IO.eprintln s!"{failed} of {runCases.length} tests failed."
+    return 1

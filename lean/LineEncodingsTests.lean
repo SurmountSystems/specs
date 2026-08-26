@@ -1,0 +1,180 @@
+/-
+  Hermetic tests for isomorphism of markdown lines and Lean encodings.
+  Observe fail on drift, pass when lines match. Exit 1 on FAIL.
+-/
+
+import MdLine
+import LineEncodings
+
+open MdLine
+open LineEncodings
+
+structure Case where
+  name : String
+  ok : Bool
+  detail : String := ""
+  deriving Repr
+
+def expectTrue (name : String) (b : Bool) : Case :=
+  { name := name, ok := b, detail := if b then "" else "expected true" }
+
+def expectFalse (name : String) (b : Bool) : Case :=
+  { name := name, ok := !b, detail := if !b then "" else "expected false" }
+
+def expectEqNat (name : String) (got want : Nat) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectEqString (name : String) (got want : String) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectEmpty {α : Type} [Repr α] (name : String) (xs : Array α) : Case :=
+  if xs.isEmpty then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected empty, got {repr xs.toList}" }
+
+def expectNonEmpty {α : Type} (name : String) (xs : Array α) : Case :=
+  if xs.isEmpty then
+    { name := name, ok := false, detail := "expected diagnostics, got none" }
+  else
+    { name := name, ok := true }
+
+def posixTwoLines : String := "alpha\nbeta\n"
+
+def posixTwoLinesBlank : String := "alpha\n\nbeta\n"
+
+def sampleIncludeStrSource : String :=
+  "import MdLine\n" ++
+    "def encodedLines := include_str \"0001_DOGE.md\"\n"
+
+def runCases : List Case :=
+  let enc := encodeFile posixTwoLines
+  let encBlank := encodeFile posixTwoLinesBlank
+  let includeStrLines := includeStrLineNumbers sampleIncludeStrSource
+  let includeStrFindings :=
+    findingsForIncludeStr "Spec_0001.lean" sampleIncludeStrSource
+  [
+    expectEqString "pad4 of 0 is 0000" (pad4 0) "0000",
+    expectEqString "pad4 of 8 is 0008" (pad4 8) "0008",
+    expectEqString "pad4 of 10 is 0010" (pad4 10) "0010",
+    expectEqString "sibling encoding name for 0"
+      (siblingEncodingFileName 0) "Spec_0000.lean",
+    expectEqString "sibling encoding name for 10"
+      (siblingEncodingFileName 10) "Spec_0010.lean",
+    expectEqString "proof module name for 8"
+      (siblingProofModuleName 8) "Proofs_0008",
+    expectEqString "proof file name for 8"
+      (siblingProofFileName 8) "lean/Proofs_0008.lean",
+    expectEqNat "POSIX two lines count" enc.size 2,
+    expectEqNat "first line number starts at 1" (enc[0]!).number 1,
+    expectEqString "first line text" (enc[0]!).text "alpha",
+    expectEqString "second line text" (enc[1]!).text "beta",
+    expectEqNat "blank line is encoded" encBlank.size 3,
+    expectEqString "middle blank line text" (encBlank[1]!).text "",
+    expectTrue "matching lines hold iso"
+      (isoHolds enc enc),
+    expectEmpty "matching lines have no drift"
+      (findDrift enc enc),
+    expectNonEmpty "markdown longer than encoding is missing encoding"
+      (findDrift (encodeFile "a\nb\nc\n") (encodeFile "a\nb\n")),
+    expectNonEmpty "encoding longer than markdown is extra encoding"
+      (findDrift (encodeFile "a\nb\n") (encodeFile "a\nb\nc\n")),
+    expectNonEmpty "text mismatch is drift"
+      (findDrift (encodeFile "a\nb\n") (encodeFile "a\nB\n")),
+    expectTrue "iso fails on mismatch"
+      (!isoHolds (encodeFile "a\n") (encodeFile "b\n")),
+    expectTrue "file with only a newline is one blank line"
+      ((encodeFile "\n").size == 1 && (encodeFile "\n")[0]!.text == ""),
+    expectEqNat "empty file has zero lines" (encodeFile "").size 0,
+    expectTrue "residual heading detected"
+      (hasResidualHeading (encodeFile "# Title\n\n## 6. Residual\n")),
+    expectFalse "no residual heading"
+      (hasResidualHeading (encodeFile "# Title\n")),
+    expectTrue "conforming sibling flags"
+      (siblingFlagsConform
+        { specNumber := 1
+          specFileName := "0001_DOGE.md"
+          siblingEncodingFileName := "Spec_0001.lean"
+          proofModuleName := "Proofs_0001"
+          markedAsSpecEncoding := true
+          markedAsProof := false
+          lines := #[] }),
+    expectFalse "mashed sibling flags do not conform"
+      (siblingFlagsConform
+        { specNumber := 1
+          specFileName := "0001_DOGE.md"
+          siblingEncodingFileName := "Spec_0001.lean"
+          proofModuleName := "Proofs_0001"
+          markedAsSpecEncoding := true
+          markedAsProof := true
+          lines := #[] }),
+    expectTrue "ofLine without role"
+      (MdLine.ofLine 1 "alpha" == { number := 1, text := "alpha", role := none }),
+    expectTrue "ofLine with role"
+      (MdLine.ofLine 2 "beta" (some "heading") ==
+        { number := 2, text := "beta", role := some "heading" }),
+    expectTrue "explicit ofLine encodings hold iso with encodeFile"
+      (isoHolds enc #[MdLine.ofLine 1 "alpha", MdLine.ofLine 2 "beta"]),
+    expectTrue "include_str in sibling source is nonconforming"
+      (containsIncludeStr
+        "def encodedLines := MdLine.encodeFile (include_str \"0001_DOGE.md\")"),
+    expectFalse "explicit MdLine literals are not include_str"
+      (containsIncludeStr
+        "def encodedLines : Array MdLine := #[{ number := 1, text := \"hi\" }]"),
+    expectFalse "include_str in a block comment is not a use"
+      (containsIncludeStr
+        ("/-\n" ++
+          "  explicit Lean MdLine value. This module does not use include_str.\n" ++
+          "-/\n" ++
+          "def encodedLines : Array MdLine := #[{ number := 1, text := \"hi\" }]\n")),
+    expectFalse "include_str in a line comment is not a use"
+      (containsIncludeStr
+        "def encodedLines : Array MdLine := #[] -- include_str is not a line encoding\n"),
+    expectFalse "include_str inside a string literal is not a use"
+      (containsIncludeStr
+        "def encodedLines : Array MdLine := #[{ number := 1, text := \"include_str is not a line encoding\" }]\n"),
+    expectEqNat "include_str line count is 1"
+      includeStrLines.size
+      1,
+    expectEqNat "include_str is on line 2"
+      (if includeStrLines.isEmpty then 0 else includeStrLines[0]!)
+      2,
+    expectNonEmpty "include_str finding is present"
+      includeStrFindings,
+    expectEqString "include_str finding path"
+      (if includeStrFindings.isEmpty then "" else includeStrFindings[0]!.path)
+      "Spec_0001.lean",
+    expectEqNat "include_str finding line"
+      (if includeStrFindings.isEmpty then 0 else includeStrFindings[0]!.line)
+      2,
+    expectEqString "include_str finding names the rule"
+      (if includeStrFindings.isEmpty then "" else includeStrFindings[0]!.message)
+      includeStrFindingMessage,
+    expectTrue "source without include_str has no include_str findings"
+      (findingsForIncludeStr "Spec_0001.lean"
+        "def encodedLines : Array MdLine := #[{ number := 1, text := \"a\" }]\n").isEmpty
+  ]
+
+def main (_args : List String) : IO UInt32 := do
+  let mut failed : Nat := 0
+  for c in runCases do
+    if c.ok then
+      IO.println s!"PASS {c.name}"
+    else
+      failed := failed + 1
+      if c.detail.isEmpty then
+        IO.eprintln s!"FAIL {c.name}"
+      else
+        IO.eprintln s!"FAIL {c.name}: {c.detail}"
+  if failed == 0 then
+    IO.println s!"All {runCases.length} tests passed."
+    return 0
+  else
+    IO.eprintln s!"{failed} of {runCases.length} tests failed."
+    return 1

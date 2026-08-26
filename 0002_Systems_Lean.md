@@ -21,12 +21,12 @@ This document is the contract that humans read. It does not contain Lean theorem
 
 This subsection is informative. It records how this specification relates to machine checked proofs. It is not a form rule under `0000_spec.md`.
 
-In dependently typed languages, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. This repository keeps that split on purpose, following the same spirit as Formal Vibefication (see Clause 8): people read numbered markdown; Lean checks a model of selected clauses.
+In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in `0008_Formal_Vibefication.md`, requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification.
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
 2. Companion Lean modules under `lean/` (the Systems Lean meaning model, distinct from the `spec_check` form checker) encode selected claims such as the multiplicity set, erasure of multiplicity 0, the freestanding product wire, residual honesty, CompCert verified compilation as a required validation step, bootstrapping a Slake compiler that fully typechecks as a required validation step, the novel language set, hygiene including product tree `ref/` directory names, stack targeting, this document's identity as specification 0002, the fact that the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md` (not 0003), the fact that beastdb is specified in `0003_beastdb.md`, and the fact that Recursive Self Improvement is specified in `0006_RSI.md`.
-3. Those modules prove facts about the model. They do not replace this document. This document does not replace those modules.
-4. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Meaning proofs MUST NOT be treated as a second markdown form checker.
+3. Those modules encode selected claims and prove facts about the model. They do not replace this document. This document does not replace those modules. Mixing spec encodings with their proofs in one mash that hides the split is nonconforming under `0008_Formal_Vibefication.md`; repairing this companion model into that split is remaining work.
+4. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Spec encodings of meaning MUST NOT be treated as a second markdown form checker.
 
 ## 2. Normative references
 
