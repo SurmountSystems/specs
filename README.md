@@ -137,7 +137,7 @@ nix flake check "path:$PWD" --print-build-logs
 
 CI installs Nix and runs that command directly (workflow: `.github/workflows/check.yml`). Checkout initializes Form 1 git submodules; Form 2 pins need no submodule init. It does **not** install or invoke `just`.
 
-`just` is optional local sugar only. `just check` runs the same Nix flake check line; you do not need `just` if you call Nix yourself. Prefer `path:` when local flake files may be untracked so pure git tree eval is not required.
+`just` is optional local sugar only. `just check` runs the same Nix flake check line and follows this machine's Nix config (which may send builds to a remote builder). `just check-local` is the same check with `--builders ''` so builds stay on this machine. `just check-remote` is the same check with `--max-jobs 0` so builds go to the configured remote builder and fail if that builder cannot start. You do not need `just` if you call Nix yourself. Prefer `path:` when local flake files may be untracked so pure git tree eval is not required.
 
 On a single architecture host, `nix flake check` may warn that it omitted checks for incompatible systems. That omit warning is normal and not a failure.
 
@@ -323,8 +323,12 @@ Exit status is nonzero when any check fails. Diagnostics go to stderr as `file:l
 ```bash
 # Canonical gate (local and CI): all flake checks
 nix flake check "path:$PWD" --print-build-logs
-# Optional sugar (same command):
+# Optional sugar (same flake check; this machine's Nix config may use a remote builder):
 just check
+# Same check, local builders only:
+just check-local
+# Same check, remote builders only (fails if the remote builder cannot start):
+just check-remote
 # Lean binary only:
 nix run "path:$PWD#spec_check"
 nix build "path:$PWD#spec_check" -L

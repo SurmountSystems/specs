@@ -194,7 +194,7 @@ nix flake check "path:$PWD" --print-build-logs
 
 CI (`.github/workflows/check.yml`) runs that Nix command directly after installing Nix. It does **not** go through `just`.
 
-`just check` is optional convenience sugar that runs the same Nix line. You do not need `just` if you invoke Nix yourself. See root `justfile`, `flake.nix`, and `README.md`.
+`just check` is optional convenience sugar that runs the same Nix line and follows this machine's Nix config. `just check-local` keeps builds on this machine (`--builders ''`). `just check-remote` sends builds to the configured remote builder (`--max-jobs 0`) and fails if that builder cannot start. You do not need `just` if you invoke Nix yourself. See root `justfile`, `flake.nix`, and `README.md`.
 
 Flake layout:
 

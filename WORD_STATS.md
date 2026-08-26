@@ -12,11 +12,11 @@ The Lean program word_stats writes this file and fails when this file is stale.
 
 ## Headline
 
-Unique word count: 2586
+Unique word count: 2588
 Proven unique count: 213
-Percent of unique words that are proven: 8.24%
-Total occurrence count: 72271
-Proven occurrence count: 11682
+Percent of unique words that are proven: 8.23%
+Total occurrence count: 72395
+Proven occurrence count: 11699
 Percent by prevalence: 16.16%
 
 CATE catalog token count (case sensitive): 213
@@ -46,7 +46,7 @@ VOCABULARY.md
 Each line is the lowercased token, a space, the occurrence count, and the word proven when that token is in the proven set.
 
 ```text
-a 1986
+a 1988
 aarch 2
 ab 1
 abbreviate 1
@@ -121,7 +121,7 @@ ambiguous 7
 american 84
 among 15
 an 158
-and 1742
+and 1746
 another 13
 ansi 3 proven
 answer 2
@@ -281,10 +281,10 @@ broken 4
 buffer 1
 bug 1
 build 87
-builder 20
-builders 1
+builder 27
+builders 5
 building 3
-builds 6
+builds 11
 built 5
 builtins 2
 bulk 2
@@ -309,7 +309,7 @@ can 74
 cancel 1
 candidate 1
 canned 1
-cannot 26
+cannot 29
 canon 7
 canonical 70
 capability 1
@@ -344,7 +344,7 @@ character 9
 characteristics 1
 characters 6
 chat 9
-check 303 proven
+check 314 proven
 checkability 5 proven
 checkable 21 proven
 checked 26
@@ -409,7 +409,7 @@ column 26
 com 69
 combinations 1
 combined 5
-command 12
+command 11
 commandments 2
 commands 2
 comment 5
@@ -450,9 +450,10 @@ concise 51
 concurrency 6
 concurrent 1
 confidence 14
-config 4
+config 7
 configuration 1
 configure 1
+configured 2
 confirmed 4
 conform 33
 conformance 78
@@ -822,10 +823,10 @@ fact 16
 factories 3
 factory 4
 facts 14
-fail 30
+fail 31
 failed 2
 failing 16
-fails 30
+fails 32
 failure 6
 fake 8
 fall 2
@@ -881,7 +882,7 @@ fixture 1
 fixtures 17
 flag 5
 flags 7
-flake 100 proven
+flake 101 proven
 flakes 4 proven
 flat 5
 float 2
@@ -895,7 +896,7 @@ folds 3
 follow 41
 followed 1
 following 35
-follows 15
+follows 17
 foo 4
 for 902
 forbade 1
@@ -963,7 +964,7 @@ give 2
 given 11
 glob 1
 global 1
-go 3
+go 4
 goes 4
 golf 3
 gone 1
@@ -1087,7 +1088,7 @@ idris 45 proven
 ids 10
 iec 23 proven
 ietf 1
-if 76
+if 79
 ignore 2
 ignoring 1
 image 3
@@ -1190,7 +1191,7 @@ invoke 5
 invokes 1
 io 4
 ir 21 proven
-is 2263
+is 2265
 iso 54 proven
 isolation 2
 isomorphism 45 proven
@@ -1205,21 +1206,21 @@ itu 41 proven
 j 4
 jargon 7
 job 32
-jobs 8
+jobs 10
 join 2
 joining 1
 json 4 proven
 judged 4
 jurisdiction 5
 jurisdictions 1
-just 14
+just 20
 justfile 2
 k 9
 keagan 61 proven
 keags 64 proven
 keep 57
 keeping 9
-keeps 41
+keeps 42
 kept 2
 kernel 2
 key 40
@@ -1317,7 +1318,7 @@ lives 32
 living 1
 llvm 22 proven
 lmdb 7 proven
-local 83
+local 87
 location 4
 locations 1
 lock 15
@@ -1337,7 +1338,7 @@ lowercase 39
 lowercased 3
 ls 2
 m 16
-machine 82
+machine 87
 machines 3
 magenta 4
 maintain 6
@@ -1379,9 +1380,10 @@ math 1
 mathlib 12
 matter 11
 matters 10
+max 2
 maximal 1
 maximum 1
-may 115 proven
+may 117 proven
 mcbride 4 proven
 mclelland 45 proven
 md 1132 proven
@@ -1479,7 +1481,7 @@ new 32
 newline 1
 next 22
 nickname 1
-nix 223 proven
+nix 226 proven
 nixos 9 proven
 nixpkgs 9 proven
 nnnn 119
@@ -1535,11 +1537,11 @@ oled 5 proven
 omega 25
 omit 1
 omitted 2
-on 225
+on 227
 once 24
 one 121
 ongoing 59
-only 137
+only 139
 onto 4
 open 13
 opened 2
@@ -1897,7 +1899,7 @@ remain 66
 remaining 45
 remains 140
 reminder 5
-remote 11
+remote 20
 remotes 1
 rendering 1
 rendition 1
@@ -1999,10 +2001,10 @@ runtime 28
 runtimeless 3 proven
 rust 51
 rustchain 1
-s 184
+s 187
 safety 14
 said 5
-same 154
+same 158
 sandbox 1
 sandboxed 1
 satisfy 8
@@ -2047,8 +2049,8 @@ sell 13
 semantic 33
 semantics 2
 semver 117 proven
-send 1
-sends 1
+send 2
+sends 2
 sense 7
 sensitive 3
 sentence 43
@@ -2128,7 +2130,7 @@ smaller 1
 smart 27
 snake 1
 snapshots 2
-so 80
+so 82
 society 5
 soft 12
 software 2
@@ -2185,7 +2187,7 @@ standalone 2
 standard 18
 standardization 2
 standards 18
-start 18
+start 21
 started 43
 starting 1
 starts 6
@@ -2198,7 +2200,7 @@ states 30
 stating 2
 stats 44
 status 26
-stay 34
+stay 35
 stays 19
 stderr 3 proven
 steal 16
@@ -2320,8 +2322,8 @@ text 85
 texts 6
 th 4 proven
 than 79
-that 1303
-the 2555
+that 1305
+the 2560
 theater 3
 their 44
 them 47
@@ -2340,7 +2342,7 @@ thin 8
 thing 3
 things 1
 third 11
-this 1423
+this 1428
 thisreposeparates 8
 thisrepounlicenseexceptnamedresidual 1
 those 323
@@ -2364,7 +2366,7 @@ tired 1
 title 10
 titled 6
 titles 3
-to 424
+to 427
 toaspell 2
 toc 5 proven
 today 2
@@ -2492,7 +2494,7 @@ url 35 proven
 urls 24 proven
 us 30 proven
 usa 5
-use 257
+use 258
 used 70
 useful 1
 user 7
@@ -2563,7 +2565,7 @@ what 89
 when 264
 where 14
 whether 1
-which 28
+which 29
 while 9
 white 5
 whitespace 94 proven
@@ -2577,7 +2579,7 @@ widths 1
 will 14
 wins 1
 wire 19
-with 312
+with 314
 withdrawn 19
 withdraws 1
 within 4

@@ -13,8 +13,19 @@ default:
 # Same underlying gate as CI: all flake checks for this system.
 # Equivalent to: nix flake check "path:$PWD" --print-build-logs
 # Uses path: so untracked flake files still evaluate (pure git tree is not required).
+# Uses this machine's Nix config, which may send builds to a remote builder.
 check:
 	nix flake check "path:{{justfile_directory()}}" --print-build-logs
+
+# Same flake check, local builders only (no remote builder).
+check-local:
+	nix flake check "path:{{justfile_directory()}}" --print-build-logs --builders ''
+
+# Same flake check, remote builders only (this machine's Nix builders list).
+# Fails if no remote builder is configured or the remote builder cannot start.
+# --max-jobs 0 keeps derivations off this laptop.
+check-remote:
+	nix flake check "path:{{justfile_directory()}}" --print-build-logs --max-jobs 0
 
 # Enter the development shell (lean4, just, git, spec_check, aspellWithDicts).
 dev:
