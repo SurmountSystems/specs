@@ -732,13 +732,15 @@ def isSkippedRel (rel : String) : Bool :=
 
 /--
   Project owned text kinds: Surmount authored sources and pins, not vendor blobs.
-  Includes numbered and other markdown, Lean, Nix, workflows under .github/, SOURCE, etc.
+  Includes numbered and other markdown, Lean, Nix, workflows under .github/,
+  SOURCE.md pins, leftover SOURCE, sibling .SOURCE, etc.
 -/
 def isOwnedKind (rel : String) : Bool :=
   let r := normalizeRel rel
   let base := baseName r
   if base == "justfile" || base == ".gitignore" || base == ".gitmodules" ||
-      base == "SOURCE" || base == "aspell_words.txt" || base == "lean-toolchain" then
+      base == "SOURCE" || base == "SOURCE.md" ||
+      base == "aspell_words.txt" || base == "lean-toolchain" then
     true
   else if base.endsWith ".md" || base.endsWith ".markdown" || base.endsWith ".mdown" ||
       base.endsWith ".lean" || base.endsWith ".nix" || base.endsWith ".toml" ||

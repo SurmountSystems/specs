@@ -21,6 +21,7 @@ import Spec_0005
 import Spec_0006
 import Spec_0007
 import Spec_0008
+import Spec_0009
 import Spec_0010
 
 open LineEncodings
@@ -98,6 +99,10 @@ def compiledEncodings : Array EncodedSpec :=
       Spec_0008.siblingEncodingFileName Spec_0008.proofModuleName
       Spec_0008.markedAsSpecEncoding Spec_0008.markedAsProof
       Spec_0008.encodedLines,
+    ofSpec Spec_0009.specNumber Spec_0009.specFileName
+      Spec_0009.siblingEncodingFileName Spec_0009.proofModuleName
+      Spec_0009.markedAsSpecEncoding Spec_0009.markedAsProof
+      Spec_0009.encodedLines,
     ofSpec Spec_0010.specNumber Spec_0010.specFileName
       Spec_0010.siblingEncodingFileName Spec_0010.proofModuleName
       Spec_0010.markedAsSpecEncoding Spec_0010.markedAsProof

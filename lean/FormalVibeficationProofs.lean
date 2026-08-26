@@ -121,12 +121,12 @@ theorem products_not_claimed_never_started :
     productsClaimedNeverStarted = false :=
   rfl
 
-theorem number_nine_assigned : numberNineAssigned = false :=
+theorem number_nine_assigned : numberNineAssigned = true :=
   rfl
 
-theorem number_nine_not_published_in_registry :
-    (SpecRegistry.allEntries.any (fun e => e.number == 9)) = false :=
-  SpecRegistry.number_9_not_published
+theorem number_nine_published_in_registry :
+    (SpecRegistry.allEntries.any (fun e => e.number == 9)) = true :=
+  SpecRegistry.number_9_published
 
 theorem number_eight_published_in_registry :
     (SpecRegistry.allEntries.any (fun e => e.number == 8)) = true :=

@@ -18,6 +18,7 @@ import Rsi
 import Ci
 import SpecCheck
 import FormalVibeficationSpec
+import UnlicenseSpec
 import VocabularySpec
 import SpecProofs
 
@@ -107,6 +108,8 @@ def runCases : List Case :=
     expectEqNat "CI is specification 0007" ciSpecNumber 7,
     expectEqNat "Formal Vibefication is specification 0008"
       Surmount.formalVibeficationSpecNumber 8,
+    expectEqNat "Unlicense is specification 0009"
+      Surmount.unlicenseSpecNumber 9,
     expectEqNat "word catalog is owned by specification 0005"
       Surmount.vocabularySpecNumber 5,
     expectTrue "vocabulary ownership equals CATE"
@@ -121,8 +124,10 @@ def runCases : List Case :=
         SpecRegistry.formalVibeficationSpecNumber,
     expectTrue "number 0008 is in the registry"
       (allEntries.any (fun e => e.number == 8)),
-    expectFalse "number 0009 is not in the registry"
+    expectTrue "number 0009 is in the registry"
       (allEntries.any (fun e => e.number == 9)),
+    expectFalse "number 0011 is not in the registry"
+      (allEntries.any (fun e => e.number == 11)),
     expectFalse "mash of 0009 as published is false"
       VocabularySpec.numberNinePublished,
     expectNonEmpty "wrong 0008 filename token fails"
@@ -144,8 +149,23 @@ def runCases : List Case :=
       (findingsForBasenames (publishedBasenames ++ ["0008_unused.md"])),
     expectNonEmpty "withdrawn 0009_VOCABULARY.md basename fails"
       (findingsForBasenames (publishedBasenames ++ ["0009_VOCABULARY.md"])),
-    expectEmpty "all published basenames including 0010 pass"
+    expectEmpty "all published basenames including 0009 and 0010 pass"
       (findingsForBasenames publishedBasenames),
+    expectEmpty "correct 0009_Unlicense token passes"
+      (scanContent "0009_Unlicense.md"
+        "This specification is number 0009. File 0009_Unlicense.md.\n"),
+    expectNonEmpty "wrong 0009 filename token fails"
+      (scanContent "0009_Unlicense.md"
+        "do not cite 0009_unused.md\n"),
+    expectNonEmpty "stale 0011_Unlicense token fails"
+      (scanContent "0009_Unlicense.md"
+        "do not create `0011_Unlicense.md`.\n"),
+    expectTrue "copyright remaining on OSS without dedication"
+      (UnlicenseSpec.remainingCopyright UnlicenseSpec.ossWithoutDedication),
+    expectFalse "Unlicense dedication has no remaining copyright"
+      (UnlicenseSpec.remainingCopyright UnlicenseSpec.unlicenseDedication),
+    expectFalse "mashed Unlicense spec and proof fixture does not conform"
+      (UnlicenseSpec.conformingThisRepo UnlicenseSpec.mashedFixture),
     expectEqNat "SSSSS is specification 0004" ssssSpecNumber 4,
     expectEqNat "beastdb is specification 0003" beastdbSpecNumber 3,
     expectEqNat "Systems Lean is specification 0002" systemsLeanSpecNumber 2,

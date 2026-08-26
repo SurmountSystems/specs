@@ -11,10 +11,11 @@
   is Recursive Self Improvement (RSI). Discussion of Carbonado as a
   possible 0006 was never an assignment. Number 0007 is Continuous
   Integration (CI). Number 0008 is Formal Vibefication. Number 0009 is
-  withdrawn. The word catalog is owned by CATE (specification 0005).
-  Number 0010 is Surmount Systems. fargo, SSSP, and Lean Machine have
-  no assigned numbers. Existing `ref/` pins remain; new pins are added
-  when present.
+  Unlicense. The word catalog is owned by CATE (specification 0005).
+  The file 0009_VOCABULARY.md MUST NOT exist. Number 0010 is Surmount
+  Systems. Number 0011 is not published. fargo, SSSP, and Lean Machine
+  have no assigned numbers. Existing `ref/` pins remain; new pins are
+  added when present.
 -/
 
 namespace SpecRegistry
@@ -40,6 +41,8 @@ def formalVibeficationFileName : String := "0008_Formal_Vibefication.md"
 def vocabularySpecNumber : Nat := 5
 def vocabularyFileName : String := "0005_CATE.md"
 def surmountSystemsSpecNumber : Nat := 10
+def unlicenseSpecNumber : Nat := 9
+def unlicenseFileName : String := "0009_Unlicense.md"
 
 def publishedEntries : List RegistryEntry :=
   [ { number := 0
@@ -77,6 +80,10 @@ def publishedEntries : List RegistryEntry :=
     , { number := 8
         fileName := "0008_Formal_Vibefication.md"
         productName := "Formal Vibefication"
+        published := true }
+    , { number := 9
+        fileName := "0009_Unlicense.md"
+        productName := "Unlicense"
         published := true }
     , { number := 10
         fileName := "0010_Surmount_Systems.md"
@@ -169,6 +176,18 @@ theorem vocabulary_is_not_0010 : vocabularySpecNumber ≠ 10 := by decide
 
 theorem vocabulary_is_not_0009 : vocabularySpecNumber ≠ 9 := by decide
 
+theorem unlicense_is_0009 : unlicenseSpecNumber = 9 := rfl
+
+theorem unlicense_file :
+    unlicenseFileName = "0009_Unlicense.md" :=
+  rfl
+
+theorem unlicense_is_not_0008 : unlicenseSpecNumber ≠ 8 := by decide
+
+theorem unlicense_is_not_0010 : unlicenseSpecNumber ≠ 10 := by decide
+
+theorem unlicense_is_not_0011 : unlicenseSpecNumber ≠ 11 := by decide
+
 theorem surmount_systems_is_0010 : surmountSystemsSpecNumber = 10 := rfl
 
 theorem surmount_systems_is_not_0007 : surmountSystemsSpecNumber ≠ 7 := by decide
@@ -215,26 +234,30 @@ theorem carbonado_not_assigned : carbonadoAssigned = false := rfl
 
 theorem carbonado_number_none : carbonadoAssignedNumber = none := rfl
 
-theorem published_count_ten : publishedEntries.length = 10 := rfl
+theorem published_count_eleven : publishedEntries.length = 11 := rfl
 
 theorem planned_count_zero : plannedEntries.length = 0 := rfl
 
 theorem all_entry_numbers :
     allEntries.map (fun e => e.number) =
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 10] :=
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] :=
   rfl
 
 theorem number_8_published :
     (allEntries.any (fun e => e.number == 8)) = true :=
   rfl
 
-theorem number_9_not_published :
-    (allEntries.any (fun e => e.number == 9)) = false :=
+theorem number_9_published :
+    (allEntries.any (fun e => e.number == 9)) = true :=
   rfl
 
-theorem number_9_is_withdrawn :
-    (allEntries.any (fun e => e.number == 9)) = false :=
-  number_9_not_published
+theorem number_11_not_published :
+    (allEntries.any (fun e => e.number == 11)) = false :=
+  rfl
+
+theorem number_11_is_unused :
+    (allEntries.any (fun e => e.number == 11)) = false :=
+  number_11_not_published
 
 /-- Encode helper: tests that every published file is present use this list. -/
 def publishedBasenames : List String :=
@@ -245,7 +268,7 @@ theorem published_filenames :
       ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
         "0003_beastdb.md", "0004_SSSSS.md", "0005_CATE.md",
         "0006_RSI.md", "0007_CI.md", "0008_Formal_Vibefication.md",
-        "0010_Surmount_Systems.md"] :=
+        "0009_Unlicense.md", "0010_Surmount_Systems.md"] :=
   rfl
 
 theorem published_basenames_are_entry_filenames :
@@ -341,8 +364,10 @@ theorem formal_vibefication_entry_filename :
       ["0008_Formal_Vibefication.md"] :=
   rfl
 
-theorem vocabulary_has_no_published_row_nine :
-    (allEntries.filter (fun e => e.number == 9)) = [] :=
+theorem number_nine_product_is_unlicense :
+    (allEntries.filter (fun e => e.number == 9)).map
+        (fun e => e.productName) =
+      ["Unlicense"] :=
   rfl
 
 theorem vocabulary_catalog_file_is_cate :
@@ -358,6 +383,16 @@ theorem surmount_systems_entry_published :
 theorem surmount_systems_entry_filename :
     (allEntries.filter (fun e => e.number == 10)).map (fun e => e.fileName) =
       ["0010_Surmount_Systems.md"] :=
+  rfl
+
+theorem unlicense_entry_published :
+    (allEntries.filter (fun e => e.number == 9)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem unlicense_entry_filename :
+    (allEntries.filter (fun e => e.number == 9)).map (fun e => e.fileName) =
+      ["0009_Unlicense.md"] :=
   rfl
 
 /-!

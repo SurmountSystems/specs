@@ -151,7 +151,7 @@ def line0060 : MdLine := { number := 60, text := "### 3.5 External reference tre
 
 def line0061 : MdLine := { number := 61, text := "" }
 
-def line0062 : MdLine := { number := 62, text := "The `ref/` directory, holding public standards this repository cites so readers and tools can open the exact text meant without hunting the web: either git submodules from each standard's canonical git source that the publisher maintains (Form 1), or official publisher artifact pins (PDF, plain text, or similar) committed directly in this repository's git tree with SOURCE metadata (Form 2). Hyperlinks to publisher pages still matter as publisher links. See Clause 12." }
+def line0062 : MdLine := { number := 62, text := "The `ref/` directory, holding public standards this repository cites so readers and tools can open the exact text meant without hunting the web: either git submodules from each standard's canonical git source that the publisher maintains (Form 1), or official publisher artifact pins (PDF, plain text, or similar) committed directly in this repository's git tree with `SOURCE.md` metadata (Form 2). Hyperlinks to publisher pages still matter as publisher links. See Clause 12." }
 
 def line0063 : MdLine := { number := 63, text := "" }
 
@@ -487,7 +487,7 @@ def line0228 : MdLine := { number := 228, text := "" }
 
 def line0229 : MdLine := { number := 229, text := "1. `ref/` holds the external standards this repository cites (Semantic Versioning, RFC 2119, ECMA and ISO terminal standards, and similar) so readers and tools can open the **exact** text meant without hunting the web." }
 
-def line0230 : MdLine := { number := 230, text := "2. Hyperlinks to publisher pages still matter (and often predate git and even some of the specs). Canonical URLs SHALL remain in each entry's SOURCE file and SHOULD appear in citations." }
+def line0230 : MdLine := { number := 230, text := "2. Hyperlinks to publisher pages still matter (and often predate git and even some of the specs). Canonical URLs SHALL remain in each Form 2 entry's `SOURCE.md` file and in each Form 1 sibling `.SOURCE` file, and SHOULD appear in citations." }
 
 def line0231 : MdLine := { number := 231, text := "3. Local copies under `ref/` freeze what this repository reviewed and checksummed or pinned in git. They do not replace the publisher page as the public home of the standard." }
 
@@ -507,9 +507,9 @@ def line0238 : MdLine := { number := 238, text := "	1. Document that fact in `re
 
 def line0239 : MdLine := { number := 239, text := "	2. Keep a **local copy** of the specific official publisher artifact needed under `ref/<short_name>/`, committed **directly in this repository's git tree** as ordinary files (**not** a submodule), obtained from the most canonical official source the publisher provides." }
 
-def line0240 : MdLine := { number := 240, text := "	3. Record canonical hyperlink(s), retrieval date, checksum, and edition or version in a pure ASCII `SOURCE` file under that directory. Publisher hyperlinks still matter as publisher links; the local copy freezes the reviewed bytes." }
+def line0240 : MdLine := { number := 240, text := "	3. Record canonical hyperlink(s), retrieval date, checksum, and edition or version in a pure ASCII `SOURCE.md` file under that directory. Publisher hyperlinks still matter as publisher links; the local copy freezes the reviewed bytes." }
 
-def line0241 : MdLine := { number := 241, text := "	4. Note license, copyright, or republication status for the entry in `ref/README.md` (detail MAY remain in SOURCE)." }
+def line0241 : MdLine := { number := 241, text := "	4. Note license, copyright, or republication status for the entry in `ref/README.md` (detail MAY remain in `SOURCE.md`)." }
 
 def line0242 : MdLine := { number := 242, text := "	5. State reasoning in `ref/README.md`: why direct tree copy instead of submodule (no publisher git; durable local pin of the exact official artifact; hyperlinks remain for the living publisher location; no invented fake git remotes). That form **does** satisfy this clause. Examples: RFC 2119 (RFC Editor plain text under `ref/rfc2119`), ECMA-48 (Ecma International PDF under `ref/ecma48`), and ITU-T T.416 (ITU free PDF under `ref/itu_t416`; identical text also published as ISO/IEC 8613-6)." }
 
@@ -519,7 +519,7 @@ def line0244 : MdLine := { number := 244, text := "5. Authors SHOULD prefer Form
 
 def line0245 : MdLine := { number := 245, text := "6. Directory names under `ref/` SHOULD be short, stable, and lowercase (examples: `semver`, `rfc2119`, `ecma48`, `itu_t416`)." }
 
-def line0246 : MdLine := { number := 246, text := "7. Authors SHALL NOT edit upstream files inside submodules or inside pinned official artifacts. Specs cite a version, tag, commit, or SOURCE checksum. Update the pin when the cited version must change." }
+def line0246 : MdLine := { number := 246, text := "7. Authors SHALL NOT edit upstream files inside submodules or inside pinned official artifacts. Specs cite a version, tag, commit, or `SOURCE.md` checksum. Update the pin when the cited version must change." }
 
 def line0247 : MdLine := { number := 247, text := "8. Process detail for operators and agents, including per-entry license notes and \"Why we pin this way,\" is described in `ref/README.md`. A short summary also appears in the repository root `README.md`." }
 
@@ -535,11 +535,11 @@ def line0252 : MdLine := { number := 252, text := "" }
 
 def line0253 : MdLine := { number := 253, text := "1. Semantic Versioning (`ref/semver`) - Form 1 git submodule of the SemVer project's canonical repository that the publisher maintains, when present." }
 
-def line0254 : MdLine := { number := 254, text := "2. RFC 2119 (`ref/rfc2119`) - Form 2 official RFC Editor plain text pin committed directly in this repository's git tree with SOURCE when present. There is no canonical git repository that the publisher maintains for this historic RFC that this process treats as authoritative; third party copies are not canonical." }
+def line0254 : MdLine := { number := 254, text := "2. RFC 2119 (`ref/rfc2119`) - Form 2 official RFC Editor plain text pin committed directly in this repository's git tree with `SOURCE.md` when present. There is no canonical git repository that the publisher maintains for this historic RFC that this process treats as authoritative; third party copies are not canonical." }
 
-def line0255 : MdLine := { number := 255, text := "3. ECMA-48 and related ISO/IEC terminal control references as used by DOGE and similar specs, when available under `ref/` - Form 2 official Ecma International PDF pin committed directly in this repository's git tree with SOURCE for ECMA-48 (`ref/ecma48`) when present. Community reformats are not the Ecma publisher source." }
+def line0255 : MdLine := { number := 255, text := "3. ECMA-48 and related ISO/IEC terminal control references as used by DOGE and similar specs, when available under `ref/` - Form 2 official Ecma International PDF pin committed directly in this repository's git tree with `SOURCE.md` for ECMA-48 (`ref/ecma48`) when present. Community reformats are not the Ecma publisher source." }
 
-def line0256 : MdLine := { number := 256, text := "4. ITU-T T.416 / ISO/IEC 8613-6 (`ref/itu_t416`) - Form 2 official ITU free PDF pin (Recommendation T.416, 03/93; identical text also published as ISO/IEC 8613-6) committed directly in this repository's git tree with SOURCE when present. There is no canonical git that the publisher maintains for this Recommendation. DOGE cites this standard for extended color models." }
+def line0256 : MdLine := { number := 256, text := "4. ITU-T T.416 / ISO/IEC 8613-6 (`ref/itu_t416`) - Form 2 official ITU free PDF pin (Recommendation T.416, 03/93; identical text also published as ISO/IEC 8613-6) committed directly in this repository's git tree with `SOURCE.md` when present. There is no canonical git that the publisher maintains for this Recommendation. DOGE cites this standard for extended color models." }
 
 def line0257 : MdLine := { number := 257, text := "" }
 
@@ -555,7 +555,7 @@ def line0262 : MdLine := { number := 262, text := "When a specification gains a 
 
 def line0263 : MdLine := { number := 263, text := "" }
 
-def line0264 : MdLine := { number := 264, text := "1. Add or update the corresponding `ref/` entry under Clause 12.2: either a Form 1 git submodule from the standard's canonical git source that the publisher maintains, or a Form 2 official publisher artifact pin with SOURCE committed directly in this repository's git tree, as fits what the publisher actually provides." }
+def line0264 : MdLine := { number := 264, text := "1. Add or update the corresponding `ref/` entry under Clause 12.2: either a Form 1 git submodule from the standard's canonical git source that the publisher maintains, or a Form 2 official publisher artifact pin with `SOURCE.md` committed directly in this repository's git tree, as fits what the publisher actually provides." }
 
 def line0265 : MdLine := { number := 265, text := "2. Cite both the public identity of the standard (including publisher hyperlink when useful) and the local `ref/` path when the path exists." }
 
@@ -565,7 +565,7 @@ def line0267 : MdLine := { number := 267, text := "4. Authors SHALL NOT delete a
 
 def line0268 : MdLine := { number := 268, text := "5. Existing pins remain. New pins are added when the cited artifact is present under `ref/`." }
 
-def line0269 : MdLine := { number := 269, text := "6. A Form 2 PDF pin SHALL include SOURCE. A permission note for republication of those PDFs SHALL be recorded when the operator writes that note. Until that note exists, residual SHALL name that it is not yet written." }
+def line0269 : MdLine := { number := 269, text := "6. A Form 2 PDF pin SHALL include `SOURCE.md`. A permission note for republication of those PDFs SHALL be recorded when the operator writes that note. Until that note exists, residual SHALL name that it is not yet written." }
 
 def line0270 : MdLine := { number := 270, text := "" }
 
@@ -771,7 +771,7 @@ def line0370 : MdLine := { number := 370, text := "### 1.3.0 - 20260825" }
 
 def line0371 : MdLine := { number := 371, text := "" }
 
-def line0372 : MdLine := { number := 372, text := "Assigns Concise American Technical English to specification 0005 with file name `0005_CATE.md` and Recursive Self Improvement to specification 0006 with file name `0006_RSI.md`. Existing `ref/` pins remain; new pins are added when the cited artifact is present. A PDF permission note is named in residual until the operator writes that note. Lean 4, CompCert, Idris 2, and Rust stay in the Systems Lean product tree and MUST NOT be copied into this repository's `ref/`." }
+def line0372 : MdLine := { number := 372, text := "Assigns Concise American Technical English to specification 0005 with file name `0005_CATE.md` and Recursive Self Improvement to specification 0006 with file name `0006_RSI.md`. Existing `ref/` pins remain; new pins are added when the cited artifact is present. A PDF permission note is named in residual until the operator writes that note. Lean 4, CompCert, Idris 2, and Rust stay in the Systems Lean product tree and MUST NOT be copied into this repository's `ref/`. Form 2 pin notes are a pure ASCII `SOURCE.md` file, not a bare SOURCE file. Form 1 sibling pin notes remain `ref/semver.SOURCE`." }
 
 def line0373 : MdLine := { number := 373, text := "" }
 

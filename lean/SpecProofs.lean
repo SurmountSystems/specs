@@ -14,6 +14,7 @@ import Proofs_0005
 import Proofs_0006
 import Proofs_0007
 import Proofs_0008
+import Proofs_0009
 import Proofs_0010
 import Spec_0000
 import Spec_0001
@@ -24,6 +25,7 @@ import Spec_0005
 import Spec_0006
 import Spec_0007
 import Spec_0008
+import Spec_0009
 import Spec_0010
 
 namespace SpecProofs
@@ -39,6 +41,7 @@ theorem encodings_are_not_proofs :
       Spec_0006.markedAsProof = false ∧
       Spec_0007.markedAsProof = false ∧
       Spec_0008.markedAsProof = false ∧
+      Spec_0009.markedAsProof = false ∧
       Spec_0010.markedAsProof = false :=
   And.intro Proofs_0000.encoding_is_not_proof.2
     (And.intro Proofs_0001.encoding_is_not_proof.2
@@ -49,7 +52,8 @@ theorem encodings_are_not_proofs :
               (And.intro Proofs_0006.encoding_is_not_proof.2
                 (And.intro Proofs_0007.encoding_is_not_proof.2
                   (And.intro Proofs_0008.encoding_is_not_proof.2
-                    Proofs_0010.encoding_is_not_proof.2))))))))
+                    (And.intro Proofs_0009.encoding_is_not_proof.2
+                      Proofs_0010.encoding_is_not_proof.2)))))))))
 
 def encodingsNotMashed : Bool :=
   !Spec_0000.markedAsProof &&
@@ -70,12 +74,14 @@ def encodingsNotMashed : Bool :=
     Spec_0007.markedAsSpecEncoding &&
     !Spec_0008.markedAsProof &&
     Spec_0008.markedAsSpecEncoding &&
+    !Spec_0009.markedAsProof &&
+    Spec_0009.markedAsSpecEncoding &&
     !Spec_0010.markedAsProof &&
     Spec_0010.markedAsSpecEncoding
 
 theorem encodings_not_mashed : encodingsNotMashed = true := rfl
 
-theorem ten_published_encodings :
+theorem eleven_published_encodings :
     Spec_0000.specNumber = 0 ∧
       Spec_0001.specNumber = 1 ∧
       Spec_0002.specNumber = 2 ∧
@@ -85,6 +91,7 @@ theorem ten_published_encodings :
       Spec_0006.specNumber = 6 ∧
       Spec_0007.specNumber = 7 ∧
       Spec_0008.specNumber = 8 ∧
+      Spec_0009.specNumber = 9 ∧
       Spec_0010.specNumber = 10 :=
   And.intro Proofs_0000.spec_number
     (And.intro Proofs_0001.spec_number
@@ -95,6 +102,7 @@ theorem ten_published_encodings :
               (And.intro Proofs_0006.spec_number
                 (And.intro Proofs_0007.spec_number
                   (And.intro Proofs_0008.spec_number
-                    Proofs_0010.spec_number))))))))
+                    (And.intro Proofs_0009.spec_number
+                      Proofs_0010.spec_number)))))))))
 
 end SpecProofs

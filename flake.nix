@@ -216,6 +216,14 @@
 						description = "Lean tests for Formal Vibefication spec encodings and separate proofs (spec 0008)";
 					};
 
+					# Spec encodings versus proofs for Unlicense (spec 0009).
+					unlicense_tests = mkLeanBin {
+						pname = "unlicense_tests";
+						lakeTarget = "unlicense_tests";
+						binName = "unlicense_tests";
+						description = "Lean tests for Unlicense spec encodings and separate proofs (spec 0009)";
+					};
+
 					# Hermetic tests for isomorphism of markdown lines and Lean encodings.
 					line_encodings_tests = mkLeanBin {
 						pname = "line_encodings_tests";
@@ -249,7 +257,7 @@
 					};
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests line_encodings_tests line_encodings_check word_stats_tests word_stats;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests line_encodings_tests line_encodings_check word_stats_tests word_stats;
 					default = spec_check;
 				}
 			);
@@ -478,6 +486,20 @@
 								echo ok > "$out/result"
 							'';
 
+					# Unlicense spec encodings versus proofs; not a second markdown linter.
+					unlicense_tests =
+						pkgs.runCommand "unlicense_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.unlicense_tests
+								];
+							}
+							''
+								unlicense_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
 					# Hermetic line encoding fixtures; not a second markdown linter.
 					line_encodings_tests =
 						pkgs.runCommand "line_encodings_tests"
@@ -553,6 +575,7 @@
 						vocab_aspell_tests
 						surmount_tests
 						formal_vibefication_tests
+						unlicense_tests
 						line_encodings_tests
 						line_encodings_check
 						word_stats_tests

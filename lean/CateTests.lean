@@ -59,7 +59,7 @@ def runCases : List Case :=
     expectTrue "vocabulary ownership equals CATE"
       (vocabularySpecNumber == specNumber),
     expectTrue "CATE owns the word catalog" ownsVocabularyCatalog,
-    expectTrue "number 0009 is withdrawn" numberNineWithdrawn,
+    expectFalse "number 0009 is Unlicense, not withdrawn" numberNineWithdrawn,
     expectNonEmpty "withdrawn 0009_VOCABULARY.md basename fails"
       (findingsForBasenames (publishedBasenames ++ ["0009_VOCABULARY.md"])),
     expectNonEmpty "withdrawn 0009_VOCABULARY token fails"

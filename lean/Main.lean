@@ -31,8 +31,8 @@ def usage : String :=
   "  tabs only; no prose wrapped to a column.\n" ++
   "  American English spelling via aspell (en_US) when aspell is on PATH.\n" ++
   "  Number and file name registry: published specs match SpecRegistry;\n" ++
-  "  published 0005_CATE.md, 0006_RSI.md, 0007_CI.md, 0008_Formal_Vibefication.md, and 0010_Surmount_Systems.md MUST exist;\n" ++
-  "  stale 0005_fargo.md MUST fail; withdrawn 0009_VOCABULARY.md MUST fail;\n" ++
+  "  published 0005_CATE.md, 0006_RSI.md, 0007_CI.md, 0008_Formal_Vibefication.md, 0009_Unlicense.md, and 0010_Surmount_Systems.md MUST exist;\n" ++
+  "  stale 0005_fargo.md MUST fail; stale 0011_Unlicense.md MUST fail; withdrawn 0009_VOCABULARY.md MUST fail;\n" ++
   "  Carbonado is not assigned; beastdb capitalization MUST be lowercase.\n" ++
   "  CATE leftover unstack phrases in numbered spec prose (0005_CATE.md);\n" ++
   "  planned file tokens in numbered specs other than 0000 require a Residual heading.\n" ++

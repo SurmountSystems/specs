@@ -14,7 +14,7 @@
   sentence is CATE. Leftover unstack remains a separate floor.
   Lean comments are not in the scan.
 
-  Number 0009 is withdrawn. This module is not ISO 24495.
+  Number 0009 is Unlicense. The catalog is CATE. This module is not ISO 24495.
 -/
 
 import VocabAspell

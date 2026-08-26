@@ -4,7 +4,7 @@
   Theorems in VocabAspell.lean cover inverse maps, letter counts, and
   duplicate ids on finite lists. This executable re-checks those facts
   and reads both repository files under REPO_ROOT (or cwd).
-  Number 0009 is withdrawn. 0009_VOCABULARY.md MUST NOT exist.
+  Number 0009 is Unlicense. 0009_VOCABULARY.md MUST NOT exist.
 -/
 
 import SpecCheck

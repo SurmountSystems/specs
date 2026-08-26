@@ -52,5 +52,5 @@ Notes:
 	3. Cite Recommendation identity, edition (03/93), URL, retrieval date,
 			and checksum from Surmount specs. Local path: ref/itu_t416.
 	4. Refresh only by re-fetching the official PDF from the ITU download URL
-			and updating this SOURCE file.
+			and updating this SOURCE.md file.
 	5. Per-entry summary and reasoning: ref/README.md.

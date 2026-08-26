@@ -12,7 +12,7 @@ This specification is number 0008. The file name is `0008_Formal_Vibefication.md
 
 This document is the contract that humans read. It does not contain Lean theorem statements. Selected claims are encoded in Lean under `lean/FormalVibeficationSpec.lean` (see Clause 1.2). Proofs of those encodings live under `lean/FormalVibeficationProofs.lean`. Every published numbered markdown file at this repository root also has a sibling line encoding `Spec_NNNN.lean` at that same root, with proofs in `lean/Proofs_NNNN.lean`. Those Lean files are not this specification.
 
-This document does not claim that a conforming Surmount product exists. This document does not claim that Slake emit already matches object files as identical bytes. This document does not specify fargo. This document does not specify the Surmount Systems System Prompt (SSSP). This document does not specify the Carbonado Network Protocol. This document does not specify Lean Machine. Number 0009 is withdrawn. The word catalog lives in CATE (`0005_CATE.md`).
+This document does not claim that a conforming Surmount product exists. This document does not claim that Slake emit already matches object files as identical bytes. This document does not specify fargo. This document does not specify the Surmount Systems System Prompt (SSSP). This document does not specify the Carbonado Network Protocol. This document does not specify Lean Machine. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). A numbered Vocabulary file MUST NOT exist. Number 0011 is not published.
 
 ### 1.1 Status of this document
 
@@ -46,14 +46,15 @@ In languages with dependent types, a specification (what must be true) and a pro
 3. Recursive Self Improvement remains [0006_RSI.md](0006_RSI.md).
 4. Continuous Integration and stack consistency remains [0007_CI.md](0007_CI.md).
 5. Surmount Systems remains [0010_Surmount_Systems.md](0010_Surmount_Systems.md).
-6. Systems Lean and Slake remain [0002_Systems_Lean.md](0002_Systems_Lean.md).
-7. beastdb remains [0003_beastdb.md](0003_beastdb.md).
-8. SSSSS remains [0004_SSSSS.md](0004_SSSSS.md).
-9. fargo has no numbered specification in this repository and no assigned number. This document does not invent a number for fargo. This document does not specify how Rust is elevated with fargo.
-10. The Carbonado Network Protocol has no numbered specification in this repository and no assigned number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`). Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is this specification. Number 0009 is withdrawn. The word catalog lives in CATE (`0005_CATE.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). This document does not steal those numbers for fargo or for Carbonado.
-11. SSSP is named in residual. It is not specified here.
-12. Lean Machine is named in residual. It is not specified here.
-13. The word catalog remains [0005_CATE.md](0005_CATE.md). CATE is specification 0005. Number 0009 is withdrawn. A numbered specification file for 0009 MUST NOT exist. This document does not assign 0009 to fargo or to Carbonado.
+6. Unlicense remains [0009_Unlicense.md](0009_Unlicense.md). That document is specification 0009. That document is not this specification.
+7. Systems Lean and Slake remain [0002_Systems_Lean.md](0002_Systems_Lean.md).
+8. beastdb remains [0003_beastdb.md](0003_beastdb.md).
+9. SSSSS remains [0004_SSSSS.md](0004_SSSSS.md).
+10. fargo has no numbered specification in this repository and no assigned number. This document does not invent a number for fargo. This document does not specify how Rust is elevated with fargo.
+11. The Carbonado Network Protocol has no numbered specification in this repository and no assigned number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`). Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is this specification. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is not published. This document does not steal those numbers for fargo or for Carbonado.
+12. SSSP is named in residual. It is not specified here.
+13. Lean Machine is named in residual. It is not specified here.
+14. The word catalog remains [0005_CATE.md](0005_CATE.md). CATE is specification 0005. Number 0009 is Unlicense (`0009_Unlicense.md`). A numbered Vocabulary file MUST NOT exist. Mentions of Vocabulary as a published specification 0009 do not conform. Number 0011 is not published. This document does not assign 0009 to fargo or to Carbonado.
 
 ## 2. Normative references
 
@@ -191,8 +192,8 @@ The relation that holds when every physical line of a numbered markdown file has
 2. SSSP is unspecified. SSSP has no numbered specification file and no assigned number.
 3. The Carbonado Network Protocol is unspecified. Carbonado has no numbered specification file and no assigned number.
 4. Lean Machine is unspecified. Lean Machine has no numbered specification file and no assigned number.
-5. Number 0009 is withdrawn. The word catalog lives in CATE (`0005_CATE.md`). Authors SHALL NOT assign 0009 to fargo or to Carbonado.
-6. A numbered specification file at the repository root whose number is 0009 MUST NOT exist. The form checker MUST fail if such a file is present.
+5. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). Authors SHALL NOT assign 0009 to fargo or to Carbonado. Mentions of Vocabulary as a published specification 0009 do not conform.
+6. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present. Number 0011 is not published.
 
 ### 4.10 Sibling line encodings for every published numbered specification
 
@@ -227,7 +228,7 @@ Work that claims this specification conforms if and only if all of the following
 6. This specifications repository keeps human markdown, Lean spec encodings, and Lean proofs distinct; Systems Lean product trees may unify specification, proof, and implementation; a mash of those homes is treated as `False` (Clause 4.6).
 7. Formal Vibefication citations keep the canonical Proof of Keags URLs; a numbered specification that names Keagan or Proof of Keags also contains the host `proofofkeags.com`; theorems cover exactly what they state (Clause 4.7).
 8. beastdb, SSSSS, Slake, and Continuous Integration are treated as ongoing and not ready for use, and are not described as never started or as ready (Clause 4.8).
-9. fargo, SSSP, Carbonado, and Lean Machine remain unspecified; number 0009 is withdrawn and is not assigned to fargo or Carbonado; a numbered specification file for 0009 does not exist (Clause 4.9).
+9. fargo, SSSP, Carbonado, and Lean Machine remain unspecified; number 0009 is Unlicense and is not assigned to fargo or Carbonado; a numbered Vocabulary file does not exist; number 0011 is not published (Clause 4.9).
 10. Every published numbered markdown file has a sibling `Spec_NNNN.lean` whose physical lines match that markdown; proofs of those encodings live in `lean/Proofs_NNNN.lean`; a mash of that sibling encoding with its proofs is nonconforming; `line_encodings_check` fails on drift (Clause 4.10).
 11. The named gate in `0007_CI.md` remains the gate for this repository (Clause 4.11).
 
@@ -241,11 +242,11 @@ This section is normative for residual honesty of this document. Silence about a
 
 ### 6.1 Unpublished specifications and unassigned numbers
 
-1. fargo is not specified. fargo has no assigned specification number. This document does not invent a number for fargo. This document does not steal 0005, 0006, 0007, 0008, or 0010 for fargo.
+1. fargo is not specified. fargo has no assigned specification number. This document does not invent a number for fargo. This document does not steal 0005, 0006, 0007, 0008, 0009, or 0010 for fargo. Number 0011 is not published.
 2. The Surmount Systems System Prompt (SSSP) is not specified. It has no numbered specification file in this repository. It has no assigned specification number. This document MUST NOT be read as creating SSSP.
-3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is this specification. Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). This document does not create a file for Carbonado.
+3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is this specification. Number 0009 is Unlicense (`0009_Unlicense.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is not published. This document does not create a file for Carbonado.
 4. Lean Machine is named as a substrate in `0002_Systems_Lean.md` and in `0004_SSSSS.md`. It has no numbered specification and no assigned number. This document does not invent a numbered file for Lean Machine.
-5. Number 0009 is withdrawn. The word catalog lives in CATE (`0005_CATE.md`). This document does not assign 0009 to fargo or to Carbonado. A numbered specification file at the repository root whose number is 0009 MUST NOT exist. The form checker MUST fail if such a file is present.
+5. Number 0009 was briefly Vocabulary, then withdrawn, and is now Unlicense by operator order. The word catalog lives in CATE (`0005_CATE.md`). This document does not assign 0009 to fargo or to Carbonado. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present. Number 0011 is not published.
 
 ### 6.2 Product claims that are not ready for use
 
@@ -282,7 +283,7 @@ This section is normative for residual honesty of this document. Silence about a
 
 First publication of Formal Vibefication as numbered specification 0008 with file name `0008_Formal_Vibefication.md`. Records that numbered markdown is the contract humans read and is not a substitute for Lean spec encodings. Requires the specification to be encoded in Lean as declarations of what must be true, in modules marked as spec encodings. Requires proofs to live in separate Lean modules that import those encodings. Records that Lean proofs are not the specification. Records that `spec_check` is form of numbered markdown and is not a second meaning linter. Treats a mash of spec encodings and their proofs that hides the split as nonconforming in this specifications repository. Records that Systems Lean product trees may unify specification, proof, and implementation, and that mashing that home with this repository's split is `False`. Cites Formal Vibefication and Taking Don't Trust. Verify. Seriously with canonical Proof of Keags URLs and requires back linking. Requires residual honesty that beastdb, SSSSS, Slake, and Continuous Integration are ongoing and not ready for use.
 
-This 1.0.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Surmount Systems is specification 0010; this specification is number 0008; number 0009 is withdrawn and the word catalog lives in CATE (`0005_CATE.md`); fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Lean Machine is unnumbered; companion models other than the Formal Vibefication pair still mix encodings and proofs and that mash is remaining work; every published numbered markdown file has a sibling `Spec_NNNN.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a conforming Surmount product exists.
+This 1.0.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Surmount Systems is specification 0010; this specification is number 0008; number 0009 is Unlicense (`0009_Unlicense.md`) and the word catalog lives in CATE (`0005_CATE.md`); a numbered Vocabulary file MUST NOT exist; number 0011 is not published; fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Lean Machine is unnumbered; companion models other than the Formal Vibefication pair still mix encodings and proofs and that mash is remaining work; every published numbered markdown file has a sibling `Spec_NNNN.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a conforming Surmount product exists.
 
 No prior public release of this specification exists.
 

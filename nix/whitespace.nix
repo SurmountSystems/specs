@@ -76,6 +76,7 @@ let
 		|| base == ".gitignore"
 		|| base == ".gitmodules"
 		|| base == "SOURCE"
+		|| base == "SOURCE.md"
 		|| base == "aspell_words.txt"
 		|| base == "lean-toolchain"
 		|| lib.hasSuffix ".SOURCE" base
@@ -110,6 +111,7 @@ let
 			|| n == ".gitignore"
 			|| n == ".gitmodules"
 			|| n == "SOURCE"
+			|| n == "SOURCE.md"
 			|| n == "aspell_words.txt"
 			|| n == "lean-toolchain"
 			|| lib.hasSuffix ".SOURCE" n
@@ -193,10 +195,19 @@ let
 		path:
 		let
 			rel = relOf path;
+			base = baseNameOf rel;
+			leftoverBareSource =
+				if base == "SOURCE" then
+					[
+						"${rel}: leftover Form 2 pin notes named SOURCE (use SOURCE.md)"
+					]
+				else
+					[ ];
 			content = readFile path;
 			lines = linesOf content;
 		in
-		lib.concatLists (lib.imap1 (lineNo: line: checkLine rel lineNo line) lines);
+		leftoverBareSource
+		++ lib.concatLists (lib.imap1 (lineNo: line: checkLine rel lineNo line) lines);
 
 in
 lib.concatMap checkFile pathsToCheck

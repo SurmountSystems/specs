@@ -45,5 +45,5 @@ Notes:
 	2. Canonical hyperlinks above remain first-class for the living publisher
 			location; this pin freezes the reviewed bytes for this repository.
 	3. Cite edition, URL, retrieval date, and checksum from Surmount specs.
-	4. Refresh only by re-fetching the official PDF and updating this SOURCE file.
+	4. Refresh only by re-fetching the official PDF and updating this SOURCE.md file.
 	5. Per-entry summary and reasoning: ref/README.md.

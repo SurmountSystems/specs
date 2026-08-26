@@ -13,7 +13,8 @@
   0005. Runtime checks still live in VocabAspell.lean and read
   0005_CATE.md, not the pointer file VOCABULARY.md.
 
-  Number 0009 is withdrawn. This module is not ISO 24495.
+  Number 0009 is Unlicense. The catalog is CATE, not a 0009 file.
+  The file 0009_VOCABULARY.md MUST NOT exist. This module is not ISO 24495.
 
   Comments in this module use the CATE leftover unstack floor. They do
   not claim every comment is a complete American English thought.
@@ -71,7 +72,7 @@ theorem catalog_is_not_pointer : catalogIsPointerFile = false := rfl
 
 theorem catalog_is_numbered_spec : catalogIsNumberedSpec = true := rfl
 
-/-- Treating 0009 as a published specification does not conform. -/
+/-- Treating the word catalog as published specification 0009 does not conform. -/
 def numberNinePublished : Bool := false
 
 theorem mash_0009_as_published_is_false : numberNinePublished = false :=

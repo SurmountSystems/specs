@@ -50,14 +50,18 @@ theorem vocabulary_number_is_cate :
     SpecRegistry.vocabularySpecNumber = specNumber :=
   rfl
 
-def numberNineWithdrawn : Bool := true
+def numberNineWithdrawn : Bool := false
 
-theorem number_nine_is_withdrawn : numberNineWithdrawn = true := rfl
+theorem number_nine_is_unlicense :
+    SpecRegistry.unlicenseSpecNumber = 9 :=
+  rfl
 
-theorem mash_published_0009
-    (h : SpecRegistry.allEntries.any (fun e => e.number == 9) = true) : False := by
-  have hNo := SpecRegistry.number_9_not_published
-  rw [hNo] at h
+theorem number_nine_is_not_withdrawn : numberNineWithdrawn = false := rfl
+
+theorem mash_unpublished_0009
+    (h : SpecRegistry.allEntries.any (fun e => e.number == 9) = false) : False := by
+  have hYes := SpecRegistry.number_9_published
+  rw [hYes] at h
   exact Bool.noConfusion h
 
 theorem rsi_is_0006 :

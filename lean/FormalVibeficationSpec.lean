@@ -184,8 +184,8 @@ def productsClaimedReadyForUse : Bool := false
 
 def productsClaimedNeverStarted : Bool := false
 
-/-- Number 0009 is withdrawn. The word catalog is owned by CATE. -/
-def numberNineAssigned : Bool := false
+/-- Number 0009 is Unlicense. The word catalog is owned by CATE. -/
+def numberNineAssigned : Bool := true
 
 /-- Every published numbered markdown has a sibling `Spec_NNNN.lean` at the repository root. -/
 def siblingLineEncodingsRequired : Bool := true

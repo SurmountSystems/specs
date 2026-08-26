@@ -33,5 +33,5 @@ Notes:
 			location; this pin freezes the reviewed bytes for this repository.
 	2. Do not edit rfc2119.txt in place. Cite this pin (URL + date + checksum)
 			from Surmount specs. Refresh only by re-fetching from the canonical URL
-			and updating this SOURCE file.
+			and updating this SOURCE.md file.
 	3. Per-entry summary and reasoning: ref/README.md.

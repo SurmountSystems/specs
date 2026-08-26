@@ -27,9 +27,10 @@
 
   Surmount Systems is numbered specification 0010
   (`0010_Surmount_Systems.md`). Formal Vibefication is numbered
-  specification 0008 (`0008_Formal_Vibefication.md`). The word catalog
-  is owned by CATE as specification 0005 (`0005_CATE.md`). Number 0009
-  is withdrawn.
+  specification 0008 (`0008_Formal_Vibefication.md`). Unlicense is
+  numbered specification 0009 (`0009_Unlicense.md`). The word catalog
+  is owned by CATE as specification 0005 (`0005_CATE.md`). The file
+  0009_VOCABULARY.md MUST NOT exist. Number 0011 is not published.
 -/
 
 import SpecRegistry
@@ -43,10 +44,13 @@ import Ci
 import SpecCheck
 import FormalVibeficationSpec
 import FormalVibeficationProofs
+import UnlicenseSpec
+import UnlicenseProofs
 import VocabularySpec
 import VocabularyProofs
 import SpecProofs
 import Spec_0010
+import Spec_0009
 
 namespace Surmount
 
@@ -58,7 +62,10 @@ def specFileName : String := "0010_Surmount_Systems.md"
 /-- Identity of numbered specification 0008. -/
 def formalVibeficationSpecNumber : Nat := 8
 
-/-- Catalog ownership: CATE, specification 0005. Number 0009 is withdrawn. -/
+/-- Identity of numbered specification 0009. -/
+def unlicenseSpecNumber : Nat := 9
+
+/-- Catalog ownership: CATE, specification 0005. Number 0009 is Unlicense. -/
 def vocabularySpecNumber : Nat := 5
 
 theorem surmount_is_0010 : surmountSpecNumber = 10 := rfl
@@ -82,6 +89,20 @@ theorem sibling_proofs_are_separate :
 
 theorem formal_vibefication_is_0008 : formalVibeficationSpecNumber = 8 :=
   rfl
+
+theorem unlicense_is_0009 : unlicenseSpecNumber = 9 := rfl
+
+theorem unlicense_agrees_registry :
+    unlicenseSpecNumber = SpecRegistry.unlicenseSpecNumber :=
+  rfl
+
+theorem unlicense_agrees_encoding :
+    unlicenseSpecNumber = UnlicenseSpec.specNumber :=
+  rfl
+
+theorem unlicense_is_not_0010 : unlicenseSpecNumber ≠ 10 := by decide
+
+theorem unlicense_is_not_0011 : unlicenseSpecNumber ≠ 11 := by decide
 
 theorem vocabulary_is_0005 : vocabularySpecNumber = 5 := rfl
 
@@ -235,6 +256,8 @@ def leanSpecEncodingsAreCateOnLeftoverUnstackFloor : Bool :=
     !FormalVibeficationSpec.markedAsProof &&
     VocabularySpec.markedAsSpecEncoding &&
     !VocabularySpec.markedAsProof &&
+    UnlicenseSpec.markedAsSpecEncoding &&
+    !UnlicenseSpec.markedAsProof &&
     FormalVibeficationSpec.siblingLineEncodingsRequired
 
 theorem lean_spec_encodings_are_cate_on_leftover_unstack_floor :
@@ -292,9 +315,15 @@ theorem omitting_0008_is_inconsistent
   rw [hYes] at h
   exact Bool.noConfusion h
 
-theorem claiming_0009_published_is_inconsistent
-    (h : SpecRegistry.allEntries.any (fun e => e.number == 9) = true) : False := by
-  have hNo := SpecRegistry.number_9_not_published
+theorem omitting_0009_is_inconsistent
+    (h : SpecRegistry.allEntries.any (fun e => e.number == 9) = false) : False := by
+  have hYes := SpecRegistry.number_9_published
+  rw [hYes] at h
+  exact Bool.noConfusion h
+
+theorem claiming_0011_published_is_inconsistent
+    (h : SpecRegistry.allEntries.any (fun e => e.number == 11) = true) : False := by
+  have hNo := SpecRegistry.number_11_not_published
   rw [hNo] at h
   exact Bool.noConfusion h
 
@@ -347,21 +376,30 @@ def stackIntegrates : Bool :=
     SpecRegistry.beastdbSpecNumber == 3 &&
     SpecRegistry.systemsLeanSpecNumber == 2 &&
     SpecRegistry.surmountSystemsSpecNumber == 10 &&
+    SpecRegistry.unlicenseSpecNumber == 9 &&
     surmountSpecNumber == SpecRegistry.surmountSystemsSpecNumber &&
     formalVibeficationSpecNumber == SpecRegistry.formalVibeficationSpecNumber &&
+    unlicenseSpecNumber == SpecRegistry.unlicenseSpecNumber &&
     vocabularySpecNumber == SpecRegistry.vocabularySpecNumber &&
     SpecRegistry.allEntries.any (fun e => e.number == 8) &&
-    !SpecRegistry.allEntries.any (fun e => e.number == 9) &&
+    SpecRegistry.allEntries.any (fun e => e.number == 9) &&
+    !SpecRegistry.allEntries.any (fun e => e.number == 11) &&
     !VocabularySpec.numberNinePublished &&
     Cate.specNumber == SpecRegistry.cateSpecNumber &&
     Cate.ownsVocabularyCatalog &&
-    Cate.numberNineWithdrawn &&
+    !Cate.numberNineWithdrawn &&
     Rsi.specNumber == SpecRegistry.rsiSpecNumber &&
     Ci.specNumber == SpecRegistry.ciSpecNumber &&
     Sssss.specNumber == SpecRegistry.ssssSpecNumber &&
     BeastDb.specNumber == SpecRegistry.beastdbSpecNumber &&
     SystemsLean.systemsLeanSpecNumber == SpecRegistry.systemsLeanSpecNumber &&
     FormalVibeficationSpec.specNumber == SpecRegistry.formalVibeficationSpecNumber &&
+    UnlicenseSpec.specNumber == SpecRegistry.unlicenseSpecNumber &&
+    UnlicenseSpec.remainingCopyright UnlicenseSpec.ossWithoutDedication &&
+    !UnlicenseSpec.remainingCopyright UnlicenseSpec.unlicenseDedication &&
+    UnlicenseSpec.ideasNonScarce &&
+    UnlicenseSpec.ideasNotRivalrous &&
+    !UnlicenseSpec.conformingThisRepo UnlicenseSpec.mashedFixture &&
     VocabularySpec.specNumber == SpecRegistry.vocabularySpecNumber &&
     !SpecRegistry.fargoAssigned &&
     !SpecRegistry.ssspAssigned &&
@@ -395,6 +433,9 @@ def stackIntegrates : Bool :=
     SpecProofs.encodingsNotMashed &&
     Spec_0010.specFileName == specFileName &&
     Spec_0010.siblingEncodingFileName == "Spec_0010.lean" &&
+    Spec_0009.specFileName == "0009_Unlicense.md" &&
+    Spec_0009.siblingEncodingFileName == "Spec_0009.lean" &&
+    !Spec_0009.markedAsProof &&
     !Ci.dumpTheoremsIntoNumberedMarkdown
 
 theorem surmount_integrates : stackIntegrates = true := rfl

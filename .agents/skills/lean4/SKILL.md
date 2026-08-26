@@ -1,6 +1,6 @@
 ---
 name: lean4
-description: Prove companion Lean meaning models in this specs repository using the lean4-skills pack. Use when writing or repairing lean/*.lean, proving numbered specification meaning, running /lean4, or repairing SystemsLean, BeastDb, Sssss, Cate, Rsi, Ci, VocabAspell, SpecRegistry, FormalVibeficationSpec, FormalVibeficationProofs, or Surmount.
+description: Prove companion Lean meaning models in this specs repository using the lean4-skills pack. Use when writing or repairing lean/*.lean, proving numbered specification meaning, running /lean4, or repairing SystemsLean, BeastDb, Sssss, Cate, Rsi, Ci, VocabAspell, SpecRegistry, FormalVibeficationSpec, FormalVibeficationProofs, UnlicenseSpec, UnlicenseProofs, or Surmount.
 argument-hint: Lean meaning model to prove
 ---
 
@@ -21,8 +21,8 @@ Read `skills/lean4-skills/plugins/lean4/skills/lean4/SKILL.md` and the prove, re
 
 ## Surmount root proof
 
-1. Numbered specification `0010_Surmount_Systems.md` is the human contract for stack composition. Companion Lean is `lean/Surmount.lean` (`surmountSpecNumber = 10`, `formalVibeficationSpecNumber = 8`, `specFileName = "0010_Surmount_Systems.md"`, `surmount_integrates`, `thisRepoSeparates`, `productTreeUnifies`). Numbered markdown is the contract humans read. Spec encodings are Lean. Proofs are separate Lean modules. Every published numbered markdown file has a sibling `Spec_NNNN.lean` at the repository root; proofs of those line encodings live in `lean/Proofs_NNNN.lean`. Unification in a product tree is not a license to mix spec encodings with proofs in this repository, and is not a license to mix theorems into numbered markdown here. The gate is `nix flake check`.
-2. Formal Vibefication is specification 0008 (`0008_Formal_Vibefication.md`, `lean/FormalVibeficationSpec.lean`, `lean/FormalVibeficationProofs.lean`, sibling `Spec_0008.lean`). The word catalog is owned by CATE as specification 0005 (`0005_CATE.md`, `lean/VocabularySpec.lean`, `lean/VocabularyProofs.lean`, sibling `Spec_0005.lean`). Root `VOCABULARY.md` is a pointer. Number 0009 is withdrawn.
+1. Numbered specification `0010_Surmount_Systems.md` is the human contract for stack composition. Companion Lean is `lean/Surmount.lean` (`surmountSpecNumber = 10`, `formalVibeficationSpecNumber = 8`, `unlicenseSpecNumber = 9`, `specFileName = "0010_Surmount_Systems.md"`, `surmount_integrates`, `thisRepoSeparates`, `productTreeUnifies`). Numbered markdown is the contract humans read. Spec encodings are Lean. Proofs are separate Lean modules. Every published numbered markdown file has a sibling `Spec_NNNN.lean` at the repository root; proofs of those line encodings live in `lean/Proofs_NNNN.lean`. Unification in a product tree is not a license to mix spec encodings with proofs in this repository, and is not a license to mix theorems into numbered markdown here. The gate is `nix flake check`.
+2. Formal Vibefication is specification 0008 (`0008_Formal_Vibefication.md`, `lean/FormalVibeficationSpec.lean`, `lean/FormalVibeficationProofs.lean`, sibling `Spec_0008.lean`). Unlicense is specification 0009 (`0009_Unlicense.md`, `lean/UnlicenseSpec.lean`, `lean/UnlicenseProofs.lean`, sibling `Spec_0009.lean`). The word catalog is owned by CATE as specification 0005 (`0005_CATE.md`, `lean/VocabularySpec.lean`, `lean/VocabularyProofs.lean`, sibling `Spec_0005.lean`). Root `VOCABULARY.md` is a pointer. The file `0009_VOCABULARY.md` MUST NOT exist. Number 0011 is not published.
 
 ## Form versus meaning
 
