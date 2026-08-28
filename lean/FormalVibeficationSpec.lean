@@ -27,6 +27,10 @@ import SpecRegistry
 namespace FormalVibeficationSpec
 
 /-- This module is a spec encoding, not a proof. -/
+def liveContainsSpecEncodings : Bool := true
+
+def liveContainsProofsOfThoseEncodings : Bool := false
+
 def markedAsSpecEncoding : Bool := true
 
 def markedAsProof : Bool := false
@@ -37,22 +41,6 @@ def specNumber : Nat := 8
 def specFileName : String := "0008_Formal_Vibefication.md"
 
 def productName : String := "Formal Vibefication"
-
-theorem spec_number_is_8 : specNumber = 8 := rfl
-
-theorem spec_file_is_0008_formal_vibefication :
-    specFileName = "0008_Formal_Vibefication.md" :=
-  rfl
-
-theorem product_name_is_formal_vibefication :
-    productName = "Formal Vibefication" :=
-  rfl
-
-theorem spec_is_not_0007 : specNumber ≠ 7 := by decide
-
-theorem spec_is_not_0009 : specNumber ≠ 9 := by decide
-
-theorem spec_is_not_0010 : specNumber ≠ 10 := by decide
 
 /-- Four layers of composition. Distinct constructors state the split. -/
 inductive Layer where
@@ -187,7 +175,7 @@ def productsClaimedNeverStarted : Bool := false
 /-- Number 0009 is Unlicense. The word catalog is owned by CATE. -/
 def numberNineAssigned : Bool := true
 
-/-- Every published numbered markdown has a sibling `Spec_NNNN.lean` at the repository root. -/
+/-- Every published numbered markdown has a sibling `NNNN_descriptive_name.lean` at the repository root. -/
 def siblingLineEncodingsRequired : Bool := true
 
 /-- Proofs of those encodings live in `lean/Proofs_NNNN.lean`, not in the sibling encoding. -/

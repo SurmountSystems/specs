@@ -15,6 +15,7 @@ import BeastDb
 import Sssss
 import Cate
 import Rsi
+import Vocabulary
 import Ci
 import SpecCheck
 import FormalVibeficationSpec
@@ -126,7 +127,7 @@ def runCases : List Case :=
       (allEntries.any (fun e => e.number == 8)),
     expectTrue "number 0009 is in the registry"
       (allEntries.any (fun e => e.number == 9)),
-    expectFalse "number 0011 is not in the registry"
+    expectTrue "number 0011 is in the registry"
       (allEntries.any (fun e => e.number == 11)),
     expectFalse "mash of 0009 as published is false"
       VocabularySpec.numberNinePublished,
@@ -212,6 +213,39 @@ def runCases : List Case :=
         "Inspired by Keagan. See https://proofofkeags.com/research/x.html\n"),
     expectTrue "VOCABULARY fixture is well formed"
       (VocabularySpec.wellFormed VocabularySpec.fixtureEntries),
+    expectTrue "companion meaning models are split"
+      companionMeaningModelsSplit,
+    expectFalse "CATE live mash of encodings and proofs does not remain"
+      Cate.liveContainsProofsOfThoseEncodings,
+    expectFalse "RSI live mash of encodings and proofs does not remain"
+      Rsi.liveContainsProofsOfThoseEncodings,
+    expectFalse "CI live mash of encodings and proofs does not remain"
+      Ci.liveContainsProofsOfThoseEncodings,
+    expectFalse "beastdb live mash of encodings and proofs does not remain"
+      BeastDb.liveContainsProofsOfThoseEncodings,
+    expectFalse "SSSSS live mash of encodings and proofs does not remain"
+      Sssss.liveContainsProofsOfThoseEncodings,
+    expectFalse "Systems Lean live mash of encodings and proofs does not remain"
+      SystemsLean.liveContainsProofsOfThoseEncodings,
+    expectFalse "vocabulary collision tags live mash does not remain"
+      Vocabulary.liveContainsProofsOfThoseEncodings,
+    expectFalse "VocabularySpec live mash of encodings and proofs does not remain"
+      VocabularySpec.liveContainsProofsOfThoseEncodings,
+    expectFalse "FormalVibeficationSpec live mash of encodings and proofs does not remain"
+      FormalVibeficationSpec.liveContainsProofsOfThoseEncodings,
+    expectFalse "UnlicenseSpec live mash of encodings and proofs does not remain"
+      UnlicenseSpec.liveContainsProofsOfThoseEncodings,
+    expectFalse "TechTreeSpec live mash of encodings and proofs does not remain"
+      TechTreeSpec.liveContainsProofsOfThoseEncodings,
+    expectFalse "MemexSpec live mash of encodings and proofs does not remain"
+      MemexSpec.liveContainsProofsOfThoseEncodings,
+    expectFalse "mashed companion meaning fixture does not conform"
+      (FormalVibeficationSpec.conformingThisRepo
+        { moduleName := "MashedCompanionMeaning"
+          containsSpecEncodings := true
+          containsProofsOfThoseEncodings := true
+          markedAsSpecEncoding := true
+          markedAsProof := true }),
     expectTrue "stack identities compose" stackIntegrates
   ]
 

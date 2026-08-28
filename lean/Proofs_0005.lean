@@ -1,12 +1,12 @@
 /-
   PROOFS for the sibling line encoding of `0005_CATE.md`.
 
-  This module is not the specification. It imports Spec_0005 and
+  This module is not the specification. It imports «0005_CATE» and
   establishes identities of that encoding. Numbered markdown remains
   the contract humans read.
 -/
 
-import Spec_0005
+import «0005_CATE»
 import FormalVibeficationSpec
 
 set_option maxRecDepth 10000
@@ -14,7 +14,7 @@ set_option maxHeartbeats 800000
 
 namespace Proofs_0005
 
-open Spec_0005
+open «0005_CATE»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -24,7 +24,7 @@ theorem spec_number : specNumber = 5 := rfl
 
 theorem spec_file : specFileName = "0005_CATE.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0005.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0005_CATE.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0005" := rfl
 
@@ -43,7 +43,7 @@ theorem mash_hidden_split_is_false :
 
 theorem mash_is_false : markedAsProof = false := rfl
 
-theorem encoded_size : encodedLines.size = 1418 := by
+theorem encoded_size : encodedLines.size = 1426 := by
   native_decide
 
 theorem line_count_is_size : lineCount = encodedLines.size := rfl

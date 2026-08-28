@@ -61,6 +61,15 @@ Standards older than widespread git often have only an official PDF or plain tex
 5. **License / copyright:** The upstream `semver.md` document states Creative Commons Attribution 3.0 (CC BY 3.0), http://creativecommons.org/licenses/by/3.0/ . Surmount does not own that text; the submodule is a pin of the publisher tree. See `ref/semver.SOURCE` and the License section of `ref/semver/semver.md`.
 6. **Reasoning:** The SemVer project maintains canonical git. Form 1 applies.
 
+### `ref/btc-verified/` (Form 1: git submodule)
+
+1. **Standard:** Bitcoin canonical CompactSize as specified and proved in Lean (namespace `BtcVerified.CompactSize`, theorems `decode_encode`, `decode_canonical`, `encode_length_le`), plus the rest of that Lean tree.
+2. **Form:** Git submodule of https://github.com/cryptoquick/btc-verified.git .
+3. **Pin:** commit `6c279c18914f5a22fb33e772f466b9362d6a4fcb` (no release tag at this pin). That commit was `master` HEAD when the submodule was added.
+4. **Pin notes:** `ref/btc-verified.SOURCE` (outside the submodule).
+5. **License / copyright:** The upstream `LICENSE` file states Apache License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0 . Surmount does not own that tree; the submodule is a pin of the named git. Numbered specification 0009 in this repository is Unlicense and does not relicense this pin. See `ref/btc-verified.SOURCE` and `ref/btc-verified/LICENSE`.
+6. **Reasoning:** The operator named this git URL as the Form 1 pin for CompactSize prior proof. Form 1 applies. Surmount specs cite the recorded commit.
+
 ### `ref/rfc2119/` (Form 2: direct tree copy, no publisher git)
 
 1. **Standard:** RFC 2119, Key words for use in RFCs to Indicate Requirement Levels.
@@ -155,7 +164,7 @@ Or after a normal clone:
 git submodule update --init --recursive
 ```
 
-These commands apply only to real Form 1 submodules such as `ref/semver`. Form 2 pins such as `ref/rfc2119`, `ref/ecma48`, and `ref/itu_t416` are ordinary files in the Surmount git tree and need no submodule init.
+These commands apply only to real Form 1 submodules such as `ref/semver` and `ref/btc-verified`. Form 2 pins such as `ref/rfc2119`, `ref/ecma48`, and `ref/itu_t416` are ordinary files in the Surmount git tree and need no submodule init.
 
 ## How to add a Form 2 official publisher artifact pin
 

@@ -58,6 +58,10 @@ def runCases : List Case :=
     expectTrue "spec encoding module is marked as spec encoding"
       markedAsSpecEncoding,
     expectFalse "spec encoding module is not marked as proof" markedAsProof,
+    expectTrue "UnlicenseSpec live module contains spec encodings"
+      liveContainsSpecEncodings,
+    expectFalse "UnlicenseSpec live module does not mash proofs into encodings"
+      liveContainsProofsOfThoseEncodings,
     expectTrue "copyright remaining on OSS without dedication"
       (remainingCopyright ossWithoutDedication),
     expectFalse "Unlicense dedication has no remaining copyright"
@@ -96,7 +100,7 @@ def runCases : List Case :=
     expectTrue "mashed fixture hides the split" (hidesSplit mashedFixture),
     expectTrue "Unlicense number is in the registry"
       (allEntries.any (fun e => e.number == 9)),
-    expectFalse "number 0011 is not in the registry"
+    expectTrue "number 0011 is in the registry"
       (allEntries.any (fun e => e.number == 11)),
     expectEmpty "correct 0009_Unlicense token passes"
       (scanContent "0009_Unlicense.md"

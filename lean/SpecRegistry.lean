@@ -13,9 +13,10 @@
   Integration (CI). Number 0008 is Formal Vibefication. Number 0009 is
   Unlicense. The word catalog is owned by CATE (specification 0005).
   The file 0009_VOCABULARY.md MUST NOT exist. Number 0010 is Surmount
-  Systems. Number 0011 is not published. fargo, SSSP, and Lean Machine
-  have no assigned numbers. Existing `ref/` pins remain; new pins are
-  added when present.
+  Systems. Number 0011 is Surmount Systems Tech Tree. Number 0012 is
+  Majestic Memex (`0012_Majestic_Memex.md`).
+  fargo, SSSP, and Lean Machine have no assigned numbers. Existing
+  `ref/` pins remain; new pins are added when present.
 -/
 
 namespace SpecRegistry
@@ -41,6 +42,10 @@ def formalVibeficationFileName : String := "0008_Formal_Vibefication.md"
 def vocabularySpecNumber : Nat := 5
 def vocabularyFileName : String := "0005_CATE.md"
 def surmountSystemsSpecNumber : Nat := 10
+def techTreeSpecNumber : Nat := 11
+def techTreeFileName : String := "0011_Surmount_Systems_Tech_Tree.md"
+def memexSpecNumber : Nat := 12
+def memexFileName : String := "0012_Majestic_Memex.md"
 def unlicenseSpecNumber : Nat := 9
 def unlicenseFileName : String := "0009_Unlicense.md"
 
@@ -88,6 +93,14 @@ def publishedEntries : List RegistryEntry :=
     , { number := 10
         fileName := "0010_Surmount_Systems.md"
         productName := "Surmount Systems"
+        published := true }
+    , { number := 11
+        fileName := "0011_Surmount_Systems_Tech_Tree.md"
+        productName := "Surmount Systems Tech Tree"
+        published := true }
+    , { number := 12
+        fileName := "0012_Majestic_Memex.md"
+        productName := "Majestic Memex"
         published := true } ]
 
 def plannedEntries : List RegistryEntry :=
@@ -190,6 +203,26 @@ theorem unlicense_is_not_0011 : unlicenseSpecNumber ≠ 11 := by decide
 
 theorem surmount_systems_is_0010 : surmountSystemsSpecNumber = 10 := rfl
 
+theorem tech_tree_is_0011 : techTreeSpecNumber = 11 := rfl
+
+theorem tech_tree_file :
+    techTreeFileName = "0011_Surmount_Systems_Tech_Tree.md" :=
+  rfl
+
+theorem tech_tree_is_not_0010 : techTreeSpecNumber ≠ 10 := by decide
+
+theorem tech_tree_is_not_0012 : techTreeSpecNumber ≠ 12 := by decide
+
+theorem memex_is_0012 : memexSpecNumber = 12 := rfl
+
+theorem memex_file :
+    memexFileName = "0012_Majestic_Memex.md" :=
+  rfl
+
+theorem memex_is_not_0011 : memexSpecNumber ≠ 11 := by decide
+
+theorem memex_is_not_0010 : memexSpecNumber ≠ 10 := by decide
+
 theorem surmount_systems_is_not_0007 : surmountSystemsSpecNumber ≠ 7 := by decide
 
 theorem surmount_systems_is_not_0008 : surmountSystemsSpecNumber ≠ 8 := by decide
@@ -234,13 +267,13 @@ theorem carbonado_not_assigned : carbonadoAssigned = false := rfl
 
 theorem carbonado_number_none : carbonadoAssignedNumber = none := rfl
 
-theorem published_count_eleven : publishedEntries.length = 11 := rfl
+theorem published_count_thirteen : publishedEntries.length = 13 := rfl
 
 theorem planned_count_zero : plannedEntries.length = 0 := rfl
 
 theorem all_entry_numbers :
     allEntries.map (fun e => e.number) =
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] :=
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] :=
   rfl
 
 theorem number_8_published :
@@ -251,13 +284,25 @@ theorem number_9_published :
     (allEntries.any (fun e => e.number == 9)) = true :=
   rfl
 
-theorem number_11_not_published :
-    (allEntries.any (fun e => e.number == 11)) = false :=
+theorem number_11_published :
+    (allEntries.any (fun e => e.number == 11)) = true :=
   rfl
 
-theorem number_11_is_unused :
-    (allEntries.any (fun e => e.number == 11)) = false :=
-  number_11_not_published
+theorem number_11_is_published_file :
+    (publishedEntries.any (fun e => e.number == 11)) = true :=
+  rfl
+
+theorem number_12_published :
+    (allEntries.any (fun e => e.number == 12)) = true :=
+  rfl
+
+theorem number_12_is_published_file :
+    (publishedEntries.any (fun e => e.number == 12)) = true :=
+  rfl
+
+theorem number_12_is_not_planned :
+    (plannedEntries.any (fun e => e.number == 12)) = false :=
+  rfl
 
 /-- Encode helper: tests that every published file is present use this list. -/
 def publishedBasenames : List String :=
@@ -268,7 +313,9 @@ theorem published_filenames :
       ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
         "0003_beastdb.md", "0004_SSSSS.md", "0005_CATE.md",
         "0006_RSI.md", "0007_CI.md", "0008_Formal_Vibefication.md",
-        "0009_Unlicense.md", "0010_Surmount_Systems.md"] :=
+        "0009_Unlicense.md", "0010_Surmount_Systems.md",
+        "0011_Surmount_Systems_Tech_Tree.md",
+        "0012_Majestic_Memex.md"] :=
   rfl
 
 theorem published_basenames_are_entry_filenames :
@@ -383,6 +430,26 @@ theorem surmount_systems_entry_published :
 theorem surmount_systems_entry_filename :
     (allEntries.filter (fun e => e.number == 10)).map (fun e => e.fileName) =
       ["0010_Surmount_Systems.md"] :=
+  rfl
+
+theorem tech_tree_entry_published :
+    (allEntries.filter (fun e => e.number == 11)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem tech_tree_entry_filename :
+    (allEntries.filter (fun e => e.number == 11)).map (fun e => e.fileName) =
+      ["0011_Surmount_Systems_Tech_Tree.md"] :=
+  rfl
+
+theorem memex_entry_published :
+    (allEntries.filter (fun e => e.number == 12)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem memex_entry_filename :
+    (allEntries.filter (fun e => e.number == 12)).map (fun e => e.fileName) =
+      ["0012_Majestic_Memex.md"] :=
   rfl
 
 theorem unlicense_entry_published :

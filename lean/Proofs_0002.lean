@@ -1,17 +1,17 @@
 /-
   PROOFS for the sibling line encoding of `0002_Systems_Lean.md`.
 
-  This module is not the specification. It imports Spec_0002 and
+  This module is not the specification. It imports «0002_Systems_Lean» and
   establishes identities of that encoding. Numbered markdown remains
   the contract humans read.
 -/
 
-import Spec_0002
+import «0002_Systems_Lean»
 import FormalVibeficationSpec
 
 namespace Proofs_0002
 
-open Spec_0002
+open «0002_Systems_Lean»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -21,7 +21,7 @@ theorem spec_number : specNumber = 2 := rfl
 
 theorem spec_file : specFileName = "0002_Systems_Lean.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0002.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0002_Systems_Lean.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0002" := rfl
 

@@ -3,8 +3,10 @@
   This file sits next to that markdown at the repository root.
 
   Every physical line of the markdown (including blank lines) is a Lean
-  `MdLine` value. Lean module names cannot start with a digit, so this
-  file is `Spec_0006.lean` rather than `0006.lean`.
+  `MdLine` value. The encoding file uses the markdown basename with
+  `.lean` in place of `.md` so a reader sees the pair immediately. The
+  file name starts with a digit, so Lean uses a quoted module name that
+  matches that stem.
 
   This module is a spec encoding, not a proof module.
   Proofs live in `lean/Proofs_0006.lean`.
@@ -14,7 +16,7 @@
 
 import MdLine
 
-namespace Spec_0006
+namespace «0006_RSI»
 
 def markedAsSpecEncoding : Bool := true
 
@@ -24,7 +26,7 @@ def specNumber : Nat := 6
 
 def specFileName : String := "0006_RSI.md"
 
-def siblingEncodingFileName : String := "Spec_0006.lean"
+def siblingEncodingFileName : String := "0006_RSI.lean"
 
 def proofModuleName : String := "Proofs_0006"
 
@@ -64,9 +66,9 @@ def encodedLines : Array MdLine :=
     { number := 31, text := "In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in `0008_Formal_Vibefication.md`, requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification." },
     { number := 32, text := "" },
     { number := 33, text := "1. The numbered markdown at the repository root is the contract implementers and reviewers read." },
-    { number := 34, text := "2. Companion Lean modules under `lean/` (the RSI meaning model, distinct from the `spec_check` form checker) encode selected claims such as this document's identity as specification 0006 with file name `0006_RSI.md`, CATE as specification 0005 and not specification 0006, fargo as not specification 0005, SSSP as not specified, preference for durable tools over a disposable job, parallel independent streams on disjoint writes, leftover unstack as still nonconforming, scripture named in Clause 1.4 as not a conformance item for Slake, beastdb, or SSSSS, and the Clause 3.25 distinctions (Systems Lean versus Slake versus the Lake package id `SystemsLean`, numbered markdown versus the meaning model versus `spec_check`, remaining work on disk versus a named freestanding blocker versus a product tree claim that a freestanding release has no managed Lean leftover, the meaning model versus a machine learning training run, leftover unstack as CATE, and the ASCII word omega versus the Lean constructor unrestricted)." },
+    { number := 34, text := "2. Companion Lean spec encodings under `lean/RsiSpec.lean` (the RSI meaning model, distinct from the `spec_check` form checker) declare selected claims such as this document's identity as specification 0006 with file name `0006_RSI.md`, CATE as specification 0005 and not specification 0006, fargo as not specification 0005, SSSP as not specified, preference for durable tools over a disposable job, parallel independent streams on disjoint writes, leftover unstack as still nonconforming, scripture named in Clause 1.4 as not a conformance item for Slake, beastdb, or SSSSS, and the Clause 3.25 distinctions (Systems Lean versus Slake versus the Lake package id `SystemsLean`, numbered markdown versus the meaning model versus `spec_check`, remaining work on disk versus a named freestanding blocker versus a product tree claim that a freestanding release has no managed Lean leftover, the meaning model versus a machine learning training run, leftover unstack as CATE, and the ASCII word omega versus the Lean constructor unrestricted)." },
     { number := 35, text := "3. A Lean registry under `lean/` encodes published specification numbers, file names, and product names, and the form checker scans numbered markdown so wrong numbers, file name mismatches, a stale fargo file name attached to specification number 0005, and wrong capitalization of beastdb fail `nix flake check`." },
-    { number := 36, text := "4. Those modules prove facts about the model. They do not replace this document. This document does not replace those modules." },
+    { number := 36, text := "4. Proofs of those RSI meaning encodings live under `lean/RsiProofs.lean`. Collision tag encodings live in `lean/Vocabulary.lean`. Proofs of those tags live in `lean/VocabularyCollisionProofs.lean`. They do not replace this document. This document does not replace those modules." },
     { number := 37, text := "5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Meaning proofs MUST NOT be treated as a second markdown form checker." },
     { number := 38, text := "" },
     { number := 39, text := "### 1.3 Documents this specification does not replace" },
@@ -423,4 +425,4 @@ def lineCount : Nat := encodedLines.size
 
 theorem line_count_matches_array : lineCount = encodedLines.size := rfl
 
-end Spec_0006
+end «0006_RSI»

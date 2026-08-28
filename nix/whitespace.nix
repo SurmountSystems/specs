@@ -49,6 +49,8 @@ let
 		|| rel == ".pre-commit-config.yaml"
 		|| rel == "ref/semver"
 		|| lib.hasPrefix "ref/semver/" rel
+		|| rel == "ref/btc-verified"
+		|| lib.hasPrefix "ref/btc-verified/" rel
 		|| rel == "skills/lean4-skills"
 		|| lib.hasPrefix "skills/lean4-skills/" rel
 		|| lib.hasSuffix ".pdf" rel
@@ -131,6 +133,7 @@ let
 		in
 		fileset.unions (
 			maybe "/ref/semver"
+			++ maybe "/ref/btc-verified"
 			++ maybe "/skills/lean4-skills"
 			++ maybe "/ref/rfc2119/rfc2119.txt"
 			++ maybe "/.git"

@@ -1,17 +1,17 @@
 /-
   PROOFS for the sibling line encoding of `0001_DOGE.md`.
 
-  This module is not the specification. It imports Spec_0001 and
+  This module is not the specification. It imports «0001_DOGE» and
   establishes identities of that encoding. Numbered markdown remains
   the contract humans read.
 -/
 
-import Spec_0001
+import «0001_DOGE»
 import FormalVibeficationSpec
 
 namespace Proofs_0001
 
-open Spec_0001
+open «0001_DOGE»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -21,7 +21,7 @@ theorem spec_number : specNumber = 1 := rfl
 
 theorem spec_file : specFileName = "0001_DOGE.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0001.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0001_DOGE.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0001" := rfl
 

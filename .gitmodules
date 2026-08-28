@@ -4,3 +4,6 @@
 [submodule "skills/lean4-skills"]
 	path = skills/lean4-skills
 	url = git@github.com:SurmountSystems/lean4-skills.git
+[submodule "ref/btc-verified"]
+	path = ref/btc-verified
+	url = https://github.com/cryptoquick/btc-verified.git

@@ -3,8 +3,10 @@
   This file sits next to that markdown at the repository root.
 
   Every physical line of the markdown (including blank lines) is a Lean
-  `MdLine` value. Lean module names cannot start with a digit, so this
-  file is `Spec_0004.lean` rather than `0004.lean`.
+  `MdLine` value. The encoding file uses the markdown basename with
+  `.lean` in place of `.md` so a reader sees the pair immediately. The
+  file name starts with a digit, so Lean uses a quoted module name that
+  matches that stem.
 
   This module is a spec encoding, not a proof module.
   Proofs live in `lean/Proofs_0004.lean`.
@@ -14,7 +16,7 @@
 
 import MdLine
 
-namespace Spec_0004
+namespace «0004_SSSSS»
 
 def markedAsSpecEncoding : Bool := true
 
@@ -24,7 +26,7 @@ def specNumber : Nat := 4
 
 def specFileName : String := "0004_SSSSS.md"
 
-def siblingEncodingFileName : String := "Spec_0004.lean"
+def siblingEncodingFileName : String := "0004_SSSSS.lean"
 
 def proofModuleName : String := "Proofs_0004"
 
@@ -345,4 +347,4 @@ def encodedLines : Array MdLine :=
 
 def lineCount : Nat := encodedLines.size
 
-end Spec_0004
+end «0004_SSSSS»

@@ -1,0 +1,44 @@
+btc-verified (Bitcoin CompactSize and related Lean proofs)
+==========================================================
+
+Canonical git repository:
+	https://github.com/cryptoquick/btc-verified.git
+
+Local path:
+	ref/btc-verified (git submodule)
+
+This metadata file:
+	ref/btc-verified.SOURCE (sibling of the submodule directory; not inside it)
+
+Pin recorded in this tree:
+	Tag:    none (this tree has no release tag at the pin)
+	Commit: 6c279c18914f5a22fb33e772f466b9362d6a4fcb
+
+Why this pin:
+	Surmount Systems Tech Tree (0011) cites Bitcoin canonical CompactSize as
+	proved in Lean in this tree (namespace BtcVerified.CompactSize, theorems
+	decode_encode, decode_canonical, and encode_length_le). The publisher
+	repository has no release tag at this pin. The submodule is recorded at
+	the commit that git submodule add checked out from that URL (master
+	HEAD at add time). Surmount specs cite that commit, not a floating
+	branch name.
+
+Form:
+	Form 1 git submodule from the git URL the operator named for this pin.
+
+License:
+	The upstream LICENSE file states Apache License, Version 2.0
+	(http://www.apache.org/licenses/LICENSE-2.0). Surmount does not own
+	that tree; this is a pin of the named git. Numbered specification 0009
+	in this repository is Unlicense and does not relicense this pin. See
+	also ref/README.md and ref/btc-verified/LICENSE.
+
+How to re-check the pin (from repo root; requires git permission when used
+by an agent):
+	1. git -C ref/btc-verified describe --tags --always
+	2. git -C ref/btc-verified rev-parse HEAD
+
+Do not edit files inside this submodule. Cite the commit instead.
+Do not place Surmount-only metadata inside the submodule working tree.
+Canonical upstream URL remains first-class; the submodule freezes the
+reviewed pin for this repository.

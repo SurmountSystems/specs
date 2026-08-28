@@ -1,9 +1,11 @@
 /-
   Physical line encoding for numbered specification markdown.
 
-  A sibling `Spec_NNNN.lean` at the repository root holds one `MdLine`
-  per physical line of `NNNN_descriptive_name.md` (line numbers start
-  at 1, exact text, optional role). Those encodings are explicit Lean
+  A sibling `NNNN_descriptive_name.lean` at the repository root holds
+  one `MdLine` per physical line of `NNNN_descriptive_name.md` (line
+  numbers start at 1, exact text, optional role). The encoding uses
+  the markdown basename with `.lean` in place of `.md` so a reader
+  sees the pair immediately. Those encodings are explicit Lean
   `MdLine` or `String` literals, one per physical markdown line.
   `include_str` is not a line encoding. This module is the shared type
   and the functions that split file bytes on LF.
@@ -31,9 +33,15 @@ def pad4 (n : Nat) : String :=
   | 3 => "0" ++ s
   | _ => s
 
-/-- Sibling spec encoding file name at the repository root. -/
-def siblingEncodingFileName (n : Nat) : String :=
-  "Spec_" ++ pad4 n ++ ".lean"
+/--
+  Sibling spec encoding file name at the repository root: the markdown
+  basename with `.md` replaced by `.lean`.
+-/
+def siblingEncodingFileName (specFileName : String) : String :=
+  if specFileName.endsWith ".md" then
+    (specFileName.take (specFileName.length - 3)).copy ++ ".lean"
+  else
+    specFileName ++ ".lean"
 
 /-- Proof module name (file `lean/Proofs_NNNN.lean`). -/
 def siblingProofModuleName (n : Nat) : String :=

@@ -1,12 +1,12 @@
 /-
   PROOFS for the sibling line encoding of `0010_Surmount_Systems.md`.
 
-  This module is not the specification. It imports Spec_0010 and
+  This module is not the specification. It imports «0010_Surmount_Systems» and
   establishes identities of that encoding. Composition proofs live in
   Surmount.lean. Numbered markdown remains the contract humans read.
 -/
 
-import Spec_0010
+import «0010_Surmount_Systems»
 import FormalVibeficationSpec
 import SpecRegistry
 
@@ -15,7 +15,7 @@ set_option maxHeartbeats 800000
 
 namespace Proofs_0010
 
-open Spec_0010
+open «0010_Surmount_Systems»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -25,7 +25,7 @@ theorem spec_number : specNumber = 10 := rfl
 
 theorem spec_file : specFileName = "0010_Surmount_Systems.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0010.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0010_Surmount_Systems.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0010" := rfl
 

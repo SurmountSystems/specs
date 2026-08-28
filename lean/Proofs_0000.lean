@@ -1,18 +1,18 @@
 /-
   PROOFS for the sibling line encoding of `0000_spec.md`.
 
-  This module is not the specification. It imports Spec_0000 and
+  This module is not the specification. It imports «0000_spec» and
   establishes identities of that encoding. Numbered markdown remains
   the contract humans read.
 -/
 
-import Spec_0000
+import «0000_spec»
 import FormalVibeficationSpec
 import MdLine
 
 namespace Proofs_0000
 
-open Spec_0000
+open «0000_spec»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -22,7 +22,7 @@ theorem spec_number : specNumber = 0 := rfl
 
 theorem spec_file : specFileName = "0000_spec.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0000.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0000_spec.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0000" := rfl
 
@@ -40,7 +40,7 @@ theorem mash_hidden_split_is_false :
   rfl
 
 theorem encoded_line_count :
-    encodedLines.size = 396 := by
+    encodedLines.size = 412 := by
   native_decide
 
 theorem encoded_line_count_eq_lineCount :
@@ -48,8 +48,8 @@ theorem encoded_line_count_eq_lineCount :
   native_decide
 
 theorem first_line_text :
-    line0001.text = "# Surmount spec spec" :=
-  rfl
+    encodedLines[0]!.text = "# Surmount spec spec" := by
+  native_decide
 
 theorem first_encoded_line_text :
     encodedLines[0]!.text = "# Surmount spec spec" := by

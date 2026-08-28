@@ -1,6 +1,6 @@
 /-
   line_encodings_check - Lean entry point for isomorphism of numbered
-  specification markdown lines and sibling Spec_NNNN.lean encodings.
+  specification markdown lines and sibling NNNN_descriptive.lean encodings.
 
   Usage:
     line_encodings_check
@@ -12,17 +12,19 @@
 import MdLine
 import LineEncodings
 import SpecProofs
-import Spec_0000
-import Spec_0001
-import Spec_0002
-import Spec_0003
-import Spec_0004
-import Spec_0005
-import Spec_0006
-import Spec_0007
-import Spec_0008
-import Spec_0009
-import Spec_0010
+import «0000_spec»
+import «0001_DOGE»
+import «0002_Systems_Lean»
+import «0003_beastdb»
+import «0004_SSSSS»
+import «0005_CATE»
+import «0006_RSI»
+import «0007_CI»
+import «0008_Formal_Vibefication»
+import «0009_Unlicense»
+import «0010_Surmount_Systems»
+import «0011_Surmount_Systems_Tech_Tree»
+import «0012_Majestic_Memex»
 
 open LineEncodings
 
@@ -31,15 +33,15 @@ def usage : String :=
   "\n" ++
   "Fail when a numbered specification markdown line has no Lean encoding\n" ++
   "or an encoding has no matching markdown line.\n" ++
-  "Fail when a sibling Spec_NNNN.lean contains include_str.\n" ++
+  "Fail when a sibling NNNN_descriptive.lean contains include_str.\n" ++
   "The encoding must be explicit MdLine or String literals, one per\n" ++
   "physical markdown line. include_str is not a line encoding.\n" ++
   "Compiled encodedLines must still match the markdown bytes (LF lines).\n" ++
   "Fail when compiled encodedLines contain leftover unstack phrases in\n" ++
   "prose outside fenced code and inline code (Cate.leftoverUnstackPhrases,\n" ++
   "same scan as spec_check).\n" ++
-  "Fail when comments in lean/FormalVibeficationSpec.lean or\n" ++
-  "lean/VocabularySpec.lean contain those leftover phrases.\n" ++
+  "Fail when comments in marked meaning spec encoding modules\n" ++
+  "contain those leftover phrases.\n" ++
   "That leftover unstack check is a floor, not complete English.\n" ++
   "Environment: REPO_ROOT overrides the default discovery root.\n"
 
@@ -63,50 +65,62 @@ def ofSpec
 
 def compiledEncodings : Array EncodedSpec :=
   #[
-    ofSpec Spec_0000.specNumber Spec_0000.specFileName
-      Spec_0000.siblingEncodingFileName Spec_0000.proofModuleName
-      Spec_0000.markedAsSpecEncoding Spec_0000.markedAsProof
-      Spec_0000.encodedLines,
-    ofSpec Spec_0001.specNumber Spec_0001.specFileName
-      Spec_0001.siblingEncodingFileName Spec_0001.proofModuleName
-      Spec_0001.markedAsSpecEncoding Spec_0001.markedAsProof
-      Spec_0001.encodedLines,
-    ofSpec Spec_0002.specNumber Spec_0002.specFileName
-      Spec_0002.siblingEncodingFileName Spec_0002.proofModuleName
-      Spec_0002.markedAsSpecEncoding Spec_0002.markedAsProof
-      Spec_0002.encodedLines,
-    ofSpec Spec_0003.specNumber Spec_0003.specFileName
-      Spec_0003.siblingEncodingFileName Spec_0003.proofModuleName
-      Spec_0003.markedAsSpecEncoding Spec_0003.markedAsProof
-      Spec_0003.encodedLines,
-    ofSpec Spec_0004.specNumber Spec_0004.specFileName
-      Spec_0004.siblingEncodingFileName Spec_0004.proofModuleName
-      Spec_0004.markedAsSpecEncoding Spec_0004.markedAsProof
-      Spec_0004.encodedLines,
-    ofSpec Spec_0005.specNumber Spec_0005.specFileName
-      Spec_0005.siblingEncodingFileName Spec_0005.proofModuleName
-      Spec_0005.markedAsSpecEncoding Spec_0005.markedAsProof
-      Spec_0005.encodedLines,
-    ofSpec Spec_0006.specNumber Spec_0006.specFileName
-      Spec_0006.siblingEncodingFileName Spec_0006.proofModuleName
-      Spec_0006.markedAsSpecEncoding Spec_0006.markedAsProof
-      Spec_0006.encodedLines,
-    ofSpec Spec_0007.specNumber Spec_0007.specFileName
-      Spec_0007.siblingEncodingFileName Spec_0007.proofModuleName
-      Spec_0007.markedAsSpecEncoding Spec_0007.markedAsProof
-      Spec_0007.encodedLines,
-    ofSpec Spec_0008.specNumber Spec_0008.specFileName
-      Spec_0008.siblingEncodingFileName Spec_0008.proofModuleName
-      Spec_0008.markedAsSpecEncoding Spec_0008.markedAsProof
-      Spec_0008.encodedLines,
-    ofSpec Spec_0009.specNumber Spec_0009.specFileName
-      Spec_0009.siblingEncodingFileName Spec_0009.proofModuleName
-      Spec_0009.markedAsSpecEncoding Spec_0009.markedAsProof
-      Spec_0009.encodedLines,
-    ofSpec Spec_0010.specNumber Spec_0010.specFileName
-      Spec_0010.siblingEncodingFileName Spec_0010.proofModuleName
-      Spec_0010.markedAsSpecEncoding Spec_0010.markedAsProof
-      Spec_0010.encodedLines
+    ofSpec «0000_spec».specNumber «0000_spec».specFileName
+      «0000_spec».siblingEncodingFileName «0000_spec».proofModuleName
+      «0000_spec».markedAsSpecEncoding «0000_spec».markedAsProof
+      «0000_spec».encodedLines,
+    ofSpec «0001_DOGE».specNumber «0001_DOGE».specFileName
+      «0001_DOGE».siblingEncodingFileName «0001_DOGE».proofModuleName
+      «0001_DOGE».markedAsSpecEncoding «0001_DOGE».markedAsProof
+      «0001_DOGE».encodedLines,
+    ofSpec «0002_Systems_Lean».specNumber «0002_Systems_Lean».specFileName
+      «0002_Systems_Lean».siblingEncodingFileName «0002_Systems_Lean».proofModuleName
+      «0002_Systems_Lean».markedAsSpecEncoding «0002_Systems_Lean».markedAsProof
+      «0002_Systems_Lean».encodedLines,
+    ofSpec «0003_beastdb».specNumber «0003_beastdb».specFileName
+      «0003_beastdb».siblingEncodingFileName «0003_beastdb».proofModuleName
+      «0003_beastdb».markedAsSpecEncoding «0003_beastdb».markedAsProof
+      «0003_beastdb».encodedLines,
+    ofSpec «0004_SSSSS».specNumber «0004_SSSSS».specFileName
+      «0004_SSSSS».siblingEncodingFileName «0004_SSSSS».proofModuleName
+      «0004_SSSSS».markedAsSpecEncoding «0004_SSSSS».markedAsProof
+      «0004_SSSSS».encodedLines,
+    ofSpec «0005_CATE».specNumber «0005_CATE».specFileName
+      «0005_CATE».siblingEncodingFileName «0005_CATE».proofModuleName
+      «0005_CATE».markedAsSpecEncoding «0005_CATE».markedAsProof
+      «0005_CATE».encodedLines,
+    ofSpec «0006_RSI».specNumber «0006_RSI».specFileName
+      «0006_RSI».siblingEncodingFileName «0006_RSI».proofModuleName
+      «0006_RSI».markedAsSpecEncoding «0006_RSI».markedAsProof
+      «0006_RSI».encodedLines,
+    ofSpec «0007_CI».specNumber «0007_CI».specFileName
+      «0007_CI».siblingEncodingFileName «0007_CI».proofModuleName
+      «0007_CI».markedAsSpecEncoding «0007_CI».markedAsProof
+      «0007_CI».encodedLines,
+    ofSpec «0008_Formal_Vibefication».specNumber «0008_Formal_Vibefication».specFileName
+      «0008_Formal_Vibefication».siblingEncodingFileName «0008_Formal_Vibefication».proofModuleName
+      «0008_Formal_Vibefication».markedAsSpecEncoding «0008_Formal_Vibefication».markedAsProof
+      «0008_Formal_Vibefication».encodedLines,
+    ofSpec «0009_Unlicense».specNumber «0009_Unlicense».specFileName
+      «0009_Unlicense».siblingEncodingFileName «0009_Unlicense».proofModuleName
+      «0009_Unlicense».markedAsSpecEncoding «0009_Unlicense».markedAsProof
+      «0009_Unlicense».encodedLines,
+    ofSpec «0010_Surmount_Systems».specNumber «0010_Surmount_Systems».specFileName
+      «0010_Surmount_Systems».siblingEncodingFileName «0010_Surmount_Systems».proofModuleName
+      «0010_Surmount_Systems».markedAsSpecEncoding «0010_Surmount_Systems».markedAsProof
+      «0010_Surmount_Systems».encodedLines,
+    ofSpec «0011_Surmount_Systems_Tech_Tree».specNumber «0011_Surmount_Systems_Tech_Tree».specFileName
+      «0011_Surmount_Systems_Tech_Tree».siblingEncodingFileName
+      «0011_Surmount_Systems_Tech_Tree».proofModuleName
+      «0011_Surmount_Systems_Tech_Tree».markedAsSpecEncoding
+      «0011_Surmount_Systems_Tech_Tree».markedAsProof
+      «0011_Surmount_Systems_Tech_Tree».encodedLines,
+    ofSpec «0012_Majestic_Memex».specNumber «0012_Majestic_Memex».specFileName
+      «0012_Majestic_Memex».siblingEncodingFileName
+      «0012_Majestic_Memex».proofModuleName
+      «0012_Majestic_Memex».markedAsSpecEncoding
+      «0012_Majestic_Memex».markedAsProof
+      «0012_Majestic_Memex».encodedLines
   ]
 
 def main (args : List String) : IO UInt32 := do

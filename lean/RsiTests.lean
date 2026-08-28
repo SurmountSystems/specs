@@ -1,6 +1,6 @@
 /-
   Runtime checks for the RSI meaning model (0006_RSI.md).
-  Theorems in Rsi.lean and Vocabulary.lean already fail to typecheck
+  Theorems in RsiProofs.lean and VocabularyCollisionProofs.lean already fail to typecheck
   if the model is widened (CATE numbered 0006, fargo numbered 0005,
   leftover unstack treated as conforming, SSSP treated as specified,
   independent streams serialized, Systems Lean mashed with Slake or
@@ -62,6 +62,12 @@ def runCases : List Case :=
     expectEqNat "RSI is specification 0006" specNumber 6,
     expectEqString "spec file is 0006_RSI.md" specFileName "0006_RSI.md",
     expectEqString "product short name is RSI" productName "RSI",
+    expectTrue "RSI live module contains spec encodings"
+      liveContainsSpecEncodings,
+    expectFalse "RSI live module does not mash proofs into encodings"
+      liveContainsProofsOfThoseEncodings,
+    expectFalse "vocabulary collision tags do not mash proofs into encodings"
+      Vocabulary.liveContainsProofsOfThoseEncodings,
     expectEqNat "CATE is specification 0005" Rsi.cateSpecNumber 5,
     expectFalse "CATE is not specification 0006" (Rsi.cateSpecNumber == 6),
     expectEqString "CATE file is 0005_CATE.md" cateFileName "0005_CATE.md",

@@ -58,6 +58,10 @@ def runCases : List Case :=
     expectTrue "spec encoding module is marked as spec encoding"
       markedAsSpecEncoding,
     expectFalse "spec encoding module is not marked as proof" markedAsProof,
+    expectTrue "FormalVibeficationSpec live module contains spec encodings"
+      liveContainsSpecEncodings,
+    expectFalse "FormalVibeficationSpec live module does not mash proofs into encodings"
+      liveContainsProofsOfThoseEncodings,
     expectTrue "human markdown is the contract humans read"
       humanMarkdownIsTheHumanContract,
     expectFalse "human markdown does not substitute for Lean spec encodings"
@@ -91,7 +95,7 @@ def runCases : List Case :=
       (allEntries.any (fun e => e.number == 8)),
     expectTrue "number 0009 is in the registry"
       (allEntries.any (fun e => e.number == 9)),
-    expectFalse "number 0011 is not in the registry"
+    expectTrue "number 0011 is in the registry"
       (allEntries.any (fun e => e.number == 11)),
     expectEmpty "correct 0008_Formal_Vibefication token passes"
       (scanContent "0008_Formal_Vibefication.md"

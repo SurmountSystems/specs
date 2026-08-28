@@ -1,19 +1,19 @@
 /-
   PROOFS for the sibling line encoding of `0008_Formal_Vibefication.md`.
 
-  This module is not the specification. It imports Spec_0008 and
+  This module is not the specification. It imports «0008_Formal_Vibefication» and
   establishes identities of that encoding. Meaning proofs of Formal
   Vibefication live in FormalVibeficationProofs.lean. Numbered markdown
   remains the contract humans read.
 -/
 
-import Spec_0008
+import «0008_Formal_Vibefication»
 import FormalVibeficationSpec
 import SpecRegistry
 
 namespace Proofs_0008
 
-open Spec_0008
+open «0008_Formal_Vibefication»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -23,7 +23,7 @@ theorem spec_number : specNumber = 8 := rfl
 
 theorem spec_file : specFileName = "0008_Formal_Vibefication.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0008.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0008_Formal_Vibefication.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0008" := rfl
 

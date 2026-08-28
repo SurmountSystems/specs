@@ -1,17 +1,17 @@
 /-
   PROOFS for the sibling line encoding of `0007_CI.md`.
 
-  This module is not the specification. It imports Spec_0007 and
+  This module is not the specification. It imports «0007_CI» and
   establishes identities of that encoding. Numbered markdown remains
   the contract humans read.
 -/
 
-import Spec_0007
+import «0007_CI»
 import FormalVibeficationSpec
 
 namespace Proofs_0007
 
-open Spec_0007
+open «0007_CI»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -21,7 +21,7 @@ theorem spec_number : specNumber = 7 := rfl
 
 theorem spec_file : specFileName = "0007_CI.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0007.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0007_CI.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0007" := rfl
 

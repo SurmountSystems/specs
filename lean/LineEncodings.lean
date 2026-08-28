@@ -1,17 +1,22 @@
 /-
   Isomorphism of physical lines between numbered markdown and sibling
-  Lean spec encodings (`Spec_NNNN.lean`).
+  Lean spec encodings (`NNNN_descriptive_name.lean` next to
+  `NNNN_descriptive_name.md`).
 
   The gate fails when a markdown line has no encoding or an encoding
   has no matching markdown line. Compiled `encodedLines` must still
   match the markdown bytes (LF lines). The gate also fails when a
-  sibling `Spec_NNNN.lean` contains `include_str`. The encoding must
+  sibling encoding contains `include_str`. The encoding must
   be explicit Lean `MdLine` or `String` literals, one per physical
   markdown line. `include_str` is not a line encoding.
 
   Compiled `encodedLines` SHALL NOT contain leftover unstack phrases in
   prose outside fenced code and outside inline code. Comments in
-  `lean/FormalVibeficationSpec.lean` and `lean/VocabularySpec.lean`
+  `lean/FormalVibeficationSpec.lean`, `lean/VocabularySpec.lean`,
+  `lean/TechTreeSpec.lean`, `lean/MemexSpec.lean`, `lean/UnlicenseSpec.lean`,
+  `lean/CateSpec.lean`, `lean/RsiSpec.lean`, `lean/CiSpec.lean`,
+  `lean/BeastDbSpec.lean`, `lean/SssssSpec.lean`, and
+  `lean/SystemsLeanSpec.lean`
   SHALL NOT contain those leftover phrases. That scan uses
   `Cate.leftoverUnstackPhrases` and `SpecCheck.checkLeftoverUnstack`.
   It is a floor, not a complete English checker.
@@ -90,8 +95,8 @@ def mashedSibling (e : EncodedSpec) : Bool :=
 def siblingFlagsConform (e : EncodedSpec) : Bool :=
   e.markedAsSpecEncoding && !e.markedAsProof && !mashedSibling e
 
-def expectedEncodingName (n : Nat) : String :=
-  MdLine.siblingEncodingFileName n
+def expectedEncodingName (specFileName : String) : String :=
+  MdLine.siblingEncodingFileName specFileName
 
 def expectedProofFileName (n : Nat) : String :=
   MdLine.siblingProofFileName n
@@ -320,7 +325,10 @@ def findingsForLeftoverUnstackComments (path : String) (src : String) :
 
 /-- Marked meaning spec encodings whose comments use the leftover unstack floor. -/
 def meaningSpecEncodingRelPaths : Array String :=
-  #["lean/FormalVibeficationSpec.lean", "lean/VocabularySpec.lean"]
+  #["lean/FormalVibeficationSpec.lean", "lean/VocabularySpec.lean",
+    "lean/TechTreeSpec.lean", "lean/MemexSpec.lean", "lean/UnlicenseSpec.lean",
+    "lean/CateSpec.lean", "lean/RsiSpec.lean", "lean/CiSpec.lean",
+    "lean/BeastDbSpec.lean", "lean/SssssSpec.lean", "lean/SystemsLeanSpec.lean"]
 
 def leftoverUnstackPhrasesAreCate : Bool :=
   SpecCheck.leftoverUnstackPhrases == Cate.leftoverUnstackPhrases
@@ -354,12 +362,12 @@ def checkOne (repo : System.FilePath) (e : EncodedSpec) : IO (Array Finding) := 
   let mdPath := repo / e.specFileName
   let specPath := repo / e.siblingEncodingFileName
   let proofPath := repo / expectedProofFileName e.specNumber
-  if e.siblingEncodingFileName != expectedEncodingName e.specNumber then
+  if e.siblingEncodingFileName != expectedEncodingName e.specFileName then
     out := out.push
       { path := e.siblingEncodingFileName
         line := 1
         message :=
-          s!"expected sibling name {expectedEncodingName e.specNumber}" }
+          s!"expected sibling name {expectedEncodingName e.specFileName}" }
   if e.proofModuleName != MdLine.siblingProofModuleName e.specNumber then
     out := out.push
       { path := expectedProofFileName e.specNumber
@@ -419,14 +427,14 @@ def missingCompiled (published : List SpecRegistry.RegistryEntry) (compiled : Ar
           { path := e.fileName
             line := 1
             message :=
-              s!"published markdown has no compiled sibling encoding {expectedEncodingName e.number}" }
+              s!"published markdown has no compiled sibling encoding {expectedEncodingName e.fileName}" }
     return out
 
 def checkMeaningSpecEncodingComments (repo : System.FilePath) : IO (Array Finding) := do
   let mut out : Array Finding := #[]
   if !leftoverUnstackPhrasesAreCate then
     out := out.push
-      { path := "lean/Cate.lean"
+      { path := "lean/CateSpec.lean"
         line := 1
         message := "spec_check leftover unstack phrases drifted from Cate.leftoverUnstackPhrases" }
   for rel in meaningSpecEncodingRelPaths do

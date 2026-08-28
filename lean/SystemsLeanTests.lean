@@ -1,6 +1,6 @@
 /-
   Runtime checks for the Systems Lean meaning model (0002_Systems_Lean.md).
-  Theorems in SystemsLean.lean already fail to typecheck if the model is
+  Theorems in SystemsLeanProofs.lean already fail to typecheck if the model is
   widened (fourth multiplicity, GC allowed on the wire, SSSSS numbered 0002
   or 0003).
   This executable re-checks the decidable facts so a silent `sorry` or a
@@ -31,6 +31,10 @@ def expectEqNat (name : String) (got want : Nat) : Case :=
 
 def runCases : List Case :=
   [
+    expectTrue "Systems Lean live module contains spec encodings"
+      liveContainsSpecEncodings,
+    expectFalse "Systems Lean live module does not mash proofs into encodings"
+      liveContainsProofsOfThoseEncodings,
     expectEqNat "exactly three multiplicities"
       Multiplicity.all.length 3,
     expectEqNat "erased maps to Fin 0" Multiplicity.erased.toFin.val 0,

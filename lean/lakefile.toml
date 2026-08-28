@@ -6,26 +6,31 @@ defaultTargets = ["spec_check"]
 name = "SpecCheck"
 
 [[lean_lib]]
-name = "SystemsLean"
-
-[[lean_lib]]
 name = "SpecRegistry"
 
 [[lean_lib]]
-name = "BeastDb"
-
-[[lean_lib]]
-name = "Sssss"
-
-[[lean_lib]]
 name = "Cate"
+roots = ["Cate", "CateSpec", "CateProofs"]
 
 [[lean_lib]]
 name = "Rsi"
-roots = ["Rsi", "Vocabulary"]
+roots = ["Rsi", "RsiSpec", "RsiProofs", "Vocabulary", "VocabularyCollisionProofs"]
 
 [[lean_lib]]
 name = "Ci"
+roots = ["Ci", "CiSpec", "CiProofs"]
+
+[[lean_lib]]
+name = "BeastDb"
+roots = ["BeastDb", "BeastDbSpec", "BeastDbProofs"]
+
+[[lean_lib]]
+name = "Sssss"
+roots = ["Sssss", "SssssSpec", "SssssProofs"]
+
+[[lean_lib]]
+name = "SystemsLean"
+roots = ["SystemsLean", "SystemsLeanSpec", "SystemsLeanProofs"]
 
 [[lean_lib]]
 name = "VocabularySpec"
@@ -52,12 +57,30 @@ name = "UnlicenseSpec"
 name = "UnlicenseProofs"
 
 [[lean_lib]]
+name = "TechTreeSpec"
+
+[[lean_lib]]
+name = "TechTreeProofs"
+
+[[lean_lib]]
+name = "MemexSpec"
+
+[[lean_lib]]
+name = "MemexProofs"
+
+[[lean_lib]]
+name = "Sstt"
+
+[[lean_lib]]
+name = "RepoLinks"
+
+[[lean_lib]]
 name = "MdLine"
 
 [[lean_lib]]
 name = "SpecEncodings"
 srcDir = ".."
-roots = ["Spec_0000", "Spec_0001", "Spec_0002", "Spec_0003", "Spec_0004", "Spec_0005", "Spec_0006", "Spec_0007", "Spec_0008", "Spec_0009", "Spec_0010"]
+roots = ["«0000_spec»", "«0001_DOGE»", "«0002_Systems_Lean»", "«0003_beastdb»", "«0004_SSSSS»", "«0005_CATE»", "«0006_RSI»", "«0007_CI»", "«0008_Formal_Vibefication»", "«0009_Unlicense»", "«0010_Surmount_Systems»", "«0011_Surmount_Systems_Tech_Tree»", "«0012_Majestic_Memex»", "lean.SpecEncodings"]
 
 [[lean_lib]]
 name = "LineEncodings"
@@ -67,7 +90,7 @@ name = "WordStats"
 
 [[lean_lib]]
 name = "SpecProofs"
-roots = ["Proofs_0000", "Proofs_0001", "Proofs_0002", "Proofs_0003", "Proofs_0004", "Proofs_0005", "Proofs_0006", "Proofs_0007", "Proofs_0008", "Proofs_0009", "Proofs_0010", "SpecProofs"]
+roots = ["Proofs_0000", "Proofs_0001", "Proofs_0002", "Proofs_0003", "Proofs_0004", "Proofs_0005", "Proofs_0006", "Proofs_0007", "Proofs_0008", "Proofs_0009", "Proofs_0010", "Proofs_0011", "Proofs_0012", "SpecProofs"]
 
 [[lean_exe]]
 name = "spec_check"
@@ -132,3 +155,27 @@ root = "WordStatsCheck"
 [[lean_exe]]
 name = "word_stats_tests"
 root = "WordStatsTests"
+
+[[lean_exe]]
+name = "tech_tree_tests"
+root = "TechTreeTests"
+
+[[lean_exe]]
+name = "memex_tests"
+root = "MemexTests"
+
+[[lean_exe]]
+name = "sstt_tests"
+root = "SsttTests"
+
+[[lean_exe]]
+name = "sstt_write"
+root = "SsttWrite"
+
+[[lean_exe]]
+name = "repo_links_check"
+root = "RepoLinksCheck"
+
+[[lean_exe]]
+name = "repo_links_tests"
+root = "RepoLinksTests"

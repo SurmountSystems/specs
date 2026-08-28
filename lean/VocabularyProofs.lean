@@ -8,6 +8,7 @@
 -/
 
 import VocabularySpec
+import SpecRegistry
 
 namespace VocabularyProofs
 
@@ -23,9 +24,43 @@ theorem spec_file : specFileName = "0005_CATE.md" := rfl
 
 theorem mash_false : markedAsProof = false := rfl
 
+theorem spec_number_is_5 : specNumber = 5 := rfl
+
+theorem spec_file_is_0005_cate :
+    specFileName = "0005_CATE.md" :=
+  rfl
+
+theorem pointer_is_vocabulary_md : pointerFileName = "VOCABULARY.md" :=
+  rfl
+
+theorem product_name_is_cate : productName = "CATE" := rfl
+
+theorem spec_is_not_0008 : specNumber ≠ 8 := by decide
+
+theorem spec_is_not_0009 : specNumber ≠ 9 := by decide
+
+theorem spec_is_not_0010 : specNumber ≠ 10 := by decide
+
+theorem agrees_registry :
+    specNumber = SpecRegistry.vocabularySpecNumber :=
+  rfl
+
+theorem agrees_cate :
+    specNumber = SpecRegistry.cateSpecNumber :=
+  rfl
+
+theorem catalog_is_not_pointer : catalogIsPointerFile = false := rfl
+
+theorem catalog_is_numbered_spec : catalogIsNumberedSpec = true := rfl
+
+theorem live_encodings_without_proofs :
+    liveContainsSpecEncodings = true ∧
+      liveContainsProofsOfThoseEncodings = false :=
+  And.intro rfl rfl
+
 theorem mash_0009_as_published_is_false :
     numberNinePublished = false :=
-  VocabularySpec.mash_0009_as_published_is_false
+  rfl
 
 /-!
   Inverse maps on finite lists.

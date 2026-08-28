@@ -1,6 +1,6 @@
 /-
   Runtime checks for the CATE meaning model (0005_CATE.md).
-  Theorems in Cate.lean already fail to typecheck if the model is
+  Theorems in CateProofs.lean already fail to typecheck if the model is
   widened (CATE numbered 0000 or 0006, leftover unstack treated as
   conforming, residual silence treated as conforming). This executable
   re-checks the decidable facts so a silent Bool regression prints FAIL
@@ -68,6 +68,13 @@ def runCases : List Case :=
     expectFalse "CATE is not specification 0006" (specNumber == 6),
     expectEqString "spec file is 0005_CATE.md" specFileName "0005_CATE.md",
     expectTrue "CATE is a stack number" cateIsNewStackNumber,
+    expectTrue "CATE live module contains spec encodings"
+      liveContainsSpecEncodings,
+    expectFalse "CATE live module does not mash proofs into encodings"
+      liveContainsProofsOfThoseEncodings,
+    expectTrue "CATE spec encoding module is marked as spec encoding"
+      markedAsSpecEncoding,
+    expectFalse "CATE spec encoding module is not marked as proof" markedAsProof,
     expectTrue "CATE is not specification 0000" (specNumber != 0),
     expectTrue "CATE is not specification 0006"
       (specNumber != rsiSpecNumber),

@@ -30,17 +30,25 @@
   specification 0008 (`0008_Formal_Vibefication.md`). Unlicense is
   numbered specification 0009 (`0009_Unlicense.md`). The word catalog
   is owned by CATE as specification 0005 (`0005_CATE.md`). The file
-  0009_VOCABULARY.md MUST NOT exist. Number 0011 is not published.
+  0009_VOCABULARY.md MUST NOT exist. Number 0011 is Surmount Systems
+  Tech Tree. Number 0012 is Majestic Memex.
 -/
 
 import SpecRegistry
 import SystemsLean
+import SystemsLeanProofs
 import BeastDb
+import BeastDbProofs
 import Sssss
+import SssssProofs
 import Cate
+import CateProofs
 import Rsi
+import RsiProofs
 import Vocabulary
+import VocabularyCollisionProofs
 import Ci
+import CiProofs
 import SpecCheck
 import FormalVibeficationSpec
 import FormalVibeficationProofs
@@ -49,8 +57,14 @@ import UnlicenseProofs
 import VocabularySpec
 import VocabularyProofs
 import SpecProofs
-import Spec_0010
-import Spec_0009
+import TechTreeSpec
+import TechTreeProofs
+import MemexSpec
+import MemexProofs
+import «0010_Surmount_Systems»
+import «0009_Unlicense»
+import «0011_Surmount_Systems_Tech_Tree»
+import «0012_Majestic_Memex»
 
 namespace Surmount
 
@@ -65,6 +79,12 @@ def formalVibeficationSpecNumber : Nat := 8
 /-- Identity of numbered specification 0009. -/
 def unlicenseSpecNumber : Nat := 9
 
+/-- Identity of numbered specification 0011. -/
+def techTreeSpecNumber : Nat := 11
+
+/-- Identity of numbered specification 0012. -/
+def memexSpecNumber : Nat := 12
+
 /-- Catalog ownership: CATE, specification 0005. Number 0009 is Unlicense. -/
 def vocabularySpecNumber : Nat := 5
 
@@ -75,16 +95,16 @@ theorem spec_file_is_0010_surmount_systems :
   rfl
 
 theorem sibling_encoding_file_is_spec_0010 :
-    Spec_0010.siblingEncodingFileName = "Spec_0010.lean" :=
+    «0010_Surmount_Systems».siblingEncodingFileName = "0010_Surmount_Systems.lean" :=
   rfl
 
 theorem sibling_encoding_matches_markdown_name :
-    Spec_0010.specFileName = specFileName :=
+    «0010_Surmount_Systems».specFileName = specFileName :=
   rfl
 
 theorem sibling_proofs_are_separate :
-    Spec_0010.proofModuleName = "Proofs_0010" ∧
-      Spec_0010.markedAsProof = false :=
+    «0010_Surmount_Systems».proofModuleName = "Proofs_0010" ∧
+      «0010_Surmount_Systems».markedAsProof = false :=
   And.intro rfl rfl
 
 theorem formal_vibefication_is_0008 : formalVibeficationSpecNumber = 8 :=
@@ -103,6 +123,36 @@ theorem unlicense_agrees_encoding :
 theorem unlicense_is_not_0010 : unlicenseSpecNumber ≠ 10 := by decide
 
 theorem unlicense_is_not_0011 : unlicenseSpecNumber ≠ 11 := by decide
+
+theorem tech_tree_is_0011 : techTreeSpecNumber = 11 := rfl
+
+theorem tech_tree_agrees_registry :
+    techTreeSpecNumber = SpecRegistry.techTreeSpecNumber :=
+  rfl
+
+theorem tech_tree_agrees_encoding :
+    techTreeSpecNumber = TechTreeSpec.specNumber :=
+  rfl
+
+theorem sibling_encoding_file_is_spec_0011 :
+    «0011_Surmount_Systems_Tech_Tree».siblingEncodingFileName =
+      "0011_Surmount_Systems_Tech_Tree.lean" :=
+  rfl
+
+theorem memex_is_0012 : memexSpecNumber = 12 := rfl
+
+theorem memex_agrees_registry :
+    memexSpecNumber = SpecRegistry.memexSpecNumber :=
+  rfl
+
+theorem memex_agrees_encoding :
+    memexSpecNumber = MemexSpec.specNumber :=
+  rfl
+
+theorem sibling_encoding_file_is_spec_0012 :
+    «0012_Majestic_Memex».siblingEncodingFileName =
+      "0012_Majestic_Memex.lean" :=
+  rfl
 
 theorem vocabulary_is_0005 : vocabularySpecNumber = 5 := rfl
 
@@ -258,6 +308,8 @@ def leanSpecEncodingsAreCateOnLeftoverUnstackFloor : Bool :=
     !VocabularySpec.markedAsProof &&
     UnlicenseSpec.markedAsSpecEncoding &&
     !UnlicenseSpec.markedAsProof &&
+    TechTreeSpec.markedAsSpecEncoding &&
+    !TechTreeSpec.markedAsProof &&
     FormalVibeficationSpec.siblingLineEncodingsRequired
 
 theorem lean_spec_encodings_are_cate_on_leftover_unstack_floor :
@@ -321,15 +373,21 @@ theorem omitting_0009_is_inconsistent
   rw [hYes] at h
   exact Bool.noConfusion h
 
-theorem claiming_0011_published_is_inconsistent
-    (h : SpecRegistry.allEntries.any (fun e => e.number == 11) = true) : False := by
-  have hNo := SpecRegistry.number_11_not_published
-  rw [hNo] at h
+theorem omitting_0011_is_inconsistent
+    (h : SpecRegistry.allEntries.any (fun e => e.number == 11) = false) : False := by
+  have hYes := SpecRegistry.number_11_published
+  rw [hYes] at h
+  exact Bool.noConfusion h
+
+theorem omitting_0012_is_inconsistent
+    (h : SpecRegistry.allEntries.any (fun e => e.number == 12) = false) : False := by
+  have hYes := SpecRegistry.number_12_published
+  rw [hYes] at h
   exact Bool.noConfusion h
 
 theorem mash_0009_as_published_is_false :
     VocabularySpec.numberNinePublished = false :=
-  VocabularySpec.mash_0009_as_published_is_false
+  VocabularyProofs.mash_0009_as_published_is_false
 
 theorem mash_vocabulary_not_cate
     (h : vocabularySpecNumber ≠ SpecRegistry.cateSpecNumber) : False :=
@@ -362,6 +420,63 @@ theorem vocab_aspell_fixture_well_formed :
     VocabularySpec.wellFormed VocabularySpec.fixtureEntries = true :=
   VocabularyProofs.fixture_wellFormed
 
+/-- Companion meaning models follow Formal Vibefication: encodings without proofs. -/
+def companionMeaningModelsSplit : Bool :=
+  Cate.liveContainsSpecEncodings &&
+    !Cate.liveContainsProofsOfThoseEncodings &&
+    Cate.markedAsSpecEncoding &&
+    !Cate.markedAsProof &&
+    Rsi.liveContainsSpecEncodings &&
+    !Rsi.liveContainsProofsOfThoseEncodings &&
+    Rsi.markedAsSpecEncoding &&
+    !Rsi.markedAsProof &&
+    Ci.liveContainsSpecEncodings &&
+    !Ci.liveContainsProofsOfThoseEncodings &&
+    Ci.markedAsSpecEncoding &&
+    !Ci.markedAsProof &&
+    BeastDb.liveContainsSpecEncodings &&
+    !BeastDb.liveContainsProofsOfThoseEncodings &&
+    BeastDb.markedAsSpecEncoding &&
+    !BeastDb.markedAsProof &&
+    Sssss.liveContainsSpecEncodings &&
+    !Sssss.liveContainsProofsOfThoseEncodings &&
+    Sssss.markedAsSpecEncoding &&
+    !Sssss.markedAsProof &&
+    SystemsLean.liveContainsSpecEncodings &&
+    !SystemsLean.liveContainsProofsOfThoseEncodings &&
+    SystemsLean.markedAsSpecEncoding &&
+    !SystemsLean.markedAsProof &&
+    Vocabulary.liveContainsSpecEncodings &&
+    !Vocabulary.liveContainsProofsOfThoseEncodings &&
+    Vocabulary.markedAsSpecEncoding &&
+    !Vocabulary.markedAsProof &&
+    VocabularySpec.liveContainsSpecEncodings &&
+    !VocabularySpec.liveContainsProofsOfThoseEncodings &&
+    VocabularySpec.markedAsSpecEncoding &&
+    !VocabularySpec.markedAsProof &&
+    FormalVibeficationSpec.liveContainsSpecEncodings &&
+    !FormalVibeficationSpec.liveContainsProofsOfThoseEncodings &&
+    FormalVibeficationSpec.markedAsSpecEncoding &&
+    !FormalVibeficationSpec.markedAsProof &&
+    UnlicenseSpec.liveContainsSpecEncodings &&
+    !UnlicenseSpec.liveContainsProofsOfThoseEncodings &&
+    UnlicenseSpec.markedAsSpecEncoding &&
+    !UnlicenseSpec.markedAsProof &&
+    TechTreeSpec.liveContainsSpecEncodings &&
+    !TechTreeSpec.liveContainsProofsOfThoseEncodings &&
+    TechTreeSpec.markedAsSpecEncoding &&
+    !TechTreeSpec.markedAsProof &&
+    MemexSpec.liveContainsSpecEncodings &&
+    !MemexSpec.liveContainsProofsOfThoseEncodings &&
+    MemexSpec.markedAsSpecEncoding &&
+    !MemexSpec.markedAsProof &&
+    !FormalVibeficationSpec.conformingThisRepo
+      FormalVibeficationSpec.mashedFixture
+
+theorem companion_meaning_models_split :
+    companionMeaningModelsSplit = true :=
+  rfl
+
 /-- Decidable conjunction of stack identities. Drifting any conjunct breaks `rfl`. -/
 def stackIntegrates : Bool :=
   !SpecRegistry.hasDupNumbers &&
@@ -377,13 +492,19 @@ def stackIntegrates : Bool :=
     SpecRegistry.systemsLeanSpecNumber == 2 &&
     SpecRegistry.surmountSystemsSpecNumber == 10 &&
     SpecRegistry.unlicenseSpecNumber == 9 &&
+    SpecRegistry.techTreeSpecNumber == 11 &&
+    SpecRegistry.memexSpecNumber == 12 &&
     surmountSpecNumber == SpecRegistry.surmountSystemsSpecNumber &&
     formalVibeficationSpecNumber == SpecRegistry.formalVibeficationSpecNumber &&
     unlicenseSpecNumber == SpecRegistry.unlicenseSpecNumber &&
+    techTreeSpecNumber == SpecRegistry.techTreeSpecNumber &&
     vocabularySpecNumber == SpecRegistry.vocabularySpecNumber &&
     SpecRegistry.allEntries.any (fun e => e.number == 8) &&
     SpecRegistry.allEntries.any (fun e => e.number == 9) &&
-    !SpecRegistry.allEntries.any (fun e => e.number == 11) &&
+    SpecRegistry.allEntries.any (fun e => e.number == 11) &&
+    SpecRegistry.publishedEntries.any (fun e => e.number == 12) &&
+    memexSpecNumber == SpecRegistry.memexSpecNumber &&
+    MemexSpec.specNumber == SpecRegistry.memexSpecNumber &&
     !VocabularySpec.numberNinePublished &&
     Cate.specNumber == SpecRegistry.cateSpecNumber &&
     Cate.ownsVocabularyCatalog &&
@@ -395,6 +516,12 @@ def stackIntegrates : Bool :=
     SystemsLean.systemsLeanSpecNumber == SpecRegistry.systemsLeanSpecNumber &&
     FormalVibeficationSpec.specNumber == SpecRegistry.formalVibeficationSpecNumber &&
     UnlicenseSpec.specNumber == SpecRegistry.unlicenseSpecNumber &&
+    TechTreeSpec.specNumber == SpecRegistry.techTreeSpecNumber &&
+    !TechTreeSpec.producerShipped &&
+    TechTreeSpec.lakeWriterExists &&
+    TechTreeSpec.compactSizeBtcVerifiedIsThisRepoRefPin &&
+    TechTreeSpec.majesticMemexPublished &&
+    TechTreeSpec.encodedGraphMustBeDag &&
     UnlicenseSpec.remainingCopyright UnlicenseSpec.ossWithoutDedication &&
     !UnlicenseSpec.remainingCopyright UnlicenseSpec.unlicenseDedication &&
     UnlicenseSpec.ideasNonScarce &&
@@ -427,15 +554,28 @@ def stackIntegrates : Bool :=
       FormalVibeficationSpec.proofFixture &&
     !FormalVibeficationSpec.conformingThisRepo
       FormalVibeficationSpec.mashedFixture &&
+    companionMeaningModelsSplit &&
     FormalVibeficationSpec.siblingLineEncodingsRequired &&
     FormalVibeficationSpec.siblingProofsAreSeparateModules &&
     !FormalVibeficationSpec.mashedSiblingEncodingAndProofsConform &&
     SpecProofs.encodingsNotMashed &&
-    Spec_0010.specFileName == specFileName &&
-    Spec_0010.siblingEncodingFileName == "Spec_0010.lean" &&
-    Spec_0009.specFileName == "0009_Unlicense.md" &&
-    Spec_0009.siblingEncodingFileName == "Spec_0009.lean" &&
-    !Spec_0009.markedAsProof &&
+    «0010_Surmount_Systems».specFileName == specFileName &&
+    «0010_Surmount_Systems».siblingEncodingFileName == "0010_Surmount_Systems.lean" &&
+    «0009_Unlicense».specFileName == "0009_Unlicense.md" &&
+    «0009_Unlicense».siblingEncodingFileName == "0009_Unlicense.lean" &&
+    !«0009_Unlicense».markedAsProof &&
+    «0011_Surmount_Systems_Tech_Tree».specFileName ==
+      "0011_Surmount_Systems_Tech_Tree.md" &&
+    «0011_Surmount_Systems_Tech_Tree».siblingEncodingFileName ==
+      "0011_Surmount_Systems_Tech_Tree.lean" &&
+    !«0011_Surmount_Systems_Tech_Tree».markedAsProof &&
+    «0012_Majestic_Memex».specFileName ==
+      "0012_Majestic_Memex.md" &&
+    «0012_Majestic_Memex».siblingEncodingFileName ==
+      "0012_Majestic_Memex.lean" &&
+    !«0012_Majestic_Memex».markedAsProof &&
+    MemexSpec.specNumber == 12 &&
+    !MemexSpec.productReadyForUse &&
     !Ci.dumpTheoremsIntoNumberedMarkdown
 
 theorem surmount_integrates : stackIntegrates = true := rfl

@@ -1,17 +1,17 @@
 /-
   PROOFS for the sibling line encoding of `0004_SSSSS.md`.
 
-  This module is not the specification. It imports Spec_0004 and
+  This module is not the specification. It imports «0004_SSSSS» and
   establishes identities of that encoding. Numbered markdown remains
   the contract humans read.
 -/
 
-import Spec_0004
+import «0004_SSSSS»
 import FormalVibeficationSpec
 
 namespace Proofs_0004
 
-open Spec_0004
+open «0004_SSSSS»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -21,7 +21,7 @@ theorem spec_number : specNumber = 4 := rfl
 
 theorem spec_file : specFileName = "0004_SSSSS.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0004.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0004_SSSSS.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0004" := rfl
 

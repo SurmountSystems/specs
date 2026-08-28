@@ -3,9 +3,11 @@
   This file sits next to that markdown at the repository root.
 
   Every physical line of the markdown (including blank lines) is an
-  explicit Lean `MdLine` value. Lean module names cannot start with a
-  digit, so this file is `Spec_0008.lean` rather than `0008.lean`.
-  Each line is an explicit constructor, not a file include.
+  explicit Lean `MdLine` value. The encoding file uses the markdown
+  basename with `.lean` in place of `.md` so a reader sees the pair
+  immediately. The file name starts with a digit, so Lean uses a
+  quoted module name that matches that stem. Each line is an
+  explicit constructor, not a file include.
 
   Selected meaning encodings for this specification also live in `lean/FormalVibeficationSpec.lean`. That module is not this line encoding.
 
@@ -17,7 +19,7 @@
 
 import MdLine
 
-namespace Spec_0008
+namespace «0008_Formal_Vibefication»
 
 def markedAsSpecEncoding : Bool := true
 
@@ -27,7 +29,7 @@ def specNumber : Nat := 8
 
 def specFileName : String := "0008_Formal_Vibefication.md"
 
-def siblingEncodingFileName : String := "Spec_0008.lean"
+def siblingEncodingFileName : String := "0008_Formal_Vibefication.lean"
 
 def proofModuleName : String := "Proofs_0008"
 
@@ -45,13 +47,13 @@ def encodedLines : Array MdLine := #[
   { number := 10, text := "" },
   { number := 11, text := "This specification is number 0008. The file name is `0008_Formal_Vibefication.md`." },
   { number := 12, text := "" },
-  { number := 13, text := "This document is the contract that humans read. It does not contain Lean theorem statements. Selected claims are encoded in Lean under `lean/FormalVibeficationSpec.lean` (see Clause 1.2). Proofs of those encodings live under `lean/FormalVibeficationProofs.lean`. Every published numbered markdown file at this repository root also has a sibling line encoding `Spec_NNNN.lean` at that same root, with proofs in `lean/Proofs_NNNN.lean`. Those Lean files are not this specification." },
+  { number := 13, text := "This document is the contract that humans read. It does not contain Lean theorem statements. Selected claims are encoded in Lean under `lean/FormalVibeficationSpec.lean` (see Clause 1.2). Proofs of those encodings live under `lean/FormalVibeficationProofs.lean`. Every published numbered markdown file at this repository root also has a sibling line encoding `NNNN_descriptive_name.lean` at that same root, with proofs in `lean/Proofs_NNNN.lean`. Those Lean files are not this specification." },
   { number := 14, text := "" },
-  { number := 15, text := "This document does not claim that a conforming Surmount product exists. This document does not claim that Slake emit already matches object files as identical bytes. This document does not specify fargo. This document does not specify the Surmount Systems System Prompt (SSSP). This document does not specify the Carbonado Network Protocol. This document does not specify Lean Machine. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). A numbered Vocabulary file MUST NOT exist. Number 0011 is not published." },
+  { number := 15, text := "This document does not claim that a conforming Surmount product exists. This document does not claim that Slake emit already matches object files as identical bytes. This document does not specify fargo. This document does not specify the Surmount Systems System Prompt (SSSP). This document does not specify the Carbonado Network Protocol. This document does not specify Lean Machine. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). A numbered Vocabulary file MUST NOT exist. Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). This document does not steal 0011 for fargo. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept." },
   { number := 16, text := "" },
   { number := 17, text := "### 1.1 Status of this document" },
   { number := 18, text := "" },
-  { number := 19, text := "1. This document is normative for encoding the specification in Lean as structures and propositions that state what must be true, for keeping those encodings in modules whose names or comments mark them as spec encodings rather than proofs, for keeping proofs in separate Lean modules, for treating numbered markdown as the contract humans read and not as a substitute for those encodings, for treating Lean proofs as not the specification, for treating `spec_check` as form of numbered markdown rather than as a meaning encoding, for treating a mash of spec encodings and their proofs that hides the split as nonconforming in this specifications repository, for requiring a sibling `Spec_NNNN.lean` at the repository root whose physical lines match each published numbered markdown file, for treating a mash of that sibling encoding with its proofs as nonconforming, and for treating product tree unification under Systems Lean and SSSSS as a different home whose mash with this repository's split is inconsistent." },
+  { number := 19, text := "1. This document is normative for encoding the specification in Lean as structures and propositions that state what must be true, for keeping those encodings in modules whose names or comments mark them as spec encodings rather than proofs, for keeping proofs in separate Lean modules, for treating numbered markdown as the contract humans read and not as a substitute for those encodings, for treating Lean proofs as not the specification, for treating `spec_check` as form of numbered markdown rather than as a meaning encoding, for treating a mash of spec encodings and their proofs that hides the split as nonconforming in this specifications repository, for requiring a sibling `NNNN_descriptive_name.lean` at the repository root whose physical lines match each published numbered markdown file, for treating a mash of that sibling encoding with its proofs as nonconforming, and for treating product tree unification under Systems Lean and SSSSS as a different home whose mash with this repository's split is inconsistent." },
   { number := 20, text := "2. Versioning of this document SHALL follow [0000_spec.md](0000_spec.md) (the Surmount spec spec) and Semantic Versioning 2.0.0 (SemVer). Local path for SemVer: `ref/semver`." },
   { number := 21, text := "3. This specification is number 0008. The file name is `0008_Formal_Vibefication.md`." },
   { number := 22, text := "4. Concise American Technical English (CATE) is specified in `0005_CATE.md`. CATE is specification 0005. CATE is not this specification." },
@@ -71,7 +73,7 @@ def encodedLines : Array MdLine := #[
   { number := 36, text := "3. Lean proofs under `lean/FormalVibeficationProofs.lean` import that spec encoding module and establish those propositions. That module is the proof. It is not the specification." },
   { number := 37, text := "4. The Lean module `Surmount` composes human markdown, Lean spec encodings, Lean proofs, and product implementation. `surmountSpecNumber` remains 10. This document's identity in that composition is `formalVibeficationSpecNumber = 8`." },
   { number := 38, text := "5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, leftover unstack phrases, Residual heading, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Spec encodings of meaning MUST NOT be treated as a second markdown form checker." },
-  { number := 39, text := "6. Every published numbered markdown file `NNNN_descriptive_name.md` at this repository root has a sibling Lean spec encoding `Spec_NNNN.lean` at that same root. Lean module names cannot start with a digit. The `Spec_` prefix exists so the module name is valid. That sibling holds a Lean value for every physical line of the markdown (line numbers that start at 1, exact text, optional role). Proofs of those line encodings live in `lean/Proofs_NNNN.lean`." },
+  { number := 39, text := "6. Every published numbered markdown file `NNNN_descriptive_name.md` at this repository root has a sibling Lean spec encoding `NNNN_descriptive_name.lean` at that same root. The encoding file uses the markdown basename with `.lean` in place of `.md` so a reader sees the pair immediately. The file name starts with a digit, so Lean uses a quoted module name that matches that stem. That sibling holds a Lean value for every physical line of the markdown (line numbers that start at 1, exact text, optional role). Proofs of those line encodings live in `lean/Proofs_NNNN.lean`." },
   { number := 40, text := "7. The Lean program `line_encodings_check` fails when a markdown line has no encoding or an encoding has no matching markdown line. That program is an isomorphism of lines. It is not a second markdown form checker and it is not this specification." },
   { number := 41, text := "" },
   { number := 42, text := "### 1.3 Documents this specification does not replace" },
@@ -86,10 +88,10 @@ def encodedLines : Array MdLine := #[
   { number := 51, text := "8. beastdb remains [0003_beastdb.md](0003_beastdb.md)." },
   { number := 52, text := "9. SSSSS remains [0004_SSSSS.md](0004_SSSSS.md)." },
   { number := 53, text := "10. fargo has no numbered specification in this repository and no assigned number. This document does not invent a number for fargo. This document does not specify how Rust is elevated with fargo." },
-  { number := 54, text := "11. The Carbonado Network Protocol has no numbered specification in this repository and no assigned number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`). Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is this specification. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is not published. This document does not steal those numbers for fargo or for Carbonado." },
+  { number := 54, text := "11. The Carbonado Network Protocol has no numbered specification in this repository and no assigned number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`). Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is this specification. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). This document does not steal 0011 for fargo. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept. This document does not steal those numbers for fargo or for Carbonado." },
   { number := 55, text := "12. SSSP is named in residual. It is not specified here." },
   { number := 56, text := "13. Lean Machine is named in residual. It is not specified here." },
-  { number := 57, text := "14. The word catalog remains [0005_CATE.md](0005_CATE.md). CATE is specification 0005. Number 0009 is Unlicense (`0009_Unlicense.md`). A numbered Vocabulary file MUST NOT exist. Mentions of Vocabulary as a published specification 0009 do not conform. Number 0011 is not published. This document does not assign 0009 to fargo or to Carbonado." },
+  { number := 57, text := "14. The word catalog remains [0005_CATE.md](0005_CATE.md). CATE is specification 0005. Number 0009 is Unlicense (`0009_Unlicense.md`). A numbered Vocabulary file MUST NOT exist. Mentions of Vocabulary as a published specification 0009 do not conform. Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). This document does not steal 0011 for fargo. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept. This document does not assign 0009 to fargo or to Carbonado." },
   { number := 58, text := "" },
   { number := 59, text := "## 2. Normative references" },
   { number := 60, text := "" },
@@ -154,7 +156,7 @@ def encodedLines : Array MdLine := #[
   { number := 119, text := "" },
   { number := 120, text := "### 3.9 Sibling line encoding" },
   { number := 121, text := "" },
-  { number := 122, text := "A Lean module named `Spec_NNNN.lean` that sits next to numbered markdown `NNNN_descriptive_name.md` at this repository root and holds a Lean value for every physical line of that markdown (line numbers that start at 1, exact text, optional role). Lean modules cannot start with a digit. The `Spec_` prefix exists so the name is a valid Lean module. For this specification that sibling is `Spec_0008.lean`." },
+  { number := 122, text := "A Lean module named `NNNN_descriptive_name.lean` that sits next to numbered markdown `NNNN_descriptive_name.md` at this repository root and holds a Lean value for every physical line of that markdown (line numbers that start at 1, exact text, optional role). The encoding file uses the markdown basename with `.lean` in place of `.md` so a reader sees the pair immediately. The file name starts with a digit, so Lean uses a quoted module name that matches that stem. For this specification that sibling is `0008_Formal_Vibefication.lean`." },
   { number := 123, text := "" },
   { number := 124, text := "### 3.10 Isomorphism of lines" },
   { number := 125, text := "" },
@@ -228,18 +230,18 @@ def encodedLines : Array MdLine := #[
   { number := 193, text := "3. The Carbonado Network Protocol is unspecified. Carbonado has no numbered specification file and no assigned number." },
   { number := 194, text := "4. Lean Machine is unspecified. Lean Machine has no numbered specification file and no assigned number." },
   { number := 195, text := "5. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). Authors SHALL NOT assign 0009 to fargo or to Carbonado. Mentions of Vocabulary as a published specification 0009 do not conform." },
-  { number := 196, text := "6. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present. Number 0011 is not published." },
+  { number := 196, text := "6. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present. Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). This document does not steal 0011 for fargo. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept." },
   { number := 197, text := "" },
   { number := 198, text := "### 4.10 Sibling line encodings for every published numbered specification" },
   { number := 199, text := "" },
-  { number := 200, text := "1. Every published numbered specification markdown `NNNN_descriptive_name.md` at this repository root SHALL have an adjacent Lean spec encoding `Spec_NNNN.lean` at the same root (Clause 3.9)." },
+  { number := 200, text := "1. Every published numbered specification markdown `NNNN_descriptive_name.md` at this repository root SHALL have an adjacent Lean spec encoding `NNNN_descriptive_name.lean` at the same root (Clause 3.9)." },
   { number := 201, text := "2. Every physical line of that markdown, including blank lines, SHALL have a Lean encoding (line numbers that start at 1, exact text, optional role)." },
-  { number := 202, text := "3. Proofs of those encodings SHALL live in `lean/Proofs_NNNN.lean`, not in `Spec_NNNN.lean`." },
+  { number := 202, text := "3. Proofs of those encodings SHALL live in `lean/Proofs_NNNN.lean`, not in `NNNN_descriptive_name.lean`." },
   { number := 203, text := "4. Mixing those encodings with their proofs in one file is a mash that hides the split (Clause 3.5) and is nonconforming in this specifications repository." },
   { number := 204, text := "5. Encoded text SHALL match the file bytes' lines (LF). Authors SHALL NOT wrap encoded lines or change their breaks." },
   { number := 205, text := "6. The Lean program `line_encodings_check` SHALL fail when a markdown line has no encoding or an encoding has no matching markdown line (Clause 3.10)." },
   { number := 206, text := "7. Identity equalities such as line counts MAY use `rfl` in the encoding module. Theorems about the specification SHALL live in the proof module." },
-  { number := 207, text := "8. `lean/FormalVibeficationSpec.lean` remains the meaning encoding of this specification. `Spec_0008.lean` is the line encoding of this markdown file. Those are not the same module." },
+  { number := 207, text := "8. `lean/FormalVibeficationSpec.lean` remains the meaning encoding of this specification. `0008_Formal_Vibefication.lean` is the line encoding of this markdown file. Those are not the same module." },
   { number := 208, text := "" },
   { number := 209, text := "### 4.11 Named gate" },
   { number := 210, text := "" },
@@ -263,8 +265,8 @@ def encodedLines : Array MdLine := #[
   { number := 228, text := "6. This specifications repository keeps human markdown, Lean spec encodings, and Lean proofs distinct; Systems Lean product trees may unify specification, proof, and implementation; a mash of those homes is treated as `False` (Clause 4.6)." },
   { number := 229, text := "7. Formal Vibefication citations keep the canonical Proof of Keags URLs; a numbered specification that names Keagan or Proof of Keags also contains the host `proofofkeags.com`; theorems cover exactly what they state (Clause 4.7)." },
   { number := 230, text := "8. beastdb, SSSSS, Slake, and Continuous Integration are treated as ongoing and not ready for use, and are not described as never started or as ready (Clause 4.8)." },
-  { number := 231, text := "9. fargo, SSSP, Carbonado, and Lean Machine remain unspecified; number 0009 is Unlicense and is not assigned to fargo or Carbonado; a numbered Vocabulary file does not exist; number 0011 is not published (Clause 4.9)." },
-  { number := 232, text := "10. Every published numbered markdown file has a sibling `Spec_NNNN.lean` whose physical lines match that markdown; proofs of those encodings live in `lean/Proofs_NNNN.lean`; a mash of that sibling encoding with its proofs is nonconforming; `line_encodings_check` fails on drift (Clause 4.10)." },
+  { number := 231, text := "9. fargo, SSSP, Carbonado, and Lean Machine remain unspecified; number 0009 is Unlicense and is not assigned to fargo or Carbonado; a numbered Vocabulary file does not exist; number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`); this document does not steal 0011 for fargo; number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept (Clause 4.9)." },
+  { number := 232, text := "10. Every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` whose physical lines match that markdown; proofs of those encodings live in `lean/Proofs_NNNN.lean`; a mash of that sibling encoding with its proofs is nonconforming; `line_encodings_check` fails on drift (Clause 4.10)." },
   { number := 233, text := "11. The named gate in `0007_CI.md` remains the gate for this repository (Clause 4.11)." },
   { number := 234, text := "" },
   { number := 235, text := "This specification is not itself a conforming Surmount product. Meeting these items is a claim about work that claims this specification, not about this markdown file as a shipped engine." },
@@ -277,25 +279,25 @@ def encodedLines : Array MdLine := #[
   { number := 242, text := "" },
   { number := 243, text := "### 6.1 Unpublished specifications and unassigned numbers" },
   { number := 244, text := "" },
-  { number := 245, text := "1. fargo is not specified. fargo has no assigned specification number. This document does not invent a number for fargo. This document does not steal 0005, 0006, 0007, 0008, 0009, or 0010 for fargo. Number 0011 is not published." },
+  { number := 245, text := "1. fargo is not specified. fargo has no assigned specification number. This document does not invent a number for fargo. This document does not steal 0005, 0006, 0007, 0008, 0009, 0010, or 0011 for fargo. Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). This document does not steal 0011 for fargo. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept." },
   { number := 246, text := "2. The Surmount Systems System Prompt (SSSP) is not specified. It has no numbered specification file in this repository. It has no assigned specification number. This document MUST NOT be read as creating SSSP." },
-  { number := 247, text := "3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is this specification. Number 0009 is Unlicense (`0009_Unlicense.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is not published. This document does not create a file for Carbonado." },
+  { number := 247, text := "3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is this specification. Number 0009 is Unlicense (`0009_Unlicense.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). This document does not steal 0011 for fargo. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept. This document does not create a file for Carbonado." },
   { number := 248, text := "4. Lean Machine is named as a substrate in `0002_Systems_Lean.md` and in `0004_SSSSS.md`. It has no numbered specification and no assigned number. This document does not invent a numbered file for Lean Machine." },
-  { number := 249, text := "5. Number 0009 was briefly Vocabulary, then withdrawn, and is now Unlicense by operator order. The word catalog lives in CATE (`0005_CATE.md`). This document does not assign 0009 to fargo or to Carbonado. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present. Number 0011 is not published." },
+  { number := 249, text := "5. Number 0009 was briefly Vocabulary, then withdrawn, and is now Unlicense by operator order. The word catalog lives in CATE (`0005_CATE.md`). This document does not assign 0009 to fargo or to Carbonado. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present. Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). This document does not steal 0011 for fargo. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept." },
   { number := 250, text := "" },
   { number := 251, text := "### 6.2 Product claims that are not ready for use" },
   { number := 252, text := "" },
   { number := 253, text := "1. This document specifies Formal Vibefication for this specifications repository. The products named here are ongoing and are not ready for use. It MUST NOT be read as claiming that those products never started or do not exist." },
   { number := 254, text := "2. Byte identity of Slake emit is a requirement on a conforming Systems Lean and Slake product as specified in `0007_CI.md`. This document does not claim that match already holds. The match is not claimed done. Slake work is ongoing and is not ready for use." },
   { number := 255, text := "3. The SSSSS and beastdb reality check named in `0007_CI.md` is a requirement on that stack. SSSSS and beastdb are ongoing and not ready for use. Do not write that they never started or do not exist. This document does not claim the check is done." },
-  { number := 256, text := "4. `lean/FormalVibeficationSpec.lean` encodes selected claims. `lean/FormalVibeficationProofs.lean` proves those claims. `lean/Surmount.lean` composes stack identities. `Spec_0008.lean` encodes the physical lines of this markdown file. `lean/Proofs_0008.lean` proves identities of that line encoding. Those modules are not a proof that Slake emit already matches `ELF`. They are not a proof that beastdb, SSSSS, Slake, or Continuous Integration are ready for use." },
+  { number := 256, text := "4. `lean/FormalVibeficationSpec.lean` encodes selected claims. `lean/FormalVibeficationProofs.lean` proves those claims. `lean/Surmount.lean` composes stack identities. `0008_Formal_Vibefication.lean` encodes the physical lines of this markdown file. `lean/Proofs_0008.lean` proves identities of that line encoding. Those modules are not a proof that Slake emit already matches `ELF`. They are not a proof that beastdb, SSSSS, Slake, or Continuous Integration are ready for use." },
   { number := 257, text := "" },
-  { number := 258, text := "### 6.3 Other meaning models still mix encodings and proofs" },
+  { number := 258, text := "### 6.3 Companion meaning models split encodings and proofs" },
   { number := 259, text := "" },
   { number := 260, text := "1. This specification requires the split in Clause 4.2 and Clause 4.3 for spec encodings and proofs in this repository." },
-  { number := 261, text := "2. Companion models other than the Formal Vibefication pair and the Vocabulary pair still place theorems in the same Lean module as the encodings they prove, including the CATE, RSI, Continuous Integration, beastdb, SSSSS, and Systems Lean models. Collision tags in `lean/Vocabulary.lean` still mix encodings and proofs. That mash is remaining work. It is not a claim that mash conforms. It is not a claim that those products never started." },
-  { number := 262, text := "3. Repairing those other modules into the same split is not done in this 1.0.0." },
-  { number := 263, text := "4. Sibling line encodings `Spec_NNNN.lean` and proof modules `lean/Proofs_NNNN.lean` exist for every published numbered markdown file. That split is not a claim that the mashed meaning models in item 2 have been split." },
+  { number := 261, text := "2. Companion models for CATE (`lean/CateSpec.lean` encodings, `lean/CateProofs.lean` theorems), RSI (`lean/RsiSpec.lean`, `lean/RsiProofs.lean`), Continuous Integration (`lean/CiSpec.lean`, `lean/CiProofs.lean`), beastdb (encodings and proofs under `lean/` for that product), SSSSS (`lean/SssssSpec.lean`, `lean/SssssProofs.lean`), Systems Lean (`lean/SystemsLeanSpec.lean`, `lean/SystemsLeanProofs.lean`), Formal Vibefication (`lean/FormalVibeficationSpec.lean`, `lean/FormalVibeficationProofs.lean`), Unlicense (`lean/UnlicenseSpec.lean`, `lean/UnlicenseProofs.lean`), Surmount Systems Tech Tree (`lean/TechTreeSpec.lean`, `lean/TechTreeProofs.lean`), Majestic Memex (`lean/MemexSpec.lean`, `lean/MemexProofs.lean`), and the CATE word catalog (`lean/VocabularySpec.lean`, `lean/VocabularyProofs.lean`) place encodings in Spec modules and theorems in Proofs modules. Collision tags in `lean/Vocabulary.lean` are encodings with proofs in `lean/VocabularyCollisionProofs.lean`. Mixing encodings and proofs in one mash is `False`. It is not a claim that those products never started." },
+  { number := 262, text := "3. That split is present for the companion meaning models named in item 2." },
+  { number := 263, text := "4. Sibling line encodings `NNNN_descriptive_name.lean` and proof modules `lean/Proofs_NNNN.lean` exist for every published numbered markdown file. That split is not a claim that products are ready for use." },
   { number := 264, text := "" },
   { number := 265, text := "### 6.4 Pins this document does not add" },
   { number := 266, text := "" },
@@ -318,7 +320,7 @@ def encodedLines : Array MdLine := #[
   { number := 283, text := "" },
   { number := 284, text := "First publication of Formal Vibefication as numbered specification 0008 with file name `0008_Formal_Vibefication.md`. Records that numbered markdown is the contract humans read and is not a substitute for Lean spec encodings. Requires the specification to be encoded in Lean as declarations of what must be true, in modules marked as spec encodings. Requires proofs to live in separate Lean modules that import those encodings. Records that Lean proofs are not the specification. Records that `spec_check` is form of numbered markdown and is not a second meaning linter. Treats a mash of spec encodings and their proofs that hides the split as nonconforming in this specifications repository. Records that Systems Lean product trees may unify specification, proof, and implementation, and that mashing that home with this repository's split is `False`. Cites Formal Vibefication and Taking Don't Trust. Verify. Seriously with canonical Proof of Keags URLs and requires back linking. Requires residual honesty that beastdb, SSSSS, Slake, and Continuous Integration are ongoing and not ready for use." },
   { number := 285, text := "" },
-  { number := 286, text := "This 1.0.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Surmount Systems is specification 0010; this specification is number 0008; number 0009 is Unlicense (`0009_Unlicense.md`) and the word catalog lives in CATE (`0005_CATE.md`); a numbered Vocabulary file MUST NOT exist; number 0011 is not published; fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Lean Machine is unnumbered; companion models other than the Formal Vibefication pair still mix encodings and proofs and that mash is remaining work; every published numbered markdown file has a sibling `Spec_NNNN.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a conforming Surmount product exists." },
+  { number := 286, text := "This 1.0.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Surmount Systems is specification 0010; this specification is number 0008; number 0009 is Unlicense (`0009_Unlicense.md`) and the word catalog lives in CATE (`0005_CATE.md`); a numbered Vocabulary file MUST NOT exist; number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`); this document does not steal 0011 for fargo; number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept; fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Lean Machine is unnumbered; companion meaning models named in Clause 6.3 split encodings from proofs and treat mash as False; every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a conforming Surmount product exists." },
   { number := 287, text := "" },
   { number := 288, text := "No prior public release of this specification exists." },
   { number := 289, text := "" },
@@ -340,4 +342,4 @@ def encodedLines : Array MdLine := #[
 
 def lineCount : Nat := encodedLines.size
 
-end Spec_0008
+end «0008_Formal_Vibefication»

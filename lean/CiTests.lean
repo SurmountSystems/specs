@@ -1,6 +1,6 @@
 /-
   Runtime checks for the CI meaning model (0007_CI.md).
-  Theorems in Ci.lean already fail to typecheck if the model is widened
+  Theorems in CiProofs.lean already fail to typecheck if the model is widened
   (CI numbered 0005 or 0006, unsigned without exception treated as
   conforming, commit on red treated as conforming, layers mashed,
   byte identity claimed true, emit = ELF treated as proved).
@@ -55,6 +55,10 @@ def runCases : List Case :=
     expectEqNat "CI is specification 0007" specNumber 7,
     expectEqString "spec file is 0007_CI.md" specFileName "0007_CI.md",
     expectEqString "product short name is CI" productName "CI",
+    expectTrue "CI live module contains spec encodings"
+      liveContainsSpecEncodings,
+    expectFalse "CI live module does not mash proofs into encodings"
+      liveContainsProofsOfThoseEncodings,
     expectTrue "CI is not specification 0005" (specNumber != cateSpecNumber),
     expectTrue "CI is not specification 0006" (specNumber != rsiSpecNumber),
     expectEqNat "CATE is specification 0005" cateSpecNumber 5,

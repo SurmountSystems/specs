@@ -1,6 +1,6 @@
 /-
   Runtime checks for the beastdb meaning model (0003_beastdb.md).
-  Theorems in BeastDb.lean already fail to typecheck if the model is
+  Theorems in BeastDbProofs.lean already fail to typecheck if the model is
   widened (wrong product capitalization as the name, SSSSS numbered 0003,
   traditional FFI permitted, schema optional). This executable re-checks
   the decidable facts so a silent `sorry` or a Bool regression prints FAIL
@@ -57,6 +57,10 @@ def runCases : List Case :=
     expectTrue "beastdb is not specification 0002" (specNumber != 2),
     expectTrue "beastdb is not specification 0004" (specNumber != 4),
     expectEqString "spec file is 0003_beastdb.md" specFileName "0003_beastdb.md",
+    expectTrue "beastdb live module contains spec encodings"
+      liveContainsSpecEncodings,
+    expectFalse "beastdb live module does not mash proofs into encodings"
+      liveContainsProofsOfThoseEncodings,
     expectEqNat "Systems Lean is specification 0002" systemsLeanSpecNumber 2,
     expectEqNat "SSSSS is specification 0004" ssssSpecNumber 4,
     expectTrue "SSSSS is not specification 0003" (ssssSpecNumber != 3),

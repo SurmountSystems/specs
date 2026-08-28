@@ -42,9 +42,9 @@
 				let
 					pkgs = nixpkgs.legacyPackages.${system};
 
-					# Lake lives in lean/. Sibling Spec_NNNN.lean encodings and the
-					# numbered markdown those encodings match sit at the repository root.
-					# include_str is not a line encoding.
+					# Lake lives in lean/. Sibling NNNN_descriptive.lean encodings and the
+					# numbered markdown those encodings match sit at the repository root
+					# with the same basename. include_str is not a line encoding.
 					# Drop host .lake caches so lake cannot replay host-linked objects
 					# (those pin /lib64/ld-linux and break the Nix sandbox).
 					leanSrc = pkgs.lib.cleanSourceWith {
@@ -73,7 +73,7 @@
 									|| base == "lake-manifest.json"
 									|| pkgs.lib.hasSuffix ".olean" base
 									|| pkgs.lib.hasSuffix ".ilean" base;
-								isRootSpecLean = builtins.match "Spec_[0-9][0-9][0-9][0-9]\\.lean" rel != null;
+								isRootSpecLean = builtins.match "[0-9][0-9][0-9][0-9]_[A-Za-z0-9_]+\\.lean" rel != null;
 								isRootNumberedMd = builtins.match "[0-9][0-9][0-9][0-9]_[A-Za-z0-9_]+\\.md" rel != null;
 							in
 							if type == "directory" then
@@ -224,20 +224,67 @@
 						description = "Lean tests for Unlicense spec encodings and separate proofs (spec 0009)";
 					};
 
+					# Spec encodings versus proofs for Surmount Systems Tech Tree (spec 0011).
+					tech_tree_tests = mkLeanBin {
+						pname = "tech_tree_tests";
+						lakeTarget = "tech_tree_tests";
+						binName = "tech_tree_tests";
+						description = "Lean tests for Tech Tree spec encodings, CompactSize golden vectors, DAG fixtures, and separate proofs (spec 0011)";
+					};
+
+					# Spec encodings versus proofs for Majestic Memex (spec 0012).
+					memex_tests = mkLeanBin {
+						pname = "memex_tests";
+						lakeTarget = "memex_tests";
+						binName = "memex_tests";
+						description = "Lean tests for Majestic Memex spec encodings, magic MAJESTIC plus 0x01, and separate proofs (spec 0012)";
+					};
+
+					# Writer and reader of .sstt files (spec 0011 format, Lake package).
+					sstt_tests = mkLeanBin {
+						pname = "sstt_tests";
+						lakeTarget = "sstt_tests";
+						binName = "sstt_tests";
+						description = "Lean tests for the .sstt writer and reader: wrong magic, DAG roundtrip, cyclic graph, spec edge orientation";
+					};
+
+					sstt_write = mkLeanBin {
+						pname = "sstt_write";
+						lakeTarget = "sstt_write";
+						binName = "sstt_write";
+						description = "Lean writer and reader of .sstt Tech Tree files from this repository; refuses to write tech_tree.sstt into the repository root";
+					};
+
+					# Hermetic tests for markdown path links in this repository.
+					repo_links_tests = mkLeanBin {
+						pname = "repo_links_tests";
+						lakeTarget = "repo_links_tests";
+						binName = "repo_links_tests";
+						description = "Lean unit tests that missing in-repository markdown path links fail and remote URLs are skipped";
+					};
+
+					# Runtime scan: markdown path links in numbered specs and README exist.
+					repo_links_check = mkLeanBin {
+						pname = "repo_links_check";
+						lakeTarget = "repo_links_check";
+						binName = "repo_links_check";
+						description = "Lean checker that markdown path links in numbered specifications and README.md resolve to existing paths";
+					};
+
 					# Hermetic tests for isomorphism of markdown lines and Lean encodings.
 					line_encodings_tests = mkLeanBin {
 						pname = "line_encodings_tests";
 						lakeTarget = "line_encodings_tests";
 						binName = "line_encodings_tests";
-						description = "Lean unit tests for sibling Spec_NNNN.lean line encodings and leftover unstack floor";
+						description = "Lean unit tests for sibling NNNN_descriptive.lean line encodings and leftover unstack floor";
 					};
 
-					# Runtime iso: each NNNN_*.md versus compiled Spec_NNNN.lean lines.
+					# Runtime iso: each NNNN_*.md versus compiled NNNN_descriptive.lean lines.
 					line_encodings_check = mkLeanBin {
 						pname = "line_encodings_check";
 						lakeTarget = "line_encodings_check";
 						binName = "line_encodings_check";
-						description = "Lean checker that numbered specification markdown lines match sibling Spec_NNNN.lean encodings and that those encodings use the CATE leftover unstack floor";
+						description = "Lean checker that numbered specification markdown lines match sibling NNNN_descriptive.lean encodings and that those encodings use the CATE leftover unstack floor";
 					};
 
 					# Hermetic tests for unique English word tracking versus the CATE catalog.
@@ -257,7 +304,7 @@
 					};
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests line_encodings_tests line_encodings_check word_stats_tests word_stats;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats;
 					default = spec_check;
 				}
 			);
@@ -500,6 +547,97 @@
 								echo ok > "$out/result"
 							'';
 
+					# Tech Tree spec encodings versus proofs; CompactSize golden vectors; not a second markdown linter.
+					tech_tree_tests =
+						pkgs.runCommand "tech_tree_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.tech_tree_tests
+								];
+							}
+							''
+								tech_tree_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Majestic Memex spec encodings versus proofs; not a second markdown linter.
+					memex_tests =
+						pkgs.runCommand "memex_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.memex_tests
+								];
+							}
+							''
+								memex_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# .sstt writer and reader contracts, including --decode with
+					# and without REPO_ROOT; not a second markdown linter.
+					sstt_tests =
+						pkgs.runCommand "sstt_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.sstt_tests
+								];
+							}
+							''
+								sstt_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Write a .sstt file from this repository, read it back, fail on
+					# wrong magic, a cyclic graph, missing published numbered specs,
+					# or a withdrawn name. Output is $out/tech_tree.sstt, not the
+					# repository root.
+					sstt_write =
+						pkgs.runCommand "sstt_write"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.sstt_write
+								];
+							}
+							''
+								export REPO_ROOT=${./.}
+								mkdir -p "$out"
+								sstt_write --self-check -o "$out/tech_tree.sstt"
+								echo ok > "$out/result"
+							'';
+
+					# Hermetic markdown path link fixtures; not a second markdown linter.
+					repo_links_tests =
+						pkgs.runCommand "repo_links_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.repo_links_tests
+								];
+							}
+							''
+								repo_links_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Markdown path links in numbered specifications and README resolve.
+					repo_links_check =
+						pkgs.runCommand "repo_links_check"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.repo_links_check
+								];
+							}
+							''
+								export REPO_ROOT=${./.}
+								cd "$REPO_ROOT"
+								repo_links_check
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
 					# Hermetic line encoding fixtures; not a second markdown linter.
 					line_encodings_tests =
 						pkgs.runCommand "line_encodings_tests"
@@ -514,7 +652,7 @@
 								echo ok > "$out/result"
 							'';
 
-					# Sibling Spec_NNNN.lean lines match numbered markdown; leftover unstack floor on encodings.
+					# Sibling NNNN_descriptive.lean lines match numbered markdown; leftover unstack floor on encodings.
 					line_encodings_check =
 						pkgs.runCommand "line_encodings_check"
 							{
@@ -576,6 +714,12 @@
 						surmount_tests
 						formal_vibefication_tests
 						unlicense_tests
+						tech_tree_tests
+						memex_tests
+						sstt_tests
+						sstt_write
+						repo_links_tests
+						repo_links_check
 						line_encodings_tests
 						line_encodings_check
 						word_stats_tests

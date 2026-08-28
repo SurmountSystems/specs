@@ -3,8 +3,10 @@
   This file sits next to that markdown at the repository root.
 
   Every physical line of the markdown (including blank lines) is a Lean
-  `MdLine` value. Lean module names cannot start with a digit, so this
-  file is `Spec_0002.lean` rather than `0002.lean`.
+  `MdLine` value. The encoding file uses the markdown basename with
+  `.lean` in place of `.md` so a reader sees the pair immediately. The
+  file name starts with a digit, so Lean uses a quoted module name that
+  matches that stem.
 
   This module is a spec encoding, not a proof module.
   Proofs live in `lean/Proofs_0002.lean`.
@@ -14,7 +16,7 @@
 
 import MdLine
 
-namespace Spec_0002
+namespace «0002_Systems_Lean»
 
 def markedAsSpecEncoding : Bool := true
 
@@ -24,7 +26,7 @@ def specNumber : Nat := 2
 
 def specFileName : String := "0002_Systems_Lean.md"
 
-def siblingEncodingFileName : String := "Spec_0002.lean"
+def siblingEncodingFileName : String := "0002_Systems_Lean.lean"
 
 def proofModuleName : String := "Proofs_0002"
 
@@ -58,7 +60,7 @@ def encodedLines : Array MdLine :=
     { number := 25, text := "" },
     { number := 26, text := "1. The numbered markdown at the repository root is the contract implementers and reviewers read." },
     { number := 27, text := "2. Companion Lean modules under `lean/` (the Systems Lean meaning model, distinct from the `spec_check` form checker) encode selected claims such as the multiplicity set, erasure of multiplicity 0, the freestanding product wire, residual honesty, CompCert verified compilation as a required validation step, bootstrapping a Slake compiler that fully typechecks as a required validation step, the novel language set, hygiene including product tree `ref/` directory names, stack targeting, this document's identity as specification 0002, the fact that the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md` (not 0003), the fact that beastdb is specified in `0003_beastdb.md`, and the fact that Recursive Self Improvement is specified in `0006_RSI.md`." },
-    { number := 28, text := "3. Those modules encode selected claims and prove facts about the model. They do not replace this document. This document does not replace those modules. Mixing spec encodings with their proofs in one mash that hides the split is nonconforming under `0008_Formal_Vibefication.md`; repairing this companion model into that split is remaining work." },
+    { number := 28, text := "3. Those modules encode selected claims and prove facts about the model. They do not replace this document. This document does not replace those modules. Mixing spec encodings with their proofs in one mash that hides the split is nonconforming under `0008_Formal_Vibefication.md`; encodings live in `lean/SystemsLeanSpec.lean` and proofs live in `lean/SystemsLeanProofs.lean`." },
     { number := 29, text := "4. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Spec encodings of meaning MUST NOT be treated as a second markdown form checker." },
     { number := 30, text := "" },
     { number := 31, text := "## 2. Normative references" },
@@ -234,4 +236,4 @@ def encodedLines : Array MdLine :=
 
 def lineCount : Nat := encodedLines.size
 
-end Spec_0002
+end «0002_Systems_Lean»

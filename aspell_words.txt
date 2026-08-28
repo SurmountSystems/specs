@@ -1,4 +1,4 @@
-personal_ws-1.1 en 213
+personal_ws-1.1 en 215
 ABI
 AbsInt
 ACID
@@ -39,6 +39,7 @@ CLI
 COCOMO
 codebase
 commit
+CompactSize
 CompCert
 conformant
 cryptoquick
@@ -113,6 +114,7 @@ markdown
 McBride
 McLelland
 md
+memex
 meta
 midtones
 mmap

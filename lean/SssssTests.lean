@@ -1,6 +1,6 @@
 /-
   Runtime checks for the SSSSS meaning model (0004_SSSSS.md).
-  Theorems in Sssss.lean already fail to typecheck if the model is
+  Theorems in SssssProofs.lean already fail to typecheck if the model is
   widened (hashing as primary identity, Systems Lean numbered 0003,
   SSSSS numbered 0003). This executable re-checks the decidable facts
   so a silent `sorry` or a Bool regression prints FAIL lines, matching
@@ -54,6 +54,10 @@ def runCases : List Case :=
     expectEqNat "SSSSS is specification 0004" specNumber 4,
     expectEqString "spec file is 0004_SSSSS.md" specFileName "0004_SSSSS.md",
     expectEqString "product short name is SSSSS" productName "SSSSS",
+    expectTrue "SSSSS live module contains spec encodings"
+      liveContainsSpecEncodings,
+    expectFalse "SSSSS live module does not mash proofs into encodings"
+      liveContainsProofsOfThoseEncodings,
     expectEqNat "Systems Lean is specification 0002" systemsLeanSpecNumber 2,
     expectEqNat "beastdb is specification 0003" beastdbSpecNumber 3,
     expectTrue "SSSSS is not specification 0002" (ssssSpecNumber != 2),

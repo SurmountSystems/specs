@@ -26,6 +26,10 @@ import SpecRegistry
 namespace UnlicenseSpec
 
 /-- This module is a spec encoding, not a proof. -/
+def liveContainsSpecEncodings : Bool := true
+
+def liveContainsProofsOfThoseEncodings : Bool := false
+
 def markedAsSpecEncoding : Bool := true
 
 def markedAsProof : Bool := false
@@ -36,20 +40,6 @@ def specNumber : Nat := 9
 def specFileName : String := "0009_Unlicense.md"
 
 def productName : String := "Unlicense"
-
-theorem spec_number_is_9 : specNumber = 9 := rfl
-
-theorem spec_file_is_0009_unlicense :
-    specFileName = "0009_Unlicense.md" :=
-  rfl
-
-theorem product_name_is_unlicense : productName = "Unlicense" := rfl
-
-theorem spec_is_not_0008 : specNumber ≠ 8 := by decide
-
-theorem spec_is_not_0010 : specNumber ≠ 10 := by decide
-
-theorem spec_is_not_0011 : specNumber ≠ 11 := by decide
 
 /-- Copyright still held versus dedicated to the public domain. -/
 inductive CopyrightStatus where

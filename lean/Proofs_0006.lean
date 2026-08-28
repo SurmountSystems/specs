@@ -1,12 +1,12 @@
 /-
   PROOFS for the sibling line encoding of `0006_RSI.md`.
 
-  This module is not the specification. It imports Spec_0006 and
+  This module is not the specification. It imports «0006_RSI» and
   establishes identities of that encoding. Numbered markdown remains
   the contract humans read.
 -/
 
-import Spec_0006
+import «0006_RSI»
 import FormalVibeficationSpec
 
 set_option maxRecDepth 10000
@@ -14,7 +14,7 @@ set_option maxHeartbeats 800000
 
 namespace Proofs_0006
 
-open Spec_0006
+open «0006_RSI»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -24,7 +24,7 @@ theorem spec_number : specNumber = 6 := rfl
 
 theorem spec_file : specFileName = "0006_RSI.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "Spec_0006.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0006_RSI.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0006" := rfl
 

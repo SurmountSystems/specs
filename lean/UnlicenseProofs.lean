@@ -13,6 +13,25 @@ namespace UnlicenseProofs
 
 open UnlicenseSpec
 
+theorem spec_number_is_9 : specNumber = 9 := rfl
+
+theorem spec_file_is_0009_unlicense :
+    specFileName = "0009_Unlicense.md" :=
+  rfl
+
+theorem product_name_is_unlicense : productName = "Unlicense" := rfl
+
+theorem spec_is_not_0008 : specNumber ≠ 8 := by decide
+
+theorem spec_is_not_0010 : specNumber ≠ 10 := by decide
+
+theorem spec_is_not_0011 : specNumber ≠ 11 := by decide
+
+theorem live_encodings_without_proofs :
+    liveContainsSpecEncodings = true ∧
+      liveContainsProofsOfThoseEncodings = false :=
+  And.intro rfl rfl
+
 theorem this_module_is_not_the_spec_encoding :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
   And.intro rfl rfl
@@ -140,9 +159,9 @@ theorem products_not_claimed_never_started :
 theorem number_nine_assigned : numberNineAssigned = true :=
   rfl
 
-theorem number_eleven_not_published_in_registry :
-    (SpecRegistry.allEntries.any (fun e => e.number == 11)) = false :=
-  SpecRegistry.number_11_not_published
+theorem number_eleven_published_in_registry :
+    (SpecRegistry.allEntries.any (fun e => e.number == 11)) = true :=
+  SpecRegistry.number_11_published
 
 theorem sibling_line_encodings_required :
     siblingLineEncodingsRequired = true :=

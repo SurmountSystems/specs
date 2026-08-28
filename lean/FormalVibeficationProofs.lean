@@ -13,6 +13,27 @@ namespace FormalVibeficationProofs
 
 open FormalVibeficationSpec
 
+theorem spec_number_is_8 : specNumber = 8 := rfl
+
+theorem spec_file_is_0008_formal_vibefication :
+    specFileName = "0008_Formal_Vibefication.md" :=
+  rfl
+
+theorem product_name_is_formal_vibefication :
+    productName = "Formal Vibefication" :=
+  rfl
+
+theorem spec_is_not_0007 : specNumber ≠ 7 := by decide
+
+theorem spec_is_not_0009 : specNumber ≠ 9 := by decide
+
+theorem spec_is_not_0010 : specNumber ≠ 10 := by decide
+
+theorem live_encodings_without_proofs :
+    liveContainsSpecEncodings = true ∧
+      liveContainsProofsOfThoseEncodings = false :=
+  And.intro rfl rfl
+
 theorem this_module_is_not_the_spec_encoding :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
   And.intro rfl rfl

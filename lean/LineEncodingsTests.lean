@@ -58,15 +58,15 @@ def runCases : List Case :=
   let encBlank := encodeFile posixTwoLinesBlank
   let includeStrLines := includeStrLineNumbers sampleIncludeStrSource
   let includeStrFindings :=
-    findingsForIncludeStr "Spec_0001.lean" sampleIncludeStrSource
+    findingsForIncludeStr "0001_DOGE.lean" sampleIncludeStrSource
   [
     expectEqString "pad4 of 0 is 0000" (pad4 0) "0000",
     expectEqString "pad4 of 8 is 0008" (pad4 8) "0008",
     expectEqString "pad4 of 10 is 0010" (pad4 10) "0010",
-    expectEqString "sibling encoding name for 0"
-      (siblingEncodingFileName 0) "Spec_0000.lean",
-    expectEqString "sibling encoding name for 10"
-      (siblingEncodingFileName 10) "Spec_0010.lean",
+    expectEqString "sibling encoding name for 0000_spec.md"
+      (siblingEncodingFileName "0000_spec.md") "0000_spec.lean",
+    expectEqString "sibling encoding name for 0010_Surmount_Systems.md"
+      (siblingEncodingFileName "0010_Surmount_Systems.md") "0010_Surmount_Systems.lean",
     expectEqString "proof module name for 8"
       (siblingProofModuleName 8) "Proofs_0008",
     expectEqString "proof file name for 8"
@@ -100,7 +100,7 @@ def runCases : List Case :=
       (siblingFlagsConform
         { specNumber := 1
           specFileName := "0001_DOGE.md"
-          siblingEncodingFileName := "Spec_0001.lean"
+          siblingEncodingFileName := "0001_DOGE.lean"
           proofModuleName := "Proofs_0001"
           markedAsSpecEncoding := true
           markedAsProof := false
@@ -109,7 +109,7 @@ def runCases : List Case :=
       (siblingFlagsConform
         { specNumber := 1
           specFileName := "0001_DOGE.md"
-          siblingEncodingFileName := "Spec_0001.lean"
+          siblingEncodingFileName := "0001_DOGE.lean"
           proofModuleName := "Proofs_0001"
           markedAsSpecEncoding := true
           markedAsProof := true
@@ -149,7 +149,7 @@ def runCases : List Case :=
       includeStrFindings,
     expectEqString "include_str finding path"
       (if includeStrFindings.isEmpty then "" else includeStrFindings[0]!.path)
-      "Spec_0001.lean",
+      "0001_DOGE.lean",
     expectEqNat "include_str finding line"
       (if includeStrFindings.isEmpty then 0 else includeStrFindings[0]!.line)
       2,
@@ -157,17 +157,35 @@ def runCases : List Case :=
       (if includeStrFindings.isEmpty then "" else includeStrFindings[0]!.message)
       includeStrFindingMessage,
     expectTrue "source without include_str has no include_str findings"
-      (findingsForIncludeStr "Spec_0001.lean"
+      (findingsForIncludeStr "0001_DOGE.lean"
         "def encodedLines : Array MdLine := #[{ number := 1, text := \"a\" }]\n").isEmpty,
     expectTrue "spec_check leftover unstack list is Cate"
       leftoverUnstackPhrasesAreCate,
-    expectEqNat "two meaning spec encoding comment paths"
+    expectEqNat "eleven meaning spec encoding comment paths"
       meaningSpecEncodingRelPaths.size
-      2,
+      11,
+    expectTrue "UnlicenseSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/UnlicenseSpec.lean"),
     expectTrue "FormalVibeficationSpec is a meaning spec encoding path"
       (meaningSpecEncodingRelPaths.toList.contains "lean/FormalVibeficationSpec.lean"),
     expectTrue "VocabularySpec is a meaning spec encoding path"
       (meaningSpecEncodingRelPaths.toList.contains "lean/VocabularySpec.lean"),
+    expectTrue "TechTreeSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/TechTreeSpec.lean"),
+    expectTrue "MemexSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/MemexSpec.lean"),
+    expectTrue "CateSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/CateSpec.lean"),
+    expectTrue "RsiSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/RsiSpec.lean"),
+    expectTrue "CiSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/CiSpec.lean"),
+    expectTrue "BeastDbSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/BeastDbSpec.lean"),
+    expectTrue "SssssSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/SssssSpec.lean"),
+    expectTrue "SystemsLeanSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/SystemsLeanSpec.lean"),
     expectNonEmpty "leftover unstack in encodedLines prose fails"
       (findingsForLeftoverUnstackEncoded "0001_DOGE.md"
         (encodeFile "Do not write non markdown tooling.\n")),
