@@ -1,6 +1,6 @@
 # beastdb
 
-> v1.0.0 - 20260824
+> v0.1.0 - 20260831
 >
 > Durable ordered store for Surmount high assurance components
 
@@ -285,6 +285,10 @@ This document specifies beastdb. The work is ongoing and is not ready for use. I
 5. A traditional foreign function interface as the interoperability path (forbidden as that path, not promised later in this document).
 
 ## 7. Changelog
+
+### 0.1.0 - 20260831
+
+Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed.
 
 ### 1.0.0 - 20260824
 

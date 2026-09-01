@@ -12,16 +12,16 @@ The Lean program word_stats writes this file and fails when this file is stale.
 
 ## Headline
 
-Unique word count: 2757
-Proven unique count: 215
-Percent of unique words that are proven: 7.80%
-Total occurrence count: 87705
-Proven occurrence count: 14397
-Percent by prevalence: 16.42%
+Unique word count: 2819
+Proven unique count: 216
+Percent of unique words that are proven: 7.66%
+Total occurrence count: 95365
+Proven occurrence count: 15709
+Percent by prevalence: 16.47%
 
-CATE catalog token count (case sensitive): 215
-Folded catalog unique count: 208
-Proven set size after union with RFC 2119 keywords: 215
+CATE catalog token count (case sensitive): 216
+Folded catalog unique count: 209
+Proven set size after union with RFC 2119 keywords: 216
 
 ## Files scanned
 
@@ -38,6 +38,7 @@ Proven set size after union with RFC 2119 keywords: 215
 0010_Surmount_Systems.md
 0011_Surmount_Systems_Tech_Tree.md
 0012_Majestic_Memex.md
+0013_Lean_Machine.md
 AGENTS.md
 README.md
 RESIDUAL.md
@@ -48,7 +49,7 @@ VOCABULARY.md
 Each line is the lowercased token, a space, the occurrence count, and the word proven when that token is in the proven set.
 
 ```text
-a 2379
+a 2610
 aarch 2
 ab 1
 abbreviate 1
@@ -56,30 +57,32 @@ abbreviated 1
 abbreviation 1
 abi 5 proven
 able 6
-about 51
+about 55
 above 4
 absence 3
-absent 7
-absint 4 proven
+absent 10
+absint 5 proven
 academic 1
 accept 3
-acceptable 1
-acceptance 3
-accepted 15
-access 27
-accessed 25
+acceptable 2
+acceptance 4
+accepted 21
+accepting 1
+access 28
+accessed 28
 account 3
 acid 14 proven
-acknowledgments 26 proven
+acknowledgments 27 proven
 acp 1
 acronym 2
 across 36
 act 4
-actions 8
+action 14
+actions 10
 actually 7
 acyclic 3
 ad 1
-add 48
+add 49
 added 4
 adding 14
 addition 2
@@ -87,20 +90,20 @@ additional 7
 additions 1
 address 1
 addresses 2
-adds 3
+adds 5
 adjacent 2
 adjective 1
 adjectives 1
 adopted 2
 advancing 1
 affine 16 proven
-after 43
-again 9
+after 45
+again 10
 against 7
-agent 48
+agent 52
 agents 81
 aggregate 1
-ahead 12
+ahead 15
 ai 4
 aims 1
 algorithm 5
@@ -109,7 +112,7 @@ alias 1
 aliases 2
 aligned 1
 aligns 1
-all 26
+all 30
 allocation 1
 allowed 10
 allows 10
@@ -117,23 +120,25 @@ alone 3
 along 3
 alongside 1
 alpha 11
-already 75
-also 94
+already 91
+also 100
 alternate 1
+alternative 3
 alternatives 1
 always 8
 ambiguity 8
 ambiguous 7
-american 91
+american 94
 among 25
-an 183
-and 2078
+an 210
+and 2235
 another 16
 ansi 3 proven
-answer 2
+answer 16
 answered 2
-any 56
-anyone 19
+answers 6
+any 58
+anyone 20
 anything 2
 aot 2
 apis 3 proven
@@ -142,10 +147,10 @@ app 4
 appear 16
 appears 14
 apple 1
-application 24
+application 35
 applications 1
-applied 3
-applies 31
+applied 4
+applies 33
 apply 13
 applying 1
 apps 7
@@ -154,16 +159,16 @@ architecture 1
 architectures 1
 archive 19
 archives 10
-are 648
+are 706
 arguments 1
 around 1
-art 47
+art 49
 artifact 19
-artifacts 27
-as 999
-ascii 75 proven
+artifacts 29
+as 1114
+ascii 77 proven
 ask 9
-asked 22
+asked 23
 asking 4
 asks 3
 aspell 73 proven
@@ -172,18 +177,18 @@ aspellwithdicts 12 proven
 assembly 5
 asserts 2
 assets 1
-assign 15
-assigned 154
+assign 16
+assigned 149
 assigning 1
-assignment 8
-assigns 1
+assignment 10
+assigns 2
 assistance 2
 associated 1
 assume 3
 assumed 4
 assumptions 4
-assurance 26
-at 229
+assurance 38
+at 238
 atkey 4 proven
 atlantic 1
 atom 1
@@ -191,31 +196,35 @@ atomicity 4 proven
 atoms 1
 attached 2
 attaches 1
+attempt 7
+attempts 1
 attention 1
 attribute 2
 audience 1
-author 32
+author 33
 authored 11
 authoring 2
 authoritative 15
 authority 8
 authorization 1
 authorize 2
-authors 149
+authors 165
 automated 5
+automatic 1
+automatically 2
 autoprove 3
 auxiliary 3
 availability 9
 available 11
 avoid 1
 away 1
-b 30
-back 52
+b 29
+back 55
 backed 1
 background 9
 backlink 5
 backward 3
-ban 15
+ban 16
 bans 1
 bar 4
 bare 4
@@ -226,37 +235,40 @@ basenames 3 proven
 bash 31
 baz 3
 bc 1
-be 355
-beast 12
-beastdb 289 proven
+be 388
+beast 13
+beastdb 297 proven
 beastdbproofs 4
 beastdbspec 7
 beatitudes 5 proven
-because 23
+because 24
 become 3
 becomes 2
 been 14
-before 54
+before 58
 begin 5
 beginning 1
 begins 1
 behavior 18
 behind 2
 being 20
+belief 7
+believes 1
 belong 7
 below 2
 bentnib 1
 beside 2
 best 21
-better 2
+better 6
 between 12
 beyond 13
 bg 5 proven
+bible 2
 bin 20 proven
 binaries 8
-binary 49
+binary 50
 bind 1
-binding 9
+binding 11
 binds 3
 bio 3
 bips 6 proven
@@ -277,17 +289,17 @@ blue 6
 board 1
 body 10
 bool 2
-bootstrap 16
-bootstrapped 33 proven
+bootstrap 17
+bootstrapped 40 proven
 bootstrapping 6
 both 20
 bounce 1
 bounded 1
 branch 1
 brand 1
-break 8
+break 9
 breaks 5
-briefly 12
+briefly 13
 bright 7
 brightness 1
 broken 4
@@ -295,67 +307,66 @@ btc 43
 btcverified 4
 buffer 1
 bug 1
-build 90
+build 92
 builder 32
 builders 2
-building 9
-builds 10
+building 7
+builds 14
 built 22
 bulk 2
 bullet 4
 bullets 6
 bump 4
 bumping 2
-bumps 1
 bundled 1
 bush 5
-but 14
-by 282
-byte 64
-bytes 34
-c 74
+but 15
+by 315
+byte 65
+bytes 35
+c 78
 caches 1
 cachix 2 proven
-call 1
+call 6
 called 2
 calling 2
-calls 5
-can 78
+calls 7
+can 91
 cancel 1
 candidate 1
 canned 1
-cannot 22
+cannot 27
 canon 7
-canonical 90
+canonical 95
 capability 1
 capacity 7
 capital 9
 capitalization 10
 caption 1
 captions 5
-carbonado 131 proven
+carbonado 142 proven
 cargo 4 proven
 carriage 2
 carries 2
-carry 7
+carry 13
 case 7
 cases 1
-catalog 113
-cate 463 proven
+catalog 120
+cate 490 proven
 cateproofs 12
 catespec 21
 catespecnumber 3
 causes 1
 cc 1
-ccomp 9 proven
+ccomp 14 proven
 cd 1
 cell 1
 cells 1
 chain 1
 change 33
 changed 5
-changelog 32 proven
-changes 11
+changelog 53 proven
+changes 12
 channel 9
 channels 2
 char 1
@@ -365,18 +376,18 @@ characters 6
 chat 9
 chatgpt 1
 chats 1
-check 398 proven
+check 417 proven
 checkability 5 proven
-checkable 23 proven
-checked 37
-checker 140
+checkable 24 proven
+checked 39
+checker 144
 checkers 12
 checking 8
 checklist 7
 checklists 2
 checkout 4
 checkpoint 4
-checks 113 proven
+checks 115 proven
 checksum 6
 checksummed 4 proven
 choice 6
@@ -384,40 +395,46 @@ choose 1
 chooses 5
 choosing 1
 chosen 3
-ci 120
+ci 128
 ciproofs 8
 cispec 17
-citation 52
-citations 40
-cite 28
-cited 46
-cites 27
-citing 6
+citation 54
+citations 45
+cite 30
+cited 59
+citedrequiredpresent 1
+cites 30
+citing 12
+civilization 3
 civilizations 1
-claim 181
-claimed 42
-claiming 21
-claims 75
+claim 203
+claimed 49
+claiming 25
+claims 92
 clamped 3
 clarification 2
 clarifies 1
 clarify 1
 class 5
 classic 2
-clause 598
+classification 1
+classifies 5
+clause 651
 clauses 29
 clean 1
 cleaned 1
 cleanly 1
-clear 13
+clear 14
 clearly 6
 cli 3 proven
+client 4
+clock 1
 clone 7
 clones 1
 closed 4
 closing 2
 cocomo 14 proven
-code 74
+code 75
 codebase 3 proven
 coded 1
 codes 1
@@ -432,16 +449,17 @@ collisions 1
 color 21
 colors 30
 column 26
-com 90
+com 101
+combination 3
 combinations 1
 combined 5
-combines 2
-command 90
+combines 3
+command 93
 commandments 2
 commands 5
 comment 6
 comments 22
-commercial 14
+commercial 15
 commit 87 proven
 commits 15
 committed 12
@@ -450,35 +468,36 @@ common 12
 community 8
 compact 1
 compactsize 44 proven
-companion 108
+companion 109
 companionmeaningmodelssplit 1
 compared 2
 compares 1
 comparison 2
-compatibility 6
+compatibility 5
 compatible 4
-compcert 103 proven
-compilation 40
-compile 23
-compiled 40
-compiler 48
-compiles 1
-complete 55
+compcert 119 proven
+compilation 41
+compile 25
+compiled 45
+compiler 59
+compiles 2
+complete 64
 completed 1
 completes 1
 complexity 1
-component 3
-components 26
+component 30
+components 48
 compose 1
 composed 2
 composes 6
-composition 50
+composition 54
 compound 1
 compounds 5
 compress 2
-concept 59
+concept 60
 concern 2
-concise 57
+concerns 5
+concise 60
 concurrency 6
 concurrent 1
 confidence 14
@@ -487,35 +506,39 @@ configuration 1
 configure 1
 configured 3
 confirmed 4
-conform 39
-conformance 83
+conform 41
+conformance 98
 conformant 4 proven
-conforming 106
-conforms 28
+conforming 122
+conforms 29
+conjunct 8
 conjunction 2
-conjuncts 1
+conjuncts 3
 consecutive 6
 consist 1
-consistency 25
-consistent 8
+consistency 27
+consistent 9
 consisting 1
 constraints 2
+constructive 1
 constructor 9
-consume 2
-contain 38
+consume 1
+consumes 5
+contain 40
 contains 22
 content 4
 contents 4
-context 1
+context 5
 continuation 1
 continue 3
 continues 2
 continuity 2
-continuous 104
-contract 134
+continuous 114
+contract 143
 contracts 2
 contradict 1
 contradiction 3
+contradictions 4
 contradictory 1
 contrast 8
 contributions 1
@@ -529,11 +552,11 @@ conversion 1
 convert 1
 converted 1
 converting 1
-copied 5
-copies 31
-copy 47
-copyright 59
-core 51
+copied 3
+copies 34
+copy 51
+copyright 64
+core 52
 correct 1
 corrected 1
 correctly 2
@@ -543,8 +566,8 @@ correspondence 3
 correspondences 2
 corresponding 1
 cosmology 7
-cost 4
-count 8
+cost 6
+count 9
 counted 1
 counting 1
 counts 12
@@ -554,29 +577,31 @@ covered 3
 covers 5
 cr 6
 crate 60
-create 34
-created 1
+crates 2
+create 35
+created 2
 creates 1
-creating 13
+creating 15
+creator 1
 credit 9
 critical 14
 cross 3
-cryptoquick 15 proven
+cryptoquick 16 proven
 crystal 1
 cultural 9
-current 20
+current 38
 curry 7 proven
 cyan 4
 cycle 29
 cycles 4
 cyclic 4
 d 13
-dag 3
+dag 9
 darwin 4 proven
 dashes 2
 data 30
-date 8
-dated 7
+date 9
+dated 9
 dates 3
 day 1
 dd 1
@@ -587,31 +612,30 @@ decided 1
 decimal 5
 decision 3
 decisions 1
-declarations 45
+declarations 48
 declare 7
 declared 12
 declares 2
-decode 33
+decode 26
 decoded 2
-decodehonestyfails 1
 decoder 7
 decodes 1
 decompress 2
 dedicate 3
-dedicated 7
+dedicated 9
 dedicates 1
 dedicating 2
-dedication 23
+dedication 25
 dedup 1
 deeper 1
 default 22
-deferred 14
+deferred 15
 define 6
 defined 32
 defines 20
 definite 1
-definition 7
-definitions 27
+definition 8
+definitions 29
 delete 3
 deleting 14
 deliberate 5
@@ -620,29 +644,33 @@ deliverable 1
 deliverables 2
 dense 8
 depend 2
-dependent 11
+dependent 12
 depth 1
-derivation 2
+derivation 3
 derivations 1
 derived 1
 describe 1
-described 20
+described 21
 describes 12
 describing 1
 description 2
-descriptive 83
-design 14
+descriptive 89
+design 27
 designation 5
 designations 5
+designed 2
 desired 1
 desktop 1
+dest 21
 destination 1
-detail 6
+dests 5
+detail 7
 details 2
 detect 2
 detection 1
 determinism 4
-deterministic 17 proven
+deterministic 33 proven
+deterministically 4
 dev 5
 develop 6
 developer 1
@@ -658,7 +686,7 @@ differs 1
 diffusion 5
 digest 1
 digit 13
-digital 6
+digital 13
 digits 3
 din 3 proven
 dir 2
@@ -668,7 +696,7 @@ direction 1
 directions 2
 directly 17
 directories 8
-directory 17
+directory 18
 direnv 5 proven
 disagree 2
 disagreement 3
@@ -683,31 +711,31 @@ discretion 1
 discussion 7
 dishonest 1
 disjoint 20
-disk 32
+disk 41
 display 5
 displays 7
 disposable 12
-distinct 50
+distinct 54
 distinction 2
 distinctions 4
 distinguish 1
-distribute 14
-distributed 2
+distribute 15
+distributed 18
 distribution 10
 dithering 7
-do 211
+do 220
 doc 6
 docs 6
-document 673
+document 762
 documentation 2
 documented 7
-documents 40
-does 571
-doge 62 proven
-domain 48
-don 26
-done 33
-dont 25
+documents 42
+does 613
+doge 78 proven
+domain 51
+don 30
+done 40
+dont 29
 draft 4
 drawn 1
 drift 4
@@ -721,26 +749,26 @@ dual 9
 dump 6
 duplicate 7
 durability 3
-durable 55
+durable 56
 e 18
 each 53
-earlier 3
+earlier 4
 early 2
 ecma 59 proven
-ecosystem 2
+ecosystem 4
 ecosystems 2
-edge 11
-edges 12
+edge 12
+edges 11
 edit 18
 editing 2
-edition 19
+edition 20
 editor 11
 edits 4
 effect 1
 efficiency 1
-effort 46
+effort 52
 eight 26
-either 25
+either 28
 electronic 2
 element 1
 elevate 2
@@ -753,23 +781,23 @@ else 4
 em 1
 embed 1
 embedded 3
-emission 8
-emissive 18 proven
-emit 78
-emits 21
+emission 10
+emissive 25 proven
+emit 88
+emits 22
 emitted 6
 emitting 4
 emphasize 1
-empty 16
+empty 14
 emulators 2
 en 19
-encode 69
-encoded 56
+encode 74
+encoded 60
 encodedlines 11
 encoder 1
-encodes 30
-encoding 164
-encodings 378 proven
+encodes 34
+encoding 176
+encodings 397 proven
 encountered 2
 encrypted 2
 end 8
@@ -782,11 +810,11 @@ ends 2
 enforce 2
 enforced 5
 enforces 9
-engine 11
+engine 12
 engineering 2
 engines 1
-english 169
-enough 21
+english 174
+enough 25
 enter 2
 entire 1
 entries 15
@@ -794,7 +822,7 @@ entry 26
 enumerate 1
 enumerations 3
 env 1
-environment 1
+environment 2
 environments 7
 eof 2 proven
 eol 2 proven
@@ -806,19 +834,19 @@ equivalent 4
 era 5
 erased 3
 erasure 2
-error 9
+error 10
 especially 2
 essay 4
-essays 47
+essays 52
 establish 5
 established 2
-establishes 13
+establishes 14
 eval 6
 evaluate 4
 evaluation 15
 evaluator 1
 even 3
-every 142
+every 148
 everyday 1
 everything 3
 evidence 1
@@ -843,10 +871,11 @@ executable 14
 exempt 7
 exemptions 1
 exercise 1
-exist 128
-existed 1
+exist 148
+existed 22
+existence 2
 existing 10
-exists 76
+exists 87
 exit 4
 exited 1
 expand 3
@@ -860,13 +889,17 @@ explicit 13
 explicitly 9
 export 6
 exports 1
+expose 4
+exposed 1
+exposes 4
 expressed 4
 expression 2
 expressions 1
+expressive 1
 ext 2
 extended 3
 extension 26
-external 49
+external 51
 extra 7
 extreme 1
 eyes 1
@@ -877,18 +910,18 @@ fact 16
 factories 3
 factory 4
 facts 12
-fail 46
-failed 3
+fail 56
+failed 2
 failing 16
-fails 43
+fails 46
 failure 6
-fake 8
+fake 10
 fall 2
 fallback 4
-false 38
+false 39
 familiar 3
 family 2
-fargo 272 proven
+fargo 285 proven
 fat 2
 feature 2
 features 5
@@ -908,10 +941,10 @@ fg 5 proven
 field 2
 fields 2
 figures 2
-file 478
+file 497
 filename 2
 filenames 5
-files 101
+files 108
 fileset 1
 fill 5
 filled 1
@@ -924,9 +957,9 @@ findings 3
 finds 3
 fine 5
 finish 1
-finished 21
+finished 22
 finite 3
-first 67
+first 70
 fit 5
 fits 4
 five 7
@@ -938,36 +971,37 @@ fixture 2
 fixtures 23
 flag 5
 flags 9
-flake 114 proven
+flake 115 proven
 flakes 4 proven
 flat 5
 float 2
 floating 1
-floor 51
+floor 52
 floyd 13 proven
 fold 2
 folded 5
 folder 5
 folds 3
-follow 47
+follow 50
 followed 6
-following 39
-follows 17
+following 43
+follows 20
 foo 4
-for 1081
+for 1171
 forbade 1
-forbidden 15
+forbid 2
+forbidden 17
 forbids 6
 force 3
 forced 1
 foreground 3
 foreign 12
-form 483
-formal 303
+form 502
+formal 335
 formalization 3
 formalize 1
 formalizing 2
-formally 2
+formally 3
 formalvibeficationproofs 19
 formalvibeficationspec 27
 formalvibeficationspecnumber 4
@@ -979,28 +1013,32 @@ formerly 2
 forms 8
 found 1
 foundation 1
-four 14
+four 17
+fourteen 1
 fragment 9
 fragments 5
-free 39
+framing 3
+free 40
+freedom 3
 freely 1
-freestanding 100 proven
+freestanding 103 proven
 freeze 8
 freezes 1
 friction 3
-from 157
-full 51
-fully 51
+from 175
+full 52
+fully 58
 fun 3
 function 12
 functions 2
-future 9
+further 1
+future 11
 g 13
 gains 1
 gap 4
 gaps 7
 garbage 15
-gate 70
+gate 75
 gatekeeper 4
 gates 4
 gaussian 6
@@ -1010,34 +1048,35 @@ generation 13
 generosity 4
 gerund 1
 giant 1
-git 177
-github 31 proven
+git 180
+github 33 proven
 gitignore 3 proven
 gitignored 2 proven
 gitlab 3 proven
 gitlinks 4 proven
 give 2
-given 12
+given 15
 glob 1
 global 1
 glued 1
 go 3
+god 2
 goes 5
 golden 12
 golf 3
 gone 1
 good 1
 gov 3
-govern 11
+govern 12
 governing 1
 grade 2
 grainier 3 proven
-grant 26
-grants 10
-graph 53
+grant 29
+grants 13
+graph 49
 graphfromfiles 1
 graphic 1
-graphical 10
+graphical 17
 graphs 1
 grayscale 3 proven
 greater 2
@@ -1059,18 +1098,18 @@ handling 2
 hard 6
 hardcoded 1
 hardware 5
-harness 1
+harness 35
 has 275
 hash 9
 hashed 2
 hashing 15
-have 21
+have 27
 having 6
 he 7
 headed 1
 header 2
 headers 5
-heading 49
+heading 51
 headings 25
 healthy 1
 heap 1
@@ -1080,7 +1119,7 @@ held 2
 help 1
 helper 3
 helpers 2
-here 80
+here 77
 herein 8
 heritage 4
 hermetic 16
@@ -1089,39 +1128,39 @@ heuristics 2
 hex 4
 hide 3
 hides 19
-high 59
+high 70
 higher 2
 highest 1
 his 4
 historic 2
-history 27
-hit 3
+history 51
+hit 4
 hoc 1
-hold 27
+hold 30
 holder 5
 holding 4
-holds 48
+holds 52
 hole 4
-holy 3
+holy 52
 home 36
 homes 14
 honest 11
-honesty 46
-honorable 5
+honesty 56
+honorable 7
 hook 23 proven
 hooks 10 proven
 horizontal 1
-host 29
+host 30
 hosts 4
-how 41
+how 44
 howard 7 proven
-href 12 proven
-html 68
-http 14 proven
-https 97 proven
-human 64
-humans 81
-hunter 16
+href 13 proven
+html 77
+http 20 proven
+https 110 proven
+human 68
+humans 85
+hunter 17
 hunting 3
 hurt 1
 hygiene 6
@@ -1140,65 +1179,67 @@ ideal 5
 ideas 18
 ideasnonscarce 1
 ideasnotrivalrous 1
-identical 11
+identical 12
 identifier 13
 identifiers 9
-identities 25
-identity 90
+identities 27
+identity 94
 ideology 1
 idiomatic 2
-idris 47 proven
+idris 50 proven
 ids 10
 iec 23 proven
 ietf 1
-if 94
+if 106
 ignore 2
 ignoring 1
 image 3
 images 1
 immediately 7
-implement 8
+implement 9
 implementation 106
 implementations 4
-implemented 25
+implemented 33
 implementer 6 proven
-implementers 21 proven
+implementers 22 proven
 implements 3
 implied 1
 imply 3
 import 12
-important 5
+important 17
 imports 1
-improve 20
+imprecise 9
+improve 24
 improved 2
-improvement 74
+improvement 105
+improvements 7
 improves 3
 improving 6
-in 1489
-include 44
+in 1637
+include 46
 includes 30
-including 47
+including 50
 incompatible 2
 incomplete 2
 inconsistency 6
 inconsistent 6
 increase 1
 increasing 2
-increment 3
+increment 5
 indent 28
 indentation 12
-independent 34
+independent 35
 independently 1
 index 9
-indicate 13
-indispensable 19
+indicate 14
+indispensable 21
 individual 2
 inductive 3
 inference 2
 inferred 10
 inform 1
-information 1
-informative 116
+information 5
+informative 131
 ingest 13
 ingests 2
 inheritance 1
@@ -1211,9 +1252,9 @@ inputs 3
 inria 3 proven
 insert 2
 inserts 3
-inside 18
+inside 26
 inspiration 4
-inspired 8
+inspired 9
 install 5
 installed 7
 installing 3
@@ -1223,15 +1264,16 @@ instruct 2
 instructed 2
 instruction 3
 integer 4
-integers 13
+integers 20
 integrates 5
-integration 105
+integration 144
+intellectual 1
 intended 9
 intent 10
 intentional 14
 intentionally 1
 interest 2
-interface 21
+interface 65
 interfaces 7
 intermediate 9
 intermediates 5
@@ -1239,12 +1281,12 @@ internal 3
 international 8
 interoperability 23
 interoperate 2
-interpreted 12
+interpreted 13
 interval 1
-into 97
+into 101
 introduced 8
 introduces 2
-invent 67
+invent 66
 invented 7
 inventing 3
 invents 1
@@ -1253,22 +1295,22 @@ inverses 2
 invoke 8
 invokes 1
 io 4
-ir 21 proven
-is 2793
+ir 26 proven
+is 3108
 iso 54 proven
 isolation 2
 isomorphism 45 proven
 issuing 1
-it 527
-item 83
-items 48
+it 536
+item 89
+items 53
 iterative 1
-its 29
-itself 40
+its 35
+itself 47
 itu 41 proven
 j 4
 jargon 7
-job 34
+job 35
 jobs 10
 join 2
 joining 1
@@ -1278,23 +1320,23 @@ judged 4
 july 1
 jurisdiction 5
 jurisdictions 1
-just 34
+just 35
 justfile 2
 k 9
-keagan 74 proven
-keags 81 proven
-keep 71
+keagan 81 proven
+keags 90 proven
+keep 76
 keeping 9
-keeps 43
+keeps 48
 kept 2
 kernel 2
-key 44
+key 46
 keys 8
 keyword 3
-keywords 44
-kind 6
+keywords 45
+kind 8
 kinds 11
-know 11
+know 12
 known 2
 kv 2 proven
 l 43
@@ -1306,17 +1348,17 @@ lake 111 proven
 lakefile 2
 land 3
 lang 7
-language 177
-languageid 58 proven
+language 182
+languageid 60 proven
 languageids 2 proven
-languages 27
+languages 28
 laptop 4
 large 5
 larger 1
 last 1
 lasting 1
-later 70
-latest 15
+later 75
+latest 16
 law 2
 laws 3
 lawyerly 2
@@ -1327,7 +1369,10 @@ lcd 5 proven
 le 4
 leading 24
 leaf 1
-lean 2165 proven
+lean 2556 proven
+leanmachineproofs 13
+leanmachinespec 21
+leanmachinespecnumber 1
 leanprover 2
 learning 3
 least 7
@@ -1335,11 +1380,11 @@ leave 7
 leaves 8
 leaving 20
 left 2
-leftover 136
+leftover 139
 leftovers 2
 leftoverunstackphrases 7
 legacy 1
-legal 10
+legal 67
 length 8
 lengths 2
 less 5
@@ -1352,13 +1397,13 @@ letters 15
 letting 2
 level 2
 leveldb 7 proven
-levels 15
+levels 17
 lf 19 proven
 lib 6
 libbeastdb 22 proven
 library 21
-license 96
-licenses 17
+license 99
+licenses 20
 light 6
 lights 3
 like 8
@@ -1366,47 +1411,47 @@ likewise 5
 limit 1
 limited 1
 limits 1
-line 238
+line 296
 lineage 1
 linear 14
 lineencodings 2
-lines 56
-link 13
-linking 42
-links 104
-linter 17 proven
+lines 60
+link 16
+linking 46
+links 109
+linter 18 proven
 linux 5 proven
 liquid 1
-list 70
+list 74
 listed 10
 lists 17
 literal 1
 literals 3
 little 1
-live 161
+live 182
 livecontainsproofsofthoseencodings 1
 lived 1
-lives 44
+lives 49
 living 1
-llvm 22 proven
+llvm 27 proven
 lmdb 7 proven
 load 8
 loading 1
-local 101
+local 105
 location 4
 locations 1
 lock 15
 lockfile 2 proven
 locks 16
-log 1
+log 2
 logical 7
 logically 6
-logs 12
+logs 13
 long 2
 longer 1
 look 6
 looks 2
-lookup 9
+lookup 12
 loop 14
 loops 2
 loss 1
@@ -1416,7 +1461,7 @@ lowercase 39
 lowercased 3
 ls 2
 m 17
-machine 107
+machine 267
 machines 3
 magenta 4
 magic 38
@@ -1424,9 +1469,9 @@ maintain 6
 maintainability 1
 maintained 4
 maintains 22
-majestic 265
-major 7
-make 8
+majestic 278
+major 6
+make 9
 makes 3
 man 1
 managed 22
@@ -1438,10 +1483,10 @@ map 13
 mapped 3
 mapping 25
 mappings 2
-maps 15
-march 11
+maps 18
+march 12
 mark 20
-markdown 423 proven
+markdown 447 proven
 marked 19
 marker 13
 markers 13
@@ -1449,13 +1494,13 @@ marketing 2
 marking 2
 marks 4
 markup 1
-mash 67
-mashed 13
+mash 68
+mashed 14
 mashing 2
-match 59
+match 62
 matched 1
-matches 35
-matching 19
+matches 36
+matching 20
 material 9
 materials 5
 math 1
@@ -1465,31 +1510,31 @@ matters 10
 max 2
 maximal 1
 maximum 1
-may 139 proven
+may 157 proven
 mcbride 4 proven
-mclelland 54 proven
+mclelland 59 proven
 mcp 1
-md 1458 proven
+md 1654 proven
 mdline 6
 mean 2
-meaning 172
-means 30
+meaning 177
+means 31
 meant 10
 measures 1
-mechanical 27
+mechanical 28
 mechanism 1
 meet 1
-meeting 13
+meeting 14
 meets 2
 meetup 1
-memex 223 proven
+memex 235 proven
 memexproofs 14
 memexspec 22
 memexspecnumber 2
 memory 3
 mention 5
 mentioned 5
-mentions 9
+mentions 10
 merely 2
 merge 2
 message 3
@@ -1513,44 +1558,45 @@ mirrors 1
 miscellaneous 4
 mismatch 1
 mismatches 7
-missing 18
+missing 31
 mit 14
 mix 16
 mixed 3
-mixing 26
+mixing 27
 mm 1
 mmap 10 proven
 mode 4
-model 89
+model 103
 modeled 1
 models 38
 modern 1
 modes 8
 modifiers 9
-modify 14
-module 77
-modules 127
+modify 15
+module 81
+modules 132
 month 1
+moral 3
 more 34
 morty 5 proven
 most 13
-move 7
+move 9
 moves 2
 moving 1
 multi 1
 multiple 6
 multiplicities 17 proven
 multiplicity 24 proven
-must 454 proven
+must 520 proven
 mutual 2
-n 39
-name 291
-named 249
-names 157
+n 40
+name 305
+named 283
+names 162
 naming 26
 narrative 1
 nat 1
-native 1
+native 3
 natural 28
 near 3
 nearby 1
@@ -1561,53 +1607,54 @@ needs 6
 neither 1
 nested 17
 nesting 1
-network 57
-neural 27
-never 80
+network 61
+neural 52
+neurosymbolic 37 proven
+never 83
 new 34
 newline 1
-next 28
+next 30
 ng 1
 nickname 1
 nine 2
-nix 242 proven
+nix 244 proven
 nixbuilder 1
 nixos 9 proven
 nixpkgs 9 proven
-nnnn 142
-no 383
-node 14
-nodes 15
+nnnn 154
+no 377
+node 22
+nodes 14
 noise 1
 non 8
-noncommercial 16 proven
-nonconforming 82 proven
+noncommercial 17 proven
+nonconforming 86 proven
 none 2
 nonzero 2
 normal 4
 normalized 1
-normative 73 proven
-not 2423
-note 11
+normative 76 proven
+not 2645
+note 18
 noted 1
-notes 19
+notes 26
 nothing 4
 notice 1
 noun 3
 nouns 1
 novel 17
-now 14
+now 16
 nul 3 proven
 null 1
-number 524
-numbered 678
+number 570
+numbered 705
 numbering 2
-numbers 60
+numbers 72
 numeric 1
 o 13
 obey 1
 obeys 2
-object 12
+object 13
 objects 12
 observe 6
 observed 2
@@ -1615,8 +1662,8 @@ observing 1
 obsidian 1
 obtained 1
 occur 1
-octal 6
-of 1065
+octal 13
+of 1166
 ofaspell 2
 off 1
 offense 1
@@ -1631,44 +1678,44 @@ oled 5 proven
 omega 25
 omit 2
 omitted 2
-on 270
+on 292
 once 24
-one 138
-ongoing 75
-only 146
+one 145
+ongoing 88
+only 156
 onto 4
 opaque 1
-open 13
+open 15
 opened 2
 opening 1
 operate 1
 operating 1
 operation 1
 operations 7
-operator 87
+operator 110
 operators 1
 option 9
-optional 72 proven
+optional 80 proven
 optionally 1
 options 12
-or 567
+or 606
 orchestrated 1
-order 22
+order 44
 ordered 20
 ordering 3
 ordinal 1
-ordinary 35
-org 7
+ordinary 36
+org 9
 organic 1
 organization 3
 orientation 2
 oriented 2
 orients 2
 origin 1
-original 13
+original 14
 oss 2
 osswithoutdedication 1
-other 88
+other 102
 others 1
 otherwise 6
 out 41
@@ -1677,13 +1724,13 @@ outcomes 1
 output 12
 outputs 3
 outside 41
-over 22
+over 23
 overlap 4
 overt 1
 overview 1
-owed 1
-own 19
-owned 15
+owed 2
+own 23
+owned 16
 ownership 13
 owns 6
 p 9
@@ -1697,11 +1744,11 @@ pad 1
 padded 1
 padding 1
 page 5
-pages 35
+pages 39
 paid 2
 painful 1
 pair 18
-pairing 1
+pairing 5
 pairs 4
 palette 21
 palettes 1
@@ -1715,26 +1762,25 @@ parameter 1
 parameters 4
 paraphrase 1
 parentheses 1
-parenthetical 15
+parenthetical 16
 parr 1
 parse 13
 parser 1
 parses 10
 part 6
-particularly 8
+particularly 9
 party 8
-pass 20
-passed 2
+pass 22
+passed 4
 passes 3
-passing 1
 past 1
-paste 16
+paste 17
 pasted 1
 pasting 2
 patch 7
-path 228
-paths 21
-pattern 15
+path 264
+paths 20
+pattern 13
 patterned 1
 patterns 1
 payload 7
@@ -1746,52 +1792,53 @@ people 17
 per 29
 perceived 2
 percent 1
-perform 6
+perform 11
 performed 6
 performing 1
 performs 3
 periods 2
 permanent 1
 permanently 1
-permission 14
+permission 15
 permits 6
 permitted 8
 persist 3
 persisted 2
 persistence 1
 persistent 3
-persists 5
+persists 4
 person 7
 personal 11
 philosophy 11
 phrase 12
-phrases 26
+phrases 27
 phrasing 2
-physical 55
+physical 59
 pick 4
-pin 92
-pinned 24
-pins 137
+pile 2
+pin 104
+pinned 25
+pins 149
 pipeline 17
 pixels 3
 pkgs 6
 place 19
 placed 2
 placement 4
-places 9
+places 10
 plain 30
 plainlanguage 3
 plan 13
-planned 33
+planned 34
 platform 1
 plugin 2
 plugins 1
 plural 14
-plus 50
+plus 51
 point 9
-pointer 33
+pointer 34
 pointers 3
-points 17
+points 18
 policy 13
 populate 4
 populated 4
@@ -1802,8 +1849,8 @@ positive 3
 posix 2 proven
 possibility 1
 possible 17
-practical 1
-practice 8
+practical 5
+practice 9
 pre 42 proven
 precise 1
 precision 3
@@ -1811,8 +1858,8 @@ precommit 3 proven
 predate 1
 predefined 7
 predicate 1
-predicates 1
-prefer 24
+predicates 2
+prefer 25
 preference 1
 preferred 4
 prefers 2
@@ -1821,92 +1868,93 @@ prefixes 2
 preflight 4 proven
 premultiplied 3 proven
 prepared 1
-present 60
-presentation 8
+present 71
+presentation 9
 presented 2
 preserves 2
-pretend 2
+pretend 1
 prevents 3
 previous 8
 previously 2
 primary 40
-principles 4
-print 13
+principles 6
+print 14
 printable 3
-printed 2
+printed 5
 prints 1
-prior 68
-private 12
+prior 72
+private 14
 probe 2
 probes 1
-process 52
+process 53
 processes 1
-produce 5
+produce 6
 produced 1
 producer 9
-produces 2
-product 420
-products 34
+produces 3
+product 454
+products 35
 producttreeunifies 6
 profanity 1
-program 64
+program 67
 programming 8
-programs 6
+programs 7
 progress 3
 project 72
 projects 5
 promised 1
-prompt 24
-proof 284
-proofofkeags 91
-proofs 432
+prompt 26
+proof 305
+proofofkeags 101
+proofs 462
 proper 2
 properties 3
 property 4
-proposal 8
-proposals 16
+proposal 9
+proposals 20
 proposed 4
 proposer 1
 propositions 13
 prose 69
-protocol 45
-prove 33
-proved 14
+protocol 57
+prove 34
+proved 17
 proven 44
 provenance 12
-proves 20
+proves 26
 provide 5
 provided 3
 provides 7
 proving 9
 provisional 12
-public 62
-publication 51
-publish 16
-published 131
+public 66
+publication 54
+publish 17
+published 132
 publishedbasenames 2
-publisher 108
+publisher 111
 publishers 1
 publishes 1
 pull 1
 punctuation 4
 pure 88
 purity 3
-purpose 16
+purpose 17
 push 10
 puts 4
-pwd 44
+pwd 46
 python 12
 q 6
 qtt 4 proven
+qualitative 1
 quality 4
 quantitative 21
 quantities 2
 quantity 1
 quantization 13 proven
 quantize 2 proven
-question 17
-questions 13
+question 18
+questions 17
 quotation 1
 quotations 1
 quote 4
@@ -1916,7 +1964,7 @@ quoting 2
 r 20
 raced 1
 raise 6
-ran 1
+ran 2
 random 3
 range 2
 ranges 2
@@ -1925,53 +1973,55 @@ rather 35
 rationale 4
 raw 2
 re 1
-read 140
-reader 36
-readers 20
+read 151
+reader 38
+readers 21
 readfile 2
 readiness 1
-readme 79 proven
+readme 80 proven
 reads 19
 readthedocs 1
-ready 113
+ready 124
 real 23
 reality 20
 realization 2
-reason 12
+reason 13
 reasoning 11
 reasons 1
 rebalance 3 proven
 rebase 1
-recipe 3
+receive 4
+recipe 6
 recipes 3
 recognize 1
 recommendation 5
-recommendations 8
-recommended 27 proven
+recommendations 9
+recommended 29 proven
 recommends 1
 reconcile 2
 reconciled 1
 reconciles 4
 reconstructing 2
-record 57
+record 67
 recorded 3
 recording 1
-records 83
+records 109
 recurse 1
-recursive 66
+recursive 73
 red 17
 redefine 1
 redefines 3
-reduce 2
-reduced 6
-reduction 4
+reduce 4
+reduced 11
+reduction 5
 reenter 1
-ref 327
+ref 350
 refer 1
 reference 20
-references 36
+references 38
 reformat 2
 reformats 7 proven
+refreshed 1
 refreshes 4
 refs 1
 refuse 3
@@ -1980,7 +2030,7 @@ refuses 2
 refusing 7
 regard 3
 regex 1
-registry 49
+registry 50
 regular 2
 reintroduce 1
 reintroduces 1
@@ -1988,10 +2038,10 @@ reject 4
 rejected 2
 rejects 2
 relate 2
-related 22
-relates 11
+related 23
+relates 12
 relation 26
-relations 13
+relations 15
 relationship 2
 relationships 6
 relationtype 13 proven
@@ -2005,11 +2055,11 @@ relied 1
 relinquishment 1
 relocate 1
 rely 2
-remain 82
+remain 105
 remaining 38
-remains 187
+remains 222
 reminder 5
-remote 37
+remote 43
 remotes 1
 rendering 1
 rendition 1
@@ -2018,74 +2068,77 @@ renumbers 4
 repair 3
 repairing 3
 repeat 6
-repeated 5
+repeated 7
 repeats 1
 rephrase 7
 rephrased 12
 rephrasing 1
-replace 62
+replace 63
 replaced 2
 replacement 3
 replaces 1
 replacing 1
 replay 1
 replication 8
-repo 82 proven
-repographhonest 2
+repo 74 proven
+repographhonest 1
 repolinks 1
 report 9
 reported 2
 reports 10
 repos 4 proven
 repositories 1
-repository 640
+repository 666
 represent 1
 representable 8 proven
 representation 7
 represents 1
 republication 3
-require 20
-required 107 proven
-requirement 109
-requirements 65
-requires 99
+require 24
+required 125 proven
+requirement 128
+requirements 67
+requires 102
 requiring 6
-research 91
+research 103
 reserved 2
 reset 3
 reshape 1
 reshaping 4
-residual 310
-resolve 18
+residual 320
+resolve 19
 resolved 3
 resource 2
 resources 7
 rest 2
 restart 1
-restate 15
-restates 16
+restate 19
+restated 1
+restates 17
+restating 1
 restore 1
 restricted 2
 restriction 1
 restricts 1
-result 10
+result 9
 resulting 1
 retain 4
 retrieval 4
 return 2
-reused 2
+returned 1
+reused 1
 reverse 1
 review 4
 reviewed 5
-reviewers 11
+reviewers 12
 revise 3
 revising 3
 revision 1
 revisions 1
 rewrites 2
 rewriting 1
-rfc 174 proven
-rfcs 14
+rfc 180 proven
+rfcs 15
 rfl 4
 rg 2
 rgb 22 proven
@@ -2099,41 +2152,41 @@ ripgrep 2
 rocksdb 8 proven
 role 13
 roles 1
-root 216
-rosetta 47 proven
+root 213
+rosetta 52 proven
 roughly 1
 roundtrip 2
 roundtrips 2
 row 3
 rows 9
-rsi 222 proven
+rsi 249 proven
 rsiproofs 9
 rsispec 18
 rst 2
-rule 36
+rule 38
 ruled 2
-rules 153
-run 111
+rules 163
+run 112
 runcommand 8
-running 4
-runs 39
-runtime 28
+running 7
+runs 48
+runtime 29
 runtimeless 3 proven
-rust 56
+rust 62
 rustchain 1
-s 207
+s 218
 safety 14
 said 5
-same 164
+same 178
 sandbox 1
 sandboxed 1
 satisfy 8
 say 27
 saying 1
-says 6
+says 7
 scaled 1
 scaling 1
-scan 39
+scan 40
 scanability 3 proven
 scanned 2
 scanning 1
@@ -2144,18 +2197,19 @@ schedule 3
 scheduled 2
 schema 28
 scheme 5
+scholars 3
 scope 79
 scoped 9
 script 5
 scripts 12
-scripture 20
+scripture 28
 search 5
-second 77
+second 85
 secondary 3
-section 36
+section 37
 sections 9
 security 1
-see 49
+see 51
 seek 1
 seeking 2
 seeks 4
@@ -2164,93 +2218,94 @@ sees 6
 segment 1
 segments 2
 select 1
-selected 44
+selected 47
 selection 4
-self 85
-sell 15
-semantic 37
+self 102
+selfcheck 1
+sell 16
+semantic 39
 semantics 2
-semver 130 proven
+semver 136 proven
 send 3
 sends 2
 sense 7
 sensitive 3
 sentence 45
 sentences 9
-separable 13
-separate 101
+separable 14
+separate 142
 separated 1
 separately 1
 separates 1
 separators 1
 sequence 2
-sequential 48
+sequential 56
 serialize 2
 serialized 1
 serializing 3
 series 12
-seriously 51
+seriously 59
 serve 1
 served 1
 service 2
 services 1
 session 14
 sessions 1
-set 84
+set 85
 sets 8
 setting 1
 seven 3
 sgg 2
 sgr 13 proven
 shades 4
-shall 474 proven
+shall 499 proven
 shape 4
 shapes 5
 share 17
-shared 17
+shared 16
 sharp 1
 shell 30
 shim 1
 shims 3
-shipped 47
+ship 1
+shipped 60
 ships 3
 short 39
 shorter 1
 shortest 8
-should 84 proven
+should 88 proven
 shovel 1
 show 2
 shown 7
-sibling 112
+sibling 121
 siblingencoding 1
 side 1
-signal 1
 signature 5
 signed 17
 significant 4
-significantly 8
+significantly 9
 signing 9
-silence 19
+silence 20
 silent 6
 silently 7
 simd 10 proven
 similar 17
 simple 3
 simplify 1
-single 30
+single 31
 sit 3
-site 4
-sits 5
+site 5
+sits 6
 six 1
 size 12
 skeleton 2
-skill 79
+skill 88
 skills 66
 skip 16
-skipped 6
+skipped 5
 skipping 1
 skips 8
-slake 221 proven
+slake 240 proven
 slash 1
 slice 2
 slots 1
@@ -2260,10 +2315,10 @@ smaller 1
 smart 27
 snake 1
 snapshots 2
-so 95
+so 104
 society 5
 soft 12
-software 2
+software 6
 sole 1
 solely 1
 some 7
@@ -2272,7 +2327,7 @@ sorry 3
 sort 4
 sorted 3
 sound 1
-source 117
+source 130
 sources 14
 space 22
 spaces 19
@@ -2283,35 +2338,36 @@ sparse 1
 spawn 5
 spawning 1
 spdx 3 proven
-spec 602 proven
+spec 628 proven
 special 2
 specific 2
-specification 1114
-specifications 367
-specified 296
-specifies 32
-specify 43
+specification 1219
+specifications 402
+specified 392
+specifies 36
+specify 39
 specifying 3
 specregistry 5
-specs 67 proven
+specs 66 proven
 speed 1
 spelled 2
-spelling 86
+spelling 88
+spend 2
+spent 2
 spirit 4
-split 69
+split 70
 splitting 2
 sqlite 10 proven
-src 1
 srgb 8 proven
 ssh 1
-sssp 91 proven
-sssss 259 proven
+sssp 99 proven
+sssss 277 proven
 sssssproofs 8
 sssssspec 17
 sstechtree 12
-sstt 140
+sstt 139
 stable 3
-stack 89
+stack 104
 stackintegrates 3
 stacks 1
 stage 3
@@ -2325,36 +2381,35 @@ standardization 2
 standards 18
 standing 1
 start 14
-started 54
+started 60
 starting 1
 starts 12
 stash 1
-state 47
-stated 13
+state 48
+stated 14
 statement 3
-statements 16
+statements 18
 states 30
 stating 2
-stats 47
-status 28
-stay 37
-stayed 1
-stays 19
+stats 51
+status 29
+stay 39
+stays 20
 stderr 3 proven
-steal 57
+steal 59
 steinberg 13 proven
 stem 6
 step 31
-steps 5
-still 161
+steps 7
+still 171
 stochastic 3 proven
 stock 3
 stop 7
 stopped 1
 stopping 2
 stops 1
-storage 3
-store 41
+storage 4
+store 43
 stored 8
 stores 6
 str 9
@@ -2376,6 +2431,8 @@ structural 5
 structure 14
 structured 1
 structures 7
+study 3
+studying 1
 stuffed 2
 style 19
 subagent 4 proven
@@ -2386,16 +2443,17 @@ subject 2
 submodule 40 proven
 submodules 29 proven
 subpixel 4 proven
-subsection 23
+subsection 28
 subset 6
-substitute 51
-substituting 2
-substrate 22
+substitute 61
+substituting 4
+substrate 11
 subtitle 1
-succeeded 2
+succeed 1
 success 6
+successful 3
 successor 1
-such 53
+such 56
 suffix 3
 sugar 1
 suggested 1
@@ -2410,49 +2468,50 @@ support 4
 supported 1
 surface 13
 surfaces 3
-surmount 515 proven
+surmount 548 proven
 surmountspecnumber 5
 swear 1
 switch 1
 swmr 10 proven
-symbolic 26
+symbolic 54
 symbols 1
 symlink 3
 symmetry 4
 sync 1
 synonymy 3 proven
-system 25
-systems 670
+sys 2
+system 31
+systems 740
 systemslean 9
 systemsleanproofs 9
 systemsleanspec 18
-t 98
+t 102
 tab 25
 table 16
 tables 12
-tabs 35
+tabs 37
 tactics 1
 tag 7
 tagged 1
 tags 24
 take 8
 takes 5
-taking 51
+taking 60
 talk 6
-talks 12
-target 35
+talks 13
+target 37
 targeting 4
 targets 17
 task 1
-tech 196
-technical 54
+tech 208
+technical 57
 technique 1
 techtreeproofs 13
 techtreespec 21
 techtreespecnumber 2
 telegram 1
 television 9
-tell 8
+tell 9
 telling 1
 tells 3
 temporary 3
@@ -2462,45 +2521,43 @@ term 1
 terminal 7
 terminals 2
 terms 5
-test 39
+test 40
 testing 1
-tests 255
-text 97
+tests 261
+text 101
 texts 6
 th 4 proven
-than 78
-that 1555
-the 3000
-theater 3
-their 48
-them 51
+than 86
+that 1755
+the 3225
+theater 1
+their 51
+them 56
 themselves 4
-then 57
-theology 2
-theorem 34
+then 58
+theology 3
+theorem 36
 theorems 65
 theory 23
-there 32
-thereafter 1
+there 35
 therefore 2
-these 22
-they 174
+these 23
+they 192
 thin 10
 thing 3
 things 1
 think 1
 third 11
-thirteen 1
-this 1816
+this 1963
 thisreposeparates 8
 thisrepounlicenseexceptnamedresidual 1
-those 398
+those 440
 thought 9
 thoughts 10
 thread 2
 three 22
 threshold 3
-through 43
+through 46
 throughout 1
 throw 6
 throwaway 3
@@ -2508,30 +2565,32 @@ thrown 1
 tie 3
 tight 7
 tightly 9
-time 27
+time 32
 times 5
+timestamp 2
+timestamped 11
 tips 2
 tired 1
 title 10
 titled 6
 titles 3
 tmp 1
-to 498
+to 538
 toaspell 2
 toc 5 proven
 today 2
-together 8
+together 9
 toggled 1
-token 53
+token 54
 tokenize 4 proven
 tokenized 3 proven
 tokenizer 4 proven
 tokenizes 3 proven
 tokens 40
 toml 4 proven
-tool 63
+tool 88
 tooling 12
-tools 34
+tools 42
 top 4
 topic 1
 topics 3
@@ -2542,29 +2601,29 @@ tracking 21
 tracks 2
 traditional 12
 trailing 32
-train 2
-training 6
+train 1
+training 15
 trains 6
 transactions 3
 translates 1
-translation 37
+translation 43
 translator 1
 transparent 2
-treat 36
-treated 80
+treat 38
+treated 89
 treating 22
 treats 9
-tree 377
-trees 77
+tree 395
+trees 80
 tricks 1
 trie 9 proven
 tries 25 proven
 trip 1
 trips 1
 trivial 1
-true 69
+true 72
 truly 3
-trust 52
+trust 60
 truth 5
 tt 4 proven
 tui 2 proven
@@ -2573,26 +2632,26 @@ turn 1
 turned 1
 tutorial 1
 twelve 3
-two 71
+two 73
 txt 30 proven
-type 34
-typecheck 16 proven
+type 35
+typecheck 17 proven
 typechecking 3 proven
-typechecks 39 proven
+typechecks 46 proven
 typed 10
-types 17
+types 18
 typically 2
 u 9
 uint 13
 unacceptable 1
 unambiguous 1
-unassigned 42
+unassigned 44
 unblocks 1
-unchanged 1
+unchanged 4
 uncompressed 3
-undated 13
+undated 14
 undefined 3
-under 348
+under 362
 underlies 1
 underscore 3
 underscores 2
@@ -2605,14 +2664,14 @@ unified 1
 unifies 5
 unify 18
 unifying 1
-unimplemented 17
-unique 27
+unimplemented 18
+unique 29
 uniqueness 1
 unit 8
 units 3
 unknown 1
-unless 41
-unlicense 349 proven
+unless 44
+unlicense 403 proven
 unlicensed 3
 unlicensededication 1
 unlicenseproofs 17
@@ -2621,17 +2680,17 @@ unlicensespecnumber 4
 unlike 1
 unlimited 1
 unmarked 1
-unmet 8
-unnumbered 14
+unmet 9
+unnumbered 6
 unpinned 13
-unpublished 48
+unpublished 52
 unrelated 1
 unresponsive 3
 unrestricted 17
 unsigned 16
-unspecified 45
+unspecified 43
 unstable 3
-unstack 108 proven
+unstack 111 proven
 unstage 2
 unstated 2
 until 3
@@ -2642,30 +2701,31 @@ update 11
 updated 3
 updates 1
 updating 2
+upgraded 2
 uppercase 8
-upstream 14
-url 44 proven
-urls 28 proven
+upstream 15
+url 48 proven
+urls 30 proven
 us 30 proven
 usa 5
-use 306
-used 76
+use 320
+used 82
 useful 1
 user 7
 users 1
-uses 59
-using 11
+uses 60
+using 12
 usual 2
 usually 1
 utf 5 proven
 ux 1
-v 24
+v 26
 vague 1
 valid 4
-validation 43
+validation 44
 validator 6 proven
 validators 3 proven
-value 20
+value 21
 values 48
 vannevar 1
 variable 1
@@ -2673,19 +2733,19 @@ vault 1
 vaults 1
 vector 7
 vectors 12
-vendor 29
+vendor 32
 verb 2
 verification 3
-verified 79
-verify 51
-version 86
+verified 81
+verify 59
+version 110
 versioned 3
-versioning 54
-versions 6
-versus 40
+versioning 57
+versions 7
+versus 41
 vertices 1
 via 11
-vibefication 303 proven
+vibefication 335 proven
 view 1
 viewer 2
 views 1
@@ -2697,7 +2757,7 @@ vision 2
 vjopn 2
 vocab 15
 vocabaspell 2
-vocabulary 169
+vocabulary 181
 vocabularycollisionproofs 12
 vocabularyproofs 16
 vocabularyspec 24
@@ -2707,75 +2767,78 @@ w 9
 wait 5
 waiting 1
 walk 2
-want 1
+wanted 3
 warn 1
 warning 1
-was 40
+was 43
 watch 2
-way 7
+way 9
 we 13
 weaken 1
 weakening 1
 weakens 2
 weaker 3
+weasel 1
 web 5
 well 3
-were 21
+were 22
 wesley 1
 wez 1
-what 97
-when 287
+what 100
+when 310
 where 14
 whether 1
-which 30
+which 31
 while 12
 white 5
 whitespace 94 proven
 whitespaceviolations 3
 who 14
 whole 5
-whose 41
+whose 43
 why 31
 width 2
 widths 1
 will 14
 wins 1
-wire 20
+wire 21
+wires 7
 wiring 1
-with 395
-withdrawn 27
+with 407
+withdrawn 31
 withdraws 1
 within 4
-without 65
-word 154
-wordid 56 proven
+without 86
+word 164
+wordid 57 proven
 wordids 9 proven
 wording 16
 wordlist 2 proven
-words 91
+words 93
 wordstats 2
-work 206
+work 246
 workflow 6
 workflows 2
-working 2
-works 8
-would 10
+working 4
+works 9
+worship 11
+would 9
 wrap 12
 wrapped 8
 wrapper 8
 wrappers 2
 wrapping 24
 wraps 2
-write 123
-writer 67
-writerepo 1
+write 133
+writer 71
+writerepo 2
 writers 2
-writes 18
+writes 23
 writeshellapplication 5
 writetext 5
 writing 15
-written 47
-wrong 27
+written 49
+wrong 36
 wrote 1
 ws 7
 www 6

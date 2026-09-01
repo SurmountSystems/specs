@@ -124,7 +124,13 @@ def runCases : List Case :=
     expectFalse "bitmask-next is out of scope" bitmaskNextInScope,
     expectFalse "RGB is out of scope as product" rgbProductInScope,
     expectFalse "RSI is not a bitmask specification" rsiIsBitmaskSpec,
-    expectFalse "Lean Machine is not specified" leanMachineSpecified,
+    expectFalse "RSI does not specify Lean Machine" leanMachineSpecified,
+    expectTrue "Lean Machine is numbered specification 0013"
+      leanMachineHasNumberedSpecification,
+    expectTrue "registry Lean Machine is assigned"
+      SpecRegistry.leanMachineAssigned,
+    expectFalse "leftover unnumbered meaning of leanMachineSpecified is false"
+      leftoverUnnumberedMeaning,
     expectFalse "Holy Lean is not specified" holyLeanSpecified,
     expectFalse "Legal Lean is not specified" legalLeanSpecified,
     expectFalse "Bio Lean is not specified" bioLeanSpecified,

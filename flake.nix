@@ -240,6 +240,13 @@
 						description = "Lean tests for Majestic Memex spec encodings, magic MAJESTIC plus 0x01, and separate proofs (spec 0012)";
 					};
 
+					lean_machine_tests = mkLeanBin {
+						pname = "lean_machine_tests";
+						lakeTarget = "lean_machine_tests";
+						binName = "lean_machine_tests";
+						description = "Lean tests for Lean Machine spec encodings, assignment as specification 0013, and separate proofs (spec 0013)";
+					};
+
 					# Writer and reader of .sstt files (spec 0011 format, Lake package).
 					sstt_tests = mkLeanBin {
 						pname = "sstt_tests";
@@ -304,7 +311,7 @@
 					};
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats;
 					default = spec_check;
 				}
 			);
@@ -575,6 +582,19 @@
 								echo ok > "$out/result"
 							'';
 
+					lean_machine_tests =
+						pkgs.runCommand "lean_machine_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.lean_machine_tests
+								];
+							}
+							''
+								lean_machine_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
 					# .sstt writer and reader contracts, including --decode with
 					# and without REPO_ROOT; not a second markdown linter.
 					sstt_tests =
@@ -592,7 +612,8 @@
 
 					# Write a .sstt file from this repository, read it back, fail on
 					# wrong magic, a cyclic graph, missing published numbered specs,
-					# or a withdrawn name. Output is $out/tech_tree.sstt, not the
+					# a withdrawn name, or a cited skill, ref/ pin, or SOURCE dest
+					# missing from disk. Output is $out/tech_tree.sstt, not the
 					# repository root.
 					sstt_write =
 						pkgs.runCommand "sstt_write"
@@ -716,6 +737,7 @@
 						unlicense_tests
 						tech_tree_tests
 						memex_tests
+						lean_machine_tests
 						sstt_tests
 						sstt_write
 						repo_links_tests

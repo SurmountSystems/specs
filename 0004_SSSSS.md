@@ -1,12 +1,12 @@
 # Surmount Systems Smart Symbolic Supercompiler
 
-> v1.0.0 - 20260824
+> v0.1.0 - 20260831
 >
 > Deterministic high assurance translation among Turing complete programming languages
 
 ## 1. Scope
 
-This document specifies the Surmount Systems Smart Symbolic Supercompiler (SSSSS): deterministic high assurance translation of any Turing complete programming language into any other, with written natural language translation that is best effort and that improves itself. SSSSS is built on encoding as sequential language runs, a Rosetta isomorphism layer, Systems Lean as specified in `0002_Systems_Lean.md`, beastdb as specified in `0003_beastdb.md`, and a Lean Machine substrate.
+This document specifies the Surmount Systems Smart Symbolic Supercompiler (SSSSS): deterministic high assurance translation of any Turing complete programming language into any other, with written natural language translation that is best effort and that improves itself. SSSSS is built on encoding as sequential language runs, a Rosetta isomorphism layer, Systems Lean as specified in `0002_Systems_Lean.md`, beastdb as specified in `0003_beastdb.md`, and a Lean Machine substrate. This document also specifies neurosymbolic integration: the pairing of a symbolic interface and a neural path inside a harness so that neural work is not spent on an action the symbolic interface can already perform.
 
 This document is the contract that humans read. It does not contain Lean theorem statements. Selected checkable claims have a companion Lean model under `lean/` (see Clause 1.2). That model is not this specification.
 
@@ -14,9 +14,10 @@ This document does not claim that a conforming SSSSS implementation exists.
 
 ### 1.1 Status of this document
 
-1. This document is normative for the product short name SSSSS, encoding as sequential language runs, LanguageID and WordID as primary identity, the Rosetta relation shape and provenance tags, pipeline determinism, neural proposal acceptance, natural language translation marking, durable state in beastdb, Systems Lean as the core implementation language, and the inheritance of `0002_Systems_Lean.md` core validation for SSSSS components that are safety critical, that run in environments with tight resources, and that are freestanding.
+1. This document is normative for the product short name SSSSS, encoding as sequential language runs, LanguageID and WordID as primary identity, the Rosetta relation shape and provenance tags, pipeline determinism, neural proposal acceptance, natural language translation marking, durable state in beastdb, Systems Lean as the core implementation language, the inheritance of `0002_Systems_Lean.md` core validation for SSSSS components that are safety critical, that run in environments with tight resources, and that are freestanding, and neurosymbolic integration when a product claims the neurosymbolic harness interface (Clause 4.7).
 2. Versioning of this document SHALL follow [0000_spec.md](0000_spec.md) (the Surmount spec spec) and Semantic Versioning 2.0.0 (SemVer). Local path for SemVer: `ref/semver`.
 3. This specification is number 0004. The file name is `0004_SSSSS.md`.
+4. The current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed as unpublished working text.
 
 ### 1.2 Spec and proof (informative)
 
@@ -25,7 +26,7 @@ This subsection is informative. It records how this specification relates to mac
 In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in `0008_Formal_Vibefication.md`, requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification.
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
-2. Companion Lean modules under `lean/` (the SSSSS meaning model, distinct from the `spec_check` form checker) encode selected claims such as this document's identity as specification 0004 with file name `0004_SSSSS.md`, Systems Lean as specification 0002, beastdb as specification 0003, Recursive Self Improvement as specification 0006, fargo as not specification 0005, sequential WordID rather than hashing as primary identity, LanguageID prefix only on language change, a language run as a LanguageID plus a WordID list, the Rosetta relation shape and provenance tags, pipeline determinism given the same vocabulary and relation set, durable state in beastdb, neural proposals reduced to sequential integers before acceptance, and natural language translation marked provisional unless proven or high confidence.
+2. Companion Lean modules under `lean/` (the SSSSS meaning model, distinct from the `spec_check` form checker) encode selected claims such as this document's identity as specification 0004 with file name `0004_SSSSS.md`, Systems Lean as specification 0002, beastdb as specification 0003, Recursive Self Improvement as specification 0006, fargo as not specification 0005, sequential WordID rather than hashing as primary identity, LanguageID prefix only on language change, a language run as a LanguageID plus a WordID list, the Rosetta relation shape and provenance tags, pipeline determinism given the same vocabulary and relation set, durable state in beastdb, neural proposals reduced to sequential integers before acceptance, natural language translation marked provisional unless proven or high confidence, Lean Machine as specification 0013, and neurosymbolic integration predicates (a deterministic symbolic interface, a neural path used only when that interface cannot complete the action, tool improvements reduced to sequential integers, training a model not substituting for tool improvement inside the harness, and a claimed integration).
 3. A Lean registry under `lean/` encodes published and planned specification numbers, file names, and product names, and the form checker scans numbered markdown so wrong numbers, file name mismatches, a Systems Lean file name attached to specification number 0003, and wrong capitalization of beastdb fail `nix flake check`.
 4. Those modules prove facts about the model. They do not replace this document. This document does not replace those modules.
 5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Meaning proofs MUST NOT be treated as a second markdown form checker.
@@ -42,8 +43,9 @@ The product short name is five consecutive S letters: SSSSS. Those five letters 
 2. Systems Lean and Slake remain [0002_Systems_Lean.md](0002_Systems_Lean.md).
 3. beastdb remains [0003_beastdb.md](0003_beastdb.md).
 4. fargo remains a later specification. fargo has no assigned specification number. This document does not require fargo. Recursive Self Improvement is specified in `0006_RSI.md`.
-5. Lean Machine is named as a substrate in Scope. It has no numbered specification in this repository and no assigned number.
+5. Lean Machine is specified in `0013_Lean_Machine.md`. That document is specification 0013. Application and neurosymbolic integration live in this document, not in `0002_Systems_Lean.md`.
 6. Network peering, replication, high availability, and distribution are out of scope here. Those topics belong to the Carbonado Network Protocol, which has no numbered specification in this repository and no assigned number.
+7. Recursive Self Improvement of tools is specified in `0006_RSI.md`. A tool improvement call in this document is that practice applied to harness tools.
 
 ## 2. Normative references
 
@@ -60,6 +62,7 @@ beastdb is a Surmount numbered specification in this repository (`0003_beastdb.m
 3. Semantic Versioning 2.0.0 (SemVer). Local path: `ref/semver`.
 4. Surmount specification `0002_Systems_Lean.md` (Systems Lean, Slake, the freestanding product wire, CompCert verified compilation, and bootstrap typecheck).
 5. Surmount specification `0003_beastdb.md` (beastdb, libbeastdb, LanguageID, WordID, and a representable Rosetta mapping).
+6. Surmount specification `0006_RSI.md` (Recursive Self Improvement of tools, including a tool improvement call in this document).
 
 ### 2.2 Pins in the Systems Lean product tree
 
@@ -131,7 +134,7 @@ A named mark an implementation attaches to a natural language translation to mea
 
 ### 3.15 Lean Machine substrate
 
-The Lean Machine formalization layer named in Scope as a substrate of SSSSS. This document does not specify Lean Machine. There is no numbered specification for it in this repository.
+The Lean Machine formalization layer named in Scope as a substrate of SSSSS. Lean Machine is specified in `0013_Lean_Machine.md`. That document is specification 0013.
 
 ### 3.16 Systems Lean
 
@@ -160,6 +163,26 @@ A bootstrapped Slake compiler that typechecks the Systems Lean and Slake sources
 ### 3.22 Named hole
 
 An explicit, tracked absence of a target WordID when emit cannot find an accepted Rosetta relation for a source WordID under the target LanguageID.
+
+### 3.23 Harness
+
+The SSSSS product environment that exposes tools, translation, and calls that change those tools. This document does not claim a harness is implemented.
+
+### 3.24 Symbolic interface
+
+Lean programs in the harness that perform a tool or translation action only when proved consistent, constructive, and deterministic, using sequential LanguageID and WordID and accepted Rosetta relations.
+
+### 3.25 Neural path
+
+A neural model used only when the symbolic interface cannot complete that action.
+
+### 3.26 Tool improvement call
+
+A call native to the harness that changes a tool so a later symbolic path can succeed. That is Recursive Self Improvement of tools as specified in `0006_RSI.md`.
+
+### 3.27 Neurosymbolic combination
+
+The pairing of the symbolic interface and the neural path so work is not repeated: do not spend neural work on an action the symbolic interface can already perform.
 
 ## 4. Core requirements
 
@@ -218,6 +241,30 @@ An explicit, tracked absence of a target WordID when emit cannot find an accepte
 6. Residual honesty as defined in [0002_Systems_Lean.md](0002_Systems_Lean.md) remains required for the freestanding product wire. Residual honesty MUST NOT replace items 4 and 5.
 7. Items 1 through 6 are requirements. This document does not claim an SSSSS backed by beastdb, an SSSSS core built by Slake, CompCert validation of an SSSSS emit, or a Slake bootstrap that fully typechecks for SSSSS is implemented.
 
+### 4.7 Neurosymbolic integration
+
+This clause specifies how a claimed SSSSS harness combines the symbolic interface (Clause 3.24) and the neural path (Clause 3.25). It is not a one line pointer. Translation that only maps language runs, without a harness, is unchanged by this clause. Clause 4.4 neural proposals stay optional and distinct from this interface.
+
+A neurosymbolic combination (Clause 3.27) is the rule that work is not repeated: the product MUST NOT spend neural work on an action the symbolic interface can already perform.
+
+When a product claims the neurosymbolic harness interface, all of the following MUST hold:
+
+1. The product MUST expose the symbolic interface in the harness as an alternative deterministic interface for tool and translation actions.
+2. That symbolic interface MUST be implemented in Systems Lean as specified in [0002_Systems_Lean.md](0002_Systems_Lean.md).
+3. Recipe lookup and emit MUST be deterministic given the same vocabulary and the same set of accepted Rosetta relations. The same source, the same target LanguageID, the same vocabulary, and the same accepted Rosetta set MUST produce the same emit (Clause 4.3 item 1).
+4. The neural path MUST NOT be used for an action the symbolic interface can complete.
+5. When the symbolic interface cannot complete an action, the product MAY use the neural path to improve tools through calls native to the harness (Clause 3.26). Those improvements MUST be reduced to sequential integers before they are accepted, the same reduction as Clause 4.4 items 2 and 3.
+6. Training a model, or further training of a model, MUST NOT substitute for tool improvement inside the harness. This document MUST NOT invent a training cost number unless that number is cited with a markdown link and an access date. Prefer qualitative English about cost.
+7. Neural proposals under Clause 4.4 remain optional and distinct. Accepting a neural proposal under Clause 4.4 is not by itself a claim of this harness interface.
+
+Items 1 through 6 are requirements if and only if the product claims the neurosymbolic harness interface. Item 7 keeps Clause 4.4 optional when that claim is absent.
+
+This document does not claim that a neurosymbolic harness is implemented. The integration is specified here. It is not a shipped product.
+
+#### 4.7.1 Other wires (informative)
+
+This subsection is informative. Model Context Protocol and Agent Client Protocol MAY be named as other wires that a product uses next to this interface. This specification does not forbid those wires. This specification does not require those wires.
+
 ## 5. Conformance
 
 An SSSSS implementation conforms to this specification if and only if all of the following hold:
@@ -227,12 +274,13 @@ An SSSSS implementation conforms to this specification if and only if all of the
 3. Given the same vocabulary and the same accepted Rosetta relation set, its pipeline is deterministic; it ingests and tokenizes, looks up or inserts sequential WordIDs, uses language runs plus Rosetta relations as intermediate representation, emits by inverse WordID lookup under the target LanguageID, and on a missing mapping fails that token or emits a named hole without inventing hash identity (Clause 4.3 items 1 through 4, 6, and 7). Formalizing fragments into Systems Lean (Clause 4.3 item 5) is not required.
 4. Every accepted neural proposal has been reduced to sequential integers (Clause 4.4 items 2 and 3). When natural language translation is offered, each such translation is marked provisional unless it is Lean proven or carries a high confidence mark, and natural language translation is not treated as a substitute for deterministic programming language translation (Clause 4.5). Neural proposals and natural language translation MAY be absent.
 5. Durable state is stored in beastdb (Clause 4.6 item 1). The core is implemented in Systems Lean (Clause 4.6 item 2). SSSSS components that are safety critical, that run in environments with tight resources, and that are freestanding target the freestanding Slake path without managed Lean runtime or garbage collection, CompCert verified compilation of their freestanding C emit has been performed, and a bootstrapped Slake fully typechecks the Systems Lean and Slake sources it is bootstrapped from (Clause 4.6 items 3 through 6). A named residual MUST NOT substitute for CompCert verified compilation or for the bootstrap typecheck.
+6. If and only if the product claims the neurosymbolic harness interface, Clause 4.7 items 1 through 6 hold: the symbolic interface is exposed in the harness as an alternative deterministic interface, that interface is implemented in Systems Lean, recipe lookup and emit are deterministic given the same vocabulary and the same accepted Rosetta set, the neural path is not used for an action the symbolic interface can complete, tool improvements accepted from the neural path are reduced to sequential integers, and training a model is not a substitute for tool improvement inside the harness. Translation that only maps language runs, without a harness, is unchanged. Clause 4.7 item 7 keeps Clause 4.4 neural proposals optional and distinct.
 
 The cultural marker in Clause 1.3 is not a conformance item.
 
-Optional neural proposals (Clause 4.4 item 1), optional Systems Lean formalization of fragments (Clause 4.3 item 5), and optional natural language translation (Clause 4.5 item 1) are not required for conformance when absent. When they are present, the MUST clauses that apply to them in Clause 5 items 3 and 4 still hold.
+Optional neural proposals (Clause 4.4 item 1), optional Systems Lean formalization of fragments (Clause 4.3 item 5), and optional natural language translation (Clause 4.5 item 1) are not required for conformance when absent. When they are present, the MUST clauses that apply to them in Clause 5 items 3 and 4 still hold. Clause 5 item 6 applies if and only if the product claims the neurosymbolic harness interface.
 
-This specification is not itself a conforming implementation. Meeting these items is a claim about a product, not about this markdown file.
+This specification is not itself a conforming implementation. Meeting these items is a claim about a product, not about this markdown file. This document does not claim that a neurosymbolic harness exists.
 
 ## 6. Residual
 
@@ -243,9 +291,9 @@ This section is normative for residual honesty of this document. It does not add
 1. fargo has no assigned specification number. A previous plan that assigned number 0005 to fargo is withdrawn. Number 0005 is Concise American Technical English (`0005_CATE.md`). Number 0006 is Recursive Self Improvement (`0006_RSI.md`). This document does not invent a new number for fargo. This document does not require fargo.
 2. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. That mention is not an assignment. This document does not create a file for it.
 
-### 6.2 Lean Machine unnumbered
+### 6.2 Lean Machine numbered as 0013
 
-1. Lean Machine is named in Scope as a substrate. It has no numbered specification in this repository. It has no assigned specification number. This document MUST NOT be read as creating a numbered specification for Lean Machine or as assigning it a number.
+1. Lean Machine is specified in `0013_Lean_Machine.md`. That document is specification 0013. This document MUST NOT be read as restating Lean Machine or as assigning Legal Lean or Holy Lean a separate number. Neurosymbolic integration remains in this document.
 
 ### 6.3 Product tree pins versus this repository's `ref/`
 
@@ -268,6 +316,7 @@ This document specifies SSSSS. The work is ongoing and is not ready for use. It 
 8. Provisional marking of natural language translation unless Lean proven or high confidence.
 9. Durable state in beastdb.
 10. A Systems Lean core that can target the freestanding Slake path for components that are safety critical, that run in environments with tight resources, and that are freestanding, with CompCert verified compilation and a bootstrapped Slake that fully typechecks as required by Clause 4.6. Residual honesty does not substitute for those validation steps.
+11. Neurosymbolic integration as specified in Clause 4.7, including a symbolic interface in Systems Lean, a neural path used only when that interface cannot complete the action, tool improvements reduced to sequential integers, and a ban on substituting model training for tool improvement inside the harness. That integration is specified. It is not a shipped product.
 
 ### 6.5 Informative and optional items this document names
 
@@ -276,14 +325,26 @@ This document specifies SSSSS. The work is ongoing and is not ready for use. It 
 3. Natural language translation is MAY, best effort, and provisional unless proven or high confidence (Clause 4.5).
 4. Formalizing fragments into Systems Lean is MAY (Clause 4.3 item 5).
 5. An auxiliary hash index is allowed only as an index that is not primary (Clause 4.1 item 5).
+6. Model Context Protocol and Agent Client Protocol MAY be named as other wires (Clause 4.7.1). This specification does not forbid them and does not require them.
+7. Neural proposals remain MAY (Clause 4.4). Claiming the neurosymbolic harness interface is a distinct claim (Clause 4.7).
+
+### 6.6 Neurosymbolic integration is specified and is not shipped
+
+The neurosymbolic integration in Clause 4.7 is specified in this document. It is not a shipped product. SSSSS work is ongoing and is not ready for use. This document MUST NOT be read as claiming that SSSSS never started or does not exist. This document MUST NOT be read as claiming that a conforming neurosymbolic harness exists.
 
 ## 7. Changelog
+
+### 0.1.0 - 20260831
+
+Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed as unpublished working text.
+
+Adds neurosymbolic integration as Clause 4.7 with definitions of harness, symbolic interface, neural path, tool improvement call, and neurosymbolic combination. When a product claims that harness interface, it MUST expose the symbolic interface as an alternative deterministic interface, implement that interface in Systems Lean, keep recipe lookup and emit deterministic given the same vocabulary and Rosetta set, MUST NOT use the neural path for an action the symbolic interface can complete, MUST reduce tool improvements to sequential integers before acceptance, and MUST NOT substitute training a model for tool improvement inside the harness. Model Context Protocol and Agent Client Protocol MAY be named as other wires and are not forbidden. Lean Machine is specified in `0013_Lean_Machine.md`. The integration is specified and is not a shipped product. SSSSS work is ongoing and is not ready for use.
 
 ### 1.0.0 - 20260824
 
 First publication of this specification text. Defines SSSSS as specification 0004 with file name `0004_SSSSS.md`; requires sequential language runs with LanguageID prefix only on change; requires 64 bit sequential LanguageID and per language sequential WordID as primary identity and forbids hashing as primary identity; states combined capacity `2^64` languages times `2^64` WordIDs; requires Rosetta relations with RelationType and provenance `neural-proposed`, `human-confirmed`, or `Lean-proven`; requires a deterministic pipeline given the same vocabulary and relation set; permits neural proposals only after reduction to sequential integers; permits natural language translation as best effort work that MUST be marked provisional unless Lean proven or high confidence; requires durable state in beastdb as specified in `0003_beastdb.md`; requires a Systems Lean core as specified in `0002_Systems_Lean.md`; and requires CompCert verified compilation and a bootstrapped Slake that fully typechecks for SSSSS components that are safety critical, that run in environments with tight resources, and that are freestanding, with residual honesty not substituting for those steps.
 
-This 1.0.0 also records: this document does not claim a conforming implementation exists; Lean Machine has no numbered specification; fargo has no assigned specification number and is not required here; Recursive Self Improvement is specified in `0006_RSI.md`; the Carbonado Network Protocol has no assigned number; the five consecutive S letters are an informative cultural marker and not a conformance item.
+This 1.0.0 also records: this document does not claim a conforming implementation exists; Lean Machine is specified in `0013_Lean_Machine.md`; fargo has no assigned specification number and is not required here; Recursive Self Improvement is specified in `0006_RSI.md`; the Carbonado Network Protocol has no assigned number; the five consecutive S letters are an informative cultural marker and not a conformance item.
 
 This unpublished 1.0.0 also records that hyphenated modifiers in prose were rephrased into ordinary English. Deleting the hyphen and leaving the same two words is not enough.
 

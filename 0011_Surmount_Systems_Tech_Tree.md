@@ -1,6 +1,6 @@
 # Surmount Systems Tech Tree
 
-> v1.0.0 - 20260826
+> v0.1.0 - 20260831
 >
 > Graph of relationships among numbered specifications, sibling Lean encodings, materials under `ref/`, `SOURCE.md`, skills, and other files this repository cites, with no directed cycle, for lookup in the style of a later personal archive
 
@@ -12,7 +12,7 @@ This specification is number 0011. The file name is `0011_Surmount_Systems_Tech_
 
 This document is the contract that humans read. It does not contain Lean theorem statements. Selected checkable claims are encoded in Lean under `lean/TechTreeSpec.lean` (see Clause 1.2). Proofs of those encodings live under `lean/TechTreeProofs.lean`. Every published numbered markdown file at this repository root has a sibling line encoding `NNNN_descriptive_name.lean` at that same root, with proofs in `lean/Proofs_NNNN.lean`. This document's sibling is `0011_Surmount_Systems_Tech_Tree.lean`. Those encodings are not this specification.
 
-This document specifies a binary file format whose extension is `.sstt`. This Lake package includes a Lean writer and reader of `.sstt` files (`lean/Sstt.lean`, command `sstt_write`). That writer is not a shipped Surmount product. This document does not claim that a conforming Surmount Systems product exists. This document does not claim that Slake emit already matches object files as identical bytes. This document does not specify fargo. This document does not specify the Surmount Systems System Prompt (SSSP). This document does not specify the Carbonado Network Protocol. This document does not specify Lean Machine. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept.
+This document specifies a binary file format whose extension is `.sstt`. This Lake package includes a Lean writer and reader of `.sstt` files (`lean/Sstt.lean`, command `sstt_write`). That writer is not a shipped Surmount product. This document does not claim that a conforming Surmount Systems product exists. This document does not claim that Slake emit already matches object files as identical bytes. This document does not specify fargo. This document does not specify the Surmount Systems System Prompt (SSSP). This document does not specify the Carbonado Network Protocol. Lean Machine is specified in `0013_Lean_Machine.md`. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept.
 
 ### 1.1 Status of this document
 
@@ -60,7 +60,7 @@ Canonical pages:
 11. fargo has no numbered specification in this repository and no assigned number. This document does not invent a number for fargo.
 12. The Carbonado Network Protocol has no numbered specification in this repository and no assigned number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`). Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is Formal Vibefication (`0008_Formal_Vibefication.md`). Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is this specification. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept. This document does not steal those numbers for fargo or for Carbonado.
 13. SSSP is named in residual. It is not specified here.
-14. Lean Machine is named in residual. It is not specified here.
+14. Lean Machine is specified in `0013_Lean_Machine.md`. That document is specification 0013. That document is not this specification.
 15. The word catalog remains [0005_CATE.md](0005_CATE.md). CATE is specification 0005. Number 0009 is Unlicense (`0009_Unlicense.md`). A numbered Vocabulary file MUST NOT exist. Mentions of Vocabulary as a published specification 0009 do not conform.
 
 ## 2. Normative references
@@ -212,7 +212,7 @@ This Lake package SHALL restate those laws as spec encodings and SHALL prove enc
 6. fargo is unspecified. fargo has no numbered specification and no assigned number.
 7. SSSP is unspecified. SSSP has no numbered specification file and no assigned number.
 8. The Carbonado Network Protocol is unspecified. Carbonado has no numbered specification file and no assigned number.
-9. Lean Machine is unspecified. Lean Machine has no numbered specification file and no assigned number.
+9. Lean Machine is specified in `0013_Lean_Machine.md`. Legal Lean and Holy Lean remain named components without separate numbered specifications.
 10. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present.
 11. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept. Authors MUST NOT write that the command is finished.
 
@@ -237,7 +237,7 @@ Work that claims this specification conforms if and only if all of the following
 3. Lengths and counts use canonical `CompactSize` shortest form; golden vectors match; this Lake package restates the laws and proves small encode then decode cases; full `UInt64` proof remains in `btc-verified` (Clause 4.3).
 4. The encoded graph is a graph with no directed cycle; markdown citation cycles are not treated as that encoded graph (Clause 4.4).
 5. Markdown path links in this repository resolve to a path that exists; `repo_links_check` fails on a missing path target; remote `http://` and `https://` targets are skipped (Clause 4.5).
-6. beastdb, SSSSS, Slake, and Continuous Integration are treated as ongoing and not ready for use; a Surmount product `.sstt` writer is not shipped; this Lake package includes a Lean writer; fargo, SSSP, Carbonado, and Lean Machine remain unspecified; a numbered Vocabulary file does not exist; number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified while the command at `~/majestic` is still a proof of concept (Clause 4.6).
+6. beastdb, SSSSS, Slake, and Continuous Integration are treated as ongoing and not ready for use; a Surmount product `.sstt` writer is not shipped; this Lake package includes a Lean writer; fargo, SSSP, and Carbonado remain unspecified; Lean Machine is specified in `0013_Lean_Machine.md`; a numbered Vocabulary file does not exist; number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified while the command at `~/majestic` is still a proof of concept (Clause 4.6).
 7. Every published numbered markdown file has a sibling `NNNN_descriptive_name.lean`; proofs of those encodings live in `lean/Proofs_NNNN.lean`; the named gate in `0007_CI.md` remains the gate (Clause 4.7).
 
 This specification is not itself a conforming Tech Tree producer. Meeting these items is a claim about work that claims this specification, not about this markdown file as a shipped engine.
@@ -253,7 +253,7 @@ This section is normative for residual honesty of this document. Silence about a
 1. fargo is not specified. fargo has no assigned specification number. This document does not invent a number for fargo. This document does not steal 0005, 0006, 0007, 0008, 0009, 0010, or 0011 for fargo.
 2. The Surmount Systems System Prompt (SSSP) is not specified. It has no numbered specification file in this repository. It has no assigned specification number. This document MUST NOT be read as creating SSSP.
 3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is Formal Vibefication (`0008_Formal_Vibefication.md`). Number 0009 is Unlicense (`0009_Unlicense.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is this specification. This document does not create a file for Carbonado.
-4. Lean Machine is named as a substrate in `0002_Systems_Lean.md` and in `0004_SSSSS.md`. It has no numbered specification and no assigned number. This document does not invent a numbered file for Lean Machine.
+4. Lean Machine is specified in `0013_Lean_Machine.md`. That document is specification 0013. Legal Lean and Holy Lean remain named components without separate numbered specifications.
 5. Number 0009 was briefly Vocabulary, then withdrawn, and is now Unlicense by operator order. The word catalog lives in CATE (`0005_CATE.md`). This document does not assign 0009 to fargo or to Carbonado. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present.
 6. Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept. This document MUST NOT be read as claiming that product is ready for use.
 
@@ -282,11 +282,15 @@ Numbered specifications `0005_CATE.md`, `0008_Formal_Vibefication.md`, `0009_Unl
 
 ## 7. Changelog
 
+### 0.1.0 - 20260831
+
+Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed.
+
 ### 1.0.0 - 20260826
 
 First publication of Surmount Systems Tech Tree as numbered specification 0011 with file name `0011_Surmount_Systems_Tech_Tree.md`. Records that this document is the human contract for a graph of relationships among numbered specifications, sibling Lean encodings, materials under `ref/`, `SOURCE.md`, skills, and other cited files, with no directed cycle, for lookup in the style of a `memex`. Specifies the `.sstt` binary format with magic `SSTECHTREE01`, `CompactSize` counts, nodes, and directed edges. Requires the encoded graph to be a graph with no directed cycle. Records that markdown citation among numbered specifications MAY cycle and is not that encoded graph. Restates Bitcoin canonical `CompactSize` and golden vectors; full `UInt64` proof remains in `btc-verified` and is pinned as Form 1 at `ref/btc-verified`. Requires markdown path links in this repository to resolve, checked by `repo_links_check`. Records that a Surmount product writer is not shipped and that this Lake package includes a Lean writer. Records Formal Vibefication with canonical Proof of Keags URLs and back linking. Requires residual honesty that beastdb, SSSSS, Slake, and Continuous Integration are ongoing and not ready for use.
 
-This 1.0.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Formal Vibefication is specification 0008; Unlicense is specification 0009; the word catalog is owned by CATE as specification 0005; a numbered Vocabulary file MUST NOT exist; Surmount Systems is specification 0010; this specification is number 0011; number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept; fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Lean Machine is unnumbered; every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a conforming Tech Tree producer exists.
+This 1.0.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Formal Vibefication is specification 0008; Unlicense is specification 0009; the word catalog is owned by CATE as specification 0005; a numbered Vocabulary file MUST NOT exist; Surmount Systems is specification 0010; this specification is number 0011; number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`) and is specified. The command at `~/majestic` is still a proof of concept; fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Lean Machine is specified as `0013_Lean_Machine.md`; every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a conforming Tech Tree producer exists.
 
 No prior public release of this specification exists.
 

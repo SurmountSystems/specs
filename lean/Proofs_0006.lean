@@ -43,9 +43,9 @@ theorem mash_hidden_split_is_false :
 
 theorem mash_false : markedAsProof = false := rfl
 
-theorem encoded_size : encodedLines.size = 386 := by native_decide
+theorem encoded_size : encodedLines.size = 390 := by native_decide
 
-theorem line_count : lineCount = 386 := by native_decide
+theorem line_count : lineCount = 390 := by native_decide
 
 theorem line_count_matches_array : lineCount = encodedLines.size := rfl
 

@@ -34,9 +34,9 @@ def specClaimsImplementationExists : Bool := false
 
 def televisionCanonRequiredForConformance : Bool := false
 
-def leanMachineHasNumberedSpec : Bool := false
+def leanMachineHasNumberedSpec : Bool := true
 
-def leanMachineAssignedNumber : Option Nat := none
+def leanMachineAssignedNumber : Option Nat := some 13
 
 def fargoRequiredByThisSpec : Bool := false
 
@@ -371,6 +371,67 @@ def representationCanonical : RepresentationClaim :=
 def representationHashed : RepresentationClaim :=
   { representationCanonical with identity := .hashDigest }
 
+/-!
+  Clause 4.7: neurosymbolic integration when a product claims the
+  harness interface. Predicates use ordinary names. This module has
+  no theorems. Lean Machine is specification 0013.
+-/
+
+structure IntegrationClaim where
+  integrationClaimed : Bool
+  symbolicInterfaceDeterministic : Bool
+  neuralUsedOnlyWhenSymbolicCannot : Bool
+  toolImprovementReducedToSequentialIntegers : Bool
+  trainingNotSubstituteForToolImprovement : Bool
+  writtenInSystemsLean : Bool
+  deriving Repr, DecidableEq, BEq
+
+/--
+  Conforming claimed integration holds only when the named predicates
+  hold, including Clause 4.7 item 2 (implemented in Systems Lean).
+  A claimed mash that uses the neural path while the symbolic
+  interface can complete is not conforming. A claimed neural-gated
+  mash that is not implemented in Systems Lean is not conforming.
+-/
+def IntegrationClaim.conformingIntegration (c : IntegrationClaim) : Bool :=
+  c.integrationClaimed &&
+    c.symbolicInterfaceDeterministic &&
+    c.neuralUsedOnlyWhenSymbolicCannot &&
+    c.toolImprovementReducedToSequentialIntegers &&
+    c.trainingNotSubstituteForToolImprovement &&
+    c.writtenInSystemsLean
+
+def canonicalIntegration : IntegrationClaim :=
+  { integrationClaimed := true
+    symbolicInterfaceDeterministic := true
+    neuralUsedOnlyWhenSymbolicCannot := true
+    toolImprovementReducedToSequentialIntegers := true
+    trainingNotSubstituteForToolImprovement := true
+    writtenInSystemsLean := true }
+
+def mashNeuralWhileSymbolicCan : IntegrationClaim :=
+  { canonicalIntegration with
+    neuralUsedOnlyWhenSymbolicCannot := false }
+
+def translationOnlyNoHarness : IntegrationClaim :=
+  { canonicalIntegration with integrationClaimed := false }
+
+def integrationTrainingSubstitutes : IntegrationClaim :=
+  { canonicalIntegration with
+    trainingNotSubstituteForToolImprovement := false }
+
+def integrationUnreducedToolImprovement : IntegrationClaim :=
+  { canonicalIntegration with
+    toolImprovementReducedToSequentialIntegers := false }
+
+def integrationSymbolicNotDeterministic : IntegrationClaim :=
+  { canonicalIntegration with
+    symbolicInterfaceDeterministic := false }
+
+def mashClaimedNeuralGatedNotSystemsLean : IntegrationClaim :=
+  { canonicalIntegration with
+    writtenInSystemsLean := false }
+
 structure ClaimedProduct where
   representation : RepresentationClaim
   identityOnRosetta : IdentityKind
@@ -379,8 +440,13 @@ structure ClaimedProduct where
   neuralAcceptedWithoutReduction : Bool
   nl : Option NaturalLanguageTranslation
   systemsLeanFile : String
+  integration : Option IntegrationClaim
   deriving Repr
 
+/--
+  Clause 5 item 6: no integration claim still conforms. A claimed
+  integration must satisfy conformingIntegration.
+-/
 def ClaimedProduct.conforms (p : ClaimedProduct) : Bool :=
   p.representation.ok &&
     IdentityKind.ok p.identityOnRosetta &&
@@ -390,7 +456,10 @@ def ClaimedProduct.conforms (p : ClaimedProduct) : Bool :=
     (match p.nl with
       | none => true
       | some t => t.ok) &&
-    systemsLeanFileOk p.systemsLeanFile
+    systemsLeanFileOk p.systemsLeanFile &&
+    (match p.integration with
+      | none => true
+      | some c => c.conformingIntegration)
 
 def canonicalProduct : ClaimedProduct :=
   { representation := representationCanonical
@@ -399,7 +468,8 @@ def canonicalProduct : ClaimedProduct :=
     safety := safetyCanonical
     neuralAcceptedWithoutReduction := false
     nl := none
-    systemsLeanFile := "0002_Systems_Lean.md" }
+    systemsLeanFile := "0002_Systems_Lean.md"
+    integration := none }
 
 def productHashed : ClaimedProduct :=
   { canonicalProduct with representation := representationHashed }
@@ -427,5 +497,13 @@ def productResidualSubstitutes : ClaimedProduct :=
 
 def productWrongStore : ClaimedProduct :=
   { canonicalProduct with durable := durableWrongStore }
+
+def productClaimedNotSystemsLean : ClaimedProduct :=
+  { canonicalProduct with
+    integration := some mashClaimedNeuralGatedNotSystemsLean }
+
+def productCanonicalIntegration : ClaimedProduct :=
+  { canonicalProduct with
+    integration := some canonicalIntegration }
 
 end Sssss

@@ -40,7 +40,7 @@ theorem mash_hidden_split_is_false :
   rfl
 
 theorem encoded_line_count :
-    encodedLines.size = 412 := by
+    encodedLines.size = 418 := by
   native_decide
 
 theorem encoded_line_count_eq_lineCount :

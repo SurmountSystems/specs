@@ -9,9 +9,10 @@
   Environment: REPO_ROOT overrides the default discovery root (cwd).
   When REPO_ROOT is set, --decode requires the published numbered
   specification set. Without REPO_ROOT, --decode of an arbitrary file
-  does not. With no -o, the writer writes tech_tree.sstt under a new
-  temporary directory. It refuses to write tech_tree.sstt into the
-  repository root.
+  does not. writeRepo and --self-check fail when a cited skill, ref/
+  pin, or SOURCE dest is missing from disk. With no -o, the writer
+  writes tech_tree.sstt under a new temporary directory. It refuses
+  to write tech_tree.sstt into the repository root.
 -/
 
 import Sstt
@@ -29,11 +30,13 @@ def usage : String :=
   "an edge from the lower spec number to the higher. Decode checks magic\n" ++
   "SSTECHTREE01 and rejects a cyclic encoded graph. Self-check writes,\n" ++
   "reads the file back, and fails when published numbered specification\n" ++
-  "nodes do not match the registry or a withdrawn name is a node.\n" ++
-  "When REPO_ROOT is set, --decode applies the same published numbered\n" ++
-  "specification set check. Without REPO_ROOT, --decode of an arbitrary\n" ++
-  "file does not require that set. Wrong magic and a cyclic encoded\n" ++
-  "graph still fail.\n" ++
+  "nodes do not match the registry, a withdrawn name is a node, or a\n" ++
+  "cited skill, ref/ pin, or SOURCE dest is missing from disk. A present\n" ++
+  "dest still writes a DAG and classifies the node. Remote http URLs\n" ++
+  "do not fail this check. When REPO_ROOT is set, --decode applies the\n" ++
+  "same published numbered specification set check. Without REPO_ROOT,\n" ++
+  "--decode of an arbitrary file does not require that set. Wrong magic\n" ++
+  "and a cyclic encoded graph still fail.\n" ++
   "With no -o, output is tech_tree.sstt under a new temporary directory.\n" ++
   "The writer refuses to write tech_tree.sstt into the repository root.\n" ++
   "Environment: REPO_ROOT overrides the default discovery root.\n"

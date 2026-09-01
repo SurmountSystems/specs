@@ -8,7 +8,11 @@
   The writer refuses to write tech_tree.sstt into the
   repository root. With REPO_ROOT set, --decode of a graph
   missing a published numbered specification fails. Without
-  REPO_ROOT, that published set check is not applied. Exit 1 on FAIL.
+  REPO_ROOT, that published set check is not applied. A cited
+  skill, ref/ pin, or SOURCE dest missing from the file list
+  fails honesty. A present dest still writes a DAG and
+  classifies the node. Remote http URLs do not fail this
+  check. Exit 1 on FAIL.
 -/
 
 import Sstt
@@ -183,7 +187,58 @@ def runCases : List Case :=
       (let publishedFiles : List (String × String) :=
         publishedBasenames.map (fun b => (b, ""))
       let (pnodes, _) := graphFromFiles publishedFiles
-      decodeHonestyFails (some "/repo") pnodes)
+      decodeHonestyFails (some "/repo") pnodes),
+    expectFalse "cited skill dest absent from the file list fails honesty"
+      (let missingSkill : List (String × String) :=
+        [ ("0000_spec.md",
+            "see [skill](.agents/skills/absent-skill/SKILL.md).\n") ]
+      citedRequiredPresent missingSkill),
+    expectFalse "cited SOURCE dest absent from the file list fails honesty"
+      (let missingSource : List (String × String) :=
+        [ ("0000_spec.md", "see [src](ref/absent-pin/SOURCE.md).\n") ]
+      citedRequiredPresent missingSource),
+    expectFalse "cited ref pin dest absent from the file list fails honesty"
+      (let missingRef : List (String × String) :=
+        [ ("0000_spec.md", "see [pin](ref/absent-pin/rfc.txt).\n") ]
+      citedRequiredPresent missingRef),
+    expectEqString "writeRepo error names the missing SOURCE dest"
+      (let missingSource : List (String × String) :=
+        [ ("0000_spec.md", "see [src](ref/absent-pin/SOURCE.md).\n") ]
+      match citedRequiredMissing missingSource with
+      | p :: _ => missingCitedDestMessage p
+      | [] => "")
+      "cited dest is missing: ref/absent-pin/SOURCE.md",
+    expectTrue "cited other path dest absent from the file list does not fail cited dest honesty"
+      (let other : List (String × String) :=
+        [ ("0000_spec.md", "see [r](README.md).\n") ]
+      citedRequiredPresent other),
+    expectTrue "cited SOURCE dest present writes a DAG and classifies the node"
+      (let presentSource : List (String × String) :=
+        [ ("0000_spec.md", "see [src](ref/rfc2119/SOURCE.md).\n")
+        , ("ref/rfc2119/SOURCE.md", "") ]
+      let (snodes, sedges) := graphFromFiles presentSource
+      citedRequiredPresent presentSource &&
+        snodes.any (fun n =>
+          n.kind == .sourceNote && n.path == "ref/rfc2119/SOURCE.md") &&
+        isDag (nodeIds snodes) (edgePairs sedges) &&
+        (match encodeFiles presentSource with
+          | none => false
+          | some _ => true)),
+    expectTrue "seed skill markdown is a skill node with a link edge"
+      (let skillFiles : List (String × String) :=
+        [ ("0000_spec.md",
+            "see [skill](.agents/skills/demo/SKILL.md).\n")
+        , (".agents/skills/demo/SKILL.md", "seed skill\n") ]
+      let (knodes, kedges) := graphFromFiles skillFiles
+      citedRequiredPresent skillFiles &&
+        knodes.any (fun n =>
+          n.kind == .skill && n.path == ".agents/skills/demo/SKILL.md") &&
+        kedges.any (fun e => e.kind == .link) &&
+        isDag (nodeIds knodes) (edgePairs kedges)),
+    expectTrue "http URL dest does not fail cited dest honesty"
+      (let remote : List (String × String) :=
+        [ ("0000_spec.md", "see [x](https://example.com/foo).\n") ]
+      citedRequiredPresent remote)
   ]
 
 def main (_args : List String) : IO UInt32 := do

@@ -38,10 +38,10 @@ theorem mash_hidden_split_is_false :
         markedAsProof := markedAsProof } = false :=
   rfl
 
-theorem encoded_size : encodedLines.size = 268 := by
+theorem encoded_size : encodedLines.size = 272 := by
   native_decide
 
-theorem line_count : lineCount = 268 := by
+theorem line_count : lineCount = 272 := by
   native_decide
 
 /-- Membership: some encoded line contains the phrase Continuous Integration. -/

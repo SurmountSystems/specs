@@ -159,7 +159,7 @@ def runCases : List Case :=
       pdfPermissionNotePresent,
     expectFalse "fargo is not assigned" fargoAssigned,
     expectFalse "SSSP is not assigned" ssspAssigned,
-    expectFalse "Lean Machine is not assigned" leanMachineAssigned,
+    expectTrue "Lean Machine is assigned as specification 0013" leanMachineAssigned,
     expectEmpty "correct 0005_CATE token passes"
       (scanContent "0005_CATE.md"
         "This specification is number 0005. File 0005_CATE.md.\n"),

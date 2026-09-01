@@ -14,8 +14,9 @@
   Unlicense. The word catalog is owned by CATE (specification 0005).
   The file 0009_VOCABULARY.md MUST NOT exist. Number 0010 is Surmount
   Systems. Number 0011 is Surmount Systems Tech Tree. Number 0012 is
-  Majestic Memex (`0012_Majestic_Memex.md`).
-  fargo, SSSP, and Lean Machine have no assigned numbers. Existing
+  Majestic Memex (`0012_Majestic_Memex.md`). Number 0013 is Lean
+  Machine (`0013_Lean_Machine.md`).
+  fargo and SSSP have no assigned numbers. Existing
   `ref/` pins remain; new pins are added when present.
 -/
 
@@ -46,6 +47,8 @@ def techTreeSpecNumber : Nat := 11
 def techTreeFileName : String := "0011_Surmount_Systems_Tech_Tree.md"
 def memexSpecNumber : Nat := 12
 def memexFileName : String := "0012_Majestic_Memex.md"
+def leanMachineSpecNumber : Nat := 13
+def leanMachineFileName : String := "0013_Lean_Machine.md"
 def unlicenseSpecNumber : Nat := 9
 def unlicenseFileName : String := "0009_Unlicense.md"
 
@@ -101,6 +104,10 @@ def publishedEntries : List RegistryEntry :=
     , { number := 12
         fileName := "0012_Majestic_Memex.md"
         productName := "Majestic Memex"
+        published := true }
+    , { number := 13
+        fileName := "0013_Lean_Machine.md"
+        productName := "Lean Machine"
         published := true } ]
 
 def plannedEntries : List RegistryEntry :=
@@ -124,10 +131,10 @@ def ssspAssigned : Bool := false
 
 def ssspAssignedNumber : Option Nat := none
 
-/-- Lean Machine is named, not specified. -/
-def leanMachineAssigned : Bool := false
+/-- Lean Machine is numbered specification 0013. -/
+def leanMachineAssigned : Bool := true
 
-def leanMachineAssignedNumber : Option Nat := none
+def leanMachineAssignedNumber : Option Nat := some 13
 
 theorem spec_spec_is_0000 : specSpecNumber = 0 := rfl
 
@@ -223,6 +230,16 @@ theorem memex_is_not_0011 : memexSpecNumber ≠ 11 := by decide
 
 theorem memex_is_not_0010 : memexSpecNumber ≠ 10 := by decide
 
+theorem lean_machine_is_0013 : leanMachineSpecNumber = 13 := rfl
+
+theorem lean_machine_file :
+    leanMachineFileName = "0013_Lean_Machine.md" :=
+  rfl
+
+theorem lean_machine_is_not_0012 : leanMachineSpecNumber ≠ 12 := by decide
+
+theorem lean_machine_is_not_0009 : leanMachineSpecNumber ≠ 9 := by decide
+
 theorem surmount_systems_is_not_0007 : surmountSystemsSpecNumber ≠ 7 := by decide
 
 theorem surmount_systems_is_not_0008 : surmountSystemsSpecNumber ≠ 8 := by decide
@@ -247,9 +264,10 @@ theorem sssp_not_assigned : ssspAssigned = false := rfl
 
 theorem sssp_number_none : ssspAssignedNumber = none := rfl
 
-theorem lean_machine_not_assigned : leanMachineAssigned = false := rfl
+theorem lean_machine_assigned : leanMachineAssigned = true := rfl
 
-theorem lean_machine_number_none : leanMachineAssignedNumber = none := rfl
+theorem lean_machine_number_some_13 : leanMachineAssignedNumber = some 13 :=
+  rfl
 
 theorem ssss_is_not_spec_0002 : ssssSpecNumber ≠ 2 := by decide
 
@@ -267,13 +285,13 @@ theorem carbonado_not_assigned : carbonadoAssigned = false := rfl
 
 theorem carbonado_number_none : carbonadoAssignedNumber = none := rfl
 
-theorem published_count_thirteen : publishedEntries.length = 13 := rfl
+theorem published_count_fourteen : publishedEntries.length = 14 := rfl
 
 theorem planned_count_zero : plannedEntries.length = 0 := rfl
 
 theorem all_entry_numbers :
     allEntries.map (fun e => e.number) =
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] :=
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] :=
   rfl
 
 theorem number_8_published :
@@ -304,6 +322,18 @@ theorem number_12_is_not_planned :
     (plannedEntries.any (fun e => e.number == 12)) = false :=
   rfl
 
+theorem number_13_published :
+    (allEntries.any (fun e => e.number == 13)) = true :=
+  rfl
+
+theorem number_13_is_published_file :
+    (publishedEntries.any (fun e => e.number == 13)) = true :=
+  rfl
+
+theorem number_13_is_not_planned :
+    (plannedEntries.any (fun e => e.number == 13)) = false :=
+  rfl
+
 /-- Encode helper: tests that every published file is present use this list. -/
 def publishedBasenames : List String :=
   publishedEntries.map (fun e => e.fileName)
@@ -315,7 +345,8 @@ theorem published_filenames :
         "0006_RSI.md", "0007_CI.md", "0008_Formal_Vibefication.md",
         "0009_Unlicense.md", "0010_Surmount_Systems.md",
         "0011_Surmount_Systems_Tech_Tree.md",
-        "0012_Majestic_Memex.md"] :=
+        "0012_Majestic_Memex.md",
+        "0013_Lean_Machine.md"] :=
   rfl
 
 theorem published_basenames_are_entry_filenames :
@@ -450,6 +481,16 @@ theorem memex_entry_published :
 theorem memex_entry_filename :
     (allEntries.filter (fun e => e.number == 12)).map (fun e => e.fileName) =
       ["0012_Majestic_Memex.md"] :=
+  rfl
+
+theorem lean_machine_entry_published :
+    (allEntries.filter (fun e => e.number == 13)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem lean_machine_entry_filename :
+    (allEntries.filter (fun e => e.number == 13)).map (fun e => e.fileName) =
+      ["0013_Lean_Machine.md"] :=
   rfl
 
 theorem unlicense_entry_published :

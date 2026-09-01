@@ -122,7 +122,15 @@ def rgbProductInScope : Bool := false
 
 def rsiIsBitmaskSpec : Bool := false
 
+/-- This RSI specification does not restate Lean Machine. -/
 def leanMachineSpecified : Bool := false
+
+/-- Lean Machine has numbered specification 0013. This is not an unnumbered leftover. -/
+def leanMachineHasNumberedSpecification : Bool := true
+
+/-- False leftover reading: `leanMachineSpecified = false` means unnumbered. -/
+def leftoverUnnumberedMeaning : Bool :=
+  (!leanMachineSpecified) && (!SpecRegistry.leanMachineAssigned)
 
 def holyLeanSpecified : Bool := false
 

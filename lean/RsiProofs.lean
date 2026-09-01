@@ -164,8 +164,18 @@ theorem rgb_product_out_of_scope : rgbProductInScope = false := rfl
 /-- This document is not a bitmask specification. -/
 theorem rsi_is_not_bitmask_spec : rsiIsBitmaskSpec = false := rfl
 
-/-- Named only, not specified. -/
-theorem lean_machine_not_specified : leanMachineSpecified = false := rfl
+/-- RSI does not restate Lean Machine. This is not a claim that Lean Machine is unnumbered. -/
+theorem rsi_does_not_restate_lean_machine :
+    leanMachineSpecified = false :=
+  rfl
+
+theorem lean_machine_has_numbered_specification :
+    leanMachineHasNumberedSpecification = true :=
+  rfl
+
+theorem leftover_unnumbered_meaning_is_false :
+    leftoverUnnumberedMeaning = false :=
+  rfl
 
 theorem holy_lean_not_specified : holyLeanSpecified = false := rfl
 

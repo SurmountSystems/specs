@@ -70,7 +70,7 @@ def runCases : List Case :=
       specClaimsImplementationExists,
     expectFalse "television canon is not required for conformance"
       televisionCanonRequiredForConformance,
-    expectFalse "Lean Machine has no numbered specification" leanMachineHasNumberedSpec,
+    expectTrue "Lean Machine has numbered specification 0013" leanMachineHasNumberedSpec,
     expectFalse "this spec does not require fargo" fargoRequiredByThisSpec,
     expectTrue "sequential identity is ok"
       (IdentityKind.ok .sequentialInteger),
@@ -142,6 +142,26 @@ def runCases : List Case :=
       productResidualSubstitutes.conforms,
     expectFalse "wrong durable store does not conform"
       productWrongStore.conforms,
+    expectTrue "canonical claimed integration conforms"
+      canonicalIntegration.conformingIntegration,
+    expectFalse "claimed integration that uses neural while symbolic can complete does not conform"
+      mashNeuralWhileSymbolicCan.conformingIntegration,
+    expectFalse "translation only without a harness is not a claimed integration"
+      translationOnlyNoHarness.conformingIntegration,
+    expectFalse "training a model as a substitute does not conform"
+      integrationTrainingSubstitutes.conformingIntegration,
+    expectFalse "unreduced tool improvement does not conform"
+      integrationUnreducedToolImprovement.conformingIntegration,
+    expectFalse "nondeterministic symbolic interface does not conform"
+      integrationSymbolicNotDeterministic.conformingIntegration,
+    expectFalse "claimed neural-gated integration not implemented in Systems Lean does not conform"
+      mashClaimedNeuralGatedNotSystemsLean.conformingIntegration,
+    expectTrue "canonical product with no integration claim still conforms"
+      canonicalProduct.conforms,
+    expectFalse "product claiming mash integration not in Systems Lean does not conform"
+      productClaimedNotSystemsLean.conforms,
+    expectTrue "product claiming canonical integration conforms"
+      productCanonicalIntegration.conforms,
     expectNonEmpty "stale 0003_SSSSS token fails"
       (scanContent "0002_Systems_Lean.md"
         "planned file name `0003_SSSSS.md` is stale.\n"),

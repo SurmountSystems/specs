@@ -25,6 +25,7 @@ import «0009_Unlicense»
 import «0010_Surmount_Systems»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
+import «0013_Lean_Machine»
 
 open LineEncodings
 
@@ -120,7 +121,13 @@ def compiledEncodings : Array EncodedSpec :=
       «0012_Majestic_Memex».proofModuleName
       «0012_Majestic_Memex».markedAsSpecEncoding
       «0012_Majestic_Memex».markedAsProof
-      «0012_Majestic_Memex».encodedLines
+      «0012_Majestic_Memex».encodedLines,
+    ofSpec «0013_Lean_Machine».specNumber «0013_Lean_Machine».specFileName
+      «0013_Lean_Machine».siblingEncodingFileName
+      «0013_Lean_Machine».proofModuleName
+      «0013_Lean_Machine».markedAsSpecEncoding
+      «0013_Lean_Machine».markedAsProof
+      «0013_Lean_Machine».encodedLines
   ]
 
 def main (args : List String) : IO UInt32 := do

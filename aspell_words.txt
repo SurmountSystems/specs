@@ -1,4 +1,4 @@
-personal_ws-1.1 en 215
+personal_ws-1.1 en 216
 ABI
 AbsInt
 ACID
@@ -121,6 +121,7 @@ mmap
 Morty
 multiplicities
 multiplicity
+neurosymbolic
 Nix
 NixOS
 nixos

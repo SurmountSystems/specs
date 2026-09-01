@@ -246,6 +246,18 @@ def runCases : List Case :=
           containsProofsOfThoseEncodings := true
           markedAsSpecEncoding := true
           markedAsProof := true }),
+    expectTrue "canonical claimed SSSSS integration conforms"
+      Sssss.canonicalIntegration.conformingIntegration,
+    expectFalse "claimed SSSSS integration that uses neural while symbolic can complete does not conform"
+      Sssss.mashNeuralWhileSymbolicCan.conformingIntegration,
+    expectFalse "claimed neural-gated SSSSS integration not in Systems Lean does not conform"
+      Sssss.mashClaimedNeuralGatedNotSystemsLean.conformingIntegration,
+    expectTrue "SSSSS product with no integration claim still conforms"
+      Sssss.canonicalProduct.conforms,
+    expectFalse "SSSSS product claiming mash not in Systems Lean does not conform"
+      Sssss.productClaimedNotSystemsLean.conforms,
+    expectTrue "Lean Machine has numbered specification 0013 in SSSSS"
+      Sssss.leanMachineHasNumberedSpec,
     expectTrue "stack identities compose" stackIntegrates
   ]
 

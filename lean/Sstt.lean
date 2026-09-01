@@ -154,6 +154,36 @@ def citedPaths (sourceRel : String) (content : String) : List String :=
 def contentsAreMarkdown (path : String) : Bool :=
   path.endsWith ".md"
 
+/-- Skill paths, ref/ pins, and SOURCE notes cited from markdown must exist. Remote URLs and other path dests are not this check. -/
+def isRequiredCiteDest (p : String) : Bool :=
+  let k := classifyPath p
+  k == .skill || k == .refPin || k == .sourceNote
+
+def citedRequiredMissing (files : List (String × String)) : List String :=
+  Id.run do
+    let present := files.map (fun f => f.1)
+    let mut miss : List String := []
+    for (path, content) in files do
+      if contentsAreMarkdown path then
+        for dest in citedPaths path content do
+          if unpublishedBasename (baseName dest) then
+            pure ()
+          else if isRequiredCiteDest dest then
+            if present.contains dest then
+              pure ()
+            else if miss.contains dest then
+              pure ()
+            else
+              miss := miss ++ [dest]
+    return miss
+
+/-- True when every cited skill, ref/ pin, or SOURCE dest is in the file list. -/
+def citedRequiredPresent (files : List (String × String)) : Bool :=
+  citedRequiredMissing files == []
+
+def missingCitedDestMessage (p : String) : String :=
+  s!"cited dest is missing: {p}"
+
 def edgeKindFor (srcKind dstKind : NodeKind) : EdgeKind :=
   match srcKind, dstKind with
   | .numberedSpec, .numberedSpec => .cites
@@ -292,9 +322,13 @@ def pathExistsRel (repo : System.FilePath) (p : String) : IO Bool := do
   (repo / p).pathExists
 
 def collectCited (repo : System.FilePath) (paths : Array String) :
-    IO (Array String) := do
+    IO (Array String × List String) := do
   let mut out := paths
-  for rel in paths do
+  let mut missing : List String := []
+  let mut i : Nat := 0
+  while i < out.size do
+    let rel := out[i]!
+    i := i + 1
     if contentsAreMarkdown rel then
       let fp := repo / rel
       if ← fp.pathExists then
@@ -305,7 +339,10 @@ def collectCited (repo : System.FilePath) (paths : Array String) :
           else if ← pathExistsRel repo dest then
             if !out.toList.contains dest then
               out := out.push dest
-  return out
+          else if isRequiredCiteDest dest then
+            if !missing.contains dest then
+              missing := missing ++ [dest]
+  return (out, missing)
 
 def loadFiles (repo : System.FilePath) (paths : Array String) :
     IO (List (String × String)) := do
@@ -322,7 +359,7 @@ def loadFiles (repo : System.FilePath) (paths : Array String) :
 
 def buildRepoGraph (repo : System.FilePath) : IO (List Node × List Edge) := do
   let seed ← collectSeedPaths repo
-  let all ← collectCited repo seed
+  let (all, _) ← collectCited repo seed
   let files ← loadFiles repo all
   return graphFromFiles files
 
@@ -347,10 +384,17 @@ def writeRepo (repo outPath : System.FilePath) : IO (Except String Nat) := do
   if isRepoRootOutput repo outPath then
     return .error
       "refusing to write tech_tree.sstt into the repository root; pass -o with a path outside that root"
-  let (nodes, edges) ← buildRepoGraph repo
-  if !repoGraphHonest nodes then
-    return .error
-      "encoded graph is missing a published numbered specification or includes a withdrawn name"
-  writeGraph outPath nodes edges
+  let seed ← collectSeedPaths repo
+  let (all, missing) ← collectCited repo seed
+  match missing with
+  | p :: _ =>
+    return .error (missingCitedDestMessage p)
+  | [] =>
+    let files ← loadFiles repo all
+    let (nodes, edges) := graphFromFiles files
+    if !repoGraphHonest nodes then
+      return .error
+        "encoded graph is missing a published numbered specification or includes a withdrawn name"
+    writeGraph outPath nodes edges
 
 end Sstt

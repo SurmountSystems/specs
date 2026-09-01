@@ -31,7 +31,8 @@
   numbered specification 0009 (`0009_Unlicense.md`). The word catalog
   is owned by CATE as specification 0005 (`0005_CATE.md`). The file
   0009_VOCABULARY.md MUST NOT exist. Number 0011 is Surmount Systems
-  Tech Tree. Number 0012 is Majestic Memex.
+  Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean
+  Machine.
 -/
 
 import SpecRegistry
@@ -61,10 +62,16 @@ import TechTreeSpec
 import TechTreeProofs
 import MemexSpec
 import MemexProofs
+import LeanMachineSpec
+import LeanMachineProofs
 import «0010_Surmount_Systems»
 import «0009_Unlicense»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
+import «0013_Lean_Machine»
+
+set_option maxRecDepth 10000
+set_option maxHeartbeats 800000
 
 namespace Surmount
 
@@ -84,6 +91,9 @@ def techTreeSpecNumber : Nat := 11
 
 /-- Identity of numbered specification 0012. -/
 def memexSpecNumber : Nat := 12
+
+/-- Identity of numbered specification 0013. -/
+def leanMachineSpecNumber : Nat := 13
 
 /-- Catalog ownership: CATE, specification 0005. Number 0009 is Unlicense. -/
 def vocabularySpecNumber : Nat := 5
@@ -152,6 +162,21 @@ theorem memex_agrees_encoding :
 theorem sibling_encoding_file_is_spec_0012 :
     «0012_Majestic_Memex».siblingEncodingFileName =
       "0012_Majestic_Memex.lean" :=
+  rfl
+
+theorem lean_machine_is_0013 : leanMachineSpecNumber = 13 := rfl
+
+theorem lean_machine_agrees_registry :
+    leanMachineSpecNumber = SpecRegistry.leanMachineSpecNumber :=
+  rfl
+
+theorem lean_machine_agrees_encoding :
+    leanMachineSpecNumber = LeanMachineSpec.specNumber :=
+  rfl
+
+theorem sibling_encoding_file_is_spec_0013 :
+    «0013_Lean_Machine».siblingEncodingFileName =
+      "0013_Lean_Machine.lean" :=
   rfl
 
 theorem vocabulary_is_0005 : vocabularySpecNumber = 5 := rfl
@@ -576,7 +601,24 @@ def stackIntegrates : Bool :=
     !«0012_Majestic_Memex».markedAsProof &&
     MemexSpec.specNumber == 12 &&
     !MemexSpec.productReadyForUse &&
-    !Ci.dumpTheoremsIntoNumberedMarkdown
+    «0013_Lean_Machine».specFileName ==
+      "0013_Lean_Machine.md" &&
+    «0013_Lean_Machine».siblingEncodingFileName ==
+      "0013_Lean_Machine.lean" &&
+    !«0013_Lean_Machine».markedAsProof &&
+    LeanMachineSpec.specNumber == 13 &&
+    LeanMachineSpec.leanMachineAssigned &&
+    !LeanMachineSpec.worshipRequiredForConformance &&
+    !LeanMachineSpec.conformingProductExists &&
+    !Ci.dumpTheoremsIntoNumberedMarkdown &&
+    Sssss.leanMachineHasNumberedSpec &&
+    Sssss.canonicalIntegration.conformingIntegration &&
+    !Sssss.mashNeuralWhileSymbolicCan.conformingIntegration &&
+    !Sssss.translationOnlyNoHarness.conformingIntegration &&
+    !Sssss.mashClaimedNeuralGatedNotSystemsLean.conformingIntegration &&
+    Sssss.canonicalProduct.conforms &&
+    !Sssss.productClaimedNotSystemsLean.conforms &&
+    Sssss.productCanonicalIntegration.conforms
 
 theorem surmount_integrates : stackIntegrates = true := rfl
 

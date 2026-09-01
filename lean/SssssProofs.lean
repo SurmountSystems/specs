@@ -60,12 +60,12 @@ theorem no_implementation_claimed :
 theorem cultural_marker_not_required :
     televisionCanonRequiredForConformance = false := rfl
 
-/-- Lean Machine is named as substrate; it has no numbered specification. -/
-theorem lean_machine_unnumbered :
-    leanMachineHasNumberedSpec = false := rfl
+/-- Lean Machine is numbered specification 0013. -/
+theorem lean_machine_numbered :
+    leanMachineHasNumberedSpec = true := rfl
 
-theorem lean_machine_number_none :
-    leanMachineAssignedNumber = none := rfl
+theorem lean_machine_number_is_13 :
+    leanMachineAssignedNumber = some 13 := rfl
 
 /-- This specification does not require fargo. -/
 theorem fargo_not_required : fargoRequiredByThisSpec = false := rfl
@@ -202,5 +202,53 @@ theorem residual_substitute_does_not_conform :
 theorem wrong_store_does_not_conform :
     productWrongStore.conforms = false := by decide
 
+theorem canonical_integration_conforms :
+    canonicalIntegration.conformingIntegration = true := by decide
+
+theorem mash_claimed_integration_neural_while_symbolic_is_false :
+    mashNeuralWhileSymbolicCan.conformingIntegration = false := by decide
+
+theorem mash_claimed_neural_while_symbolic_can_is_false
+    (h : mashNeuralWhileSymbolicCan.conformingIntegration = true) : False := by
+  simp [mash_claimed_integration_neural_while_symbolic_is_false] at h
+
+theorem claimed_integration_that_uses_neural_while_symbolic_can
+    (c : IntegrationClaim)
+    (hClaim : c.integrationClaimed = true)
+    (hNeural : c.neuralUsedOnlyWhenSymbolicCannot = false)
+    (hConf : c.conformingIntegration = true) : False := by
+  simp [IntegrationClaim.conformingIntegration, hClaim, hNeural] at hConf
+
+theorem translation_only_is_not_claimed_integration :
+    translationOnlyNoHarness.conformingIntegration = false := by decide
+
+theorem training_substitute_does_not_conform :
+    integrationTrainingSubstitutes.conformingIntegration = false := by decide
+
+theorem unreduced_tool_improvement_does_not_conform :
+    integrationUnreducedToolImprovement.conformingIntegration = false := by
+  decide
+
+theorem symbolic_not_deterministic_does_not_conform :
+    integrationSymbolicNotDeterministic.conformingIntegration = false := by
+  decide
+
+theorem mash_claimed_not_systems_lean_is_false :
+    mashClaimedNeuralGatedNotSystemsLean.conformingIntegration = false := by
+  decide
+
+theorem mash_claimed_not_systems_lean_is_false_as_false
+    (h : mashClaimedNeuralGatedNotSystemsLean.conformingIntegration = true) :
+    False := by
+  simp [mash_claimed_not_systems_lean_is_false] at h
+
+theorem canonical_product_without_integration_claim_conforms :
+    canonicalProduct.conforms = true := by decide
+
+theorem product_claiming_mash_not_systems_lean_does_not_conform :
+    productClaimedNotSystemsLean.conforms = false := by decide
+
+theorem product_claiming_canonical_integration_conforms :
+    productCanonicalIntegration.conforms = true := by decide
 
 end Sssss

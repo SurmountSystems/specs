@@ -38,10 +38,10 @@ theorem mash_hidden_split_is_false :
         markedAsProof := markedAsProof } = false :=
   rfl
 
-theorem encoded_size : encodedLines.size = 307 := by
+theorem encoded_size : encodedLines.size = 311 := by
   native_decide
 
-theorem line_count_is_307 : lineCount = 307 := by
+theorem line_count_is_307 : lineCount = 311 := by
   native_decide
 
 theorem spec_file_contains_beastdb :

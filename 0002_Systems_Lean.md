@@ -1,6 +1,6 @@
 # Systems Lean
 
-> v1.0.0 - 20260824
+> v0.1.0 - 20260831
 >
 > Language and compiler substrate for Surmount high assurance components
 
@@ -127,7 +127,7 @@ These rules apply to novel Systems Lean and Slake source trees (product reposito
 
 ### 4.4 Relationship to the Surmount stack
 
-1. Systems Lean is the REQUIRED implementation language for the core of beastdb (specified in `0003_beastdb.md`), the Lean Machine formalization layer, components of the Smart Symbolic Supercompiler specified in `0004_SSSSS.md` that are safety critical, and future high assurance rewrites under the FixOS vision.
+1. Systems Lean is the REQUIRED implementation language for the core of beastdb (specified in `0003_beastdb.md`), the Lean Machine formalization layer, components of the Smart Symbolic Supercompiler specified in `0004_SSSSS.md` that are safety critical, and future high assurance rewrites under the FixOS vision. Application and neurosymbolic integration for SSSSS live in `0004_SSSSS.md`. Lean Machine is specified in `0013_Lean_Machine.md`.
 2. All such components MUST be able to target the freestanding Slake path.
 3. Recursive Self Improvement is specified in `0006_RSI.md`. That document is practice for Surmount specifications and agents. It is not a compiler requirement of this document.
 
@@ -157,7 +157,7 @@ This section is normative for residual honesty of this document. Silence about a
 
 ### 6.2 Unassigned names
 
-1. Lean Machine is named as a substrate. It has no numbered specification and no assigned number.
+1. Lean Machine is specified in `0013_Lean_Machine.md`. That document is specification 0013. Application and neurosymbolic integration live in `0004_SSSSS.md`.
 2. fargo, Carbonado, and SSSP are not specified here and have no assigned numbers.
 
 ### 6.3 Product requirements that are not ready for use
@@ -165,6 +165,10 @@ This section is normative for residual honesty of this document. Silence about a
 CompCert verified compilation of the freestanding C emit and a bootstrapped Slake compiler that fully typechecks are required validation steps. They are not claimed done. Byte identity of emit is required for a conforming product and is not claimed true.
 
 ## 7. Changelog
+
+### 0.1.0 - 20260831
+
+Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed. Application and neurosymbolic integration for SSSSS live in `0004_SSSSS.md`. Lean Machine is specified in `0013_Lean_Machine.md`.
 
 ### 1.0.0 - 20260824
 
