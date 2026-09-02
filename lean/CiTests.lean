@@ -140,7 +140,17 @@ def runCases : List Case :=
           "0003_beastdb.md", "0004_SSSSS.md", "0005_CATE.md",
           "0006_RSI.md"]),
     expectEmpty "all published basenames including 0007 pass"
-      (findingsForBasenames publishedBasenames)
+      (findingsForBasenames publishedBasenames),
+    expectTrue "CI meaning model requires the science cycle"
+      requiresScienceCycle,
+    expectFalse "tests without a model do not conform"
+      testsOnlyConforms,
+    expectFalse "model and proofs without corollary experiments do not conform"
+      modelAndProofsWithoutExperimentsConforms,
+    expectTrue "complete science cycle conforms"
+      completeScienceCycleConforms,
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

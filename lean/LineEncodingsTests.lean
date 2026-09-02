@@ -161,15 +161,17 @@ def runCases : List Case :=
         "def encodedLines : Array MdLine := #[{ number := 1, text := \"a\" }]\n").isEmpty,
     expectTrue "spec_check leftover unstack list is Cate"
       leftoverUnstackPhrasesAreCate,
-    expectEqNat "twelve meaning spec encoding comment paths"
+    expectEqNat "thirteen meaning spec encoding comment paths"
       meaningSpecEncodingRelPaths.size
-      12,
+      13,
     expectTrue "UnlicenseSpec is a meaning spec encoding path"
       (meaningSpecEncodingRelPaths.toList.contains "lean/UnlicenseSpec.lean"),
     expectTrue "FormalVibeficationSpec is a meaning spec encoding path"
       (meaningSpecEncodingRelPaths.toList.contains "lean/FormalVibeficationSpec.lean"),
     expectTrue "VocabularySpec is a meaning spec encoding path"
       (meaningSpecEncodingRelPaths.toList.contains "lean/VocabularySpec.lean"),
+    expectTrue "Vocabulary collision encodings are a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/Vocabulary.lean"),
     expectTrue "TechTreeSpec is a meaning spec encoding path"
       (meaningSpecEncodingRelPaths.toList.contains "lean/TechTreeSpec.lean"),
     expectTrue "MemexSpec is a meaning spec encoding path"
@@ -215,6 +217,27 @@ def runCases : List Case :=
     expectEmpty "leftover unstack in inline code inside comments passes"
       (findingsForLeftoverUnstackComments "lean/VocabularySpec.lean"
         "/-\n  Say `non markdown` as a bad example.\n-/\n"),
+    expectNonEmpty "never-real product claim in encodedLines prose fails"
+      (findingsForNeverRealProductEncoded "0013_Lean_Machine.md"
+        (encodeFile "A conforming Lean Machine does not exist.\n")),
+    expectEmpty "honesty BAN in encodedLines is allowed"
+      (findingsForNeverRealProductEncoded "0003_beastdb.md"
+        (encodeFile "Authors MUST NOT write that beastdb never started or does not exist.\n")),
+    expectEmpty "not claimed to exist in encodedLines is allowed"
+      (findingsForNeverRealProductEncoded "0013_Lean_Machine.md"
+        (encodeFile "A conforming Lean Machine is not claimed to exist.\n")),
+    expectNonEmpty "never-real product claim in spec encoding comments fails"
+      (findingsForNeverRealProductComments "lean/LeanMachineSpec.lean"
+        ("/-\n" ++
+          "  A conforming Lean Machine does not exist.\n" ++
+          "-/\n" ++
+          "def specNumber : Nat := 13\n")),
+    expectEmpty "honesty BAN in spec encoding comments is allowed"
+      (findingsForNeverRealProductComments "lean/BeastDbSpec.lean"
+        "/-\n  Authors MUST NOT write that beastdb never started or does not exist.\n-/\n"),
+    expectEmpty "never-real phrase in Lean string is not a comment hit"
+      (findingsForNeverRealProductComments "lean/LeanMachineSpec.lean"
+        "def neverReal := \"A conforming Lean Machine does not exist\"\n"),
     expectTrue "keepLeanComments keeps block comment body"
       (((keepLeanComments
           "/-\n  hello leftover\n-/\ndef x := 1\n").splitOn "hello leftover").length > 1),

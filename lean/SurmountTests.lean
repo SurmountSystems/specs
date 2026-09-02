@@ -109,8 +109,12 @@ def runCases : List Case :=
     expectEqNat "CI is specification 0007" ciSpecNumber 7,
     expectEqNat "Formal Vibefication is specification 0008"
       Surmount.formalVibeficationSpecNumber 8,
-    expectEqNat "Unlicense is specification 0009"
+    expectEqNat "PDOSS is specification 0009"
+      Surmount.pdossSpecNumber 9,
+    expectEqNat "unlicenseSpecNumber remains 9"
       Surmount.unlicenseSpecNumber 9,
+    expectEqString "PDOSS file is 0009_PDOSS.md"
+      SpecRegistry.pdossFileName "0009_PDOSS.md",
     expectEqNat "word catalog is owned by specification 0005"
       Surmount.vocabularySpecNumber 5,
     expectTrue "vocabulary ownership equals CATE"
@@ -152,15 +156,21 @@ def runCases : List Case :=
       (findingsForBasenames (publishedBasenames ++ ["0009_VOCABULARY.md"])),
     expectEmpty "all published basenames including 0009 and 0010 pass"
       (findingsForBasenames publishedBasenames),
-    expectEmpty "correct 0009_Unlicense token passes"
-      (scanContent "0009_Unlicense.md"
-        "This specification is number 0009. File 0009_Unlicense.md.\n"),
+    expectEmpty "correct 0009_PDOSS token passes"
+      (scanContent "0009_PDOSS.md"
+        "This specification is number 0009. File 0009_PDOSS.md.\n"),
     expectNonEmpty "wrong 0009 filename token fails"
-      (scanContent "0009_Unlicense.md"
+      (scanContent "0009_PDOSS.md"
         "do not cite 0009_unused.md\n"),
     expectNonEmpty "stale 0011_Unlicense token fails"
-      (scanContent "0009_Unlicense.md"
+      (scanContent "0009_PDOSS.md"
         "do not create `0011_Unlicense.md`.\n"),
+    expectTrue "Unlicense meets PDOSS"
+      (UnlicenseSpec.meetsPdoss .unlicense),
+    expectFalse "MIT does not meet PDOSS"
+      (UnlicenseSpec.meetsPdoss .mitGrant),
+    expectFalse "Apache 2.0 does not meet PDOSS"
+      (UnlicenseSpec.meetsPdoss .apacheTwo),
     expectTrue "copyright remaining on OSS without dedication"
       (UnlicenseSpec.remainingCopyright UnlicenseSpec.ossWithoutDedication),
     expectFalse "Unlicense dedication has no remaining copyright"

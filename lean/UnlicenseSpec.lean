@@ -1,12 +1,13 @@
 /-
-  SPEC ENCODINGS for numbered specification 0009 Unlicense
-  (`0009_Unlicense.md`).
+  SPEC ENCODINGS for numbered specification 0009 Public Domain
+  Open Source Software (PDOSS) (`0009_PDOSS.md`).
 
   This module states what must be true. It is not a proof module.
   Proofs of these propositions live in UnlicenseProofs.lean.
   Numbered markdown at the repository root is the contract humans read.
   That markdown is not a substitute for these encodings.
   Lean proofs are not the specification.
+  Unlicense remains the license. Lake keeps this library name.
 
   Lessons (not a copy of the papers):
   Formal Vibefication:
@@ -22,6 +23,7 @@
 -/
 
 import SpecRegistry
+import FormalVibeficationSpec
 
 namespace UnlicenseSpec
 
@@ -37,9 +39,12 @@ def markedAsProof : Bool := false
 /-- Identity of numbered specification 0009. -/
 def specNumber : Nat := 9
 
-def specFileName : String := "0009_Unlicense.md"
+def specFileName : String := "0009_PDOSS.md"
 
-def productName : String := "Unlicense"
+def productName : String := "PDOSS"
+
+/-- Same number as `specNumber`. Unlicense remains the license. -/
+def pdossSpecNumber : Nat := 9
 
 /-- Copyright still held versus dedicated to the public domain. -/
 inductive CopyrightStatus where
@@ -101,18 +106,52 @@ def generosityOfIdeasIsDefault : Bool := true
 inductive LicenseOfWork where
   | unlicenseDedication
   | mitGrant
+  | apacheTwo
   | notThisRepoGrant
   deriving DecidableEq, Repr, BEq
+
+/-- Dedication under the PDOSS test (public domain plus open software). -/
+inductive Dedication where
+  | unlicense
+  | mitGrant
+  | apacheTwo
+  | cc0
+  deriving DecidableEq, Repr, BEq
+
+/-- Public domain dedication test. MIT and Apache 2.0 keep copyright. CC0 is not pinned. -/
+def meetsPublicDomainDedicationTest : Dedication → Bool
+  | .unlicense => true
+  | .mitGrant => false
+  | .apacheTwo => false
+  | .cc0 => false
+
+/-- Source available under a use grant. CC0 is not pinned here so it is not claimed. -/
+def isOpenSoftware : Dedication → Bool
+  | .unlicense => true
+  | .mitGrant => true
+  | .apacheTwo => true
+  | .cc0 => false
+
+/-- PDOSS test: public domain dedication of software that is open. -/
+def meetsPdoss (d : Dedication) : Bool :=
+  meetsPublicDomainDedicationTest d && isOpenSoftware d
+
+def mitMeetsPdoss : Prop := meetsPdoss .mitGrant = true
+
+def apacheMeetsPdoss : Prop := meetsPdoss .apacheTwo = true
 
 def numberedSpecsAndLeanHere : LicenseOfWork := .unlicenseDedication
 
 def lean4SkillsPack : LicenseOfWork := .mitGrant
+
+def btcVerifiedPin : LicenseOfWork := .apacheTwo
 
 def keaganEssays : LicenseOfWork := .notThisRepoGrant
 
 def thisRepoUnlicenseExceptNamedResidual : Prop :=
   numberedSpecsAndLeanHere = LicenseOfWork.unlicenseDedication ∧
     lean4SkillsPack = LicenseOfWork.mitGrant ∧
+    btcVerifiedPin = LicenseOfWork.apacheTwo ∧
     keaganEssays = LicenseOfWork.notThisRepoGrant
 
 def unlicenseOfThisRepoAppliesToKeaganEssays : Bool := false
@@ -193,10 +232,41 @@ def productsClaimedNeverStarted : Bool := false
 
 def numberNineAssigned : Bool := true
 
-def numberElevenPublished : Bool := false
+def numberElevenPublished : Bool := true
 
 def siblingLineEncodingsRequired : Bool := true
 
 def siblingProofsAreSeparateModules : Bool := true
+
+/-- This meaning model requires the Formal Vibefication science cycle. -/
+def requiresScienceCycle : Bool := true
+
+/-- Effort that has tests and no model. Reuses the 0008 fixture. -/
+def testsOnlyEffortConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.testsWithoutModelFixture
+
+/-- Tests are necessary and are not sufficient. Reuses the 0008 Bool. -/
+def testsAloneAreSufficient : Bool :=
+  FormalVibeficationSpec.testsAloneAreSufficient
+
+/-- Model and proofs without corollary experiments. Reuses the 0008 fixture. -/
+def modelAndProofsWithoutExperimentsEffortConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.modelAndProofsWithoutExperimentsFixture
+
+/-- Complete science cycle. Reuses the 0008 fixture. -/
+def completeScienceEffortConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.completeScienceFixture
+
+def testsWithoutModelDoesNotConform : Prop :=
+  FormalVibeficationSpec.testsWithoutModelDoesNotConform
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  FormalVibeficationSpec.modelAndProofsWithoutExperimentsDoesNotConform
+
+def completeScienceConforms : Prop :=
+  FormalVibeficationSpec.completeScienceConforms
 
 end UnlicenseSpec

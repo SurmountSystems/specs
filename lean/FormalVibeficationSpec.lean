@@ -172,7 +172,7 @@ def productsClaimedReadyForUse : Bool := false
 
 def productsClaimedNeverStarted : Bool := false
 
-/-- Number 0009 is Unlicense. The word catalog is owned by CATE. -/
+/-- Number 0009 is Public Domain Open Source Software (PDOSS). Unlicense remains the license. The word catalog is owned by CATE. -/
 def numberNineAssigned : Bool := true
 
 /-- Every published numbered markdown has a sibling `NNNN_descriptive_name.lean` at the repository root. -/
@@ -186,5 +186,77 @@ def mashedSiblingEncodingAndProofsConform : Bool := false
 
 def mashedSiblingIsNonconforming : Prop :=
   mashedSiblingEncodingAndProofsConform = false
+
+/--
+  One Formal Vibefication effort as a science cycle.
+  Hypothesis, model, theory, proof, tests, and corollary experiments
+  are the required set. Tests are necessary and are not sufficient.
+-/
+structure ScienceEffort where
+  hasHypothesis : Bool
+  hasModel : Bool
+  hasTheory : Bool
+  hasProof : Bool
+  hasTests : Bool
+  hasCorollaryExperiments : Bool
+  deriving DecidableEq, Repr, BEq
+
+/-- Product check: hypothesis, model, theory, proof, tests, and corollary experiments. -/
+def conformingScience (e : ScienceEffort) : Bool :=
+  e.hasHypothesis && e.hasModel && e.hasTheory && e.hasProof &&
+    e.hasTests && e.hasCorollaryExperiments
+
+/-- Fixture: executable tests and no Lean (or other formal) model. -/
+def testsWithoutModelFixture : ScienceEffort :=
+  { hasHypothesis := false
+    hasModel := false
+    hasTheory := false
+    hasProof := false
+    hasTests := true
+    hasCorollaryExperiments := false }
+
+/-- Fixture: model and proofs, and no observation of the running system. -/
+def modelAndProofsWithoutExperimentsFixture : ScienceEffort :=
+  { hasHypothesis := true
+    hasModel := true
+    hasTheory := true
+    hasProof := true
+    hasTests := true
+    hasCorollaryExperiments := false }
+
+/-- Fixture: hypothesis, model, theory, proof, tests, and corollary experiments. -/
+def completeScienceFixture : ScienceEffort :=
+  { hasHypothesis := true
+    hasModel := true
+    hasTheory := true
+    hasProof := true
+    hasTests := true
+    hasCorollaryExperiments := true }
+
+def testsAloneAreSufficient : Bool := false
+
+def testsWithoutModelDoesNotConform : Prop :=
+  conformingScience testsWithoutModelFixture = false
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  conformingScience modelAndProofsWithoutExperimentsFixture = false
+
+def completeScienceConforms : Prop :=
+  conformingScience completeScienceFixture = true
+
+def testsWithoutModelFixtureHasTests : Prop :=
+  testsWithoutModelFixture.hasTests = true
+
+def testsWithoutModelFixtureHasNoModel : Prop :=
+  testsWithoutModelFixture.hasModel = false
+
+def modelAndProofsWithoutExperimentsFixtureHasModel : Prop :=
+  modelAndProofsWithoutExperimentsFixture.hasModel = true
+
+def modelAndProofsWithoutExperimentsFixtureHasProof : Prop :=
+  modelAndProofsWithoutExperimentsFixture.hasProof = true
+
+def modelAndProofsWithoutExperimentsFixtureHasNoExperiments : Prop :=
+  modelAndProofsWithoutExperimentsFixture.hasCorollaryExperiments = false
 
 end FormalVibeficationSpec

@@ -11,13 +11,18 @@
   is Recursive Self Improvement (RSI). Discussion of Carbonado as a
   possible 0006 was never an assignment. Number 0007 is Continuous
   Integration (CI). Number 0008 is Formal Vibefication. Number 0009 is
-  Unlicense. The word catalog is owned by CATE (specification 0005).
+  Public Domain Open Source Software (PDOSS). Unlicense remains the
+  license. The word catalog is owned by CATE (specification 0005).
   The file 0009_VOCABULARY.md MUST NOT exist. Number 0010 is Surmount
   Systems. Number 0011 is Surmount Systems Tech Tree. Number 0012 is
   Majestic Memex (`0012_Majestic_Memex.md`). Number 0013 is Lean
   Machine (`0013_Lean_Machine.md`).
   fargo and SSSP have no assigned numbers. Existing
   `ref/` pins remain; new pins are added when present.
+
+  Residual honesty: do not assert that a named product never started.
+  Scan numbered specifications plus extraHonestyMarkdownFileNames
+  (the scan lives in SpecCheck so this module does not import SpecCheck).
 -/
 
 namespace SpecRegistry
@@ -50,7 +55,9 @@ def memexFileName : String := "0012_Majestic_Memex.md"
 def leanMachineSpecNumber : Nat := 13
 def leanMachineFileName : String := "0013_Lean_Machine.md"
 def unlicenseSpecNumber : Nat := 9
-def unlicenseFileName : String := "0009_Unlicense.md"
+def pdossSpecNumber : Nat := 9
+def unlicenseFileName : String := "0009_PDOSS.md"
+def pdossFileName : String := "0009_PDOSS.md"
 
 def publishedEntries : List RegistryEntry :=
   [ { number := 0
@@ -90,8 +97,8 @@ def publishedEntries : List RegistryEntry :=
         productName := "Formal Vibefication"
         published := true }
     , { number := 9
-        fileName := "0009_Unlicense.md"
-        productName := "Unlicense"
+        fileName := "0009_PDOSS.md"
+        productName := "PDOSS"
         published := true }
     , { number := 10
         fileName := "0010_Surmount_Systems.md"
@@ -199,7 +206,15 @@ theorem vocabulary_is_not_0009 : vocabularySpecNumber ≠ 9 := by decide
 theorem unlicense_is_0009 : unlicenseSpecNumber = 9 := rfl
 
 theorem unlicense_file :
-    unlicenseFileName = "0009_Unlicense.md" :=
+    unlicenseFileName = "0009_PDOSS.md" :=
+  rfl
+
+theorem pdoss_is_0009 : pdossSpecNumber = 9 := rfl
+
+theorem pdoss_file : pdossFileName = "0009_PDOSS.md" := rfl
+
+theorem pdoss_equals_unlicense_number :
+    pdossSpecNumber = unlicenseSpecNumber :=
   rfl
 
 theorem unlicense_is_not_0008 : unlicenseSpecNumber ≠ 8 := by decide
@@ -343,7 +358,7 @@ theorem published_filenames :
       ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
         "0003_beastdb.md", "0004_SSSSS.md", "0005_CATE.md",
         "0006_RSI.md", "0007_CI.md", "0008_Formal_Vibefication.md",
-        "0009_Unlicense.md", "0010_Surmount_Systems.md",
+        "0009_PDOSS.md", "0010_Surmount_Systems.md",
         "0011_Surmount_Systems_Tech_Tree.md",
         "0012_Majestic_Memex.md",
         "0013_Lean_Machine.md"] :=
@@ -442,10 +457,10 @@ theorem formal_vibefication_entry_filename :
       ["0008_Formal_Vibefication.md"] :=
   rfl
 
-theorem number_nine_product_is_unlicense :
+theorem number_nine_product_is_pdoss :
     (allEntries.filter (fun e => e.number == 9)).map
         (fun e => e.productName) =
-      ["Unlicense"] :=
+      ["PDOSS"] :=
   rfl
 
 theorem vocabulary_catalog_file_is_cate :
@@ -500,7 +515,7 @@ theorem unlicense_entry_published :
 
 theorem unlicense_entry_filename :
     (allEntries.filter (fun e => e.number == 9)).map (fun e => e.fileName) =
-      ["0009_Unlicense.md"] :=
+      ["0009_PDOSS.md"] :=
   rfl
 
 /-!
@@ -518,6 +533,19 @@ def ProductProgress.honestWhenWorkExists : ProductProgress → Bool
   | .ongoingNotReadyForUse => true
   | .claimsNeverStarted => false
   | .claimsReadyForUse => false
+
+/--
+  Surmount authored markdown besides root numbered specifications.
+  Residual honesty for never-real product claims scans this list
+  plus every root numbered specification. Do not shorten this list
+  relative to WordStats extra markdown.
+-/
+def extraHonestyMarkdownFileNames : List String :=
+  ["AGENTS.md", "README.md", "RESIDUAL.md", "VOCABULARY.md"]
+
+theorem extra_honesty_markdown_files_are_four :
+    extraHonestyMarkdownFileNames.length = 4 :=
+  rfl
 
 def beastdbProgress : ProductProgress := .ongoingNotReadyForUse
 

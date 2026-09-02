@@ -59,7 +59,7 @@ def runCases : List Case :=
     expectTrue "vocabulary ownership equals CATE"
       (vocabularySpecNumber == specNumber),
     expectTrue "CATE owns the word catalog" ownsVocabularyCatalog,
-    expectFalse "number 0009 is Unlicense, not withdrawn" numberNineWithdrawn,
+    expectFalse "number 0009 is PDOSS, not withdrawn" numberNineWithdrawn,
     expectNonEmpty "withdrawn 0009_VOCABULARY.md basename fails"
       (findingsForBasenames (publishedBasenames ++ ["0009_VOCABULARY.md"])),
     expectNonEmpty "withdrawn 0009_VOCABULARY token fails"
@@ -177,7 +177,17 @@ def runCases : List Case :=
         ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
           "0003_beastdb.md", "0004_SSSSS.md", "0006_RSI.md"]),
     expectEmpty "all published basenames including 0007 pass"
-      (findingsForBasenames publishedBasenames)
+      (findingsForBasenames publishedBasenames),
+    expectTrue "CATE meaning model requires the science cycle"
+      requiresScienceCycle,
+    expectFalse "tests without a model do not conform"
+      testsOnlyConforms,
+    expectFalse "model and proofs without corollary experiments do not conform"
+      modelAndProofsWithoutExperimentsConforms,
+    expectTrue "complete science cycle conforms"
+      completeScienceCycleConforms,
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

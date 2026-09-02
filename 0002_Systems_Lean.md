@@ -186,7 +186,7 @@ No prior public release of this specification exists.
 
 ## 8. Copyright
 
-This work is released into the public domain under the Unlicense. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository. Novel Systems Lean source is likewise Unlicensed. Upstream components retain their original licenses.
+This work is released into the public domain under the Unlicense as specified in `0009_PDOSS.md`. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository. Novel Systems Lean source is likewise Unlicensed. Upstream components retain their original licenses.
 
 ## 9. Acknowledgments
 

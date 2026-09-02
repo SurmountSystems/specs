@@ -7,7 +7,10 @@
   It is product implementation. It is not the specification.
   It is not a proof module. It is not Majestic Memex.
 
-  Number 0009 is Unlicense. The word catalog is CATE, specification 0005.
+  Number 0009 is Public Domain Open Source Software (PDOSS).
+  Unlicense remains the license. The word catalog is CATE,
+  specification 0005. The Unlicense numbered markdown file
+  for 0009 is withdrawn.
 -/
 
 import TechTreeSpec
@@ -27,7 +30,7 @@ def fileExtension : String := TechTreeSpec.fileExtension
 
 def unpublishedBasename (name : String) : Bool :=
   name == "0009_VOCABULARY.md" || name == "0005_fargo.md" ||
-    name == "0011_Unlicense.md"
+    name == "0011_Unlicense.md" || name == "0009_Unlicense.md"
 
 /-- Default file name. The writer refuses this name in the repository root. -/
 def defaultOutputFileName : String := "tech_tree.sstt"

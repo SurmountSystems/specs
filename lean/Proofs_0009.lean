@@ -1,19 +1,19 @@
 /-
-  PROOFS for the sibling line encoding of `0009_Unlicense.md`.
+  PROOFS for the sibling line encoding of `0009_PDOSS.md`.
 
-  This module is not the specification. It imports «0009_Unlicense» and
-  establishes identities of that encoding. Meaning proofs of Unlicense
+  This module is not the specification. It imports «0009_PDOSS» and
+  establishes identities of that encoding. Meaning proofs of PDOSS
   live in UnlicenseProofs.lean. Numbered markdown remains the contract
-  humans read.
+  humans read. Unlicense remains the license.
 -/
 
-import «0009_Unlicense»
+import «0009_PDOSS»
 import UnlicenseSpec
 import SpecRegistry
 
 namespace Proofs_0009
 
-open «0009_Unlicense»
+open «0009_PDOSS»
 
 theorem encoding_is_not_proof :
     markedAsSpecEncoding = true ∧ markedAsProof = false :=
@@ -21,9 +21,9 @@ theorem encoding_is_not_proof :
 
 theorem spec_number : specNumber = 9 := rfl
 
-theorem spec_file : specFileName = "0009_Unlicense.md" := rfl
+theorem spec_file : specFileName = "0009_PDOSS.md" := rfl
 
-theorem sibling_name : siblingEncodingFileName = "0009_Unlicense.lean" := rfl
+theorem sibling_name : siblingEncodingFileName = "0009_PDOSS.lean" := rfl
 
 theorem proof_module_name : proofModuleName = "Proofs_0009" := rfl
 
@@ -50,7 +50,12 @@ theorem mash_hidden_split_is_false :
 
 theorem mash_false : markedAsProof = false := rfl
 
-theorem encoded_line_count : encodedLines.size = 300 := by
+theorem encoded_line_count : encodedLines.size = 328 := by
+  native_decide
+
+theorem contains_pdoss :
+    encodedLines.any (fun l =>
+      (l.text.splitOn "PDOSS").length != 1) = true := by
   native_decide
 
 theorem contains_unlicense :

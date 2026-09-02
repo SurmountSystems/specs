@@ -251,4 +251,22 @@ theorem product_claiming_mash_not_systems_lean_does_not_conform :
 theorem product_claiming_canonical_integration_conforms :
     productCanonicalIntegration.conforms = true := by decide
 
+theorem requires_science_cycle : requiresScienceCycle = true :=
+  rfl
+
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem tests_without_model_does_not_conform :
+    testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
+  rfl
+
 end Sssss

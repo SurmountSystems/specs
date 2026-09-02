@@ -398,5 +398,21 @@ theorem vocab_rsi_is_six_cate_is_five :
     SpecRegistry.rsiSpecNumber = 6 ∧ SpecRegistry.cateSpecNumber = 5 :=
   And.intro Vocabulary.rsi_spec_number_is_six Vocabulary.cate_spec_number_is_five
 
+theorem requires_science_cycle : requiresScienceCycle = true :=
+  rfl
+
+theorem tests_only_does_not_conform : testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
+  rfl
 
 end Rsi

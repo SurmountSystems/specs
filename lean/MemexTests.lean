@@ -119,7 +119,17 @@ def runCases : List Case :=
     expectTrue "sibling line encodings are required"
       siblingLineEncodingsRequired,
     expectTrue "sibling proofs are separate modules"
-      siblingProofsAreSeparateModules
+      siblingProofsAreSeparateModules,
+    expectTrue "this meaning model requires the science cycle"
+      requiresScienceCycle,
+    expectFalse "tests without a model do not conform"
+      testsOnlyEffortConforms,
+    expectFalse "model and proofs without corollary experiments do not conform"
+      modelAndProofsWithoutExperimentsEffortConforms,
+    expectTrue "complete science cycle conforms"
+      completeScienceEffortConforms,
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

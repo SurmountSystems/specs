@@ -257,7 +257,17 @@ def runCases : List Case :=
         ["0000_spec.md", "0001_DOGE.md", "0002_Systems_Lean.md",
           "0003_beastdb.md", "0004_SSSSS.md", "0005_fargo.md"]),
     expectTrue "registry numbers are unique" (!hasDupNumbers),
-    expectTrue "registry file names are unique" (!hasDupFilenames)
+    expectTrue "registry file names are unique" (!hasDupFilenames),
+    expectTrue "RSI meaning model requires the science cycle"
+      requiresScienceCycle,
+    expectFalse "tests without a model do not conform"
+      testsOnlyConforms,
+    expectFalse "model and proofs without corollary experiments do not conform"
+      modelAndProofsWithoutExperimentsConforms,
+    expectTrue "complete science cycle conforms"
+      completeScienceCycleConforms,
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

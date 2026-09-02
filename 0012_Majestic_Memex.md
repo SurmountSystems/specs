@@ -23,7 +23,7 @@ This document does not specify the Surmount Systems Tech Tree binary format. Tec
 5. Recursive Self Improvement (RSI) is specified in `0006_RSI.md`. RSI is specification 0006. RSI is not this specification.
 6. Continuous Integration and stack consistency is specified in `0007_CI.md`. That document is specification 0007. That document is not this specification.
 7. Formal Vibefication is specified in `0008_Formal_Vibefication.md`. That document is specification 0008. That document is not this specification.
-8. Unlicense is specified in `0009_Unlicense.md`. That document is specification 0009. That document is not this specification.
+8. Public Domain Open Source Software is specified in `0009_PDOSS.md`. That document is specification 0009. That document is not this specification. Unlicense remains the license.
 9. Surmount Systems stack composition is specified in `0010_Surmount_Systems.md`. That document is specification 0010. That document is not this specification.
 10. Surmount Systems Tech Tree is specified in `0011_Surmount_Systems_Tech_Tree.md`. That document is specification 0011. That document is not this specification.
 11. First publication of this specification as a numbered document is version 1.0.0 dated 20260827.
@@ -52,17 +52,17 @@ Canonical pages:
 3. Recursive Self Improvement remains [0006_RSI.md](0006_RSI.md).
 4. Continuous Integration and stack consistency remains [0007_CI.md](0007_CI.md).
 5. Formal Vibefication remains [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md).
-6. Unlicense remains [0009_Unlicense.md](0009_Unlicense.md).
+6. Public Domain Open Source Software remains [0009_PDOSS.md](0009_PDOSS.md). Unlicense remains the license.
 7. Surmount Systems stack composition remains [0010_Surmount_Systems.md](0010_Surmount_Systems.md).
 8. Surmount Systems Tech Tree remains [0011_Surmount_Systems_Tech_Tree.md](0011_Surmount_Systems_Tech_Tree.md). That document specifies `.sstt` files. This document does not restate that format.
 9. Systems Lean and Slake remain [0002_Systems_Lean.md](0002_Systems_Lean.md).
 10. beastdb remains [0003_beastdb.md](0003_beastdb.md).
 11. SSSSS remains [0004_SSSSS.md](0004_SSSSS.md).
 12. fargo has no numbered specification in this repository and no assigned number. This document does not invent a number for fargo.
-13. The Carbonado Network Protocol has no numbered specification in this repository and no assigned number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`). Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is Formal Vibefication (`0008_Formal_Vibefication.md`). Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). Number 0012 is this specification. This document does not steal those numbers for fargo or for Carbonado.
+13. The Carbonado Network Protocol has no numbered specification in this repository and no assigned number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`). Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is Formal Vibefication (`0008_Formal_Vibefication.md`). Number 0009 is Public Domain Open Source Software (PDOSS) (`0009_PDOSS.md`). Unlicense remains the license. The word catalog lives in CATE (`0005_CATE.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). Number 0012 is this specification. This document does not steal those numbers for fargo or for Carbonado.
 14. SSSP is named in residual. It is not specified here.
 15. Lean Machine is specified in `0013_Lean_Machine.md`. That document is specification 0013. That document is not this specification.
-16. The word catalog remains [0005_CATE.md](0005_CATE.md). CATE is specification 0005. Number 0009 is Unlicense (`0009_Unlicense.md`). A numbered Vocabulary file MUST NOT exist. Mentions of Vocabulary as a published specification 0009 do not conform.
+16. The word catalog remains [0005_CATE.md](0005_CATE.md). CATE is specification 0005. Number 0009 is Public Domain Open Source Software (PDOSS) (`0009_PDOSS.md`). Unlicense remains the license. A numbered Vocabulary file MUST NOT exist. Mentions of Vocabulary as a published specification 0009 do not conform.
 
 ## 2. Normative references
 
@@ -77,7 +77,7 @@ This specifications repository's `ref/` holds 0000 Clause 12 citation pins of th
 3. Semantic Versioning 2.0.0 (SemVer). Local path: `ref/semver`.
 4. Surmount specification `0005_CATE.md` (Concise American Technical English).
 5. Surmount specification `0008_Formal_Vibefication.md` (Formal Vibefication: Lean spec encodings separate from proofs).
-6. Surmount specification `0009_Unlicense.md` (Unlicense of this specifications repository).
+6. Surmount specification `0009_PDOSS.md` (Public Domain Open Source Software of this specifications repository). Unlicense remains the license.
 7. Surmount specification `0011_Surmount_Systems_Tech_Tree.md` (Tech Tree `.sstt` format, which this document does not restate).
 
 ### 2.2 Prior art (informative)
@@ -184,11 +184,11 @@ The crate at `~/majestic` is version 0.1. It is still being built. It is not fin
 9. SSSP is unspecified. SSSP has no numbered specification file and no assigned number.
 10. The Carbonado Network Protocol is unspecified. Carbonado has no numbered specification file and no assigned number.
 11. Lean Machine is specified in `0013_Lean_Machine.md`. Legal Lean and Holy Lean remain named components without separate numbered specifications.
-12. Number 0009 is Unlicense (`0009_Unlicense.md`). The word catalog lives in CATE (`0005_CATE.md`). A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present.
+12. Number 0009 is Public Domain Open Source Software (PDOSS) (`0009_PDOSS.md`). Unlicense remains the license. The word catalog lives in CATE (`0005_CATE.md`). A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present.
 
 ### 4.7 License of this specification versus the crate
 
-1. This numbered specification and the Lean in this specifications repository are released under the Unlicense of this repository (`UNLICENSE.md`, `0009_Unlicense.md`).
+1. This numbered specification and the Lean in this specifications repository are released under the Unlicense of this repository (`UNLICENSE.md`, as specified in `0009_PDOSS.md`).
 2. The Unlicense of this specifications repository SHALL NOT be read as a silent dedication of the crate tree at `~/majestic`.
 3. The crate README tree includes `UNLICENSE.md`. That file is the crate's own dedication when present. It is not this repository dedicating that tree by citation.
 4. Essays by Keagan McLelland (Proof of Keags) are not Unlicense grants of this repository.
@@ -230,9 +230,9 @@ This section is normative for residual honesty of this document. Silence about a
 
 1. fargo is not specified. fargo has no assigned specification number. This document does not invent a number for fargo. This document does not steal 0005, 0006, 0007, 0008, 0009, 0010, 0011, or 0012 for fargo.
 2. The Surmount Systems System Prompt (SSSP) is not specified. It has no numbered specification file in this repository. It has no assigned specification number. This document MUST NOT be read as creating SSSP.
-3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is Formal Vibefication (`0008_Formal_Vibefication.md`). Number 0009 is Unlicense (`0009_Unlicense.md`). Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). Number 0012 is this specification. This document does not create a file for Carbonado.
+3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is Formal Vibefication (`0008_Formal_Vibefication.md`). Number 0009 is Public Domain Open Source Software (PDOSS) (`0009_PDOSS.md`). Unlicense remains the license. Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). Number 0012 is this specification. This document does not create a file for Carbonado.
 4. Lean Machine is specified in `0013_Lean_Machine.md`. That document is specification 0013. Legal Lean and Holy Lean remain named components without separate numbered specifications.
-5. Number 0009 was briefly Vocabulary, then withdrawn, and is now Unlicense by operator order. The word catalog lives in CATE (`0005_CATE.md`). This document does not assign 0009 to fargo or to Carbonado. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present.
+5. Number 0009 was briefly Vocabulary, then Unlicense, and is now Public Domain Open Source Software (PDOSS) by operator order. Unlicense remains the license. The word catalog lives in CATE (`0005_CATE.md`). This document does not assign 0009 to fargo or to Carbonado. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present.
 
 ### 6.2 Crate still being built
 
@@ -264,7 +264,7 @@ This section is normative for residual honesty of this document. Silence about a
 
 ### 6.6 Earlier numbered specifications name this document
 
-Numbered specifications `0005_CATE.md`, `0008_Formal_Vibefication.md`, `0009_Unlicense.md`, `0010_Surmount_Systems.md`, and `0011_Surmount_Systems_Tech_Tree.md` name number 0012 as Majestic `Memex` (`0012_Majestic_Memex.md`) and as specified. The command at `~/majestic` is still a proof of concept. This 1.0.0 created `0012_Majestic_Memex.md` as a published registry file.
+Numbered specifications `0005_CATE.md`, `0008_Formal_Vibefication.md`, `0009_PDOSS.md`, `0010_Surmount_Systems.md`, and `0011_Surmount_Systems_Tech_Tree.md` name number 0012 as Majestic `Memex` (`0012_Majestic_Memex.md`) and as specified. The command at `~/majestic` is still a proof of concept. This 1.0.0 created `0012_Majestic_Memex.md` as a published registry file.
 
 ## 7. Changelog
 
@@ -276,13 +276,13 @@ Current version line is 0.1.0 by operator order. Changelog history records that 
 
 First publication of Majestic `Memex` as numbered specification 0012 with file name `0012_Majestic_Memex.md`. Records that this document is the human contract for crate `majestic`, command `memex`, on disk magic `MAJESTIC` plus byte `0x01`, extension `.majestic`, and data under `$HOME/memex`. Records that this format is not Tech Tree `.sstt` (specification 0011, magic `SSTECHTREE01`). Records that `memex` MAY later load a `.sstt` file. Records that the crate is a version 0.1 proof of concept still being built and is not ready for use. Records Formal Vibefication with canonical Proof of Keags URLs and back linking. Records that the Unlicense of this specifications repository does not silently dedicate `~/majestic`. Requires residual honesty that beastdb, SSSSS, Slake, and Continuous Integration are ongoing and not ready for use.
 
-This 1.0.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Formal Vibefication is specification 0008; Unlicense is specification 0009; the word catalog is owned by CATE as specification 0005; a numbered Vocabulary file MUST NOT exist; Surmount Systems is specification 0010; Surmount Systems Tech Tree is specification 0011; this specification is number 0012; fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Lean Machine is specified as `0013_Lean_Machine.md`; every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a finished `memex` product exists.
+This 1.0.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Formal Vibefication is specification 0008; Public Domain Open Source Software (PDOSS) is specification 0009; Unlicense remains the license; the word catalog is owned by CATE as specification 0005; a numbered Vocabulary file MUST NOT exist; Surmount Systems is specification 0010; Surmount Systems Tech Tree is specification 0011; this specification is number 0012; fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Lean Machine is specified as `0013_Lean_Machine.md`; every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a finished `memex` product exists.
 
 No prior public release of this specification exists.
 
 ## 8. Copyright
 
-This work is released into the public domain under the Unlicense. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository. This grant does not by itself dedicate the crate tree at `~/majestic`.
+This work is released into the public domain under the Unlicense as specified in `0009_PDOSS.md`. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository. This grant does not by itself dedicate the crate tree at `~/majestic`.
 
 ## 9. Acknowledgments
 

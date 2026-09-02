@@ -1,5 +1,6 @@
 /-
-  PROOFS for numbered specification 0009 Unlicense.
+  PROOFS for numbered specification 0009 Public Domain Open Source
+  Software (PDOSS). Unlicense remains the license.
 
   This module is not the specification. It imports UnlicenseSpec
   and establishes the propositions that module states.
@@ -15,11 +16,13 @@ open UnlicenseSpec
 
 theorem spec_number_is_9 : specNumber = 9 := rfl
 
-theorem spec_file_is_0009_unlicense :
-    specFileName = "0009_Unlicense.md" :=
+theorem spec_file_is_0009_pdoss :
+    specFileName = "0009_PDOSS.md" :=
   rfl
 
-theorem product_name_is_unlicense : productName = "Unlicense" := rfl
+theorem product_name_is_pdoss : productName = "PDOSS" := rfl
+
+theorem pdoss_spec_number_is_9 : pdossSpecNumber = 9 := rfl
 
 theorem spec_is_not_0008 : specNumber ≠ 8 := by decide
 
@@ -104,9 +107,43 @@ theorem lean4_skills_pack_is_mit :
     lean4SkillsPack = LicenseOfWork.mitGrant :=
   rfl
 
+theorem btc_verified_pin_is_apache_two :
+    btcVerifiedPin = LicenseOfWork.apacheTwo :=
+  rfl
+
 theorem keagan_essays_are_not_this_repo_grant :
     keaganEssays = LicenseOfWork.notThisRepoGrant :=
   rfl
+
+theorem unlicense_meets_public_domain_dedication_test :
+    meetsPublicDomainDedicationTest .unlicense = true :=
+  rfl
+
+theorem unlicense_meets_pdoss : meetsPdoss .unlicense = true :=
+  rfl
+
+theorem mit_does_not_meet_public_domain_dedication_test :
+    meetsPublicDomainDedicationTest .mitGrant = false :=
+  rfl
+
+theorem mit_does_not_meet_pdoss : meetsPdoss .mitGrant = false :=
+  rfl
+
+theorem apache_two_does_not_meet_public_domain_dedication_test :
+    meetsPublicDomainDedicationTest .apacheTwo = false :=
+  rfl
+
+theorem apache_two_does_not_meet_pdoss : meetsPdoss .apacheTwo = false :=
+  rfl
+
+theorem cc0_does_not_meet_pdoss : meetsPdoss .cc0 = false :=
+  rfl
+
+theorem mash_mit_meets_pdoss (h : mitMeetsPdoss) : False :=
+  nomatch h
+
+theorem mash_apache_meets_pdoss (h : apacheMeetsPdoss) : False :=
+  nomatch h
 
 theorem unlicense_does_not_apply_to_keagan :
     unlicenseOfThisRepoAppliesToKeaganEssays = false :=
@@ -159,6 +196,9 @@ theorem products_not_claimed_never_started :
 theorem number_nine_assigned : numberNineAssigned = true :=
   rfl
 
+theorem number_eleven_published : numberElevenPublished = true :=
+  rfl
+
 theorem number_eleven_published_in_registry :
     (SpecRegistry.allEntries.any (fun e => e.number == 11)) = true :=
   SpecRegistry.number_11_published
@@ -169,6 +209,36 @@ theorem sibling_line_encodings_required :
 
 theorem sibling_proofs_are_separate_modules :
     siblingProofsAreSeparateModules = true :=
+  rfl
+
+theorem requires_science_cycle : requiresScienceCycle = true :=
+  rfl
+
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem tests_only_effort_does_not_conform :
+    testsOnlyEffortConforms = false :=
+  rfl
+
+theorem tests_without_model_does_not_conform :
+    testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem model_and_proofs_without_experiments_effort_does_not_conform :
+    modelAndProofsWithoutExperimentsEffortConforms = false :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
+  rfl
+
+theorem complete_science_effort_conforms :
+    completeScienceEffortConforms = true :=
   rfl
 
 end UnlicenseProofs

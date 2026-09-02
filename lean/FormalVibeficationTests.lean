@@ -126,7 +126,25 @@ def runCases : List Case :=
     expectTrue "sibling proofs are separate modules"
       siblingProofsAreSeparateModules,
     expectFalse "mashed sibling encodings do not conform"
-      mashedSiblingEncodingAndProofsConform
+      mashedSiblingEncodingAndProofsConform,
+    expectFalse "tests without a model do not conform"
+      (conformingScience testsWithoutModelFixture),
+    expectTrue "tests without a model fixture has tests"
+      testsWithoutModelFixture.hasTests,
+    expectFalse "tests without a model fixture has no model"
+      testsWithoutModelFixture.hasModel,
+    expectFalse "model and proofs without corollary experiments do not conform"
+      (conformingScience modelAndProofsWithoutExperimentsFixture),
+    expectTrue "model and proofs without experiments fixture has a model"
+      modelAndProofsWithoutExperimentsFixture.hasModel,
+    expectTrue "model and proofs without experiments fixture has a proof"
+      modelAndProofsWithoutExperimentsFixture.hasProof,
+    expectFalse "model and proofs without experiments fixture has no corollary experiments"
+      modelAndProofsWithoutExperimentsFixture.hasCorollaryExperiments,
+    expectTrue "complete science cycle conforms"
+      (conformingScience completeScienceFixture),
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

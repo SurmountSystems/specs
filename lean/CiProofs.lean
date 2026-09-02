@@ -170,5 +170,21 @@ theorem no_invented_ci_product :
     conformingCiProductClaimed = false :=
   rfl
 
+theorem requires_science_cycle : requiresScienceCycle = true :=
+  rfl
+
+theorem tests_only_does_not_conform : testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
+  rfl
 
 end Ci

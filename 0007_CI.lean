@@ -299,7 +299,7 @@ def encodedLines : Array MdLine := #[
   { number := 265, text := "" },
   { number := 266, text := "## 8. Copyright" },
   { number := 267, text := "" },
-  { number := 268, text := "This work is released into the public domain under the Unlicense. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository." },
+  { number := 268, text := "This work is released into the public domain under the Unlicense as specified in `0009_PDOSS.md`. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository." },
   { number := 269, text := "" },
   { number := 270, text := "## 9. Acknowledgments" },
   { number := 271, text := "" },

@@ -18,6 +18,11 @@
     3 bit, or time series.
   10. Numbered specifications that name Keagan or proofofkeags MUST also
     contain proofofkeags.com (back linking).
+  11. Residual honesty floor: do not assert that a named product never
+    started by writing that a conforming product does not exist.
+    The honesty BAN that says authors MUST NOT write that a product
+    never started or does not exist is allowed. A numbered Vocabulary
+    file MUST NOT exist is allowed. Path link checks are allowed.
 
   Trailing whitespace and tab indent on project text that is not a specification are
   enforced by pure Nix (nix/whitespace.nix / checks.whitespace), not by Lean.
@@ -30,6 +35,7 @@
   Implementation: line based with fence tracking (not a full markdown parser).
   Char lists and Nat indices keep Lean 4.30 APIs simple.
   Leftover unstack phrases are `Cate.leftoverUnstackPhrases` (one list).
+  Never-real product phrases are `neverRealProductPhrases` (one list).
 -/
 
 import Cate
@@ -467,6 +473,42 @@ def checkKeaganBacklink (file : String) (basename : String) (content : String) :
         "numbered specification that names Keagan or proofofkeags must also contain proofofkeags.com (back linking)"
     }]
   else []
+
+/--
+  Residual honesty floor. Authors MUST NOT assert that a named product
+  never started. These phrases are the never-real assertions, not the
+  honesty BAN that forbids writing that a product never started or
+  does not exist. A numbered Vocabulary file MUST NOT exist is not
+  this floor. Path link checks that a target does not exist are not
+  this floor. Encoding is not a ready product; authors still MUST NOT
+  claim a conforming implementation exists.
+-/
+def neverRealProductPhrases : List String :=
+  ["A conforming Lean Machine does not exist",
+    "A conforming SSSSS does not exist",
+    "A conforming beastdb does not exist",
+    "A conforming Slake does not exist",
+    "A conforming Continuous Integration does not exist",
+    "a conforming Lean Machine does not yet exist",
+    "None of that means a finished product exists"]
+
+def checkNeverRealProductClaim (file : String) (content : String) : List Diag :=
+  Id.run do
+    let mut out : List Diag := []
+    for pair in linesOutsideFences content do
+      let (ln, line) := pair
+      let cleaned := stripUrls (stripInlineCode line)
+      let hay := asciiUpper cleaned
+      for phrase in neverRealProductPhrases do
+        if containsSub hay (asciiUpper phrase) then
+          out := out ++ [{
+            file := file
+            line := some ln
+            message :=
+              "residual must not say the product never started " ++
+                s!"(do not assert that a named product does not exist): {phrase}"
+          }]
+    return out
 
 /-- True if the line ends with space or tab. -/
 def hasTrailingWs (line : String) : Bool :=

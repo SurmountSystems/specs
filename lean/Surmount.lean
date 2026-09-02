@@ -27,8 +27,9 @@
 
   Surmount Systems is numbered specification 0010
   (`0010_Surmount_Systems.md`). Formal Vibefication is numbered
-  specification 0008 (`0008_Formal_Vibefication.md`). Unlicense is
-  numbered specification 0009 (`0009_Unlicense.md`). The word catalog
+  specification 0008 (`0008_Formal_Vibefication.md`). Public Domain
+  Open Source Software (PDOSS) is numbered specification 0009
+  (`0009_PDOSS.md`). Unlicense remains the license. The word catalog
   is owned by CATE as specification 0005 (`0005_CATE.md`). The file
   0009_VOCABULARY.md MUST NOT exist. Number 0011 is Surmount Systems
   Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean
@@ -65,7 +66,7 @@ import MemexProofs
 import LeanMachineSpec
 import LeanMachineProofs
 import «0010_Surmount_Systems»
-import «0009_Unlicense»
+import «0009_PDOSS»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
 import «0013_Lean_Machine»
@@ -83,8 +84,10 @@ def specFileName : String := "0010_Surmount_Systems.md"
 /-- Identity of numbered specification 0008. -/
 def formalVibeficationSpecNumber : Nat := 8
 
-/-- Identity of numbered specification 0009. -/
+/-- Identity of numbered specification 0009. Unlicense remains the license. -/
 def unlicenseSpecNumber : Nat := 9
+
+def pdossSpecNumber : Nat := 9
 
 /-- Identity of numbered specification 0011. -/
 def techTreeSpecNumber : Nat := 11
@@ -95,7 +98,7 @@ def memexSpecNumber : Nat := 12
 /-- Identity of numbered specification 0013. -/
 def leanMachineSpecNumber : Nat := 13
 
-/-- Catalog ownership: CATE, specification 0005. Number 0009 is Unlicense. -/
+/-- Catalog ownership: CATE, specification 0005. Number 0009 is PDOSS. -/
 def vocabularySpecNumber : Nat := 5
 
 theorem surmount_is_0010 : surmountSpecNumber = 10 := rfl
@@ -121,6 +124,12 @@ theorem formal_vibefication_is_0008 : formalVibeficationSpecNumber = 8 :=
   rfl
 
 theorem unlicense_is_0009 : unlicenseSpecNumber = 9 := rfl
+
+theorem pdoss_is_0009 : pdossSpecNumber = 9 := rfl
+
+theorem pdoss_equals_unlicense_number :
+    pdossSpecNumber = unlicenseSpecNumber :=
+  rfl
 
 theorem unlicense_agrees_registry :
     unlicenseSpecNumber = SpecRegistry.unlicenseSpecNumber :=
@@ -586,9 +595,12 @@ def stackIntegrates : Bool :=
     SpecProofs.encodingsNotMashed &&
     «0010_Surmount_Systems».specFileName == specFileName &&
     «0010_Surmount_Systems».siblingEncodingFileName == "0010_Surmount_Systems.lean" &&
-    «0009_Unlicense».specFileName == "0009_Unlicense.md" &&
-    «0009_Unlicense».siblingEncodingFileName == "0009_Unlicense.lean" &&
-    !«0009_Unlicense».markedAsProof &&
+    «0009_PDOSS».specFileName == "0009_PDOSS.md" &&
+    «0009_PDOSS».siblingEncodingFileName == "0009_PDOSS.lean" &&
+    !«0009_PDOSS».markedAsProof &&
+    UnlicenseSpec.meetsPdoss .unlicense &&
+    !UnlicenseSpec.meetsPdoss .mitGrant &&
+    !UnlicenseSpec.meetsPdoss .apacheTwo &&
     «0011_Surmount_Systems_Tech_Tree».specFileName ==
       "0011_Surmount_Systems_Tech_Tree.md" &&
     «0011_Surmount_Systems_Tech_Tree».siblingEncodingFileName ==

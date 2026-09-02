@@ -26,6 +26,7 @@
 -/
 
 import SpecRegistry
+import FormalVibeficationSpec
 
 namespace MemexSpec
 
@@ -159,5 +160,36 @@ def formalVibeficationUrl : String :=
 def siblingLineEncodingsRequired : Bool := true
 
 def siblingProofsAreSeparateModules : Bool := true
+
+/-- This meaning model requires the Formal Vibefication science cycle. -/
+def requiresScienceCycle : Bool := true
+
+/-- Effort that has tests and no model. Reuses the 0008 fixture. -/
+def testsOnlyEffortConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.testsWithoutModelFixture
+
+/-- Tests are necessary and are not sufficient. Reuses the 0008 Bool. -/
+def testsAloneAreSufficient : Bool :=
+  FormalVibeficationSpec.testsAloneAreSufficient
+
+/-- Model and proofs without corollary experiments. Reuses the 0008 fixture. -/
+def modelAndProofsWithoutExperimentsEffortConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.modelAndProofsWithoutExperimentsFixture
+
+/-- Complete science cycle. Reuses the 0008 fixture. -/
+def completeScienceEffortConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.completeScienceFixture
+
+def testsWithoutModelDoesNotConform : Prop :=
+  FormalVibeficationSpec.testsWithoutModelDoesNotConform
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  FormalVibeficationSpec.modelAndProofsWithoutExperimentsDoesNotConform
+
+def completeScienceConforms : Prop :=
+  FormalVibeficationSpec.completeScienceConforms
 
 end MemexSpec

@@ -86,6 +86,7 @@ theorem legal_lean_not_finished : legalLeanFinished = false := rfl
 theorem holy_lean_not_implemented : holyLeanImplemented = false :=
   rfl
 
+/-- Not ready for use. This is not a claim that the product never started. -/
 theorem no_conforming_product : conformingProductExists = false :=
   rfl
 
@@ -188,6 +189,35 @@ theorem sibling_line_encodings_required :
 
 theorem sibling_proofs_are_separate_modules :
     siblingProofsAreSeparateModules = true :=
+  rfl
+
+theorem requires_science_cycle : requiresScienceCycle = true :=
+  rfl
+
+theorem tests_only_does_not_conform : testsOnlyConforms = false :=
+  rfl
+
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsConforms = false :=
+  rfl
+
+theorem complete_science_conforms_here :
+    completeScienceConformsHere = true :=
+  rfl
+
+theorem tests_without_model_does_not_conform :
+    testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform_prop :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
   rfl
 
 end LeanMachineProofs

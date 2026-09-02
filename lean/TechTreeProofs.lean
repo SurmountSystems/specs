@@ -222,4 +222,34 @@ theorem chain_roundtrip :
       some ([fixtureNode0, fixtureNode5], fixtureChain) := by
   native_decide
 
+theorem requires_science_cycle : requiresScienceCycle = true :=
+  rfl
+
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem tests_only_effort_does_not_conform :
+    testsOnlyEffortConforms = false :=
+  rfl
+
+theorem tests_without_model_does_not_conform :
+    testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem model_and_proofs_without_experiments_effort_does_not_conform :
+    modelAndProofsWithoutExperimentsEffortConforms = false :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
+  rfl
+
+theorem complete_science_effort_conforms :
+    completeScienceEffortConforms = true :=
+  rfl
+
 end TechTreeProofs

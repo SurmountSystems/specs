@@ -95,6 +95,10 @@ def runCases : List Case :=
       (unpublishedBasename "0005_fargo.md"),
     expectTrue "withdrawn 0011_Unlicense remains unpublished"
       (unpublishedBasename "0011_Unlicense.md"),
+    expectTrue "withdrawn 0009_Unlicense remains unpublished"
+      (unpublishedBasename "0009_Unlicense.md"),
+    expectFalse "published 0009_PDOSS markdown is not unpublished"
+      (unpublishedBasename "0009_PDOSS.md"),
     expectEqString "extension is .sstt" Sstt.fileExtension ".sstt",
     expectTrue "empty graph roundtrip" emptyOk,
     expectTrue "chain roundtrip" chainOk,
@@ -127,12 +131,14 @@ def runCases : List Case :=
         [ ("0000_spec.md", "")
         , ("0009_VOCABULARY.md", "")
         , ("0005_fargo.md", "")
-        , ("0011_Unlicense.md", "") ]
+        , ("0011_Unlicense.md", "")
+        , ("0009_Unlicense.md", "") ]
       let (wnodes, _) := graphFromFiles withdrawnFiles
       let paths := wnodes.map (fun n => n.path)
       !paths.contains "0009_VOCABULARY.md" &&
         !paths.contains "0005_fargo.md" &&
         !paths.contains "0011_Unlicense.md" &&
+        !paths.contains "0009_Unlicense.md" &&
         paths.contains "0000_spec.md"),
     expectEqNat "published numbered spec nodes match the registry"
       (let publishedFiles : List (String × String) :=

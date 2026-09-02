@@ -33,7 +33,7 @@ theorem vocabulary_number_is_cate :
     SpecRegistry.vocabularySpecNumber = specNumber :=
   rfl
 
-theorem number_nine_is_unlicense :
+theorem number_nine_is_pdoss :
     SpecRegistry.unlicenseSpecNumber = 9 :=
   rfl
 
@@ -185,6 +185,23 @@ theorem cocomo_is_not_a_real_schedule :
 
 theorem no_git_mutate_unless_asked :
     gitMutateUnlessOperatorAsked = false :=
+  rfl
+
+theorem requires_science_cycle : requiresScienceCycle = true :=
+  rfl
+
+theorem tests_only_does_not_conform : testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
   rfl
 
 end Cate

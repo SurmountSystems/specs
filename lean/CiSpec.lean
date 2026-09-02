@@ -13,6 +13,7 @@
   it is not specification 0006 (RSI). fargo is not specification 0007.
 -/
 
+import FormalVibeficationSpec
 import SpecRegistry
 
 namespace Ci
@@ -194,5 +195,36 @@ def RealityCheck.honest (r : RealityCheck) : Bool :=
 def rustElevationProcessSpecifiedHere : Bool := false
 
 def conformingCiProductClaimed : Bool := false
+
+/-- This CI meaning model requires the Formal Vibefication science cycle. -/
+def requiresScienceCycle : Bool := true
+
+/-- Tests only effort for this companion. Reuses the 0008 fixture. -/
+def testsOnlyEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.testsWithoutModelFixture
+
+/-- Tests only is not conforming science. Reuses conformingScience. -/
+def testsOnlyConforms : Bool :=
+  FormalVibeficationSpec.conformingScience testsOnlyEffort
+
+def testsAloneAreSufficient : Bool :=
+  FormalVibeficationSpec.testsAloneAreSufficient
+
+def modelAndProofsWithoutExperimentsConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.modelAndProofsWithoutExperimentsFixture
+
+def completeScienceCycleConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.completeScienceFixture
+
+def testsWithoutModelDoesNotConform : Prop :=
+  testsOnlyConforms = false
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  modelAndProofsWithoutExperimentsConforms = false
+
+def completeScienceConforms : Prop :=
+  completeScienceCycleConforms = true
 
 end Ci

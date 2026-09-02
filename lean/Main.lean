@@ -31,12 +31,14 @@ def usage : String :=
   "  tabs only; no prose wrapped to a column.\n" ++
   "  American English spelling via aspell (en_US) when aspell is on PATH.\n" ++
   "  Number and file name registry: published specs match SpecRegistry;\n" ++
-  "  published 0005_CATE.md, 0006_RSI.md, 0007_CI.md, 0008_Formal_Vibefication.md, 0009_Unlicense.md, and 0010_Surmount_Systems.md MUST exist;\n" ++
-  "  stale 0005_fargo.md MUST fail; stale 0011_Unlicense.md MUST fail; withdrawn 0009_VOCABULARY.md MUST fail;\n" ++
+  "  published 0005_CATE.md, 0006_RSI.md, 0007_CI.md, 0008_Formal_Vibefication.md, 0009_PDOSS.md, and 0010_Surmount_Systems.md MUST exist;\n" ++
+  "  stale 0005_fargo.md MUST fail; stale 0011_Unlicense.md MUST fail; withdrawn 0009_VOCABULARY.md MUST fail; withdrawn 0009_Unlicense.md MUST fail;\n" ++
   "  Carbonado is not assigned; beastdb capitalization MUST be lowercase.\n" ++
   "  CATE leftover unstack phrases in numbered spec prose (0005_CATE.md);\n" ++
   "  planned file tokens in numbered specs other than 0000 require a Residual heading.\n" ++
   "  numbered specs that name Keagan or proofofkeags must also contain proofofkeags.com.\n" ++
+  "  residual must not say a named product never started.\n" ++
+  "  extra honesty markdown: AGENTS.md, README.md, RESIDUAL.md, VOCABULARY.md.\n" ++
   "\n" ++
   "With no paths, discovers numbered specifications at the root only (same naming scheme).\n" ++
   "UNLICENSE.md / LICENSE* get ASCII and whitespace only when passed explicitly\n" ++
@@ -99,6 +101,31 @@ def main (args : List String) : IO UInt32 := do
   for d in registry do
     IO.eprintln (SpecRegistry.Finding.format d)
     failCount := failCount + 1
+
+  -- Residual honesty: never-real product claims. Always scan every root
+  -- numbered specification plus extraHonestyMarkdownFileNames. Do not
+  -- shorten that extra list relative to WordStats extra markdown.
+  let numberedHonesty ← collectRootNumberedSpecs repo
+  for p in numberedHonesty do
+    let name := baseName p.toString
+    let bs ← IO.FS.readBinFile p
+    if isPureAscii bs then
+      let content := asciiToString bs
+      for d in checkNeverRealProductClaim name content do
+        IO.eprintln (Diag.format d)
+        failCount := failCount + 1
+  for name in SpecRegistry.extraHonestyMarkdownFileNames do
+    let p := repo / name
+    if !(← p.pathExists) then
+      IO.eprintln s!"{name}: honesty scan file is missing from the extra markdown list"
+      failCount := failCount + 1
+    else
+      let bs ← IO.FS.readBinFile p
+      if isPureAscii bs then
+        let content := asciiToString bs
+        for d in checkNeverRealProductClaim name content do
+          IO.eprintln (Diag.format d)
+          failCount := failCount + 1
 
   if failCount > 0 then
     IO.eprintln s!"spec_check: {failCount} issue(s) found"

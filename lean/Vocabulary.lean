@@ -21,6 +21,7 @@
 import Cate
 import SpecRegistry
 import SystemsLean
+import FormalVibeficationSpec
 
 namespace Vocabulary
 
@@ -225,5 +226,38 @@ structure SpecId (n : Nat) where
 def cateId : SpecId 5 := { fileName := "0005_CATE.md" }
 
 def rsiId : SpecId 6 := { fileName := "0006_RSI.md" }
+
+/-- Thin reuse of the Formal Vibefication science cycle for collision tags. -/
+def requiresScienceCycle : Bool := true
+
+def testsOnlyEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.testsWithoutModelFixture
+
+def testsOnlyConforms : Bool :=
+  FormalVibeficationSpec.conformingScience testsOnlyEffort
+
+def testsAloneAreSufficient : Bool :=
+  FormalVibeficationSpec.testsAloneAreSufficient
+
+def modelAndProofsWithoutExperimentsEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.modelAndProofsWithoutExperimentsFixture
+
+def modelAndProofsWithoutExperimentsConforms : Bool :=
+  FormalVibeficationSpec.conformingScience modelAndProofsWithoutExperimentsEffort
+
+def completeScienceEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.completeScienceFixture
+
+def completeScienceConformsHere : Bool :=
+  FormalVibeficationSpec.conformingScience completeScienceEffort
+
+def testsWithoutModelDoesNotConform : Prop :=
+  testsOnlyConforms = false
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  modelAndProofsWithoutExperimentsConforms = false
+
+def completeScienceConforms : Prop :=
+  completeScienceConformsHere = true
 
 end Vocabulary

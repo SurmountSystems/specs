@@ -164,4 +164,39 @@ theorem sibling_proofs_are_separate_modules :
 theorem mashed_sibling_is_nonconforming : mashedSiblingIsNonconforming :=
   rfl
 
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem tests_without_model_does_not_conform :
+    testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
+  rfl
+
+theorem tests_without_model_fixture_has_tests :
+    testsWithoutModelFixtureHasTests :=
+  rfl
+
+theorem tests_without_model_fixture_has_no_model :
+    testsWithoutModelFixtureHasNoModel :=
+  rfl
+
+theorem model_and_proofs_without_experiments_fixture_has_model :
+    modelAndProofsWithoutExperimentsFixtureHasModel :=
+  rfl
+
+theorem model_and_proofs_without_experiments_fixture_has_proof :
+    modelAndProofsWithoutExperimentsFixtureHasProof :=
+  rfl
+
+theorem model_and_proofs_without_experiments_fixture_has_no_experiments :
+    modelAndProofsWithoutExperimentsFixtureHasNoExperiments :=
+  rfl
+
 end FormalVibeficationProofs

@@ -40,7 +40,7 @@ theorem mash_hidden_split_is_false :
   rfl
 
 theorem encoded_line_count :
-    encodedLines.size = 418 := by
+    encodedLines.size = 419 := by
   native_decide
 
 theorem encoded_line_count_eq_lineCount :
@@ -61,6 +61,11 @@ def mentionsRfc2119 (l : MdLine) : Bool :=
 
 theorem contains_rfc_2119 :
     encodedLines.any mentionsRfc2119 = true := by
+  native_decide
+
+theorem contains_inconsistency_report :
+    encodedLines.any (fun l =>
+      (l.text.splitOn "inconsistency_report").length != 1) = true := by
   native_decide
 
 end Proofs_0000

@@ -6,7 +6,8 @@
   VocabularyProofs.lean. This module points the runtime checker at
   0005_CATE.md. Root VOCABULARY.md is a pointer file, not the catalog.
 
-  Number 0009 is Unlicense. The catalog is CATE. This module is not ISO 24495.
+  Number 0009 is Public Domain Open Source Software (PDOSS).
+  Unlicense remains the license. The catalog is CATE. This module is not ISO 24495.
 -/
 
 import SpecRegistry

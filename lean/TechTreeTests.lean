@@ -132,7 +132,17 @@ def runCases : List Case :=
       (findingsForBasenames publishedBasenames),
     expectNonEmpty "missing in-repo link fails"
       (findingsForLinks "0000_spec.md"
-        "see [missing](no_such_file.md).\n" existsKnown)
+        "see [missing](no_such_file.md).\n" existsKnown),
+    expectTrue "this meaning model requires the science cycle"
+      requiresScienceCycle,
+    expectFalse "tests without a model do not conform"
+      testsOnlyEffortConforms,
+    expectFalse "model and proofs without corollary experiments do not conform"
+      modelAndProofsWithoutExperimentsEffortConforms,
+    expectTrue "complete science cycle conforms"
+      completeScienceEffortConforms,
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

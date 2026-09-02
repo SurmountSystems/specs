@@ -25,6 +25,7 @@
 -/
 
 import SpecRegistry
+import FormalVibeficationSpec
 
 namespace LeanMachineSpec
 
@@ -103,7 +104,7 @@ def holyLeanImplemented : Bool := false
 
 def conformingProductExists : Bool := false
 
-/-- Unlicense of important work is specification 0009. -/
+/-- Public Domain Open Source Software (PDOSS) is specification 0009. Unlicense remains the license. -/
 def unlicenseSpecNumber : Nat := 9
 
 def inventsSecondUnlicenseSpec : Bool := false
@@ -216,5 +217,41 @@ def requiredConformanceHolds : Bool :=
 
 def formalVibeficationUrl : String :=
   "https://proofofkeags.com/research/2026-05-12-formal-vibefication.html"
+
+/-- This meaning model requires the Formal Vibefication science cycle. -/
+def requiresScienceCycle : Bool := true
+
+/-- Tests without a model. Reuses the Formal Vibefication fixture. -/
+def testsOnlyEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.testsWithoutModelFixture
+
+def testsOnlyConforms : Bool :=
+  FormalVibeficationSpec.conformingScience testsOnlyEffort
+
+def testsAloneAreSufficient : Bool :=
+  FormalVibeficationSpec.testsAloneAreSufficient
+
+/-- Model and proofs without corollary experiments. Reuses the Formal Vibefication fixture. -/
+def modelAndProofsWithoutExperimentsEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.modelAndProofsWithoutExperimentsFixture
+
+def modelAndProofsWithoutExperimentsConforms : Bool :=
+  FormalVibeficationSpec.conformingScience modelAndProofsWithoutExperimentsEffort
+
+/-- Hypothesis, model, theory, proof, tests, and corollary experiments. -/
+def completeScienceEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.completeScienceFixture
+
+def completeScienceConformsHere : Bool :=
+  FormalVibeficationSpec.conformingScience completeScienceEffort
+
+def testsWithoutModelDoesNotConform : Prop :=
+  testsOnlyConforms = false
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  modelAndProofsWithoutExperimentsConforms = false
+
+def completeScienceConforms : Prop :=
+  completeScienceConformsHere = true
 
 end LeanMachineSpec

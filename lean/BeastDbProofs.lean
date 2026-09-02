@@ -186,5 +186,22 @@ theorem no_acid_does_not_conform :
 theorem optional_multi_writer_still_conforms :
     productOptionalMultiWriter.conforms = true := by decide
 
+theorem requires_science_cycle : requiresScienceCycle = true :=
+  rfl
+
+theorem tests_alone_are_not_sufficient :
+    testsAloneAreSufficient = false :=
+  rfl
+
+theorem tests_without_model_does_not_conform :
+    testsWithoutModelDoesNotConform :=
+  rfl
+
+theorem model_and_proofs_without_experiments_does_not_conform :
+    modelAndProofsWithoutExperimentsDoesNotConform :=
+  rfl
+
+theorem complete_science_conforms : completeScienceConforms :=
+  rfl
 
 end BeastDb

@@ -177,7 +177,49 @@ def runCases : List Case :=
     expectEmpty "checkFileContent Keagan with URL and RFC"
       (checkFileContent numbered numbered
         (asciiBytes "Title.\n\nKeywords from RFC 2119.\n\nInspired by Keagan. See https://proofofkeags.com/x .\n")
-        true true true)
+        true true true),
+    -- Residual honesty: never-real product assertions
+    expectNonEmpty "residual must not say Lean Machine never started"
+      (checkNeverRealProductClaim f
+        "A conforming Lean Machine does not exist.\n"),
+    expectNonEmpty "residual leftover quoting never-real Lean Machine fails"
+      (checkNeverRealProductClaim f
+        "Residual honesty that asserted a conforming Lean Machine does not exist, as if the product never started, is rewritten.\n"),
+    expectNonEmpty "residual must not say SSSSS never started"
+      (checkNeverRealProductClaim f
+        "A conforming SSSSS does not exist.\n"),
+    expectNonEmpty "residual must not say beastdb never started"
+      (checkNeverRealProductClaim f
+        "A conforming beastdb does not exist.\n"),
+    expectNonEmpty "residual must not say a finished product exists as never-real"
+      (checkNeverRealProductClaim f
+        "None of that means a finished product exists.\n"),
+    expectNonEmpty "residual must not say Lean Machine does not yet exist"
+      (checkNeverRealProductClaim f
+        "residual honesty that a conforming Lean Machine does not yet exist.\n"),
+    expectEmpty "honesty BAN is not a never-real assertion"
+      (checkNeverRealProductClaim f
+        "Authors MUST NOT write that beastdb never started or does not exist.\n"),
+    expectEmpty "SSSSS honesty BAN is not a never-real assertion"
+      (checkNeverRealProductClaim f
+        "This document MUST NOT be read as claiming that SSSSS never started or does not exist.\n"),
+    expectEmpty "numbered Vocabulary file does not exist is allowed"
+      (checkNeverRealProductClaim f
+        "A numbered Vocabulary file does not exist.\n"),
+    expectEmpty "path target does not exist is allowed"
+      (checkNeverRealProductClaim f
+        "The check SHALL fail when the resolved path does not exist.\n"),
+    expectEmpty "not claimed to exist is allowed"
+      (checkNeverRealProductClaim f
+        "A conforming Lean Machine is not claimed to exist.\n"),
+    expectEmpty "MUST NOT exist for a withdrawn file is allowed"
+      (checkNeverRealProductClaim f
+        "A numbered Vocabulary file MUST NOT exist.\n"),
+    expectEmpty "never-real phrase inside fence passes"
+      (checkNeverRealProductClaim f
+        "```\nA conforming Lean Machine does not exist.\n```\n"),
+    expectTrue "seven never-real product phrases"
+      (neverRealProductPhrases.length == 7)
   ]
 
 def main (_args : List String) : IO UInt32 := do

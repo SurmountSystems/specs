@@ -14,6 +14,7 @@
 -/
 
 import Cate
+import FormalVibeficationSpec
 import SpecRegistry
 import SystemsLean
 import Vocabulary
@@ -186,6 +187,37 @@ def meaningModelProofFollowsLean4Skill : Bool := true
 def lakePackageHasMathlib : Bool := false
 
 def sorryInShippedTheorems : Bool := false
+
+/-- This RSI meaning model requires the Formal Vibefication science cycle. -/
+def requiresScienceCycle : Bool := true
+
+/-- Tests only effort for this companion. Reuses the 0008 fixture. -/
+def testsOnlyEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.testsWithoutModelFixture
+
+/-- Tests only is not conforming science. Reuses conformingScience. -/
+def testsOnlyConforms : Bool :=
+  FormalVibeficationSpec.conformingScience testsOnlyEffort
+
+def testsAloneAreSufficient : Bool :=
+  FormalVibeficationSpec.testsAloneAreSufficient
+
+def modelAndProofsWithoutExperimentsConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.modelAndProofsWithoutExperimentsFixture
+
+def completeScienceCycleConforms : Bool :=
+  FormalVibeficationSpec.conformingScience
+    FormalVibeficationSpec.completeScienceFixture
+
+def testsWithoutModelDoesNotConform : Prop :=
+  testsOnlyConforms = false
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  modelAndProofsWithoutExperimentsConforms = false
+
+def completeScienceConforms : Prop :=
+  completeScienceCycleConforms = true
 
 /-!
   Clause 3.25 / 4.10: same English word, different trees.

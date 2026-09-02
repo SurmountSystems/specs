@@ -202,7 +202,17 @@ def runCases : List Case :=
       (ssssSpecNumber != systemsLeanSpecNumber),
     expectTrue "SSSSS is not specification 0003"
       (ssssSpecNumber != 3),
-    expectEqNat "beastdb is specification 0003" beastdbSpecNumber 3
+    expectEqNat "beastdb is specification 0003" beastdbSpecNumber 3,
+    expectTrue "this meaning model requires the science cycle"
+      requiresScienceCycle,
+    expectFalse "tests without a model do not conform"
+      (conformingScience testsWithoutModelFixture),
+    expectFalse "model and proofs without corollary experiments do not conform"
+      (conformingScience modelAndProofsWithoutExperimentsFixture),
+    expectTrue "complete science cycle conforms"
+      (conformingScience completeScienceFixture),
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

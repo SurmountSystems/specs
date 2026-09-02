@@ -21,7 +21,7 @@ import «0005_CATE»
 import «0006_RSI»
 import «0007_CI»
 import «0008_Formal_Vibefication»
-import «0009_Unlicense»
+import «0009_PDOSS»
 import «0010_Surmount_Systems»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
@@ -102,10 +102,10 @@ def compiledEncodings : Array EncodedSpec :=
       «0008_Formal_Vibefication».siblingEncodingFileName «0008_Formal_Vibefication».proofModuleName
       «0008_Formal_Vibefication».markedAsSpecEncoding «0008_Formal_Vibefication».markedAsProof
       «0008_Formal_Vibefication».encodedLines,
-    ofSpec «0009_Unlicense».specNumber «0009_Unlicense».specFileName
-      «0009_Unlicense».siblingEncodingFileName «0009_Unlicense».proofModuleName
-      «0009_Unlicense».markedAsSpecEncoding «0009_Unlicense».markedAsProof
-      «0009_Unlicense».encodedLines,
+    ofSpec «0009_PDOSS».specNumber «0009_PDOSS».specFileName
+      «0009_PDOSS».siblingEncodingFileName «0009_PDOSS».proofModuleName
+      «0009_PDOSS».markedAsSpecEncoding «0009_PDOSS».markedAsProof
+      «0009_PDOSS».encodedLines,
     ofSpec «0010_Surmount_Systems».specNumber «0010_Surmount_Systems».specFileName
       «0010_Surmount_Systems».siblingEncodingFileName «0010_Surmount_Systems».proofModuleName
       «0010_Surmount_Systems».markedAsSpecEncoding «0010_Surmount_Systems».markedAsProof

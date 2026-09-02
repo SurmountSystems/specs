@@ -57,6 +57,7 @@ Notes:
 			bytes for readers of this clone. They do not replace the publisher
 			page as the public home of the essays.
 	2. Do not edit the PDFs in place.
-	3. Numbered specification 0009 (`0009_Unlicense.md`) cites Formal
+	3. Numbered specification 0009 (`0009_PDOSS.md`) cites Formal
 			Vibefication by URL and names the Formal Vibefication PDF as a
-			local copy for readers.
+			local copy for readers. Changelog MAY record that Unlicense was
+			the 0009 basename. The file `0009_Unlicense.md` MUST NOT exist.

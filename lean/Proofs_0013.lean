@@ -86,7 +86,7 @@ theorem mentions_systems_lean : mentions "Systems Lean" = true := by
 theorem mentions_proofofkeags : mentions "proofofkeags.com" = true := by
   native_decide
 
-theorem mentions_unlicense : mentions "0009_Unlicense.md" = true := by
+theorem mentions_unlicense : mentions "0009_PDOSS.md" = true := by
   native_decide
 
 theorem does_not_contain_must_not_worship :

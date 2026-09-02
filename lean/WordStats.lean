@@ -14,7 +14,7 @@
   sentence is CATE. Leftover unstack remains a separate floor.
   Lean comments are not in the scan.
 
-  Number 0009 is Unlicense. The catalog is CATE. This module is not ISO 24495.
+  Number 0009 is Public Domain Open Source Software (PDOSS). Unlicense remains the license. The catalog is CATE. This module is not ISO 24495.
 -/
 
 import VocabAspell
@@ -31,7 +31,7 @@ theorem report_file_is_word_stats_md : reportFileName = "WORD_STATS.md" :=
 
 /-- Extra Surmount authored markdown besides root numbered specifications. -/
 def extraMarkdownFileNames : List String :=
-  ["AGENTS.md", "README.md", "RESIDUAL.md", "VOCABULARY.md"]
+  SpecRegistry.extraHonestyMarkdownFileNames
 
 theorem extra_files_are_four : extraMarkdownFileNames.length = 4 :=
   rfl

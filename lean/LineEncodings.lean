@@ -11,15 +11,20 @@
   markdown line. `include_str` is not a line encoding.
 
   Compiled `encodedLines` SHALL NOT contain leftover unstack phrases in
-  prose outside fenced code and outside inline code. Comments in
+  prose outside fenced code and outside inline code. Compiled
+  `encodedLines` SHALL NOT contain never-real product claims (same
+  phrases as `SpecCheck.neverRealProductPhrases`). Comments in
   `lean/FormalVibeficationSpec.lean`, `lean/VocabularySpec.lean`,
-  `lean/TechTreeSpec.lean`, `lean/MemexSpec.lean`, `lean/UnlicenseSpec.lean`,
-  `lean/CateSpec.lean`, `lean/RsiSpec.lean`, `lean/CiSpec.lean`,
-  `lean/BeastDbSpec.lean`, `lean/SssssSpec.lean`,
+  `lean/Vocabulary.lean`, `lean/TechTreeSpec.lean`, `lean/MemexSpec.lean`,
+  `lean/UnlicenseSpec.lean`, `lean/CateSpec.lean`, `lean/RsiSpec.lean`,
+  `lean/CiSpec.lean`, `lean/BeastDbSpec.lean`, `lean/SssssSpec.lean`,
   `lean/SystemsLeanSpec.lean`, and `lean/LeanMachineSpec.lean`
   SHALL NOT contain those leftover phrases. That scan uses
   `Cate.leftoverUnstackPhrases` and `SpecCheck.checkLeftoverUnstack`.
-  It is a floor, not a complete English checker.
+  It is a floor, not a complete English checker. The same comment
+  paths are scanned for never-real product claims
+  (`SpecCheck.checkNeverRealProductClaim`). Do not shorten that path
+  list relative to leftover unstack.
 
   This module is the durable checker library. It is not a numbered
   specification. It is not a proof module for any one spec.
@@ -245,6 +250,12 @@ def findingsForLeftoverUnstackEncoded (path : String) (lines : Array MdLine) :
   (SpecCheck.checkLeftoverUnstack path (encodedLinesToContent lines)).toArray.map
     findingFromDiag
 
+/-- Never-real product claims in compiled encodedLines prose (same scan as spec_check). -/
+def findingsForNeverRealProductEncoded (path : String) (lines : Array MdLine) :
+    Array Finding :=
+  (SpecCheck.checkNeverRealProductClaim path (encodedLinesToContent lines)).toArray.map
+    findingFromDiag
+
 /--
   Replace Lean code and string contents with spaces and keep comments.
   Newlines stay so physical line numbers stay aligned. Nested block
@@ -323,9 +334,16 @@ def findingsForLeftoverUnstackComments (path : String) (src : String) :
   (SpecCheck.checkLeftoverUnstack path (keepLeanComments src)).toArray.map
     findingFromDiag
 
+/-- Never-real product claims in Lean spec encoding comments. -/
+def findingsForNeverRealProductComments (path : String) (src : String) :
+    Array Finding :=
+  (SpecCheck.checkNeverRealProductClaim path (keepLeanComments src)).toArray.map
+    findingFromDiag
+
 /-- Marked meaning spec encodings whose comments use the leftover unstack floor. -/
 def meaningSpecEncodingRelPaths : Array String :=
   #["lean/FormalVibeficationSpec.lean", "lean/VocabularySpec.lean",
+    "lean/Vocabulary.lean",
     "lean/TechTreeSpec.lean", "lean/MemexSpec.lean", "lean/UnlicenseSpec.lean",
     "lean/CateSpec.lean", "lean/RsiSpec.lean", "lean/CiSpec.lean",
     "lean/BeastDbSpec.lean", "lean/SssssSpec.lean", "lean/SystemsLeanSpec.lean",
@@ -381,6 +399,7 @@ def checkOne (repo : System.FilePath) (e : EncodedSpec) : IO (Array Finding) := 
         line := 1
         message := "sibling encoding is mashed with proofs or is not marked as a spec encoding" }
   out := out ++ findingsForLeftoverUnstackEncoded e.specFileName e.lines
+  out := out ++ findingsForNeverRealProductEncoded e.specFileName e.lines
   if !(← specPath.pathExists) then
     out := out.push
       { path := e.specFileName
@@ -451,6 +470,7 @@ def checkMeaningSpecEncodingComments (repo : System.FilePath) : IO (Array Findin
         out := out.push { path := rel, line := 1, message := msg }
       | .ok src =>
         out := out ++ findingsForLeftoverUnstackComments rel src
+        out := out ++ findingsForNeverRealProductComments rel src
   return out
 
 def extraCompiled (published : List SpecRegistry.RegistryEntry) (compiled : Array EncodedSpec) :

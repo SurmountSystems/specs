@@ -6,6 +6,7 @@
 
 import WordStats
 import VocabAspell
+import SpecRegistry
 
 open WordStats
 
@@ -56,6 +57,8 @@ def runCases : List Case :=
       reportFileName "WORD_STATS.md",
     expectEqNat "extra markdown files are four"
       extraMarkdownFileNames.length 4,
+    expectTrue "extra markdown list matches honesty scan list"
+      (extraMarkdownFileNames == SpecRegistry.extraHonestyMarkdownFileNames),
     expectEqNat "RFC 2119 letter token count"
       rfc2119LetterTokens.length 7,
     expectTrue "RFC 2119 tokens are sorted"

@@ -4,11 +4,14 @@
   Theorems in VocabAspell.lean cover inverse maps, letter counts, and
   duplicate ids on finite lists. This executable re-checks those facts
   and reads both repository files under REPO_ROOT (or cwd).
-  Number 0009 is Unlicense. 0009_VOCABULARY.md MUST NOT exist.
+  Number 0009 is Public Domain Open Source Software (PDOSS).
+  Unlicense remains the license. 0009_VOCABULARY.md MUST NOT exist.
 -/
 
 import SpecCheck
 import VocabAspell
+import VocabularySpec
+import Vocabulary
 
 open VocabAspell
 open SpecCheck
@@ -21,6 +24,9 @@ structure Case where
 
 def expectTrue (name : String) (b : Bool) : Case :=
   { name := name, ok := b, detail := if b then "" else "expected true" }
+
+def expectFalse (name : String) (b : Bool) : Case :=
+  { name := name, ok := !b, detail := if !b then "" else "expected false" }
 
 def expectEqString (name : String) (got want : String) : Case :=
   if got == want then
@@ -76,7 +82,23 @@ def hermeticCases : List Case :=
     expectTrue "CATE number equals vocabulary ownership"
       (specFileName == "0005_CATE.md" && specNumber == 5),
     expectTrue "runtime catalog is not the pointer"
-      (vocabMarkdownFileName != pointerFileName)
+      (vocabMarkdownFileName != pointerFileName),
+    expectFalse "vocabulary tests without a model do not conform"
+      VocabularySpec.testsOnlyConforms,
+    expectFalse "vocabulary model and proofs without corollary experiments do not conform"
+      VocabularySpec.modelAndProofsWithoutExperimentsConforms,
+    expectTrue "vocabulary complete science cycle conforms"
+      VocabularySpec.completeScienceConformsHere,
+    expectFalse "vocabulary tests alone are not sufficient"
+      VocabularySpec.testsAloneAreSufficient,
+    expectFalse "vocabulary collision tests without a model do not conform"
+      Vocabulary.testsOnlyConforms,
+    expectFalse "vocabulary collision model and proofs without corollary experiments do not conform"
+      Vocabulary.modelAndProofsWithoutExperimentsConforms,
+    expectTrue "vocabulary collision complete science cycle conforms"
+      Vocabulary.completeScienceConformsHere,
+    expectFalse "vocabulary collision tests alone are not sufficient"
+      Vocabulary.testsAloneAreSufficient
   ]
 
 def firstMismatch : List String → List String → Nat → Option (Nat × String × String)

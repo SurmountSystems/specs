@@ -28,7 +28,7 @@ import «0005_CATE»
 import «0006_RSI»
 import «0007_CI»
 import «0008_Formal_Vibefication»
-import «0009_Unlicense»
+import «0009_PDOSS»
 import «0010_Surmount_Systems»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
@@ -47,7 +47,7 @@ theorem encodings_are_not_proofs :
       «0006_RSI».markedAsProof = false ∧
       «0007_CI».markedAsProof = false ∧
       «0008_Formal_Vibefication».markedAsProof = false ∧
-      «0009_Unlicense».markedAsProof = false ∧
+      «0009_PDOSS».markedAsProof = false ∧
       «0010_Surmount_Systems».markedAsProof = false ∧
       «0011_Surmount_Systems_Tech_Tree».markedAsProof = false ∧
       «0012_Majestic_Memex».markedAsProof = false ∧
@@ -86,8 +86,8 @@ def encodingsNotMashed : Bool :=
     «0007_CI».markedAsSpecEncoding &&
     !«0008_Formal_Vibefication».markedAsProof &&
     «0008_Formal_Vibefication».markedAsSpecEncoding &&
-    !«0009_Unlicense».markedAsProof &&
-    «0009_Unlicense».markedAsSpecEncoding &&
+    !«0009_PDOSS».markedAsProof &&
+    «0009_PDOSS».markedAsSpecEncoding &&
     !«0010_Surmount_Systems».markedAsProof &&
     «0010_Surmount_Systems».markedAsSpecEncoding &&
     !«0011_Surmount_Systems_Tech_Tree».markedAsProof &&
@@ -109,7 +109,7 @@ theorem fourteen_published_encodings :
       «0006_RSI».specNumber = 6 ∧
       «0007_CI».specNumber = 7 ∧
       «0008_Formal_Vibefication».specNumber = 8 ∧
-      «0009_Unlicense».specNumber = 9 ∧
+      «0009_PDOSS».specNumber = 9 ∧
       «0010_Surmount_Systems».specNumber = 10 ∧
       «0011_Surmount_Systems_Tech_Tree».specNumber = 11 ∧
       «0012_Majestic_Memex».specNumber = 12 ∧

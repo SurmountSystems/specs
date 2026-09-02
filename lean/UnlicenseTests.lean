@@ -51,10 +51,11 @@ def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
 
 def runCases : List Case :=
   [
-    expectEqNat "Unlicense is specification 0009" specNumber 9,
-    expectEqString "Unlicense file is 0009_Unlicense.md"
-      specFileName "0009_Unlicense.md",
-    expectEqString "product name is Unlicense" productName "Unlicense",
+    expectEqNat "PDOSS is specification 0009" specNumber 9,
+    expectEqNat "pdossSpecNumber is 9" UnlicenseSpec.pdossSpecNumber 9,
+    expectEqString "PDOSS file is 0009_PDOSS.md"
+      specFileName "0009_PDOSS.md",
+    expectEqString "product name is PDOSS" productName "PDOSS",
     expectTrue "spec encoding module is marked as spec encoding"
       markedAsSpecEncoding,
     expectFalse "spec encoding module is not marked as proof" markedAsProof,
@@ -102,18 +103,34 @@ def runCases : List Case :=
       (allEntries.any (fun e => e.number == 9)),
     expectTrue "number 0011 is in the registry"
       (allEntries.any (fun e => e.number == 11)),
-    expectEmpty "correct 0009_Unlicense token passes"
-      (scanContent "0009_Unlicense.md"
-        "This specification is number 0009. File 0009_Unlicense.md.\n"),
+    expectTrue "numberElevenPublished is true because 0011 is published"
+      numberElevenPublished,
+    expectEmpty "correct 0009_PDOSS token passes"
+      (scanContent "0009_PDOSS.md"
+        "This specification is number 0009. File 0009_PDOSS.md.\n"),
     expectNonEmpty "wrong 0009 filename token fails"
-      (scanContent "0009_Unlicense.md"
+      (scanContent "0009_PDOSS.md"
         "do not cite 0009_unused.md\n"),
+    expectNonEmpty "0009_Unlicense.md as a published token fails"
+      (scanContent "0009_PDOSS.md"
+        "do not cite 0009_Unlicense.md\n"),
     expectNonEmpty "withdrawn 0009_VOCABULARY token fails"
-      (scanContent "0009_Unlicense.md"
+      (scanContent "0009_PDOSS.md"
         "do not create `0009_VOCABULARY.md`.\n"),
     expectNonEmpty "stale 0011_Unlicense token fails"
-      (scanContent "0009_Unlicense.md"
+      (scanContent "0009_PDOSS.md"
         "do not create `0011_Unlicense.md`.\n"),
+    expectTrue "Unlicense dedication meets the public domain dedication test"
+      (meetsPublicDomainDedicationTest .unlicense),
+    expectTrue "Unlicense dedication meets PDOSS" (meetsPdoss .unlicense),
+    expectFalse "MIT does not meet a public domain dedication test"
+      (meetsPublicDomainDedicationTest .mitGrant),
+    expectFalse "MIT does not meet PDOSS" (meetsPdoss .mitGrant),
+    expectFalse "Apache 2.0 does not meet a public domain dedication test"
+      (meetsPublicDomainDedicationTest .apacheTwo),
+    expectFalse "Apache 2.0 does not meet PDOSS" (meetsPdoss .apacheTwo),
+    expectFalse "CC0 is not pinned as meeting PDOSS" (meetsPdoss .cc0),
+    expectFalse "claiming MIT meets PDOSS is false" (meetsPdoss .mitGrant),
     expectEmpty "all published basenames including 0009 pass"
       (findingsForBasenames publishedBasenames),
     expectFalse "products are not claimed ready for use"
@@ -123,7 +140,17 @@ def runCases : List Case :=
     expectTrue "sibling line encodings are required"
       siblingLineEncodingsRequired,
     expectTrue "sibling proofs are separate modules"
-      siblingProofsAreSeparateModules
+      siblingProofsAreSeparateModules,
+    expectTrue "this meaning model requires the science cycle"
+      requiresScienceCycle,
+    expectFalse "tests without a model do not conform"
+      testsOnlyEffortConforms,
+    expectFalse "model and proofs without corollary experiments do not conform"
+      modelAndProofsWithoutExperimentsEffortConforms,
+    expectTrue "complete science cycle conforms"
+      completeScienceEffortConforms,
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

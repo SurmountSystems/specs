@@ -10,6 +10,7 @@
 
 import SystemsLean
 import SpecRegistry
+import FormalVibeficationSpec
 
 namespace BeastDb
 
@@ -343,5 +344,37 @@ def productNoAcid : ClaimedProduct :=
 
 def productOptionalMultiWriter : ClaimedProduct :=
   { canonicalProduct with concurrency := concurrencyWithMultiWriter }
+
+/-!
+  Formal Vibefication science cycle (specification 0008). This meaning
+  model requires hypothesis, model, theory, proof, tests, and corollary
+  experiments. Tests are necessary and are not sufficient.
+-/
+
+def requiresScienceCycle : Bool := true
+
+def testsWithoutModelFixture : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.testsWithoutModelFixture
+
+def modelAndProofsWithoutExperimentsFixture : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.modelAndProofsWithoutExperimentsFixture
+
+def completeScienceFixture : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.completeScienceFixture
+
+def conformingScience (e : FormalVibeficationSpec.ScienceEffort) : Bool :=
+  FormalVibeficationSpec.conformingScience e
+
+def testsAloneAreSufficient : Bool :=
+  FormalVibeficationSpec.testsAloneAreSufficient
+
+def testsWithoutModelDoesNotConform : Prop :=
+  conformingScience testsWithoutModelFixture = false
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  conformingScience modelAndProofsWithoutExperimentsFixture = false
+
+def completeScienceConforms : Prop :=
+  conformingScience completeScienceFixture = true
 
 end BeastDb

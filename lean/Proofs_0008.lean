@@ -50,7 +50,7 @@ theorem mash_hidden_split_is_false :
 
 theorem mash_false : markedAsProof = false := rfl
 
-theorem encoded_line_count : encodedLines.size = 307 := by
+theorem encoded_line_count : encodedLines.size = 338 := by
   native_decide
 
 theorem contains_formal_vibefication :
@@ -61,6 +61,21 @@ theorem contains_formal_vibefication :
 theorem backlink_proofofkeags_com_appears :
     encodedLines.any (fun l =>
       (l.text.splitOn "proofofkeags.com").length != 1) = true := by
+  native_decide
+
+theorem contains_science_cycle :
+    encodedLines.any (fun l =>
+      (l.text.splitOn "science cycle").length != 1) = true := by
+  native_decide
+
+theorem contains_corollary_experiments :
+    encodedLines.any (fun l =>
+      (l.text.splitOn "corollary experiments").length != 1) = true := by
+  native_decide
+
+theorem contains_tests_are_not_enough :
+    encodedLines.any (fun l =>
+      (l.text.splitOn "tests are not enough").length != 1) = true := by
   native_decide
 
 end Proofs_0008

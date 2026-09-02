@@ -216,12 +216,12 @@
 						description = "Lean tests for Formal Vibefication spec encodings and separate proofs (spec 0008)";
 					};
 
-					# Spec encodings versus proofs for Unlicense (spec 0009).
+					# Spec encodings versus proofs for PDOSS (spec 0009). Lake keeps unlicense_tests.
 					unlicense_tests = mkLeanBin {
 						pname = "unlicense_tests";
 						lakeTarget = "unlicense_tests";
 						binName = "unlicense_tests";
-						description = "Lean tests for Unlicense spec encodings and separate proofs (spec 0009)";
+						description = "Lean tests for PDOSS spec encodings and separate proofs (spec 0009); Unlicense remains the license";
 					};
 
 					# Spec encodings versus proofs for Surmount Systems Tech Tree (spec 0011).
@@ -309,9 +309,25 @@
 						binName = "word_stats";
 						description = "Lean checker that WORD_STATS.md matches unique English word counts in Surmount authored markdown versus the CATE L_n catalog";
 					};
+
+					# Hermetic tests for the README proven logical inconsistency table.
+					inconsistency_report_tests = mkLeanBin {
+						pname = "inconsistency_report_tests";
+						lakeTarget = "inconsistency_report_tests";
+						binName = "inconsistency_report_tests";
+						description = "Lean unit tests that a missing or stale README proven inconsistency table fails and a matching table passes";
+					};
+
+					# Runtime scan: README table of proven False mash claims must match the Lean catalog.
+					inconsistency_report = mkLeanBin {
+						pname = "inconsistency_report";
+						lakeTarget = "inconsistency_report";
+						binName = "inconsistency_report";
+						description = "Lean checker that README.md contains a current table of proven logical inconsistencies in Lean meaning models";
+					};
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report;
 					default = spec_check;
 				}
 			);
@@ -718,6 +734,36 @@
 								mkdir -p "$out"
 								echo ok > "$out/result"
 							'';
+
+					# Hermetic README table fixtures; not a second markdown linter.
+					inconsistency_report_tests =
+						pkgs.runCommand "inconsistency_report_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.inconsistency_report_tests
+								];
+							}
+							''
+								inconsistency_report_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# README table of proven False mash claims matches the Lean catalog.
+					inconsistency_report =
+						pkgs.runCommand "inconsistency_report"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.inconsistency_report
+								];
+							}
+							''
+								export REPO_ROOT=${./.}
+								cd "$REPO_ROOT"
+								inconsistency_report
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
 				in
 				{
 					inherit
@@ -746,6 +792,8 @@
 						line_encodings_check
 						word_stats_tests
 						word_stats
+						inconsistency_report_tests
+						inconsistency_report
 						;
 				}
 			);

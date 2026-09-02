@@ -8,10 +8,12 @@
 import LeanMachineSpec
 import LeanMachineProofs
 import SpecRegistry
+import SpecCheck
 import «0013_Lean_Machine»
 
 open LeanMachineSpec
 open SpecRegistry (allEntries publishedEntries publishedBasenames scanContent findingsForBasenames)
+open SpecCheck (checkNeverRealProductClaim)
 
 structure Case where
   name : String
@@ -97,9 +99,9 @@ def runCases : List Case :=
     expectFalse "Holy Lean has no separate number" holyLeanHasSeparateNumber,
     expectFalse "Legal Lean is not finished" legalLeanFinished,
     expectFalse "Holy Lean is not implemented" holyLeanImplemented,
-    expectFalse "a conforming product does not exist" conformingProductExists,
-    expectEqNat "Unlicense is specification 0009" LeanMachineSpec.unlicenseSpecNumber 9,
-    expectFalse "this spec does not invent a second Unlicense"
+    expectFalse "a conforming implementation is not claimed" conformingProductExists,
+    expectEqNat "Public Domain Open Source Software is specification 0009" LeanMachineSpec.unlicenseSpecNumber 9,
+    expectFalse "this spec does not invent a second PDOSS number"
       inventsSecondUnlicenseSpec,
     expectEqNat "Systems Lean is specification 0002" LeanMachineSpec.systemsLeanSpecNumber 2,
     expectTrue "CompCert is required for the named high assurance path"
@@ -140,6 +142,15 @@ def runCases : List Case :=
     expectNonEmpty "withdrawn 0005_fargo token fails"
       (scanContent "0013_Lean_Machine.md"
         "do not create `0005_fargo.md`.\n"),
+    expectNonEmpty "residual must not say Lean Machine never started"
+      (checkNeverRealProductClaim "0013_Lean_Machine.md"
+        "A conforming Lean Machine does not exist.\n"),
+    expectEmpty "honesty BAN is not a never-real assertion"
+      (checkNeverRealProductClaim "0013_Lean_Machine.md"
+        "Authors MUST NOT write that beastdb never started or does not exist.\n"),
+    expectEmpty "numbered Vocabulary file does not exist is allowed"
+      (checkNeverRealProductClaim "0013_Lean_Machine.md"
+        "A numbered Vocabulary file does not exist.\n"),
     expectEmpty "all published basenames including 0013 pass"
       (findingsForBasenames publishedBasenames),
     expectFalse "products are not claimed ready for use"
@@ -149,7 +160,15 @@ def runCases : List Case :=
     expectTrue "sibling line encodings are required"
       siblingLineEncodingsRequired,
     expectTrue "sibling proofs are separate modules"
-      siblingProofsAreSeparateModules
+      siblingProofsAreSeparateModules,
+    expectFalse "tests without a model do not conform"
+      testsOnlyConforms,
+    expectFalse "model and proofs without corollary experiments do not conform"
+      modelAndProofsWithoutExperimentsConforms,
+    expectTrue "complete science cycle conforms"
+      completeScienceConformsHere,
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

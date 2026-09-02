@@ -189,7 +189,17 @@ def runCases : List Case :=
     expectEmpty "planned list empty produces no presence findings"
       (findingsForPlannedPresent []),
     expectTrue "registry numbers are unique" (!hasDupNumbers),
-    expectTrue "registry file names are unique" (!hasDupFilenames)
+    expectTrue "registry file names are unique" (!hasDupFilenames),
+    expectTrue "this meaning model requires the science cycle"
+      requiresScienceCycle,
+    expectFalse "tests without a model do not conform"
+      (conformingScience testsWithoutModelFixture),
+    expectFalse "model and proofs without corollary experiments do not conform"
+      (conformingScience modelAndProofsWithoutExperimentsFixture),
+    expectTrue "complete science cycle conforms"
+      (conformingScience completeScienceFixture),
+    expectFalse "tests alone are not sufficient"
+      testsAloneAreSufficient
   ]
 
 def main (_args : List String) : IO UInt32 := do

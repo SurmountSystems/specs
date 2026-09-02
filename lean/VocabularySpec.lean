@@ -13,7 +13,8 @@
   0005. Runtime checks still live in VocabAspell.lean and read
   0005_CATE.md, not the pointer file VOCABULARY.md.
 
-  Number 0009 is Unlicense. The catalog is CATE, not a 0009 file.
+  Number 0009 is Public Domain Open Source Software (PDOSS).
+  Unlicense remains the license. The catalog is CATE, not a 0009 file.
   The file 0009_VOCABULARY.md MUST NOT exist. This module is not ISO 24495.
 
   Comments in this module use the CATE leftover unstack floor. They do
@@ -21,6 +22,7 @@
 -/
 
 import SpecRegistry
+import FormalVibeficationSpec
 
 namespace VocabularySpec
 
@@ -350,5 +352,41 @@ def fixtureEntries : List VocabEntry :=
     { letter := 'A', index := 2, word := "AbsInt" },
     { letter := 'B', index := 1, word := "beastdb" }
   ]
+
+/-- This meaning model requires the Formal Vibefication science cycle. -/
+def requiresScienceCycle : Bool := true
+
+/-- Tests without a model. Reuses the Formal Vibefication fixture. -/
+def testsOnlyEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.testsWithoutModelFixture
+
+def testsOnlyConforms : Bool :=
+  FormalVibeficationSpec.conformingScience testsOnlyEffort
+
+def testsAloneAreSufficient : Bool :=
+  FormalVibeficationSpec.testsAloneAreSufficient
+
+/-- Model and proofs without corollary experiments. Reuses the Formal Vibefication fixture. -/
+def modelAndProofsWithoutExperimentsEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.modelAndProofsWithoutExperimentsFixture
+
+def modelAndProofsWithoutExperimentsConforms : Bool :=
+  FormalVibeficationSpec.conformingScience modelAndProofsWithoutExperimentsEffort
+
+/-- Hypothesis, model, theory, proof, tests, and corollary experiments. -/
+def completeScienceEffort : FormalVibeficationSpec.ScienceEffort :=
+  FormalVibeficationSpec.completeScienceFixture
+
+def completeScienceConformsHere : Bool :=
+  FormalVibeficationSpec.conformingScience completeScienceEffort
+
+def testsWithoutModelDoesNotConform : Prop :=
+  testsOnlyConforms = false
+
+def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
+  modelAndProofsWithoutExperimentsConforms = false
+
+def completeScienceConforms : Prop :=
+  completeScienceConformsHere = true
 
 end VocabularySpec

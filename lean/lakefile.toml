@@ -86,13 +86,16 @@ name = "MdLine"
 [[lean_lib]]
 name = "SpecEncodings"
 srcDir = ".."
-roots = ["«0000_spec»", "«0001_DOGE»", "«0002_Systems_Lean»", "«0003_beastdb»", "«0004_SSSSS»", "«0005_CATE»", "«0006_RSI»", "«0007_CI»", "«0008_Formal_Vibefication»", "«0009_Unlicense»", "«0010_Surmount_Systems»", "«0011_Surmount_Systems_Tech_Tree»", "«0012_Majestic_Memex»", "«0013_Lean_Machine»", "lean.SpecEncodings"]
+roots = ["«0000_spec»", "«0001_DOGE»", "«0002_Systems_Lean»", "«0003_beastdb»", "«0004_SSSSS»", "«0005_CATE»", "«0006_RSI»", "«0007_CI»", "«0008_Formal_Vibefication»", "«0009_PDOSS»", "«0010_Surmount_Systems»", "«0011_Surmount_Systems_Tech_Tree»", "«0012_Majestic_Memex»", "«0013_Lean_Machine»", "lean.SpecEncodings"]
 
 [[lean_lib]]
 name = "LineEncodings"
 
 [[lean_lib]]
 name = "WordStats"
+
+[[lean_lib]]
+name = "InconsistencyReport"
 
 [[lean_lib]]
 name = "SpecProofs"
@@ -161,6 +164,14 @@ root = "WordStatsCheck"
 [[lean_exe]]
 name = "word_stats_tests"
 root = "WordStatsTests"
+
+[[lean_exe]]
+name = "inconsistency_report"
+root = "InconsistencyReportCheck"
+
+[[lean_exe]]
+name = "inconsistency_report_tests"
+root = "InconsistencyReportTests"
 
 [[lean_exe]]
 name = "tech_tree_tests"
