@@ -170,6 +170,140 @@ theorem no_invented_ci_product :
     conformingCiProductClaimed = false :=
   rfl
 
+theorem pdoss_is_0009 : pdossSpecNumber = 9 := rfl
+
+theorem unlicense_remains_the_license :
+    unlicenseRemainsTheLicense = true :=
+  rfl
+
+theorem ci_is_not_0009 : specNumber ≠ pdossSpecNumber := by
+  decide
+
+theorem spec_encodings_state_what_must_be_true :
+    specEncodingsStateWhatMustBeTrue = true :=
+  rfl
+
+theorem proofs_live_in_separate_module :
+    proofsLiveInSeparateModule = true :=
+  rfl
+
+theorem human_markdown_is_the_contract :
+    humanMarkdownIsTheHumanContract = true :=
+  rfl
+
+theorem human_markdown_does_not_substitute_for_encodings :
+    humanMarkdownSubstitutesForLeanSpecEncoding = false :=
+  rfl
+
+theorem lean_proof_is_not_the_spec : leanProofIsTheSpec = false :=
+  rfl
+
+theorem layers_pairwise_distinct : layersPairwiseDistinct := by
+  dsimp [layersPairwiseDistinct]
+  decide
+
+theorem mashed_is_nonconforming : mashedIsNonconformingThisRepo :=
+  rfl
+
+theorem separate_modules_conform : separateModulesConformThisRepo := by
+  dsimp [separateModulesConformThisRepo]
+  decide
+
+theorem spec_encoding_fixture_conforms :
+    conformingThisRepo specEncodingFixture = true :=
+  rfl
+
+theorem proof_fixture_conforms :
+    conformingThisRepo proofFixture = true :=
+  rfl
+
+theorem mash_spec_and_proof_is_false : mashSpecAndProofIsFalse := by
+  intro h
+  cases h
+
+theorem flake_check_is_product_implementation :
+    ImplementationKind.flakeCheck.isProductImplementation = true :=
+  rfl
+
+theorem lake_test_is_product_implementation :
+    ImplementationKind.lakeTest.isProductImplementation = true :=
+  rfl
+
+theorem github_actions_is_product_implementation :
+    ImplementationKind.githubActionsWorkflow.isProductImplementation = true :=
+  rfl
+
+theorem flake_check_is_not_second_markdown_linter :
+    ImplementationKind.flakeCheck.isSecondMarkdownLinter = false :=
+  rfl
+
+theorem lake_test_is_not_second_markdown_linter :
+    ImplementationKind.lakeTest.isSecondMarkdownLinter = false :=
+  rfl
+
+theorem github_actions_is_not_second_markdown_linter :
+    ImplementationKind.githubActionsWorkflow.isSecondMarkdownLinter = false :=
+  rfl
+
+theorem implementation_is_third_layer :
+    implementationIsThirdLayer = true :=
+  rfl
+
+theorem implementation_is_not_second_markdown_linter :
+    implementationIsSecondMarkdownLinter = false :=
+  rfl
+
+theorem named_gate_is_nix_flake_check :
+    namedGateIsNixFlakeCheck = true :=
+  rfl
+
+theorem write_shell_application_checkers_not_allowed :
+    writeShellApplicationCheckersAllowed = false :=
+  rfl
+
+theorem write_shell_application_is_not_named_gate :
+    writeShellApplicationIsNamedGate = false :=
+  rfl
+
+theorem spec_check_is_markdown_form : specCheckIsMarkdownForm = true :=
+  rfl
+
+theorem spec_check_is_not_meaning_encoding :
+    specCheckIsMeaningSpecEncoding = false :=
+  rfl
+
+theorem lean_spec_check_is_form :
+    FormAuthority.leanSpecCheck.isForm = true :=
+  rfl
+
+theorem pure_nix_whitespace_is_form :
+    FormAuthority.pureNixWhitespace.isForm = true :=
+  rfl
+
+theorem lean_spec_check_is_not_meaning_as_form_authority :
+    FormAuthority.leanSpecCheck.isMeaningEncoding = false :=
+  rfl
+
+theorem pure_nix_whitespace_is_not_meaning :
+    FormAuthority.pureNixWhitespace.isMeaningEncoding = false :=
+  rfl
+
+theorem lean_spec_check_neq_pure_nix_whitespace :
+    FormAuthority.leanSpecCheck ≠ FormAuthority.pureNixWhitespace := by
+  decide
+
+theorem dual_whitespace_coverage_required :
+    dualWhitespaceCoverageRequired = true :=
+  rfl
+
+theorem push_on_red_does_not_conform :
+    pushOnRed.conforming = false :=
+  rfl
+
+theorem push_on_green_conforms :
+    pushOnGreen.conforming = true :=
+  rfl
+
 theorem requires_science_cycle : requiresScienceCycle = true :=
   rfl
 

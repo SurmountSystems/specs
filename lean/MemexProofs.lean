@@ -237,4 +237,62 @@ theorem complete_science_effort_conforms :
     completeScienceEffortConforms = true :=
   rfl
 
+theorem magic_prefix_accepts_exact :
+    hasMajesticMagicPrefix magicBytes = true :=
+  rfl
+
+theorem magic_prefix_accepts_payload :
+    hasMajesticMagicPrefix (magicBytes ++ [0xFF]) = true :=
+  rfl
+
+theorem magic_prefix_rejects_empty :
+    hasMajesticMagicPrefix [] = false :=
+  rfl
+
+theorem magic_prefix_rejects_wrong_version :
+    hasMajesticMagicPrefix ("MAJESTIC".toList.map charByte ++ [0x00]) =
+      false :=
+  rfl
+
+theorem magic_prefix_rejects_tech_tree :
+    hasMajesticMagicPrefix (techTreeMagicString.toList.map charByte) =
+      false :=
+  rfl
+
+theorem typical_archive_shape :
+    typicalArchiveRel "grok" "acct" = "memex/grok/acct.majestic" :=
+  rfl
+
+theorem no_silent_default : silentDefaultArchiveExists = false :=
+  rfl
+
+theorem silent_default_path_is_not_required :
+    silentDefaultArchiveRel ≠ typicalArchiveRel "service" "account" := by
+  decide
+
+theorem live_home_scan_conforms :
+    liveHomeScan.conforming = true :=
+  rfl
+
+theorem mash_walks_data_root_does_not_conform :
+    mashWalksDataRoot.conforming = false :=
+  rfl
+
+theorem command_is_memex_not_crate_binary :
+    commandName = "memex" ∧ crateName = "majestic" ∧
+      requireBinaryNamedCrate = false :=
+  And.intro rfl (And.intro rfl rfl)
+
+theorem pdoss_is_0009 : pdossSpecNumber = 9 := rfl
+
+theorem pdoss_is_not_0012 : pdossSpecNumber ≠ specNumber := by
+  decide
+
+theorem no_second_pdoss_number : inventsSecondPdossSpec = false :=
+  rfl
+
+theorem numbered_vocabulary_file_must_not_exist :
+    numberedVocabularyFileMustNotExist = true :=
+  rfl
+
 end MemexProofs

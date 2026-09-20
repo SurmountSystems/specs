@@ -76,6 +76,18 @@ def runCases : List Case :=
       (IdentityKind.ok .sequentialInteger),
     expectFalse "hashing as primary identity is not ok"
       (IdentityKind.ok .hashDigest),
+    expectTrue "LanguageID below 2^64 is well formed"
+      (LanguageId.wellFormed languageIdInRange),
+    expectFalse "LanguageID at 2^64 is not well formed"
+      (LanguageId.wellFormed languageIdOutOfRange),
+    expectTrue "WordID below 2^64 is well formed"
+      (WordId.wellFormed wordIdInRange),
+    expectFalse "WordID at 2^64 is not well formed"
+      (WordId.wellFormed wordIdOutOfRange),
+    expectTrue "auxiliary digest index that is not stored identity is ok"
+      auxiliaryIndexAllowed.ok,
+    expectFalse "auxiliary digest index that replaces sequential stored identity is not ok"
+      mashAuxiliaryReplacesSequential.ok,
     expectEqNat "LanguageID bit width is 64" languageIdBitWidth 64,
     expectEqNat "WordID bit width is 64" wordIdBitWidth 64,
     expectEqNat "LanguageID capacity is 2^64" languageIdCapacity (2 ^ 64),
@@ -91,8 +103,14 @@ def runCases : List Case :=
     expectFalse "Rosetta hash identity is not ok"
       (rosettaCanonical.identityOk .hashDigest),
     expectTrue "emit uses inverse WordID lookup" emitUsesRosettaOk,
-    expectTrue "missing mapping does not invent a WordID"
-      missingMappingEmitsNothingOk,
+    expectTrue "missing mapping emits a named hole"
+      missingMappingEmitsNamedHoleOk,
+    expectTrue "missing mapping may fail the token"
+      missingMappingFailsOk,
+    expectFalse "named hole does not invent hash identity"
+      (EmitOutcome.namedHole ⟨99⟩).inventsHashIdentity,
+    expectFalse "fail token does not invent hash identity"
+      (EmitOutcome.failToken ⟨99⟩).inventsHashIdentity,
     expectFalse "emit does not use hash identity" emitUsesHashIdentity,
     expectTrue "reduced neural proposal is acceptable" neuralReduced.acceptable,
     expectFalse "unreduced neural proposal is not acceptable"
@@ -144,6 +162,16 @@ def runCases : List Case :=
       productWrongStore.conforms,
     expectTrue "canonical claimed integration conforms"
       canonicalIntegration.conformingIntegration,
+    expectTrue "mashSpendNeuralWhenSymbolicCanIsFalse"
+      (decide mashSpendNeuralWhenSymbolicCanIsFalse),
+    expectFalse "mash harness action that spends neural when symbolic can complete is not conforming"
+      mashSpendNeuralWhenSymbolicCanAction.conforming,
+    expectTrue "canonical harness action does not spend neural when symbolic can complete"
+      canonicalHarnessAction.conforming,
+    expectTrue "neural spend is conforming when symbolic cannot complete"
+      neuralWhenSymbolicCannotAction.conforming,
+    expectFalse "claimed integration that does not expose the symbolic interface does not conform"
+      mashSymbolicNotExposed.conformingIntegration,
     expectFalse "claimed integration that uses neural while symbolic can complete does not conform"
       mashNeuralWhileSymbolicCan.conformingIntegration,
     expectFalse "translation only without a harness is not a claimed integration"

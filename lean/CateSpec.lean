@@ -44,7 +44,7 @@ def numberNineWithdrawn : Bool := false
 
 /-!
   Leftover unstack: deleting a hyphen and leaving the same two words
-  (for example `lock free tries`) is nonconforming.
+  is nonconforming. The floor list is constructors, not a paragraph dump.
 -/
 
 inductive HyphenRepair where
@@ -58,13 +58,116 @@ def HyphenRepair.conforming : HyphenRepair → Bool
   | .leftoverUnstack => false
   | .rephrasedOrdinaryEnglish => true
 
+/-- Clause 3.5 floor list as constructors. Surface strings stay for spec_check. -/
+inductive LeftoverUnstackPhrase where
+  | nonMarkdown
+  | mustLike
+  | lfOnly
+  | lockFreeTries
+  | fullyTypeChecking
+  deriving DecidableEq, Repr, BEq
+
+def LeftoverUnstackPhrase.surface : LeftoverUnstackPhrase → String
+  | .nonMarkdown => "non markdown"
+  | .mustLike => "must like"
+  | .lfOnly => "LF only"
+  | .lockFreeTries => "lock free tries"
+  | .fullyTypeChecking => "fully type checking"
+
+def leftoverUnstackPhraseConstructors : List LeftoverUnstackPhrase :=
+  [.nonMarkdown, .mustLike, .lfOnly, .lockFreeTries, .fullyTypeChecking]
+
 /--
   Floor list used by spec_check leftover unstack and by leftover unstack
   on Lean spec encodings. Not a complete English checker.
 -/
 def leftoverUnstackPhrases : List String :=
-  ["non markdown", "must like", "LF only", "lock free tries",
-    "fully type checking"]
+  leftoverUnstackPhraseConstructors.map LeftoverUnstackPhrase.surface
+
+/-- Spaced phrases the leftover unstack checker SHALL NOT flag merely for a space. -/
+inductive AllowedSpacedPhrase where
+  | highAssurance
+  | threeBit
+  | timeSeries
+  deriving DecidableEq, Repr, BEq
+
+def AllowedSpacedPhrase.surface : AllowedSpacedPhrase → String
+  | .highAssurance => "high assurance"
+  | .threeBit => "3 bit"
+  | .timeSeries => "time series"
+
+def allowedSpacedPhraseConstructors : List AllowedSpacedPhrase :=
+  [.highAssurance, .threeBit, .timeSeries]
+
+def allowedSpacedPhrases : List String :=
+  allowedSpacedPhraseConstructors.map AllowedSpacedPhrase.surface
+
+def asciiUpperChar (c : Char) : Char :=
+  if 'a' ≤ c && c ≤ 'z' then Char.ofNat (c.toNat - 32) else c
+
+def asciiUpper (s : String) : String :=
+  String.ofList (s.toList.map asciiUpperChar)
+
+def charsContain (hay needle : List Char) : Bool :=
+  match hay with
+  | [] => needle.isEmpty
+  | c :: rest =>
+    needle.isPrefixOf (c :: rest) || charsContain rest needle
+
+def containsSubstring (hay needle : String) : Bool :=
+  if needle.isEmpty then true
+  else charsContain hay.toList needle.toList
+
+/-- True when prose contains a Clause 3.5 leftover unstack floor phrase. -/
+def containsLeftoverUnstackPhrase (prose : String) : Bool :=
+  leftoverUnstackPhrases.any fun p =>
+    containsSubstring (asciiUpper prose) (asciiUpper p)
+
+def containsAllowedSpacedPhrase (prose : String) : Bool :=
+  allowedSpacedPhrases.any fun p =>
+    containsSubstring (asciiUpper prose) (asciiUpper p)
+
+/-- Prose meets the leftover unstack floor when it contains none of the floor phrases. -/
+def leftoverUnstackFloorConforms (prose : String) : Bool :=
+  !containsLeftoverUnstackPhrase prose
+
+def hyphenToSpace (c : Char) : Char :=
+  if c == '-' then ' ' else c
+
+/-- Deleting hyphens and leaving the same two words. -/
+def leftoverUnstackOf (hyphenated : String) : String :=
+  String.ofList (hyphenated.toList.map hyphenToSpace)
+
+/-- True when after is the hyphen delete of hyphenated and after is a floor phrase. -/
+def hyphenDeleteIsLeftoverUnstack (hyphenated after : String) : Bool :=
+  leftoverUnstackOf hyphenated == after && leftoverUnstackPhrases.contains after
+
+def leftoverLockFreeTriesProse : String :=
+  "do not write lock free tries in prose"
+
+def leftoverNonMarkdownProse : String :=
+  "do not write non markdown in prose"
+
+def leftoverMustLikeProse : String :=
+  "do not write must like in prose"
+
+def leftoverLfOnlyProse : String :=
+  "do not write LF only in prose"
+
+def leftoverFullyTypeCheckingProse : String :=
+  "do not write fully type checking in prose"
+
+def allowedHighAssuranceProse : String :=
+  "high assurance may stay when it already reads as English"
+
+def allowedThreeBitProse : String :=
+  "a 3 bit field is allowed spaced prose"
+
+def allowedTimeSeriesProse : String :=
+  "a time series is allowed spaced prose"
+
+def rephrasedLockTriesProse : String :=
+  "tries that do not use locks"
 
 /-- The leftover unstack list is a floor, not a complete English checker. -/
 def leftoverUnstackFloorIsCompleteEnglish : Bool := false
@@ -76,8 +179,21 @@ def leftoverUnstackFloorIsCompleteEnglish : Bool := false
 -/
 def leanSpecEncodingsUseLeftoverUnstackFloor : Bool := true
 
-def allowedSpacedPhrases : List String :=
-  ["high assurance", "3 bit", "time series"]
+def leftoverLockFreeTriesFailsFloor : Prop :=
+  leftoverUnstackFloorConforms leftoverLockFreeTriesProse = false
+
+def highAssuranceMeetsFloor : Prop :=
+  leftoverUnstackFloorConforms allowedHighAssuranceProse = true
+
+def rephrasedLockTriesMeetsFloor : Prop :=
+  leftoverUnstackFloorConforms rephrasedLockTriesProse = true
+
+def hyphenDeleteLockFreeTriesIsLeftover : Prop :=
+  hyphenDeleteIsLeftoverUnstack "lock-free tries" "lock free tries" = true
+
+def rephraseLockFreeTriesIsNotLeftover : Prop :=
+  hyphenDeleteIsLeftoverUnstack "lock-free tries"
+      "tries that do not use locks" = false
 
 /-!
   Residual silence: naming unpublished specs, unassigned numbers, unpinned
@@ -108,6 +224,41 @@ def residualNothingToName : ResidualRecord :=
 /-- Planned-file tokens in numbered specs other than 0000 require a Residual heading. -/
 def plannedTokenRequiresResidualHeading (specNumber : Nat) : Bool :=
   specNumber != 0
+
+/-- Clause 4.5: 0001 and later with a planned file token need a Residual heading. 0000 is exempt. -/
+structure ResidualHeadingHonesty where
+  specNumber : Nat
+  hasPlannedFileToken : Bool
+  hasResidualHeading : Bool
+  deriving DecidableEq, Repr, BEq
+
+def ResidualHeadingHonesty.conforming (r : ResidualHeadingHonesty) : Bool :=
+  r.specNumber == 0 || !r.hasPlannedFileToken || r.hasResidualHeading
+
+def plannedWithoutHeading : ResidualHeadingHonesty :=
+  { specNumber := 5, hasPlannedFileToken := true, hasResidualHeading := false }
+
+def plannedWithHeading : ResidualHeadingHonesty :=
+  { specNumber := 5, hasPlannedFileToken := true, hasResidualHeading := true }
+
+def spec0000WithPlannedNoHeading : ResidualHeadingHonesty :=
+  { specNumber := 0, hasPlannedFileToken := true, hasResidualHeading := false }
+
+def noPlannedNoHeading : ResidualHeadingHonesty :=
+  { specNumber := 5, hasPlannedFileToken := false, hasResidualHeading := false }
+
+/-- Heading titles named in CATE Clause 4.5 and MdLine residual checks. -/
+def isResidualHeadingTitle (line : String) : Bool :=
+  line == "# Residual" || line == "## Residual" || line == "## 6. Residual"
+
+def plannedWithoutHeadingFails : Prop :=
+  plannedWithoutHeading.conforming = false
+
+def plannedWithHeadingOk : Prop :=
+  plannedWithHeading.conforming = true
+
+def spec0000PlannedWithoutHeadingOk : Prop :=
+  spec0000WithPlannedNoHeading.conforming = true
 
 /-!
   Questions to humans must carry file or clause, current wording, why it

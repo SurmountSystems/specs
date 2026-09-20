@@ -61,6 +61,179 @@ def JobApproach.requiredWhenRepeats (repeats : Bool) : JobApproach → Bool
   | .disposableOnce => !repeats
   | .improveDurableTool => true
 
+/-!
+  Clause 3.2 and Clause 4.1: a durable tool is a Lean checker, a Nix check,
+  a project skill, or a helper next to a compiler that a later session can
+  run. A chat reminder is not that tool. Throwaway bash and throwaway Python
+  are not the product.
+-/
+
+inductive DurableToolKind where
+  | leanChecker
+  | nixCheck
+  | projectSkill
+  | helperNextToCompiler
+  | chatReminder
+  | throwawayBash
+  | throwawayPython
+  deriving DecidableEq, Repr, BEq
+
+def DurableToolKind.laterSessionCanRun : DurableToolKind → Bool
+  | .leanChecker => true
+  | .nixCheck => true
+  | .projectSkill => true
+  | .helperNextToCompiler => true
+  | .chatReminder => false
+  | .throwawayBash => false
+  | .throwawayPython => false
+
+def DurableToolKind.conforming : DurableToolKind → Bool
+  | .leanChecker => true
+  | .nixCheck => true
+  | .projectSkill => true
+  | .helperNextToCompiler => true
+  | .chatReminder => false
+  | .throwawayBash => false
+  | .throwawayPython => false
+
+def DurableToolKind.isDisposableScript : DurableToolKind → Bool
+  | .throwawayBash => true
+  | .throwawayPython => true
+  | .leanChecker => false
+  | .nixCheck => false
+  | .projectSkill => false
+  | .helperNextToCompiler => false
+  | .chatReminder => false
+
+def DurableToolKind.isProduct : DurableToolKind → Bool
+  | .leanChecker => true
+  | .nixCheck => true
+  | .projectSkill => true
+  | .helperNextToCompiler => true
+  | .chatReminder => false
+  | .throwawayBash => false
+  | .throwawayPython => false
+
+def JobApproach.ofTool : DurableToolKind → JobApproach
+  | .leanChecker => .improveDurableTool
+  | .nixCheck => .improveDurableTool
+  | .projectSkill => .improveDurableTool
+  | .helperNextToCompiler => .improveDurableTool
+  | .chatReminder => .disposableOnce
+  | .throwawayBash => .disposableOnce
+  | .throwawayPython => .disposableOnce
+
+structure DurableTool where
+  kind : DurableToolKind
+  laterSessionCanRun : Bool
+  nextToCompiler : Bool
+  deriving DecidableEq, Repr, BEq
+
+def DurableTool.conforming (t : DurableTool) : Bool :=
+  t.kind.conforming &&
+    t.laterSessionCanRun &&
+    t.nextToCompiler &&
+    DurableToolKind.laterSessionCanRun t.kind &&
+    !t.kind.isDisposableScript
+
+def specCheckAsDurableTool : DurableTool :=
+  { kind := .leanChecker
+    laterSessionCanRun := true
+    nextToCompiler := true }
+
+def chatReminderAsTool : DurableTool :=
+  { kind := .chatReminder
+    laterSessionCanRun := false
+    nextToCompiler := false }
+
+def throwawayBashAsTool : DurableTool :=
+  { kind := .throwawayBash
+    laterSessionCanRun := false
+    nextToCompiler := false }
+
+/-- Tools improve tools: the destination must remain a durable tool. -/
+structure ToolImprovement where
+  fromKind : DurableToolKind
+  toKind : DurableToolKind
+  deriving DecidableEq, Repr, BEq
+
+def ToolImprovement.conforming (i : ToolImprovement) : Bool :=
+  i.toKind.conforming && i.toKind.laterSessionCanRun
+
+inductive FactoryOutput where
+  | improvedDurableTool
+  | performedJobOnce
+  deriving DecidableEq, Repr, BEq
+
+def FactoryOutput.conforming : FactoryOutput → Bool
+  | .improvedDurableTool => true
+  | .performedJobOnce => false
+
+structure ToolFactoryUse where
+  jobRepeats : Bool
+  output : FactoryOutput
+  deriving DecidableEq, Repr, BEq
+
+def ToolFactoryUse.conforming (u : ToolFactoryUse) : Bool :=
+  if u.jobRepeats then u.output.conforming else true
+
+/-- Clause 4.1 item 4: encode process improvement is proved by a tool, not chat. -/
+inductive EncodeImprovementProof where
+  | leanChecker
+  | skillStep
+  | nixPackage
+  | chatReminder
+  deriving DecidableEq, Repr, BEq
+
+def EncodeImprovementProof.conforming : EncodeImprovementProof → Bool
+  | .leanChecker => true
+  | .skillStep => true
+  | .nixPackage => true
+  | .chatReminder => false
+
+/-- Clause 4.1 item 5 and Clause 4.2 item 3: bash or Python is not Nix check policy. -/
+inductive CheckPolicy where
+  | leanChecker
+  | pureNixEval
+  | bashInNix
+  | pythonInNix
+  deriving DecidableEq, Repr, BEq
+
+def CheckPolicy.conforming : CheckPolicy → Bool
+  | .leanChecker => true
+  | .pureNixEval => true
+  | .bashInNix => false
+  | .pythonInNix => false
+
+/-- Clause 3.25 and Clause 4.10: the same English word in more than one tree. -/
+structure CollisionTagSet where
+  languageNeCompiler : Bool
+  markdownNeMeaning : Bool
+  meaningNeFormChecker : Bool
+  remainingWorkNeFreestandingBlocker : Bool
+  meaningNeMlTraining : Bool
+  leftoverUnstackOwnedByCate : Bool
+  deriving DecidableEq, Repr, BEq
+
+def CollisionTagSet.conforming (s : CollisionTagSet) : Bool :=
+  s.languageNeCompiler &&
+    s.markdownNeMeaning &&
+    s.meaningNeFormChecker &&
+    s.remainingWorkNeFreestandingBlocker &&
+    s.meaningNeMlTraining &&
+    s.leftoverUnstackOwnedByCate
+
+def thisRepoCollisionTags : CollisionTagSet :=
+  { languageNeCompiler :=
+      Vocabulary.systemsLean.proseName != Vocabulary.slake.proseName
+    markdownNeMeaning := !Vocabulary.specMarkdownIsMeaningModel
+    meaningNeFormChecker := !Vocabulary.meaningModelIsFormChecker
+    remainingWorkNeFreestandingBlocker :=
+      !Vocabulary.remainingWorkIsNamedFreestandingBlocker
+    meaningNeMlTraining := !Vocabulary.meaningModelIsMlTrainingRun
+    leftoverUnstackOwnedByCate :=
+      Vocabulary.leftoverUnstackSpecNumber == cateSpecNumber }
+
 inductive LeftoverUnstackRepair where
   | leftoverUnstack
   | rephrasedOrdinaryEnglish

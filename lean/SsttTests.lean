@@ -84,21 +84,21 @@ def runCases : List Case :=
     expectTrue "Lake writer exists" lakeWriterExists,
     expectFalse "Surmount product writer is not claimed shipped" producerShipped,
     expectFalse "published 0012 markdown is not unpublished"
-      (unpublishedBasename "0012_Majestic_Memex.md"),
+      (Sstt.unpublishedBasename "0012_Majestic_Memex.md"),
     expectFalse "published 0012 sibling Lean is not unpublished"
-      (unpublishedBasename "0012_Majestic_Memex.lean"),
+      (Sstt.unpublishedBasename "0012_Majestic_Memex.lean"),
     expectTrue "0012 markdown is a root numbered spec"
       (isRootNumberedSpec "0012_Majestic_Memex.md"),
     expectTrue "withdrawn 0009_VOCABULARY remains unpublished"
-      (unpublishedBasename "0009_VOCABULARY.md"),
+      (Sstt.unpublishedBasename "0009_VOCABULARY.md"),
     expectTrue "withdrawn 0005_fargo remains unpublished"
-      (unpublishedBasename "0005_fargo.md"),
+      (Sstt.unpublishedBasename "0005_fargo.md"),
     expectTrue "withdrawn 0011_Unlicense remains unpublished"
-      (unpublishedBasename "0011_Unlicense.md"),
+      (Sstt.unpublishedBasename "0011_Unlicense.md"),
     expectTrue "withdrawn 0009_Unlicense remains unpublished"
-      (unpublishedBasename "0009_Unlicense.md"),
+      (Sstt.unpublishedBasename "0009_Unlicense.md"),
     expectFalse "published 0009_PDOSS markdown is not unpublished"
-      (unpublishedBasename "0009_PDOSS.md"),
+      (Sstt.unpublishedBasename "0009_PDOSS.md"),
     expectEqString "extension is .sstt" Sstt.fileExtension ".sstt",
     expectTrue "empty graph roundtrip" emptyOk,
     expectTrue "chain roundtrip" chainOk,

@@ -127,6 +127,156 @@ def mustAttemptDeterministicAnswers : Bool := true
 
 def timestampedNoteRequiredWhenWrongOrImprecise : Bool := true
 
+/-- Alias so composition proofs can name specification 0013 without restating the file. -/
+def leanMachineSpecNumber : Nat := 13
+
+/-!
+  Clause 3.5: a durable record that names the question, the answer that
+  was wrong or imprecise, and a clock time, so later work can improve
+  the machine. The storage of that note is a product detail. The
+  requirement to write it is not.
+-/
+structure TimestampedNote where
+  question : String
+  wrongOrImpreciseAnswer : String
+  clockTime : Option Nat
+  deriving DecidableEq, Repr, BEq
+
+def TimestampedNote.conforming (n : TimestampedNote) : Bool :=
+  !n.question.isEmpty &&
+    !n.wrongOrImpreciseAnswer.isEmpty &&
+    n.clockTime.isSome
+
+def noteWithClockTime : TimestampedNote :=
+  { question := "what is the Lean Machine stack number"
+    wrongOrImpreciseAnswer := "twelve"
+    clockTime := some 20260831 }
+
+def noteWithoutClockTime : TimestampedNote :=
+  { question := "what is the Lean Machine stack number"
+    wrongOrImpreciseAnswer := "twelve"
+    clockTime := none }
+
+def noteMissingQuestion : TimestampedNote :=
+  { question := ""
+    wrongOrImpreciseAnswer := "twelve"
+    clockTime := some 20260831 }
+
+def noteMissingAnswer : TimestampedNote :=
+  { question := "what is the Lean Machine stack number"
+    wrongOrImpreciseAnswer := ""
+    clockTime := some 20260831 }
+
+def noteStorageIsProductDetail : Bool := true
+
+def shippedNoteStoreClaimed : Bool := false
+
+/-!
+  Clause 4.6 item 2 and item 3: if an answer is wrong or imprecise, a
+  note MUST be timestamped. Authors MUST NOT treat a missing
+  timestamped note as an acceptable substitute for that improvement
+  path.
+-/
+structure WrongAnswerPath where
+  answerWrongOrImprecise : Bool
+  wroteTimestampedNote : Bool
+  treatsMissingNoteAsSubstitute : Bool
+  deriving DecidableEq, Repr, BEq
+
+def WrongAnswerPath.conforming (p : WrongAnswerPath) : Bool :=
+  (!p.answerWrongOrImprecise || p.wroteTimestampedNote) &&
+    !p.treatsMissingNoteAsSubstitute
+
+def mashMissingNoteSubstitute : WrongAnswerPath :=
+  { answerWrongOrImprecise := true
+    wroteTimestampedNote := false
+    treatsMissingNoteAsSubstitute := true }
+
+def wroteNoteOnWrongAnswer : WrongAnswerPath :=
+  { answerWrongOrImprecise := true
+    wroteTimestampedNote := true
+    treatsMissingNoteAsSubstitute := false }
+
+/-!
+  Clause 4.6 item 1: Lean Machine MUST attempt to answer questions
+  deterministically. Same question plus same notes yields the same
+  answer.
+-/
+def encodedAttempt (question : String) (notes : List TimestampedNote) : String :=
+  question ++
+    String.intercalate "|"
+      (notes.map fun n =>
+        n.wrongOrImpreciseAnswer ++
+          match n.clockTime with
+          | none => ""
+          | some t => toString t)
+
+def determinismQuestion : String := "what is the Lean Machine stack number"
+
+def determinismNotes : List TimestampedNote := [noteWithClockTime]
+
+structure AnswerAttempt where
+  question : String
+  notes : List TimestampedNote
+  answer : String
+  deriving DecidableEq, Repr, BEq
+
+def AnswerAttempt.sameInputs (a b : AnswerAttempt) : Bool :=
+  a.question == b.question && a.notes == b.notes
+
+def AnswerAttempt.conformingPair (a b : AnswerAttempt) : Bool :=
+  !AnswerAttempt.sameInputs a b || a.answer == b.answer
+
+def sameInputSameAnswerA : AnswerAttempt :=
+  { question := determinismQuestion
+    notes := determinismNotes
+    answer := encodedAttempt determinismQuestion determinismNotes }
+
+def sameInputSameAnswerB : AnswerAttempt :=
+  { question := determinismQuestion
+    notes := determinismNotes
+    answer := encodedAttempt determinismQuestion determinismNotes }
+
+def mashNondeterministicA : AnswerAttempt :=
+  { question := determinismQuestion
+    notes := determinismNotes
+    answer := "twelve" }
+
+def mashNondeterministicB : AnswerAttempt :=
+  { question := determinismQuestion
+    notes := determinismNotes
+    answer := "thirteen" }
+
+def noteWithoutClockTimeDoesNotConform : Prop :=
+  TimestampedNote.conforming noteWithoutClockTime = false
+
+def noteWithClockTimeConforms : Prop :=
+  TimestampedNote.conforming noteWithClockTime = true
+
+def noteMissingQuestionDoesNotConform : Prop :=
+  TimestampedNote.conforming noteMissingQuestion = false
+
+def noteMissingAnswerDoesNotConform : Prop :=
+  TimestampedNote.conforming noteMissingAnswer = false
+
+def encodedAttemptIsCongruent : Prop :=
+  ∀ (q1 q2 : String) (notes1 notes2 : List TimestampedNote),
+    q1 = q2 → notes1 = notes2 →
+      encodedAttempt q1 notes1 = encodedAttempt q2 notes2
+
+def sameQuestionSameNotesSameAnswer : Prop :=
+  encodedAttempt determinismQuestion determinismNotes =
+    encodedAttempt determinismQuestion determinismNotes
+
+def mashNondeterministicPairDoesNotConform : Prop :=
+  AnswerAttempt.conformingPair mashNondeterministicA mashNondeterministicB = false
+
+def mashMissingNoteSubstituteDoesNotConform : Prop :=
+  mashMissingNoteSubstitute.conforming = false
+
+def wroteNoteOnWrongAnswerConforms : Prop :=
+  wroteNoteOnWrongAnswer.conforming = true
+
 /-- Distributed self improvement is a design requirement, not a running claim. -/
 def distributedSelfImprovementIsDesignRequirement : Bool := true
 

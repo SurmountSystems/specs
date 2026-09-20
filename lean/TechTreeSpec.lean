@@ -512,6 +512,25 @@ def fixtureLoop : List Edge :=
   [{ src := 0, dst := 1, kind := .cites },
     { src := 1, dst := 0, kind := .cites }]
 
+/-- Two numbered specification nodes that reuse identity 0. Clause 4.2. -/
+def duplicateIdNodes : List Node :=
+  [fixtureNode0, { id := 0, kind := .numberedSpec, path := "0005_CATE.md" }]
+
+/-- An edge whose destination identity is not in the node list. Clause 4.2. -/
+def missingEndpointEdges : List Edge :=
+  [{ src := 0, dst := 99, kind := .cites }]
+
+/-- A node whose path contains a byte at or above 128. Clause 4.2. -/
+def nonAsciiPathNode : Node :=
+  { id := 0, kind := .numberedSpec, path := String.singleton (Char.ofNat 128) }
+
+/-- Clause 6.1 withdrawn numbered names. Number 0009 is PDOSS. Unlicense remains the license. -/
+def unpublishedBasenames : List String :=
+  ["0009_VOCABULARY.md", "0005_fargo.md", "0011_Unlicense.md", "0009_Unlicense.md"]
+
+def unpublishedBasename (name : String) : Bool :=
+  unpublishedBasenames.contains name
+
 /-- Well formed bytes of a two node loop. Encode refuses this graph. -/
 def cyclicEncodedBytes : List UInt8 :=
   magicBytes ++

@@ -42,7 +42,7 @@ def fixtureCurrent : String :=
 
 def runCases : List Case :=
   [
-    expectEqNat "six proven False mash claims" provenClaims.length 6,
+    expectEqNat "seven proven False mash claims" provenClaims.length 7,
     expectTrue "catalog is nonempty" existsAny,
     expectFalse "README missing table is not current"
       (readmeTableCurrent fixtureMissing),
@@ -68,6 +68,10 @@ def runCases : List Case :=
       (!((generatedTable.splitOn "mash_layers_inconsistent").length == 1)),
     expectTrue "generated table names Surmount mash file"
       (!((generatedTable.splitOn "lean/Surmount.lean").length == 1)),
+    expectTrue "generated table names AnunnakiProofs"
+      (!((generatedTable.splitOn "lean/AnunnakiProofs.lean").length == 1)),
+    expectTrue "generated table names Anunnaki mash_spec_and_proof_is_false"
+      (!((generatedTable.splitOn "mash_spec_and_proof_is_false").length == 1)),
     expectTrue "kind is intentional nonconformance"
       (!((generatedTable.splitOn "intentional nonconformance theorem").length == 1)),
     expectTrue "tableSectionOk is the product check"

@@ -66,7 +66,9 @@ let
 		|| lib.hasPrefix "result/" rel
 		|| lib.hasPrefix "result-" rel
 		# Agent join scratch / hidden temp names at root (skip, never include).
-		|| lib.hasPrefix ".agent_join" rel;
+		|| lib.hasPrefix ".agent_join" rel
+		# Session board dump at repository root. It is not numbered specification prose.
+		|| rel == "TECH.md";
 
 	# Surmount-authored text kinds (mirrors prior bash discovery intent).
 	isOwnedKind =

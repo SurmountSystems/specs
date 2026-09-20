@@ -388,4 +388,92 @@ theorem model_and_proofs_without_experiments_does_not_conform :
 theorem complete_science_conforms : completeScienceConforms :=
   rfl
 
+theorem required_compcert_tool_is_ccomp :
+    requiredCompCertTool = "ccomp" := rfl
+
+theorem compcert_uses_ccomp : compCertUsesCcomp = true := rfl
+
+theorem compcert_performed_uses_ccomp_of_freestanding_c :
+    compCertPerformed.usesCcompOfFreestandingC = true := by decide
+
+theorem compcert_wrong_tool_not_ok : compCertWrongTool.ok = false := by decide
+
+theorem compcert_wrong_emit_not_ok : compCertWrongEmit.ok = false := by decide
+
+theorem compcert_verified_compilation_not_claimed_done :
+    compCertVerifiedCompilationClaimedDone = false := rfl
+
+theorem bootstrap_typecheck_includes_theorems :
+    bootstrapTypecheckIncludesTheorems = true := rfl
+
+theorem bootstrap_done_includes_theorems :
+    bootstrapTypecheckDone.includesTheorems = true := rfl
+
+theorem bootstrap_without_theorems_not_ok :
+    bootstrapWithoutTheorems.ok = false := by decide
+
+theorem slake_bootstrap_typecheck_not_claimed_done :
+    slakeBootstrapTypecheckClaimedDone = false := rfl
+
+theorem self_host_from_generated_c_does_not_satisfy_typecheck :
+    selfHostFromGeneratedCSatisfiesTypecheck = false := rfl
+
+theorem mash_self_host_from_c_satisfies_bootstrap_is_false :
+    mashSelfHostFromCSatisfiesBootstrapIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem clause5_wrong_compcert_tool_does_not_conform :
+    productWrongCompCertTool.conforms = false := by decide
+
+theorem clause5_wrong_compcert_emit_does_not_conform :
+    productWrongCompCertEmit.conforms = false := by decide
+
+theorem clause5_bootstrap_without_theorems_does_not_conform :
+    productBootstrapWithoutTheorems.conforms = false := by decide
+
+theorem rsi_is_spec_0006 : rsiSpecNumber = 6 := rfl
+
+theorem rsi_is_not_a_compiler_requirement :
+    rsiIsCompilerRequirement = false := rfl
+
+theorem lean_machine_is_spec_0013 : leanMachineSpecNumber = 13 := rfl
+
+theorem lean_machine_specified_in_0013_lean_machine :
+    leanMachineSpecFileName = "0013_Lean_Machine.md" := rfl
+
+theorem compcert_is_not_unlicense : compCertIsUnlicense = false := rfl
+
+theorem spec_check_is_not_meaning_spec_encoding :
+    specCheckIsMeaningSpecEncoding = false := rfl
+
+theorem byte_identity_required_for_conforming_product :
+    byteIdentityRequiredForConformingProduct = true := rfl
+
+theorem byte_identity_of_emit_not_claimed_true :
+    byteIdentityOfEmitClaimedTrue = false := rfl
+
+theorem systems_lean_and_slake_not_ready_for_use :
+    systemsLeanAndSlakeReadyForUse = false := rfl
+
+theorem systems_lean_and_slake_did_start :
+    systemsLeanAndSlakeNeverStarted = false := rfl
+
+theorem skill_packs_not_under_product_ref :
+    skillPacksUnderProductRef = false := rfl
+
+theorem pure_nix_required_for_novel_packaging :
+    pureNixRequiredForNovelPackaging = true := rfl
+
+theorem live_claimed_done_must_not_equal_canonical_fixture :
+    liveClaimedDoneEqualsCanonicalFixture = false := by decide
+
+theorem live_claimed_done_differs_from_canonical_compcert :
+    compCertVerifiedCompilationClaimedDone ≠ canonicalProduct.compCert.ok := by
+  decide
+
+theorem live_claimed_done_differs_from_canonical_bootstrap :
+    slakeBootstrapTypecheckClaimedDone ≠ canonicalProduct.bootstrapTypecheck.ok := by
+  decide
+
 end SystemsLean

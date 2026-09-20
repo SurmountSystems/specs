@@ -267,7 +267,67 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       completeScienceCycleConforms,
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectTrue "a Lean checker is a durable tool a later session can run"
+      DurableToolKind.leanChecker.laterSessionCanRun,
+    expectTrue "a Nix check is a durable tool a later session can run"
+      DurableToolKind.nixCheck.laterSessionCanRun,
+    expectTrue "a project skill is a durable tool a later session can run"
+      DurableToolKind.projectSkill.laterSessionCanRun,
+    expectTrue "a helper next to a compiler is a durable tool a later session can run"
+      DurableToolKind.helperNextToCompiler.laterSessionCanRun,
+    expectFalse "a chat reminder is not a durable tool"
+      DurableToolKind.chatReminder.conforming,
+    expectFalse "a chat reminder is not something a later session can run"
+      DurableToolKind.chatReminder.laterSessionCanRun,
+    expectFalse "throwaway bash is not a durable tool"
+      DurableToolKind.throwawayBash.conforming,
+    expectFalse "throwaway Python is not a durable tool"
+      DurableToolKind.throwawayPython.conforming,
+    expectTrue "throwaway bash is a disposable script"
+      DurableToolKind.throwawayBash.isDisposableScript,
+    expectTrue "throwaway Python is a disposable script"
+      DurableToolKind.throwawayPython.isDisposableScript,
+    expectFalse "throwaway bash is not the product"
+      DurableToolKind.throwawayBash.isProduct,
+    expectFalse "throwaway Python is not the product"
+      DurableToolKind.throwawayPython.isProduct,
+    expectTrue "spec_check as a Lean checker next to a compiler conforms"
+      specCheckAsDurableTool.conforming,
+    expectFalse "a chat reminder encoded as a tool does not conform"
+      chatReminderAsTool.conforming,
+    expectFalse "throwaway bash encoded as a tool does not conform"
+      throwawayBashAsTool.conforming,
+    expectTrue "improving throwaway bash into a Lean checker conforms"
+      (ToolImprovement.mk .throwawayBash .leanChecker).conforming,
+    expectFalse "turning a Lean checker into throwaway Python does not conform"
+      (ToolImprovement.mk .leanChecker .throwawayPython).conforming,
+    expectTrue "a repeating job used as a tool factory that improves a durable tool conforms"
+      ({ jobRepeats := true, output := .improvedDurableTool } : ToolFactoryUse).conforming,
+    expectFalse "a repeating job performed once as the factory output does not conform"
+      ({ jobRepeats := true, output := .performedJobOnce } : ToolFactoryUse).conforming,
+    expectTrue "encode process improvement proved by a Lean checker conforms"
+      EncodeImprovementProof.leanChecker.conforming,
+    expectTrue "encode process improvement proved by a skill step conforms"
+      EncodeImprovementProof.skillStep.conforming,
+    expectTrue "encode process improvement proved by a Nix package conforms"
+      EncodeImprovementProof.nixPackage.conforming,
+    expectFalse "encode process improvement proved by a chat reminder does not conform"
+      EncodeImprovementProof.chatReminder.conforming,
+    expectTrue "Lean checker as check policy conforms"
+      CheckPolicy.leanChecker.conforming,
+    expectTrue "pure Nix evaluation as check policy conforms"
+      CheckPolicy.pureNixEval.conforming,
+    expectFalse "bash in Nix as check policy does not conform"
+      CheckPolicy.bashInNix.conforming,
+    expectFalse "Python in Nix as check policy does not conform"
+      CheckPolicy.pythonInNix.conforming,
+    expectTrue "this repository collision tag set keeps trees distinct"
+      thisRepoCollisionTags.conforming,
+    expectTrue "a Lean checker maps to improving a durable tool"
+      (JobApproach.ofTool .leanChecker == JobApproach.improveDurableTool),
+    expectTrue "throwaway bash maps to a disposable job"
+      (JobApproach.ofTool .throwawayBash == JobApproach.disposableOnce)
   ]
 
 def main (_args : List String) : IO UInt32 := do

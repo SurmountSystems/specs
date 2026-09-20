@@ -19,6 +19,7 @@ import Proofs_0010
 import Proofs_0011
 import Proofs_0012
 import Proofs_0013
+import Proofs_0014
 import «0000_spec»
 import «0001_DOGE»
 import «0002_Systems_Lean»
@@ -33,6 +34,7 @@ import «0010_Surmount_Systems»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
 import «0013_Lean_Machine»
+import «0014_Anunnaki_Encoding»
 
 namespace SpecProofs
 
@@ -51,7 +53,8 @@ theorem encodings_are_not_proofs :
       «0010_Surmount_Systems».markedAsProof = false ∧
       «0011_Surmount_Systems_Tech_Tree».markedAsProof = false ∧
       «0012_Majestic_Memex».markedAsProof = false ∧
-      «0013_Lean_Machine».markedAsProof = false :=
+      «0013_Lean_Machine».markedAsProof = false ∧
+      «0014_Anunnaki_Encoding».markedAsProof = false :=
   And.intro Proofs_0000.encoding_is_not_proof.2
     (And.intro Proofs_0001.encoding_is_not_proof.2
       (And.intro Proofs_0002.encoding_is_not_proof.2
@@ -65,7 +68,8 @@ theorem encodings_are_not_proofs :
                       (And.intro Proofs_0010.encoding_is_not_proof.2
                         (And.intro Proofs_0011.encoding_is_not_proof.2
                           (And.intro Proofs_0012.encoding_is_not_proof.2
-                            Proofs_0013.encoding_is_not_proof.2))))))))))))
+                            (And.intro Proofs_0013.encoding_is_not_proof.2
+                              Proofs_0014.encoding_is_not_proof.2)))))))))))))
 
 def encodingsNotMashed : Bool :=
   !«0000_spec».markedAsProof &&
@@ -95,11 +99,13 @@ def encodingsNotMashed : Bool :=
     !«0012_Majestic_Memex».markedAsProof &&
     «0012_Majestic_Memex».markedAsSpecEncoding &&
     !«0013_Lean_Machine».markedAsProof &&
-    «0013_Lean_Machine».markedAsSpecEncoding
+    «0013_Lean_Machine».markedAsSpecEncoding &&
+    !«0014_Anunnaki_Encoding».markedAsProof &&
+    «0014_Anunnaki_Encoding».markedAsSpecEncoding
 
 theorem encodings_not_mashed : encodingsNotMashed = true := rfl
 
-theorem fourteen_published_encodings :
+theorem fifteen_published_encodings :
     «0000_spec».specNumber = 0 ∧
       «0001_DOGE».specNumber = 1 ∧
       «0002_Systems_Lean».specNumber = 2 ∧
@@ -113,7 +119,8 @@ theorem fourteen_published_encodings :
       «0010_Surmount_Systems».specNumber = 10 ∧
       «0011_Surmount_Systems_Tech_Tree».specNumber = 11 ∧
       «0012_Majestic_Memex».specNumber = 12 ∧
-      «0013_Lean_Machine».specNumber = 13 :=
+      «0013_Lean_Machine».specNumber = 13 ∧
+      «0014_Anunnaki_Encoding».specNumber = 14 :=
   And.intro Proofs_0000.spec_number
     (And.intro Proofs_0001.spec_number
       (And.intro Proofs_0002.spec_number
@@ -127,6 +134,7 @@ theorem fourteen_published_encodings :
                       (And.intro Proofs_0010.spec_number
                         (And.intro Proofs_0011.spec_number
                           (And.intro Proofs_0012.spec_number
-                            Proofs_0013.spec_number))))))))))))
+                            (And.intro Proofs_0013.spec_number
+                              Proofs_0014.spec_number)))))))))))))
 
 end SpecProofs

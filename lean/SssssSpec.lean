@@ -71,6 +71,36 @@ def languageIdCapacity : Nat := 2 ^ 64
 
 def wordIdCapacity : Nat := 2 ^ 64
 
+/-- Sequential LanguageID is well formed only when the value is below 2^64. -/
+def LanguageId.wellFormed (id : LanguageId) : Bool :=
+  id.value < languageIdCapacity
+
+/-- Sequential WordID is well formed only when the value is below 2^64. -/
+def WordId.wellFormed (id : WordId) : Bool :=
+  id.value < wordIdCapacity
+
+def languageIdInRange : LanguageId := ⟨0⟩
+
+def languageIdOutOfRange : LanguageId := ⟨languageIdCapacity⟩
+
+def wordIdInRange : WordId := ⟨0⟩
+
+def wordIdOutOfRange : WordId := ⟨wordIdCapacity⟩
+
+/-- A digest MAY exist as an index. It MUST NOT replace sequential stored identity. -/
+structure AuxiliaryDigestIndex where
+  usedAsStoredIdentifier : Bool
+  deriving DecidableEq, Repr, BEq
+
+def AuxiliaryDigestIndex.ok (a : AuxiliaryDigestIndex) : Bool :=
+  !a.usedAsStoredIdentifier
+
+def auxiliaryIndexAllowed : AuxiliaryDigestIndex :=
+  { usedAsStoredIdentifier := false }
+
+def mashAuxiliaryReplacesSequential : AuxiliaryDigestIndex :=
+  { usedAsStoredIdentifier := true }
+
 def assignWordId (next : Nat) : WordId :=
   ⟨next⟩
 
@@ -180,9 +210,22 @@ structure VocabEntry where
   surface : String
   deriving DecidableEq, Repr, BEq
 
+/-- Clause 4.3 item 7: missing mapping fails or emits a named hole. -/
+inductive EmitOutcome where
+  | word (id : WordId)
+  | namedHole (source : WordId)
+  | failToken (source : WordId)
+  deriving DecidableEq, Repr, BEq
+
+inductive MissingMappingPolicy where
+  | emitNamedHole
+  | failToken
+  deriving DecidableEq, Repr, BEq
+
 structure PipelineConfig where
   vocab : List VocabEntry
   relations : List RosettaEdge
+  onMissing : MissingMappingPolicy
   deriving DecidableEq, Repr, BEq
 
 def lookupTarget (rels : List RosettaEdge) (langA : LanguageId) (w : WordId)
@@ -192,12 +235,17 @@ def lookupTarget (rels : List RosettaEdge) (langA : LanguageId) (w : WordId)
   | some e => some e.wordB
   | none => none
 
-/-- Inverse WordID lookup under the target LanguageID. Missing maps drop. -/
+def missingOutcome (policy : MissingMappingPolicy) (w : WordId) : EmitOutcome :=
+  match policy with
+  | .emitNamedHole => .namedHole w
+  | .failToken => .failToken w
+
+/-- Inverse WordID lookup under the target LanguageID. Missing maps fail or emit a named hole. -/
 def emit (c : PipelineConfig) (source : List StreamToken)
-    (target : LanguageId) : List WordId :=
+    (target : LanguageId) : List EmitOutcome :=
   Id.run do
     let mut lang : Option LanguageId := none
-    let mut out : List WordId := []
+    let mut out : List EmitOutcome := []
     for t in source do
       match t with
       | .languagePrefix id =>
@@ -208,30 +256,42 @@ def emit (c : PipelineConfig) (source : List StreamToken)
           pure ()
         | some a =>
           match lookupTarget c.relations a w target with
-          | some b => out := out ++ [b]
-          | none => pure ()
+          | some b => out := out ++ [.word b]
+          | none => out := out ++ [missingOutcome c.onMissing w]
     return out
 
 def pipelineCanonical : PipelineConfig :=
   { vocab :=
       [{ language := ⟨0⟩, word := ⟨1⟩, surface := "src" },
         { language := ⟨1⟩, word := ⟨10⟩, surface := "tgt" }]
-    relations := [rosettaCanonical] }
+    relations := [rosettaCanonical]
+    onMissing := .emitNamedHole }
+
+def pipelineFailOnMissing : PipelineConfig :=
+  { pipelineCanonical with onMissing := .failToken }
 
 def pipelineSource : List StreamToken :=
   [.languagePrefix ⟨0⟩, .word ⟨1⟩]
 
 def emitUsesRosettaOk : Bool :=
-  emit pipelineCanonical pipelineSource ⟨1⟩ == [⟨10⟩]
+  emit pipelineCanonical pipelineSource ⟨1⟩ == [.word ⟨10⟩]
 
 def missingMappingSource : List StreamToken :=
   [.languagePrefix ⟨0⟩, .word ⟨99⟩]
 
-def missingMappingEmitsNothingOk : Bool :=
-  emit pipelineCanonical missingMappingSource ⟨1⟩ == []
+def missingMappingEmitsNamedHoleOk : Bool :=
+  emit pipelineCanonical missingMappingSource ⟨1⟩ == [.namedHole ⟨99⟩]
+
+def missingMappingFailsOk : Bool :=
+  emit pipelineFailOnMissing missingMappingSource ⟨1⟩ == [.failToken ⟨99⟩]
 
 /-- Hashing as primary identity is never an emit path in this model. -/
 def emitUsesHashIdentity : Bool := false
+
+def EmitOutcome.inventsHashIdentity : EmitOutcome → Bool
+  | .word _ => false
+  | .namedHole _ => false
+  | .failToken _ => false
 
 /-!
   Clause 4.4: neural proposals MUST reduce to sequential integers
@@ -378,8 +438,49 @@ def representationHashed : RepresentationClaim :=
   no theorems. Lean Machine is specification 0013.
 -/
 
+/--
+  Clause 4.7 DRY: work is not repeated. The neural path MUST NOT spend
+  work on an action the symbolic interface can already complete.
+-/
+structure HarnessAction where
+  symbolicCanComplete : Bool
+  neuralSpend : Bool
+  deriving DecidableEq, Repr, BEq
+
+def workIsRepeated (a : HarnessAction) : Bool :=
+  a.symbolicCanComplete && a.neuralSpend
+
+def HarnessAction.conforming (a : HarnessAction) : Bool :=
+  !workIsRepeated a
+
+def mashSpendNeuralWhenSymbolicCanAction : HarnessAction :=
+  { symbolicCanComplete := true, neuralSpend := true }
+
+def canonicalHarnessAction : HarnessAction :=
+  { symbolicCanComplete := true, neuralSpend := false }
+
+def neuralWhenSymbolicCannotAction : HarnessAction :=
+  { symbolicCanComplete := false, neuralSpend := true }
+
+/-- Mash: repeated work is claimed conforming. -/
+def mashSpendNeuralWhenSymbolicCan : Prop :=
+  workIsRepeated mashSpendNeuralWhenSymbolicCanAction = true ∧
+    mashSpendNeuralWhenSymbolicCanAction.conforming = true
+
+def mashSpendNeuralWhenSymbolicCanIsFalse : Prop :=
+  mashSpendNeuralWhenSymbolicCan → False
+
+instance : Decidable mashSpendNeuralWhenSymbolicCan :=
+  inferInstanceAs (Decidable
+    (workIsRepeated mashSpendNeuralWhenSymbolicCanAction = true ∧
+      mashSpendNeuralWhenSymbolicCanAction.conforming = true))
+
+instance : Decidable mashSpendNeuralWhenSymbolicCanIsFalse :=
+  inferInstanceAs (Decidable (mashSpendNeuralWhenSymbolicCan → False))
+
 structure IntegrationClaim where
   integrationClaimed : Bool
+  symbolicInterfaceExposed : Bool
   symbolicInterfaceDeterministic : Bool
   neuralUsedOnlyWhenSymbolicCannot : Bool
   toolImprovementReducedToSequentialIntegers : Bool
@@ -389,13 +490,17 @@ structure IntegrationClaim where
 
 /--
   Conforming claimed integration holds only when the named predicates
-  hold, including Clause 4.7 item 2 (implemented in Systems Lean).
+  hold, including Clause 4.7 item 1 (symbolic interface exposed) and
+  item 2 (implemented in Systems Lean).
   A claimed mash that uses the neural path while the symbolic
   interface can complete is not conforming. A claimed neural-gated
   mash that is not implemented in Systems Lean is not conforming.
+  A claimed mash that does not expose the symbolic interface is not
+  conforming.
 -/
 def IntegrationClaim.conformingIntegration (c : IntegrationClaim) : Bool :=
   c.integrationClaimed &&
+    c.symbolicInterfaceExposed &&
     c.symbolicInterfaceDeterministic &&
     c.neuralUsedOnlyWhenSymbolicCannot &&
     c.toolImprovementReducedToSequentialIntegers &&
@@ -404,6 +509,7 @@ def IntegrationClaim.conformingIntegration (c : IntegrationClaim) : Bool :=
 
 def canonicalIntegration : IntegrationClaim :=
   { integrationClaimed := true
+    symbolicInterfaceExposed := true
     symbolicInterfaceDeterministic := true
     neuralUsedOnlyWhenSymbolicCannot := true
     toolImprovementReducedToSequentialIntegers := true
@@ -432,6 +538,10 @@ def integrationSymbolicNotDeterministic : IntegrationClaim :=
 def mashClaimedNeuralGatedNotSystemsLean : IntegrationClaim :=
   { canonicalIntegration with
     writtenInSystemsLean := false }
+
+def mashSymbolicNotExposed : IntegrationClaim :=
+  { canonicalIntegration with
+    symbolicInterfaceExposed := false }
 
 structure ClaimedProduct where
   representation : RepresentationClaim

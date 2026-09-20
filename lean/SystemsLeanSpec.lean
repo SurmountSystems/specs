@@ -267,48 +267,108 @@ def specsRepoPinsRust : Bool := false
 
 /-!
   Clause 3.9 and 4.2 item 6: CompCert verified compilation is a required
-  core validation step. Residual naming does not substitute.
+  core validation step. The tool is `ccomp` applied to the freestanding C
+  emit. Residual naming does not substitute. A hypothetical conforming
+  fixture may set verified compilation true. The live product does not
+  claim that step is done.
 -/
 
+/-- CompCert command named in Clause 3.9 and Clause 4.2 item 6. -/
+def requiredCompCertTool : String := "ccomp"
+
 structure CompCertValidation where
+  tool : String
+  emit : EmissionTarget
   verifiedCompilation : Bool
   deriving DecidableEq, Repr, BEq
 
-def CompCertValidation.ok (v : CompCertValidation) : Bool :=
-  v.verifiedCompilation
+/-- The required step names `ccomp` of the freestanding C emit. -/
+def CompCertValidation.usesCcompOfFreestandingC (v : CompCertValidation) : Bool :=
+  (v.tool == requiredCompCertTool) && (v.emit == .freestandingC)
 
+def CompCertValidation.ok (v : CompCertValidation) : Bool :=
+  v.usesCcompOfFreestandingC && v.verifiedCompilation
+
+def compCertUsesCcomp : Bool :=
+  requiredCompCertTool == "ccomp"
+
+/-- Hypothetical conforming fixture: the required step holds. -/
 def compCertPerformed : CompCertValidation :=
-  { verifiedCompilation := true }
+  { tool := "ccomp"
+    emit := .freestandingC
+    verifiedCompilation := true }
 
 def compCertMissing : CompCertValidation :=
-  { verifiedCompilation := false }
+  { tool := "ccomp"
+    emit := .freestandingC
+    verifiedCompilation := false }
+
+/-- Wrong compiler is not CompCert `ccomp` of the freestanding C emit. -/
+def compCertWrongTool : CompCertValidation :=
+  { tool := "gcc"
+    emit := .freestandingC
+    verifiedCompilation := true }
+
+/-- LLVM IR as the emit is not the required freestanding C step. -/
+def compCertWrongEmit : CompCertValidation :=
+  { tool := "ccomp"
+    emit := .llvmIR
+    verifiedCompilation := true }
+
+/-- Live product honesty: the required CompCert step is not claimed done. -/
+def compCertVerifiedCompilationClaimedDone : Bool := false
 
 /-!
   Clause 3.10 and 4.2 item 7: bootstrapping a Slake compiler that fully typechecks
   is a required core validation step. A subset typecheck is not
   enough. Emitting C without that typecheck is not enough. Residual naming
-  does not substitute.
+  does not substitute. Conforming bootstrap typecheck includes theorems.
+  A claim that the freestanding product hosts itself from generated C is
+  a distinct claim and does not satisfy this step by itself.
 -/
 
 structure SlakeBootstrapTypecheck where
   bootstrapped : Bool
   fullyTypechecks : Bool
+  includesTheorems : Bool
   deriving DecidableEq, Repr, BEq
 
 def SlakeBootstrapTypecheck.ok (b : SlakeBootstrapTypecheck) : Bool :=
-  b.bootstrapped && b.fullyTypechecks
+  b.bootstrapped && b.fullyTypechecks && b.includesTheorems
+
+/-- Clause 4.2 item 7: conforming bootstrap typecheck includes theorems. -/
+def bootstrapTypecheckIncludesTheorems : Bool := true
 
 def bootstrapTypecheckDone : SlakeBootstrapTypecheck :=
-  { bootstrapped := true, fullyTypechecks := true }
+  { bootstrapped := true, fullyTypechecks := true, includesTheorems := true }
 
 def bootstrapMissing : SlakeBootstrapTypecheck :=
-  { bootstrapped := false, fullyTypechecks := false }
+  { bootstrapped := false, fullyTypechecks := false, includesTheorems := false }
 
 def bootstrapSubsetOnly : SlakeBootstrapTypecheck :=
-  { bootstrapped := true, fullyTypechecks := false }
+  { bootstrapped := true, fullyTypechecks := false, includesTheorems := false }
 
 def typecheckWithoutBootstrap : SlakeBootstrapTypecheck :=
-  { bootstrapped := false, fullyTypechecks := true }
+  { bootstrapped := false, fullyTypechecks := true, includesTheorems := true }
+
+/-- Typecheck without theorems is not a conforming bootstrap. -/
+def bootstrapWithoutTheorems : SlakeBootstrapTypecheck :=
+  { bootstrapped := true, fullyTypechecks := true, includesTheorems := false }
+
+/-- Live product honesty: the required bootstrap typecheck is not claimed done. -/
+def slakeBootstrapTypecheckClaimedDone : Bool := false
+
+/--
+  Clause 4.2 item 7 last sentence: hosting from generated C does not
+  satisfy the bootstrap typecheck step.
+-/
+def selfHostFromGeneratedCSatisfiesTypecheck : Bool := false
+
+def mashSelfHostFromCSatisfiesBootstrap : Prop :=
+  selfHostFromGeneratedCSatisfiesTypecheck = true
+
+def mashSelfHostFromCSatisfiesBootstrapIsFalse : Prop :=
+  mashSelfHostFromCSatisfiesBootstrap → False
 
 /-!
   Clause 4.3 item 3: novel work is at most Idris 2, Lean 4 (including
@@ -581,9 +641,21 @@ def productNamedResidualMissingBootstrap : ClaimedProduct :=
     namedResidual := some "garbage collection"
     bootstrapTypecheck := bootstrapSubsetOnly }
 
+def productWrongCompCertTool : ClaimedProduct :=
+  { canonicalProduct with compCert := compCertWrongTool }
+
+def productWrongCompCertEmit : ClaimedProduct :=
+  { canonicalProduct with compCert := compCertWrongEmit }
+
+def productBootstrapWithoutTheorems : ClaimedProduct :=
+  { canonicalProduct with bootstrapTypecheck := bootstrapWithoutTheorems }
+
 /-!
   Spec document identity: this spec is 0002; SSSSS is specified in
   0004_SSSSS.md (not 0002, not 0003). beastdb is specified in 0003_beastdb.md.
+  Recursive Self Improvement is specified in 0006_RSI.md and is not a
+  compiler requirement of this document. Lean Machine is specified in
+  0013_Lean_Machine.md.
 -/
 
 def systemsLeanSpecNumber : Nat := SpecRegistry.systemsLeanSpecNumber
@@ -593,6 +665,47 @@ def ssssSpecNumber : Nat := SpecRegistry.ssssSpecNumber
 def beastdbSpecNumber : Nat := SpecRegistry.beastdbSpecNumber
 
 def beastdbSpecFileName : String := "0003_beastdb.md"
+
+def rsiSpecNumber : Nat := SpecRegistry.rsiSpecNumber
+
+/-- Clause 4.4 item 3: RSI is practice for specifications and agents, not a compiler requirement of 0002. -/
+def rsiIsCompilerRequirement : Bool := false
+
+def leanMachineSpecNumber : Nat := SpecRegistry.leanMachineSpecNumber
+
+def leanMachineSpecFileName : String := "0013_Lean_Machine.md"
+
+/-- Clause 4.3 item 2: CompCert retains its original license. It is not Unlicense. -/
+def compCertIsUnlicense : Bool := false
+
+/-- Clause 1.2: spec encodings of meaning are not a second markdown form checker. -/
+def specCheckIsMeaningSpecEncoding : Bool := false
+
+/-- Clause 6.3: byte identity of emit is required for a conforming product. -/
+def byteIdentityRequiredForConformingProduct : Bool := true
+
+/-- Clause 6.3: byte identity of emit is not claimed true of the live product. -/
+def byteIdentityOfEmitClaimedTrue : Bool := false
+
+/-- Clause 6: Systems Lean and Slake work is ongoing and is not ready for use. -/
+def systemsLeanAndSlakeReadyForUse : Bool := false
+
+/-- Clause 6: this document must not be read as claiming Systems Lean or Slake never started. -/
+def systemsLeanAndSlakeNeverStarted : Bool := false
+
+/-- Clause 4.3 item 2: agent skill packs must not live under the product tree `ref/`. -/
+def skillPacksUnderProductRef : Bool := false
+
+/-- Clause 4.3 item 4: pure Nix is required for build and packaging of novel components. -/
+def pureNixRequiredForNovelPackaging : Bool := true
+
+/--
+  Live claimed done flags must stay false and must not equal the
+  hypothetical conforming fixture CompCert and bootstrap Bools.
+-/
+def liveClaimedDoneEqualsCanonicalFixture : Bool :=
+  (compCertVerifiedCompilationClaimedDone == canonicalProduct.compCert.ok) &&
+    (slakeBootstrapTypecheckClaimedDone == canonicalProduct.bootstrapTypecheck.ok)
 
 /-!
   Formal Vibefication science cycle (specification 0008). This meaning

@@ -199,4 +199,56 @@ theorem model_and_proofs_without_experiments_fixture_has_no_experiments :
     modelAndProofsWithoutExperimentsFixtureHasNoExperiments :=
   rfl
 
+theorem science_steps_pairwise_distinct : scienceStepsPairwiseDistinct := by
+  dsimp [scienceStepsPairwiseDistinct]
+  decide
+
+theorem mash_science_steps (h : mashScienceSteps) : False :=
+  nomatch h
+
+theorem mash_science_steps_is_false : mashScienceStepsIsFalse :=
+  mash_science_steps
+
+theorem append_left_id (c : ScienceCycle) :
+    ScienceCycle.empty.append c = c :=
+  rfl
+
+theorem append_right_id : ∀ c : ScienceCycle, c.append ScienceCycle.empty = c
+  | .empty => rfl
+  | .cons s rest => congrArg (ScienceCycle.cons s) (append_right_id rest)
+
+theorem append_assoc :
+    ∀ a b c : ScienceCycle, (a.append b).append c = a.append (b.append c)
+  | .empty, _, _ => rfl
+  | .cons s rest, b, c => congrArg (ScienceCycle.cons s) (append_assoc rest b c)
+
+theorem science_cycle_append_left_id : scienceCycleAppendLeftId :=
+  fun c => append_left_id c
+
+theorem science_cycle_append_right_id : scienceCycleAppendRightId :=
+  fun c => append_right_id c
+
+theorem science_cycle_append_assoc : scienceCycleAppendAssoc :=
+  fun a b c => append_assoc a b c
+
+theorem composed_cycle_equals_required_list :
+    composedCycleEqualsRequiredList :=
+  rfl
+
+theorem composed_cycle_contains_all_required :
+    composedCycleContainsAllRequired :=
+  rfl
+
+theorem composed_cycle_conforms : composedCycleConforms :=
+  rfl
+
+theorem tests_only_cycle_does_not_compose :
+    testsOnlyCycleDoesNotCompose :=
+  rfl
+
+theorem science_cycle_composes : scienceCycleComposes :=
+  And.intro composed_cycle_equals_required_list
+    (And.intro composed_cycle_conforms
+      (And.intro tests_only_cycle_does_not_compose mash_science_steps_is_false))
+
 end FormalVibeficationProofs

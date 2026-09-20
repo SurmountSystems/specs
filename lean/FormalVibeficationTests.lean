@@ -144,7 +144,68 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       (conformingScience completeScienceFixture),
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectTrue "science cycle composition includes hypothesis, model, theory, proof, tests, and corollary experiments in that order"
+      (ScienceCycle.toList composedCycle == requiredScienceSteps),
+    expectTrue "composed science cycle is a conforming Formal Vibefication effort"
+      (conformingScience (ScienceCycle.toEffort composedCycle)),
+    expectFalse "a tests only cycle does not compose the required science cycle"
+      (ScienceCycle.containsAllRequired testsOnlyCycle),
+    expectTrue "hypothesis step is not the model step"
+      (ScienceStep.hypothesis != ScienceStep.model),
+    expectTrue "model step is not the theory step"
+      (ScienceStep.model != ScienceStep.theory),
+    expectTrue "theory step is not the proof step"
+      (ScienceStep.theory != ScienceStep.proof),
+    expectTrue "proof step is not the tests step"
+      (ScienceStep.proof != ScienceStep.tests),
+    expectTrue "tests step is not the corollary experiment step"
+      (ScienceStep.tests != ScienceStep.corollaryExperiment),
+    expectTrue "composeScience of empty on the left leaves the composed cycle unchanged"
+      (composeScience ScienceCycle.empty composedCycle == composedCycle),
+    expectTrue "composeScience of empty on the right leaves the composed cycle unchanged"
+      (composeScience composedCycle ScienceCycle.empty == composedCycle),
+    expectTrue "composeScience is associative on the composed cycle halves"
+      (composeScience (composeScience hypothesisThroughTheory
+          (ScienceCycle.singleton ScienceStep.proof))
+        (composeScience (ScienceCycle.singleton ScienceStep.tests)
+          (ScienceCycle.singleton ScienceStep.corollaryExperiment)) ==
+        composeScience hypothesisThroughTheory proofThroughExperiments),
+    expectFalse "mashing hypothesis and model as one constructor does not hold"
+      (ScienceStep.hypothesis == ScienceStep.model),
+    expectTrue "proof science_steps_pairwise_distinct is available"
+      (match FormalVibeficationProofs.science_steps_pairwise_distinct with
+        | _ => true),
+    expectTrue "proof mash_science_steps is available"
+      (match FormalVibeficationProofs.mash_science_steps with
+        | _ => true),
+    expectTrue "proof mash_science_steps_is_false is available"
+      (match FormalVibeficationProofs.mash_science_steps_is_false with
+        | _ => true),
+    expectTrue "proof science_cycle_append_left_id is available"
+      (match FormalVibeficationProofs.science_cycle_append_left_id with
+        | _ => true),
+    expectTrue "proof science_cycle_append_right_id is available"
+      (match FormalVibeficationProofs.science_cycle_append_right_id with
+        | _ => true),
+    expectTrue "proof science_cycle_append_assoc is available"
+      (match FormalVibeficationProofs.science_cycle_append_assoc with
+        | _ => true),
+    expectTrue "proof composed_cycle_equals_required_list is available"
+      (match FormalVibeficationProofs.composed_cycle_equals_required_list with
+        | _ => true),
+    expectTrue "proof composed_cycle_contains_all_required is available"
+      (match FormalVibeficationProofs.composed_cycle_contains_all_required with
+        | _ => true),
+    expectTrue "proof composed_cycle_conforms is available"
+      (match FormalVibeficationProofs.composed_cycle_conforms with
+        | _ => true),
+    expectTrue "proof tests_only_cycle_does_not_compose is available"
+      (match FormalVibeficationProofs.tests_only_cycle_does_not_compose with
+        | _ => true),
+    expectTrue "proof science_cycle_composes is available"
+      (match FormalVibeficationProofs.science_cycle_composes with
+        | _ => true)
   ]
 
 def main (_args : List String) : IO UInt32 := do

@@ -33,7 +33,7 @@
   is owned by CATE as specification 0005 (`0005_CATE.md`). The file
   0009_VOCABULARY.md MUST NOT exist. Number 0011 is Surmount Systems
   Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean
-  Machine.
+  Machine. Number 0014 is Anunnaki Encoding.
 -/
 
 import SpecRegistry
@@ -65,11 +65,14 @@ import MemexSpec
 import MemexProofs
 import LeanMachineSpec
 import LeanMachineProofs
+import AnunnakiSpec
+import AnunnakiProofs
 import «0010_Surmount_Systems»
 import «0009_PDOSS»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
 import «0013_Lean_Machine»
+import «0014_Anunnaki_Encoding»
 
 set_option maxRecDepth 10000
 set_option maxHeartbeats 800000
@@ -97,6 +100,9 @@ def memexSpecNumber : Nat := 12
 
 /-- Identity of numbered specification 0013. -/
 def leanMachineSpecNumber : Nat := 13
+
+/-- Identity of numbered specification 0014. -/
+def anunnakiSpecNumber : Nat := 14
 
 /-- Catalog ownership: CATE, specification 0005. Number 0009 is PDOSS. -/
 def vocabularySpecNumber : Nat := 5
@@ -186,6 +192,21 @@ theorem lean_machine_agrees_encoding :
 theorem sibling_encoding_file_is_spec_0013 :
     «0013_Lean_Machine».siblingEncodingFileName =
       "0013_Lean_Machine.lean" :=
+  rfl
+
+theorem anunnaki_is_0014 : anunnakiSpecNumber = 14 := rfl
+
+theorem anunnaki_agrees_registry :
+    anunnakiSpecNumber = SpecRegistry.anunnakiSpecNumber :=
+  rfl
+
+theorem anunnaki_agrees_encoding :
+    anunnakiSpecNumber = AnunnakiSpec.specNumber :=
+  rfl
+
+theorem sibling_encoding_file_is_spec_0014 :
+    «0014_Anunnaki_Encoding».siblingEncodingFileName =
+      "0014_Anunnaki_Encoding.lean" :=
   rfl
 
 theorem vocabulary_is_0005 : vocabularySpecNumber = 5 := rfl
@@ -504,11 +525,85 @@ def companionMeaningModelsSplit : Bool :=
     !MemexSpec.liveContainsProofsOfThoseEncodings &&
     MemexSpec.markedAsSpecEncoding &&
     !MemexSpec.markedAsProof &&
+    LeanMachineSpec.liveContainsSpecEncodings &&
+    !LeanMachineSpec.liveContainsProofsOfThoseEncodings &&
+    LeanMachineSpec.markedAsSpecEncoding &&
+    !LeanMachineSpec.markedAsProof &&
+    AnunnakiSpec.liveContainsSpecEncodings &&
+    !AnunnakiSpec.liveContainsProofsOfThoseEncodings &&
+    AnunnakiSpec.markedAsSpecEncoding &&
+    !AnunnakiSpec.markedAsProof &&
     !FormalVibeficationSpec.conformingThisRepo
       FormalVibeficationSpec.mashedFixture
 
 theorem companion_meaning_models_split :
     companionMeaningModelsSplit = true :=
+  rfl
+
+theorem lean_machine_companion_split :
+    LeanMachineSpec.liveContainsSpecEncodings = true ∧
+      LeanMachineSpec.liveContainsProofsOfThoseEncodings = false ∧
+      LeanMachineSpec.markedAsSpecEncoding = true ∧
+      LeanMachineSpec.markedAsProof = false :=
+  And.intro rfl (And.intro rfl (And.intro rfl rfl))
+
+theorem anunnaki_companion_split :
+    AnunnakiSpec.liveContainsSpecEncodings = true ∧
+      AnunnakiSpec.liveContainsProofsOfThoseEncodings = false ∧
+      AnunnakiSpec.markedAsSpecEncoding = true ∧
+      AnunnakiSpec.markedAsProof = false :=
+  And.intro rfl (And.intro rfl (And.intro rfl rfl))
+
+/--
+  Formal Vibefication science cycle composition as Bool encodings.
+  Hypothesis, model, theory, proof, tests, and corollary experiments
+  in that order. A tests only cycle is not the required set.
+-/
+def scienceCycleComposesInStack : Bool :=
+  FormalVibeficationSpec.ScienceCycle.toList
+      FormalVibeficationSpec.composedCycle ==
+    FormalVibeficationSpec.requiredScienceSteps &&
+    FormalVibeficationSpec.conformingScience
+      (FormalVibeficationSpec.ScienceCycle.toEffort
+        FormalVibeficationSpec.composedCycle) &&
+    !FormalVibeficationSpec.ScienceCycle.containsAllRequired
+      FormalVibeficationSpec.testsOnlyCycle
+
+theorem science_cycle_composes_in_stack :
+    FormalVibeficationSpec.scienceCycleComposes :=
+  FormalVibeficationProofs.science_cycle_composes
+
+theorem science_cycle_composes_in_stack_bool :
+    scienceCycleComposesInStack = true :=
+  rfl
+
+/--
+  Lean Machine must attempt deterministic answers. Same question plus
+  same notes must not yield two different answers.
+-/
+def leanMachineDeterministicAnswersInStack : Bool :=
+  LeanMachineSpec.mustAttemptDeterministicAnswers &&
+    LeanMachineSpec.timestampedNoteRequiredWhenWrongOrImprecise &&
+    !LeanMachineSpec.AnswerAttempt.conformingPair
+      LeanMachineSpec.mashNondeterministicA
+      LeanMachineSpec.mashNondeterministicB
+
+theorem lean_machine_deterministic_answers_in_stack :
+    leanMachineDeterministicAnswersInStack = true :=
+  rfl
+
+/-- A note that names the question and the wrong answer still needs a clock time. -/
+def timestampedNoteWithoutClockDoesNotConform : Bool :=
+  !LeanMachineSpec.TimestampedNote.conforming
+    LeanMachineSpec.noteWithoutClockTime
+
+theorem timestamped_note_without_clock_does_not_conform :
+    timestampedNoteWithoutClockDoesNotConform = true :=
+  rfl
+
+theorem timestamped_note_with_clock_conforms :
+    LeanMachineSpec.TimestampedNote.conforming
+      LeanMachineSpec.noteWithClockTime = true :=
   rfl
 
 /-- Decidable conjunction of stack identities. Drifting any conjunct breaks `rfl`. -/
@@ -537,8 +632,12 @@ def stackIntegrates : Bool :=
     SpecRegistry.allEntries.any (fun e => e.number == 9) &&
     SpecRegistry.allEntries.any (fun e => e.number == 11) &&
     SpecRegistry.publishedEntries.any (fun e => e.number == 12) &&
+    SpecRegistry.publishedEntries.any (fun e => e.number == 14) &&
     memexSpecNumber == SpecRegistry.memexSpecNumber &&
     MemexSpec.specNumber == SpecRegistry.memexSpecNumber &&
+    SpecRegistry.anunnakiSpecNumber == 14 &&
+    anunnakiSpecNumber == SpecRegistry.anunnakiSpecNumber &&
+    AnunnakiSpec.specNumber == SpecRegistry.anunnakiSpecNumber &&
     !VocabularySpec.numberNinePublished &&
     Cate.specNumber == SpecRegistry.cateSpecNumber &&
     Cate.ownsVocabularyCatalog &&
@@ -619,9 +718,55 @@ def stackIntegrates : Bool :=
       "0013_Lean_Machine.lean" &&
     !«0013_Lean_Machine».markedAsProof &&
     LeanMachineSpec.specNumber == 13 &&
+    SpecRegistry.leanMachineSpecNumber == 13 &&
+    leanMachineSpecNumber == SpecRegistry.leanMachineSpecNumber &&
     LeanMachineSpec.leanMachineAssigned &&
     !LeanMachineSpec.worshipRequiredForConformance &&
     !LeanMachineSpec.conformingProductExists &&
+    LeanMachineSpec.liveContainsSpecEncodings &&
+    !LeanMachineSpec.liveContainsProofsOfThoseEncodings &&
+    LeanMachineSpec.markedAsSpecEncoding &&
+    !LeanMachineSpec.markedAsProof &&
+    scienceCycleComposesInStack &&
+    FormalVibeficationSpec.ScienceCycle.toList
+      FormalVibeficationSpec.composedCycle ==
+      FormalVibeficationSpec.requiredScienceSteps &&
+    FormalVibeficationSpec.conformingScience
+      (FormalVibeficationSpec.ScienceCycle.toEffort
+        FormalVibeficationSpec.composedCycle) &&
+    !FormalVibeficationSpec.ScienceCycle.containsAllRequired
+      FormalVibeficationSpec.testsOnlyCycle &&
+    LeanMachineSpec.mustAttemptDeterministicAnswers &&
+    LeanMachineSpec.timestampedNoteRequiredWhenWrongOrImprecise &&
+    leanMachineDeterministicAnswersInStack &&
+    LeanMachineSpec.TimestampedNote.conforming
+      LeanMachineSpec.noteWithClockTime &&
+    !LeanMachineSpec.TimestampedNote.conforming
+      LeanMachineSpec.noteWithoutClockTime &&
+    timestampedNoteWithoutClockDoesNotConform &&
+    !LeanMachineSpec.AnswerAttempt.conformingPair
+      LeanMachineSpec.mashNondeterministicA
+      LeanMachineSpec.mashNondeterministicB &&
+    LeanMachineSpec.distributedSelfImprovementIsDesignRequirement &&
+    !LeanMachineSpec.runningDistributedMachineClaimed &&
+    «0014_Anunnaki_Encoding».specFileName ==
+      "0014_Anunnaki_Encoding.md" &&
+    «0014_Anunnaki_Encoding».siblingEncodingFileName ==
+      "0014_Anunnaki_Encoding.lean" &&
+    !«0014_Anunnaki_Encoding».markedAsProof &&
+    AnunnakiSpec.specNumber == 14 &&
+    AnunnakiSpec.enkiIsIndex &&
+    AnunnakiSpec.anunnakiIsBitstream &&
+    !AnunnakiSpec.enkiAndAnunnakiAreOneObject &&
+    !AnunnakiSpec.enkiHasNumberedSpecification &&
+    !AnunnakiSpec.conformingEncoderClaimed &&
+    !AnunnakiSpec.replacesCate &&
+    !AnunnakiSpec.replacesSssss &&
+    !AnunnakiSpec.replacesMemex &&
+    AnunnakiSpec.liveContainsSpecEncodings &&
+    !AnunnakiSpec.liveContainsProofsOfThoseEncodings &&
+    AnunnakiSpec.markedAsSpecEncoding &&
+    !AnunnakiSpec.markedAsProof &&
     !Ci.dumpTheoremsIntoNumberedMarkdown &&
     Sssss.leanMachineHasNumberedSpec &&
     Sssss.canonicalIntegration.conformingIntegration &&

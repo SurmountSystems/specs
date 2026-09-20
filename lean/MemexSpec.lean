@@ -75,11 +75,49 @@ def charByte (c : Char) : UInt8 := UInt8.ofNat c.toNat
 def magicBytes : List UInt8 :=
   magicString.toList.map charByte ++ [magicVersionByte]
 
+/-- Uncompressed archive prefix: nine bytes MAJESTIC plus 0x01. -/
+def hasMajesticMagicPrefix (bs : List UInt8) : Bool :=
+  bs.take magicByteCount == magicBytes
+
 def techTreeMagicString : String := "SSTECHTREE01"
 
 def dataRootRel : String := "memex"
 
 def dataRootUsesHome : Bool := true
+
+/-- Typical archive: dataRootRel/service/account.majestic. -/
+def typicalArchiveRel (service account : String) : String :=
+  dataRootRel ++ "/" ++ service ++ "/" ++ account ++ fileExtension
+
+/-- Silent default relative path is not a required layout. -/
+def silentDefaultArchiveRel : String :=
+  dataRootRel ++ "/archive" ++ fileExtension
+
+def silentDefaultArchiveExists : Bool := false
+
+/-- Home scan of export sources does not walk the data root. -/
+structure HomeScan where
+  walksDataRootAsSource : Bool
+  deriving DecidableEq, Repr, BEq
+
+def HomeScan.conforming (s : HomeScan) : Bool :=
+  !s.walksDataRootAsSource
+
+def liveHomeScan : HomeScan :=
+  { walksDataRootAsSource := false }
+
+def mashWalksDataRoot : HomeScan :=
+  { walksDataRootAsSource := true }
+
+/-- Authors MUST NOT require a binary named majestic in place of memex. -/
+def requireBinaryNamedCrate : Bool := false
+
+/-- Pointer: Public Domain Open Source Software is specification 0009. -/
+def pdossSpecNumber : Nat := 9
+
+def inventsSecondPdossSpec : Bool := false
+
+def numberedVocabularyFileMustNotExist : Bool := true
 
 /-- The crate is version 0.1 and still being built. -/
 def proofOfConceptStillBeingBuilt : Bool := true

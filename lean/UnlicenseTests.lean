@@ -150,7 +150,25 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       completeScienceEffortConforms,
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectTrue "Allow plus Unlicense is accepted"
+      (contributionAccepted allowUnlicenseContribution),
+    expectFalse "residual attribution plus Unlicense is refused"
+      (contributionAccepted residualAttributionUnlicenseContribution),
+    expectFalse "dual Allow and residual is refused"
+      (contributionAccepted dualAllowResidualContribution),
+    expectFalse "specific consent is refused"
+      (contributionAccepted specificConsentUnlicenseContribution),
+    expectFalse "unread is refused"
+      (contributionAccepted unreadUnlicenseContribution),
+    expectFalse "mash residual attribution contribution accepted is false"
+      residualAttributionContributionAcceptedBool,
+    expectTrue "United States example class is Allow"
+      (unitedStatesClass == NationalityClass.allow),
+    expectTrue "France example class is residual attribution"
+      (franceClass == NationalityClass.residualAttribution),
+    expectTrue "Australia example class is specific consent"
+      (australiaClass == NationalityClass.specificConsent)
   ]
 
 def main (_args : List String) : IO UInt32 := do

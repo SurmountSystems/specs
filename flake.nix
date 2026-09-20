@@ -247,6 +247,13 @@
 						description = "Lean tests for Lean Machine spec encodings, assignment as specification 0013, and separate proofs (spec 0013)";
 					};
 
+					anunnaki_tests = mkLeanBin {
+						pname = "anunnaki_tests";
+						lakeTarget = "anunnaki_tests";
+						binName = "anunnaki_tests";
+						description = "Lean tests for Anunnaki Encoding spec encodings, assignment as specification 0014, and separate proofs (spec 0014)";
+					};
+
 					# Writer and reader of .sstt files (spec 0011 format, Lake package).
 					sstt_tests = mkLeanBin {
 						pname = "sstt_tests";
@@ -327,7 +334,7 @@
 					};
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests anunnaki_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report;
 					default = spec_check;
 				}
 			);
@@ -611,6 +618,19 @@
 								echo ok > "$out/result"
 							'';
 
+					anunnaki_tests =
+						pkgs.runCommand "anunnaki_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.anunnaki_tests
+								];
+							}
+							''
+								anunnaki_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
 					# .sstt writer and reader contracts, including --decode with
 					# and without REPO_ROOT; not a second markdown linter.
 					sstt_tests =
@@ -784,6 +804,7 @@
 						tech_tree_tests
 						memex_tests
 						lean_machine_tests
+						anunnaki_tests
 						sstt_tests
 						sstt_write
 						repo_links_tests

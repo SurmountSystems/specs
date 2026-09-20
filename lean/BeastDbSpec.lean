@@ -87,8 +87,56 @@ def languageGcWire : LanguageClaim :=
   { languageCanonical with wire := gcWire }
 
 /-!
+  Clause 3.6 and 4.2: ACID as four conjuncts in the meaning model.
+  This is not a claim that product ACID proofs exist.
+-/
+
+structure AcidClaim where
+  atomicity : Bool
+  consistency : Bool
+  isolation : Bool
+  durability : Bool
+  deriving DecidableEq, Repr, BEq
+
+def AcidClaim.ok (c : AcidClaim) : Bool :=
+  c.atomicity && c.consistency && c.isolation && c.durability
+
+def acidCanonical : AcidClaim :=
+  { atomicity := true
+    consistency := true
+    isolation := true
+    durability := true }
+
+def acidMissingIsolation : AcidClaim :=
+  { acidCanonical with isolation := false }
+
+/-!
+  Clause 3.7 and 4.2 item 2: reader and writer progress does not depend on
+  another thread releasing a mutex. The durable map MUST be that trie.
+-/
+
+structure TrieProgressClaim where
+  durableMapIsTrie : Bool
+  progressIndependentOfMutexRelease : Bool
+  deriving DecidableEq, Repr, BEq
+
+def TrieProgressClaim.ok (t : TrieProgressClaim) : Bool :=
+  t.durableMapIsTrie && t.progressIndependentOfMutexRelease
+
+def trieProgressCanonical : TrieProgressClaim :=
+  { durableMapIsTrie := true
+    progressIndependentOfMutexRelease := true }
+
+def trieProgressMutexDependent : TrieProgressClaim :=
+  { trieProgressCanonical with progressIndependentOfMutexRelease := false }
+
+def trieProgressNotTrie : TrieProgressClaim :=
+  { trieProgressCanonical with durableMapIsTrie := false }
+
+/-!
   Clause 4.2: proven ACID, tries that do not use locks, SWMR required, more than
   one writer on disjoint leaves optional (MAY), fencing by generation required.
+  Writers MUST NOT share a leaf when more than one writer is present.
 -/
 
 structure ConcurrencyClaim where
@@ -97,11 +145,14 @@ structure ConcurrencyClaim where
   swmr : Bool
   generationFenced : Bool
   multiWriterDisjointLeaves : Bool
+  trie : TrieProgressClaim
+  writersShareLeaf : Bool
   deriving DecidableEq, Repr, BEq
 
-/-- Multi writer is ignored by the required conjuncts (MAY). -/
+/-- Multi writer is ignored by the required conjuncts (MAY). Shared leaf fails. -/
 def ConcurrencyClaim.requiredOk (c : ConcurrencyClaim) : Bool :=
-  c.provenAcid && c.lockFreeTries && c.swmr && c.generationFenced
+  c.provenAcid && c.lockFreeTries && c.swmr && c.generationFenced &&
+    c.trie.ok && !c.writersShareLeaf
 
 def multiWriterRequiredForConformance : Bool := false
 
@@ -110,7 +161,9 @@ def concurrencyCanonical : ConcurrencyClaim :=
     lockFreeTries := true
     swmr := true
     generationFenced := true
-    multiWriterDisjointLeaves := false }
+    multiWriterDisjointLeaves := false
+    trie := trieProgressCanonical
+    writersShareLeaf := false }
 
 def concurrencyWithMultiWriter : ConcurrencyClaim :=
   { concurrencyCanonical with multiWriterDisjointLeaves := true }
@@ -127,9 +180,66 @@ def concurrencyNoSwmr : ConcurrencyClaim :=
 def concurrencyNoFence : ConcurrencyClaim :=
   { concurrencyCanonical with generationFenced := false }
 
+def concurrencyMutexDependentTrie : ConcurrencyClaim :=
+  { concurrencyCanonical with trie := trieProgressMutexDependent }
+
+def concurrencySharedLeaf : ConcurrencyClaim :=
+  { concurrencyCanonical with
+      multiWriterDisjointLeaves := true
+      writersShareLeaf := true }
+
+def sharedLeafWritersDoNotConform : Prop :=
+  concurrencySharedLeaf.requiredOk = false
+
+/-!
+  Clauses 3.14, 3.15, and 4.3 item 4: dense LanguageID and WordID in the store.
+  Density here is store identity, not SSSSS 2^64 sequential assignment.
+  A Unicode code point used as the primary key does not conform.
+-/
+
+inductive IdentifierKind where
+  | dense
+  | unicodeCodePoint
+  deriving DecidableEq, Repr, BEq
+
+def IdentifierKind.ok : IdentifierKind → Bool
+  | .dense => true
+  | .unicodeCodePoint => false
+
+def denseIdentifierFixture : IdentifierKind := .dense
+
+def unicodeCodePointPrimaryKeyFixture : IdentifierKind := .unicodeCodePoint
+
+def unicodeCodePointIsNotPrimaryKey : Prop :=
+  IdentifierKind.ok unicodeCodePointPrimaryKeyFixture = false
+
+structure PersistIdentityClaim where
+  languageIdKind : IdentifierKind
+  wordIdKind : IdentifierKind
+  persistLanguageId : Bool
+  persistWordId : Bool
+  deriving DecidableEq, Repr, BEq
+
+def PersistIdentityClaim.ok (p : PersistIdentityClaim) : Bool :=
+  p.languageIdKind.ok && p.wordIdKind.ok && p.persistLanguageId && p.persistWordId
+
+def persistIdentityCanonical : PersistIdentityClaim :=
+  { languageIdKind := denseIdentifierFixture
+    wordIdKind := denseIdentifierFixture
+    persistLanguageId := true
+    persistWordId := true }
+
+def persistIdentityUnicodePrimaryKey : PersistIdentityClaim :=
+  { persistIdentityCanonical with
+      languageIdKind := unicodeCodePointPrimaryKeyFixture
+      wordIdKind := unicodeCodePointPrimaryKeyFixture }
+
 /-!
   Clause 4.3: mmap, SIMD, zerocopy, LanguageID, WordID, Rosetta.
+  A bounce buffer MUST NOT be required for a mapped read.
 -/
+
+def bounceBufferRequiredForMappedRead : Bool := false
 
 structure LayoutClaim where
   mmap : Bool
@@ -138,10 +248,12 @@ structure LayoutClaim where
   languageId : Bool
   wordId : Bool
   rosetta : Bool
+  bounceBufferRequiredForMappedRead : Bool
   deriving DecidableEq, Repr, BEq
 
 def LayoutClaim.ok (l : LayoutClaim) : Bool :=
-  l.mmap && l.simd && l.zerocopy && l.languageId && l.wordId && l.rosetta
+  l.mmap && l.simd && l.zerocopy && l.languageId && l.wordId && l.rosetta &&
+    !l.bounceBufferRequiredForMappedRead
 
 def layoutCanonical : LayoutClaim :=
   { mmap := true
@@ -149,10 +261,14 @@ def layoutCanonical : LayoutClaim :=
     zerocopy := true
     languageId := true
     wordId := true
-    rosetta := true }
+    rosetta := true
+    bounceBufferRequiredForMappedRead := false }
 
 def layoutNoMmap : LayoutClaim :=
   { layoutCanonical with mmap := false }
+
+def layoutBounceRequired : LayoutClaim :=
+  { layoutCanonical with bounceBufferRequiredForMappedRead := true }
 
 /-!
   Clause 4.4: schema mandatory, two modes, every migration proven.
@@ -299,6 +415,8 @@ def carbonadoInScope : Bool := false
 structure ClaimedProduct where
   language : LanguageClaim
   concurrency : ConcurrencyClaim
+  acid : AcidClaim
+  identity : PersistIdentityClaim
   layout : LayoutClaim
   schema : SchemaClaim
   access : AccessClaim
@@ -309,6 +427,8 @@ structure ClaimedProduct where
 def ClaimedProduct.conforms (p : ClaimedProduct) : Bool :=
   p.language.ok &&
     p.concurrency.requiredOk &&
+    p.acid.ok &&
+    p.identity.ok &&
     p.layout.ok &&
     p.schema.ok &&
     p.access.ok &&
@@ -318,6 +438,8 @@ def ClaimedProduct.conforms (p : ClaimedProduct) : Bool :=
 def canonicalProduct : ClaimedProduct :=
   { language := languageCanonical
     concurrency := concurrencyCanonical
+    acid := acidCanonical
+    identity := persistIdentityCanonical
     layout := layoutCanonical
     schema := schemaCanonical
     access := accessCanonical
@@ -344,6 +466,21 @@ def productNoAcid : ClaimedProduct :=
 
 def productOptionalMultiWriter : ClaimedProduct :=
   { canonicalProduct with concurrency := concurrencyWithMultiWriter }
+
+def productMissingIsolation : ClaimedProduct :=
+  { canonicalProduct with acid := acidMissingIsolation }
+
+def productUnicodePrimaryKey : ClaimedProduct :=
+  { canonicalProduct with identity := persistIdentityUnicodePrimaryKey }
+
+def productSharedLeaf : ClaimedProduct :=
+  { canonicalProduct with concurrency := concurrencySharedLeaf }
+
+def productMutexDependentTrie : ClaimedProduct :=
+  { canonicalProduct with concurrency := concurrencyMutexDependentTrie }
+
+def productBounceRequired : ClaimedProduct :=
+  { canonicalProduct with layout := layoutBounceRequired }
 
 /-!
   Formal Vibefication science cycle (specification 0008). This meaning

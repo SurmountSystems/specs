@@ -196,6 +196,159 @@ def rustElevationProcessSpecifiedHere : Bool := false
 
 def conformingCiProductClaimed : Bool := false
 
+/-- Public Domain Open Source Software (PDOSS) is specification 0009. Unlicense remains the license. -/
+def pdossSpecNumber : Nat := 9
+
+def unlicenseRemainsTheLicense : Bool := true
+
+/-- Spec encodings declare what must be true. Proofs live in a separate module. -/
+def specEncodingsStateWhatMustBeTrue : Bool := true
+
+def proofsLiveInSeparateModule : Bool := true
+
+def humanMarkdownIsTheHumanContract : Bool := true
+
+def humanMarkdownSubstitutesForLeanSpecEncoding : Bool := false
+
+def leanProofIsTheSpec : Bool := false
+
+/-- Four layers. Distinct constructors state the split. -/
+inductive Layer where
+  | humanMarkdownContract
+  | leanSpecEncoding
+  | leanProof
+  | productImplementation
+  deriving DecidableEq, Repr, BEq
+
+/-- Pairwise distinct layers, stated as a proposition. -/
+def layersPairwiseDistinct : Prop :=
+  Layer.humanMarkdownContract ≠ Layer.leanSpecEncoding ∧
+    Layer.humanMarkdownContract ≠ Layer.leanProof ∧
+    Layer.humanMarkdownContract ≠ Layer.productImplementation ∧
+    Layer.leanSpecEncoding ≠ Layer.leanProof ∧
+    Layer.leanSpecEncoding ≠ Layer.productImplementation ∧
+    Layer.leanProof ≠ Layer.productImplementation
+
+/-- Layout of one Lean module relative to the split. -/
+structure LeanModuleRole where
+  moduleName : String
+  containsSpecEncodings : Bool
+  containsProofsOfThoseEncodings : Bool
+  markedAsSpecEncoding : Bool
+  markedAsProof : Bool
+  deriving DecidableEq, Repr, BEq
+
+/-- A mash that hides the split: encodings and their proofs in one module. -/
+def hidesSplit (m : LeanModuleRole) : Bool :=
+  m.containsSpecEncodings && m.containsProofsOfThoseEncodings
+
+/-- Conforming for this specifications repository. -/
+def conformingThisRepo (m : LeanModuleRole) : Bool :=
+  !hidesSplit m &&
+    (!m.containsSpecEncodings || (m.markedAsSpecEncoding && !m.markedAsProof)) &&
+    (!m.containsProofsOfThoseEncodings || (m.markedAsProof && !m.markedAsSpecEncoding))
+
+def specEncodingFixture : LeanModuleRole :=
+  { moduleName := "CiSpec"
+    containsSpecEncodings := true
+    containsProofsOfThoseEncodings := false
+    markedAsSpecEncoding := true
+    markedAsProof := false }
+
+def proofFixture : LeanModuleRole :=
+  { moduleName := "CiProofs"
+    containsSpecEncodings := false
+    containsProofsOfThoseEncodings := true
+    markedAsSpecEncoding := false
+    markedAsProof := true }
+
+/-- Fixture: spec encodings and proofs mashed in one module. -/
+def mashedFixture : LeanModuleRole :=
+  { moduleName := "MashedSpecAndProof"
+    containsSpecEncodings := true
+    containsProofsOfThoseEncodings := true
+    markedAsSpecEncoding := true
+    markedAsProof := true }
+
+/-- Stated: the mashed fixture does not conform here. -/
+def mashedIsNonconformingThisRepo : Prop :=
+  conformingThisRepo mashedFixture = false
+
+/-- Stated: separate marked modules conform, and they are not the same file. -/
+def separateModulesConformThisRepo : Prop :=
+  conformingThisRepo specEncodingFixture = true ∧
+    conformingThisRepo proofFixture = true ∧
+    specEncodingFixture.moduleName ≠ proofFixture.moduleName
+
+/-- Stated: spec encoding is not the proof. -/
+def mashSpecAndProof : Prop :=
+  Layer.leanSpecEncoding = Layer.leanProof
+
+def mashSpecAndProofIsFalse : Prop :=
+  mashSpecAndProof → False
+
+/--
+  Product implementation in this repository: flake checks, Lake tests, and
+  the GitHub Actions workflow. That layer is not a second markdown linter.
+-/
+inductive ImplementationKind where
+  | flakeCheck
+  | lakeTest
+  | githubActionsWorkflow
+  deriving DecidableEq, Repr, BEq
+
+def ImplementationKind.isProductImplementation : ImplementationKind → Bool
+  | .flakeCheck => true
+  | .lakeTest => true
+  | .githubActionsWorkflow => true
+
+def ImplementationKind.isSecondMarkdownLinter : ImplementationKind → Bool
+  | .flakeCheck => false
+  | .lakeTest => false
+  | .githubActionsWorkflow => false
+
+def implementationIsThirdLayer : Bool :=
+  Layer.leanSpecEncoding != Layer.productImplementation &&
+    Layer.leanProof != Layer.productImplementation &&
+    Layer.humanMarkdownContract != Layer.productImplementation
+
+def implementationIsSecondMarkdownLinter : Bool := false
+
+def namedGateIsNixFlakeCheck : Bool :=
+  thisRepoNamedGate == "nix flake check \"path:$PWD\" --print-build-logs"
+
+def writeShellApplicationCheckersAllowed : Bool := false
+
+def writeShellApplicationIsNamedGate : Bool := false
+
+def specCheckIsMarkdownForm : Bool := true
+
+def specCheckIsMeaningSpecEncoding : Bool := false
+
+/--
+  Lean spec_check is numbered markdown form. Pure Nix whitespace is form
+  across the tree. Dual coverage on numbered specifications is required.
+  Neither authority is a meaning encoding.
+-/
+inductive FormAuthority where
+  | leanSpecCheck
+  | pureNixWhitespace
+  deriving DecidableEq, Repr, BEq
+
+def FormAuthority.isForm : FormAuthority → Bool
+  | .leanSpecCheck => true
+  | .pureNixWhitespace => true
+
+def FormAuthority.isMeaningEncoding : FormAuthority → Bool
+  | .leanSpecCheck => false
+  | .pureNixWhitespace => false
+
+def dualWhitespaceCoverageRequired : Bool := true
+
+def pushOnRed : CommitAttempt := commitOnRed
+
+def pushOnGreen : CommitAttempt := commitOnGreen
+
 /-- This CI meaning model requires the Formal Vibefication science cycle. -/
 def requiresScienceCycle : Bool := true
 

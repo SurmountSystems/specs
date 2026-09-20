@@ -37,7 +37,7 @@ structure ProvenClaim where
 
 /--
   Catalog of proven False mash claims that the README table must match.
-  Names match theorems in FormalVibeficationProofs, UnlicenseProofs, and Surmount.
+  Names match theorems in FormalVibeficationProofs, UnlicenseProofs, Surmount, and AnunnakiProofs.
 -/
 def provenClaims : List ProvenClaim :=
   [
@@ -58,10 +58,13 @@ def provenClaims : List ProvenClaim :=
       kind := .intentionalNonconformance },
     { file := "lean/Surmount.lean"
       claim := "mash_layers_inconsistent"
+      kind := .intentionalNonconformance },
+    { file := "lean/AnunnakiProofs.lean"
+      claim := "mash_spec_and_proof_is_false"
       kind := .intentionalNonconformance }
   ]
 
-theorem proven_claim_count : provenClaims.length = 6 :=
+theorem proven_claim_count : provenClaims.length = 7 :=
   rfl
 
 def existsAny : Bool :=

@@ -75,6 +75,68 @@ theorem leftover_unstack_phrases_are :
         "fully type checking"] :=
   rfl
 
+theorem leftover_constructors_map_to_floor_list :
+    leftoverUnstackPhraseConstructors.map LeftoverUnstackPhrase.surface =
+      leftoverUnstackPhrases :=
+  rfl
+
+theorem leftover_lock_free_tries_fails_floor :
+    leftoverUnstackFloorConforms leftoverLockFreeTriesProse = false :=
+  by native_decide
+
+theorem leftover_non_markdown_fails_floor :
+    containsLeftoverUnstackPhrase leftoverNonMarkdownProse = true :=
+  by native_decide
+
+theorem leftover_must_like_fails_floor :
+    containsLeftoverUnstackPhrase leftoverMustLikeProse = true :=
+  by native_decide
+
+theorem leftover_lf_only_fails_floor :
+    containsLeftoverUnstackPhrase leftoverLfOnlyProse = true :=
+  by native_decide
+
+theorem leftover_fully_type_checking_fails_floor :
+    containsLeftoverUnstackPhrase leftoverFullyTypeCheckingProse = true :=
+  by native_decide
+
+theorem high_assurance_meets_floor :
+    leftoverUnstackFloorConforms allowedHighAssuranceProse = true :=
+  by native_decide
+
+theorem three_bit_meets_floor :
+    leftoverUnstackFloorConforms allowedThreeBitProse = true :=
+  by native_decide
+
+theorem time_series_meets_floor :
+    leftoverUnstackFloorConforms allowedTimeSeriesProse = true :=
+  by native_decide
+
+theorem high_assurance_is_allowed_spaced :
+    containsAllowedSpacedPhrase allowedHighAssuranceProse = true :=
+  by native_decide
+
+theorem rephrased_lock_tries_meets_floor :
+    leftoverUnstackFloorConforms rephrasedLockTriesProse = true :=
+  by native_decide
+
+theorem mash_leftover_unstack_as_conforming
+    (h : leftoverUnstackFloorConforms leftoverLockFreeTriesProse = true) :
+    False := by
+  have hNo : leftoverUnstackFloorConforms leftoverLockFreeTriesProse = false :=
+    by native_decide
+  rw [hNo] at h
+  exact Bool.noConfusion h
+
+theorem hyphen_delete_lock_free_tries_is_leftover :
+    hyphenDeleteIsLeftoverUnstack "lock-free tries" "lock free tries" = true :=
+  by native_decide
+
+theorem rephrase_lock_free_tries_is_not_leftover :
+    hyphenDeleteIsLeftoverUnstack "lock-free tries"
+        "tries that do not use locks" = false :=
+  by native_decide
+
 theorem leftover_unstack_floor_is_not_complete_english :
     leftoverUnstackFloorIsCompleteEnglish = false :=
   rfl
@@ -117,6 +179,32 @@ theorem spec_0005_requires_planned_residual_heading :
 
 theorem spec_0006_requires_planned_residual_heading :
     plannedTokenRequiresResidualHeading 6 = true :=
+  rfl
+
+theorem planned_without_heading_fails : plannedWithoutHeadingFails :=
+  rfl
+
+theorem planned_with_heading_ok : plannedWithHeadingOk :=
+  rfl
+
+theorem spec_0000_planned_without_heading_ok :
+    spec0000PlannedWithoutHeadingOk :=
+  rfl
+
+theorem no_planned_no_heading_ok :
+    noPlannedNoHeading.conforming = true :=
+  rfl
+
+theorem residual_heading_six :
+    isResidualHeadingTitle "## 6. Residual" = true :=
+  rfl
+
+theorem residual_heading_plain :
+    isResidualHeadingTitle "## Residual" = true :=
+  rfl
+
+theorem half_label_is_not_residual_heading :
+    isResidualHeadingTitle "Keep or replace coined labels?" = false :=
   rfl
 
 theorem new_phrase_without_definition_not_conforming :

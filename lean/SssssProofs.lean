@@ -76,6 +76,34 @@ theorem sequential_identity_ok :
 theorem hash_as_primary_identity_not_ok :
     IdentityKind.ok .hashDigest = false := rfl
 
+theorem language_id_well_formed_in_range :
+    LanguageId.wellFormed languageIdInRange = true := by
+  decide
+
+theorem language_id_out_of_range_not_well_formed :
+    LanguageId.wellFormed languageIdOutOfRange = false := by
+  decide
+
+theorem word_id_well_formed_in_range :
+    WordId.wellFormed wordIdInRange = true := by
+  decide
+
+theorem word_id_out_of_range_not_well_formed :
+    WordId.wellFormed wordIdOutOfRange = false := by
+  decide
+
+theorem auxiliary_index_allowed_ok :
+    auxiliaryIndexAllowed.ok = true := by
+  decide
+
+theorem mash_auxiliary_replaces_sequential_not_ok :
+    mashAuxiliaryReplacesSequential.ok = false := by
+  decide
+
+theorem mash_auxiliary_replaces_sequential_is_false
+    (h : mashAuxiliaryReplacesSequential.ok = true) : False := by
+  simp [mash_auxiliary_replaces_sequential_not_ok] at h
+
 theorem language_id_is_64_bit : languageIdBitWidth = 64 := rfl
 
 theorem word_id_is_64_bit : wordIdBitWidth = 64 := rfl
@@ -109,6 +137,20 @@ theorem same_config_same_emit
 
 theorem emit_does_not_use_hash_identity :
     emitUsesHashIdentity = false := rfl
+
+theorem missing_mapping_emits_named_hole :
+    missingMappingEmitsNamedHoleOk = true := by
+  decide
+
+theorem missing_mapping_fails :
+    missingMappingFailsOk = true := by
+  decide
+
+theorem named_hole_does_not_invent_hash :
+    (EmitOutcome.namedHole ⟨99⟩).inventsHashIdentity = false := rfl
+
+theorem fail_token_does_not_invent_hash :
+    (EmitOutcome.failToken ⟨99⟩).inventsHashIdentity = false := rfl
 
 theorem neural_reduced_acceptable : neuralReduced.acceptable = true := by
   decide
@@ -211,6 +253,39 @@ theorem mash_claimed_integration_neural_while_symbolic_is_false :
 theorem mash_claimed_neural_while_symbolic_can_is_false
     (h : mashNeuralWhileSymbolicCan.conformingIntegration = true) : False := by
   simp [mash_claimed_integration_neural_while_symbolic_is_false] at h
+
+theorem mash_spend_neural_when_symbolic_can_is_false :
+    mashSpendNeuralWhenSymbolicCanIsFalse := by
+  intro h
+  rcases h with ⟨hRep, hConf⟩
+  simp [mashSpendNeuralWhenSymbolicCanAction, workIsRepeated,
+    HarnessAction.conforming] at hRep hConf
+
+theorem canonical_harness_action_conforms :
+    canonicalHarnessAction.conforming = true := by
+  decide
+
+theorem neural_when_symbolic_cannot_conforms :
+    neuralWhenSymbolicCannotAction.conforming = true := by
+  decide
+
+theorem mash_harness_action_does_not_conform :
+    mashSpendNeuralWhenSymbolicCanAction.conforming = false := by
+  decide
+
+theorem conforming_when_symbolic_can_does_not_spend_neural
+    (a : HarnessAction)
+    (hConf : a.conforming = true)
+    (hSym : a.symbolicCanComplete = true) :
+    a.neuralSpend = false := by
+  unfold HarnessAction.conforming workIsRepeated at hConf
+  rw [hSym] at hConf
+  simp at hConf
+  exact hConf
+
+theorem mash_symbolic_not_exposed_is_false :
+    mashSymbolicNotExposed.conformingIntegration = false := by
+  decide
 
 theorem claimed_integration_that_uses_neural_while_symbolic_can
     (c : IntegrationClaim)

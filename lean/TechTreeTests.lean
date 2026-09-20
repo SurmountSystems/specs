@@ -142,7 +142,69 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       completeScienceEffortConforms,
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectTrue "numberedSpec kind code inverse"
+      (nodeKindOfCode (nodeKindCode .numberedSpec) == some .numberedSpec),
+    expectTrue "siblingEncoding kind code inverse"
+      (nodeKindOfCode (nodeKindCode .siblingEncoding) == some .siblingEncoding),
+    expectTrue "refPin kind code inverse"
+      (nodeKindOfCode (nodeKindCode .refPin) == some .refPin),
+    expectTrue "sourceNote kind code inverse"
+      (nodeKindOfCode (nodeKindCode .sourceNote) == some .sourceNote),
+    expectTrue "skill kind code inverse"
+      (nodeKindOfCode (nodeKindCode .skill) == some .skill),
+    expectTrue "otherCited kind code inverse"
+      (nodeKindOfCode (nodeKindCode .otherCited) == some .otherCited),
+    expectTrue "node kind code 0 is none" (nodeKindOfCode 0 == none),
+    expectTrue "node kind code 7 is none" (nodeKindOfCode 7 == none),
+    expectTrue "link edge kind code inverse"
+      (edgeKindOfCode (edgeKindCode .link) == some .link),
+    expectTrue "cites edge kind code inverse"
+      (edgeKindOfCode (edgeKindCode .cites) == some .cites),
+    expectTrue "siblingEncoding edge kind code inverse"
+      (edgeKindOfCode (edgeKindCode .siblingEncoding) == some .siblingEncoding),
+    expectTrue "pin edge kind code inverse"
+      (edgeKindOfCode (edgeKindCode .pin) == some .pin),
+    expectTrue "edge kind code 0 is none" (edgeKindOfCode 0 == none),
+    expectTrue "edge kind code 5 is none" (edgeKindOfCode 5 == none),
+    expectFalse "duplicate node ids are not graphOk"
+      (graphOk duplicateIdNodes fixtureChain),
+    expectFalse "missing edge endpoint is not graphOk"
+      (graphOk [fixtureNode0, fixtureNode5] missingEndpointEdges),
+    expectFalse "non ASCII path is not graphOk"
+      (graphOk [nonAsciiPathNode] []),
+    expectTrue "well formed two node chain is graphOk"
+      (graphOk [fixtureNode0, fixtureNode5] fixtureChain),
+    expectTrue "leftover trailing byte after empty graph is rejected"
+      (decodeGraph (magicBytes ++ [0, 0] ++ [0x00]) == none),
+    expectTrue "empty graph without leftover still decodes"
+      (decodeGraph (magicBytes ++ [0, 0]) == some ([], [])),
+    expectTrue "noncanonical 0xFE CompactSize 65535 is rejected"
+      (decodeCompactSize [0xFE, 0xFF, 0xFF, 0x00, 0x00] == none),
+    expectTrue "named golden 65536 still encodes as 0xFE plus four payload bytes"
+      (bytesEq (encodeCompactSize 65536) [0xFE, 0x00, 0x00, 0x01, 0x00]),
+    expectTrue "CompactSize tail 0 keeps 0xAA"
+      (decodeCompactSize (encodeCompactSize 0 ++ [0xAA]) == some (0, [0xAA])),
+    expectTrue "CompactSize tail 252 keeps 0xAA"
+      (decodeCompactSize (encodeCompactSize 252 ++ [0xAA]) == some (252, [0xAA])),
+    expectTrue "CompactSize tail 253 keeps 0xAA"
+      (decodeCompactSize (encodeCompactSize 253 ++ [0xAA]) == some (253, [0xAA])),
+    expectTrue "CompactSize tail 65535 keeps 0xAA"
+      (decodeCompactSize (encodeCompactSize 65535 ++ [0xAA]) == some (65535, [0xAA])),
+    expectTrue "CompactSize tail 65536 keeps 0xAA"
+      (decodeCompactSize (encodeCompactSize 65536 ++ [0xAA]) == some (65536, [0xAA])),
+    expectTrue "withdrawn 0009_VOCABULARY.md is unpublished"
+      (unpublishedBasename "0009_VOCABULARY.md"),
+    expectTrue "withdrawn 0005_fargo.md is unpublished"
+      (unpublishedBasename "0005_fargo.md"),
+    expectTrue "withdrawn 0011_Unlicense.md is unpublished"
+      (unpublishedBasename "0011_Unlicense.md"),
+    expectTrue "withdrawn 0009_Unlicense.md is unpublished"
+      (unpublishedBasename "0009_Unlicense.md"),
+    expectFalse "0009_PDOSS.md is not unpublished"
+      (unpublishedBasename "0009_PDOSS.md"),
+    expectFalse "0012_Majestic_Memex.md is not unpublished"
+      (unpublishedBasename "0012_Majestic_Memex.md")
   ]
 
 def main (_args : List String) : IO UInt32 := do

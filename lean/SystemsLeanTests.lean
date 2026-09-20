@@ -8,8 +8,17 @@
 -/
 
 import SystemsLean
+import SystemsLeanProofs
 
 open SystemsLean
+
+/-- Tests-only mash fixture: hosting from generated C does not satisfy bootstrap. -/
+def mashSelfHostFromCSatisfiesBootstrapFixture : Bool :=
+  selfHostFromGeneratedCSatisfiesTypecheck
+
+/-- Elaboration of the mash theorem from Proofs. -/
+def mashSelfHostTheorem : mashSelfHostFromCSatisfiesBootstrapIsFalse :=
+  mash_self_host_from_c_satisfies_bootstrap_is_false
 
 structure Case where
   name : String
@@ -24,6 +33,12 @@ def expectFalse (name : String) (b : Bool) : Case :=
   { name := name, ok := !b, detail := if !b then "" else "expected false" }
 
 def expectEqNat (name : String) (got want : Nat) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectEqString (name : String) (got want : String) : Case :=
   if got == want then
     { name := name, ok := true }
   else
@@ -212,7 +227,64 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       (conformingScience completeScienceFixture),
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectTrue "required CompCert tool is ccomp"
+      (requiredCompCertTool == "ccomp"),
+    expectTrue "CompCert uses ccomp of the freestanding C emit"
+      compCertUsesCcomp,
+    expectTrue "performed CompCert step uses ccomp of freestanding C"
+      compCertPerformed.usesCcompOfFreestandingC,
+    expectFalse "gcc is not CompCert ccomp"
+      compCertWrongTool.ok,
+    expectFalse "ccomp of LLVM IR is not the required emit"
+      compCertWrongEmit.ok,
+    expectFalse "live CompCert verified compilation is not claimed done"
+      compCertVerifiedCompilationClaimedDone,
+    expectTrue "conforming bootstrap typecheck includes theorems"
+      bootstrapTypecheckIncludesTheorems,
+    expectTrue "done bootstrap fixture includes theorems"
+      bootstrapTypecheckDone.includesTheorems,
+    expectFalse "bootstrap without theorems is not ok"
+      bootstrapWithoutTheorems.ok,
+    expectFalse "live Slake bootstrap typecheck is not claimed done"
+      slakeBootstrapTypecheckClaimedDone,
+    expectFalse "self host from generated C does not satisfy bootstrap typecheck"
+      selfHostFromGeneratedCSatisfiesTypecheck,
+    expectFalse "mash SelfHost From generated C satisfies bootstrap"
+      mashSelfHostFromCSatisfiesBootstrapFixture,
+    expectFalse "wrong CompCert tool does not conform"
+      productWrongCompCertTool.conforms,
+    expectFalse "wrong CompCert emit does not conform"
+      productWrongCompCertEmit.conforms,
+    expectFalse "bootstrap without theorems does not conform"
+      productBootstrapWithoutTheorems.conforms,
+    expectEqNat "RSI is specification 0006" rsiSpecNumber 6,
+    expectFalse "RSI is not a compiler requirement of Systems Lean"
+      rsiIsCompilerRequirement,
+    expectEqNat "Lean Machine is specification 0013" leanMachineSpecNumber 13,
+    expectEqString "Lean Machine file is 0013_Lean_Machine.md"
+      leanMachineSpecFileName "0013_Lean_Machine.md",
+    expectFalse "CompCert is not Unlicense" compCertIsUnlicense,
+    expectFalse "spec_check is not a meaning spec encoding"
+      specCheckIsMeaningSpecEncoding,
+    expectTrue "byte identity of emit is required for a conforming product"
+      byteIdentityRequiredForConformingProduct,
+    expectFalse "byte identity of emit is not claimed true"
+      byteIdentityOfEmitClaimedTrue,
+    expectFalse "Systems Lean and Slake are not ready for use"
+      systemsLeanAndSlakeReadyForUse,
+    expectFalse "Systems Lean and Slake must not be read as never started"
+      systemsLeanAndSlakeNeverStarted,
+    expectFalse "agent skill packs must not live under product ref/"
+      skillPacksUnderProductRef,
+    expectTrue "pure Nix is required for novel packaging"
+      pureNixRequiredForNovelPackaging,
+    expectFalse "live claimed done flags must not equal the canonical fixture"
+      liveClaimedDoneEqualsCanonicalFixture,
+    expectTrue "live CompCert claimed done differs from canonical CompCert ok"
+      (compCertVerifiedCompilationClaimedDone != canonicalProduct.compCert.ok),
+    expectTrue "live bootstrap claimed done differs from canonical bootstrap ok"
+      (slakeBootstrapTypecheckClaimedDone != canonicalProduct.bootstrapTypecheck.ok)
   ]
 
 def main (_args : List String) : IO UInt32 := do

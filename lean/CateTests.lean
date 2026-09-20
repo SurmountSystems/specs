@@ -88,6 +88,50 @@ def runCases : List Case :=
     expectTrue "rephrased hyphen is conforming"
       HyphenRepair.rephrasedOrdinaryEnglish.conforming,
     expectEqNat "five leftover unstack phrases" leftoverUnstackPhrases.length 5,
+    expectTrue "leftover constructors map to the floor list"
+      (leftoverUnstackPhraseConstructors.map LeftoverUnstackPhrase.surface ==
+        leftoverUnstackPhrases),
+    expectTrue "lock free tries prose fails leftover unstack floor"
+      (containsLeftoverUnstackPhrase leftoverLockFreeTriesProse),
+    expectTrue "non markdown prose fails leftover unstack floor"
+      (containsLeftoverUnstackPhrase leftoverNonMarkdownProse),
+    expectTrue "must like prose fails leftover unstack floor"
+      (containsLeftoverUnstackPhrase leftoverMustLikeProse),
+    expectTrue "LF only prose fails leftover unstack floor"
+      (containsLeftoverUnstackPhrase leftoverLfOnlyProse),
+    expectTrue "fully type checking prose fails leftover unstack floor"
+      (containsLeftoverUnstackPhrase leftoverFullyTypeCheckingProse),
+    expectFalse "high assurance is not leftover unstack"
+      (containsLeftoverUnstackPhrase allowedHighAssuranceProse),
+    expectFalse "3 bit is not leftover unstack"
+      (containsLeftoverUnstackPhrase allowedThreeBitProse),
+    expectFalse "time series is not leftover unstack"
+      (containsLeftoverUnstackPhrase allowedTimeSeriesProse),
+    expectTrue "high assurance is an allowed spaced phrase"
+      (containsAllowedSpacedPhrase allowedHighAssuranceProse),
+    expectTrue "rephrased lock tries prose meets leftover unstack floor"
+      (leftoverUnstackFloorConforms rephrasedLockTriesProse),
+    expectFalse "lock free tries prose does not meet leftover unstack floor"
+      (leftoverUnstackFloorConforms leftoverLockFreeTriesProse),
+    expectTrue "deleting hyphen from lock-free tries is leftover unstack"
+      (hyphenDeleteIsLeftoverUnstack "lock-free tries" "lock free tries"),
+    expectFalse "rephrasing lock-free tries is not leftover unstack"
+      (hyphenDeleteIsLeftoverUnstack "lock-free tries"
+        "tries that do not use locks"),
+    expectFalse "0005 with planned token and no Residual heading does not conform"
+      plannedWithoutHeading.conforming,
+    expectTrue "0005 with planned token and Residual heading conforms"
+      plannedWithHeading.conforming,
+    expectTrue "0000 with planned token and no Residual heading conforms"
+      spec0000WithPlannedNoHeading.conforming,
+    expectTrue "0005 with no planned token conforms"
+      noPlannedNoHeading.conforming,
+    expectTrue "## 6. Residual is a residual heading"
+      (isResidualHeadingTitle "## 6. Residual"),
+    expectTrue "## Residual is a residual heading"
+      (isResidualHeadingTitle "## Residual"),
+    expectFalse "a half label is not a residual heading"
+      (isResidualHeadingTitle "Keep or replace coined labels?"),
     expectFalse "leftover unstack floor is not complete English"
       leftoverUnstackFloorIsCompleteEnglish,
     expectTrue "Lean spec encodings use leftover unstack floor"

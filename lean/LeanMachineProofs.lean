@@ -122,6 +122,63 @@ theorem timestamped_notes :
     timestampedNoteRequiredWhenWrongOrImprecise = true :=
   rfl
 
+theorem lean_machine_spec_number_is_13 :
+    leanMachineSpecNumber = 13 :=
+  rfl
+
+theorem note_with_clock_time_conforms : noteWithClockTimeConforms :=
+  rfl
+
+theorem note_without_clock_time_does_not_conform :
+    noteWithoutClockTimeDoesNotConform :=
+  rfl
+
+theorem note_missing_question_does_not_conform :
+    noteMissingQuestionDoesNotConform :=
+  rfl
+
+theorem note_missing_answer_does_not_conform :
+    noteMissingAnswerDoesNotConform :=
+  rfl
+
+theorem note_with_clock_time_has_ticks :
+    noteWithClockTime.clockTime.isSome = true :=
+  rfl
+
+theorem note_storage_is_product_detail :
+    noteStorageIsProductDetail = true :=
+  rfl
+
+theorem shipped_note_store_not_claimed :
+    shippedNoteStoreClaimed = false :=
+  rfl
+
+theorem mash_missing_note_substitute_does_not_conform :
+    mashMissingNoteSubstituteDoesNotConform :=
+  rfl
+
+theorem wrote_note_on_wrong_answer_conforms :
+    wroteNoteOnWrongAnswerConforms :=
+  rfl
+
+theorem same_question_same_notes_same_answer :
+    sameQuestionSameNotesSameAnswer :=
+  rfl
+
+theorem encoded_attempt_is_congruent : encodedAttemptIsCongruent := by
+  intro q1 q2 notes1 notes2 hq hn
+  cases hq
+  cases hn
+  rfl
+
+theorem mash_nondeterministic_pair_does_not_conform :
+    mashNondeterministicPairDoesNotConform :=
+  rfl
+
+theorem same_input_same_answer_pair_conforms :
+    AnswerAttempt.conformingPair sameInputSameAnswerA sameInputSameAnswerB = true :=
+  rfl
+
 theorem design_not_running_claim :
     distributedSelfImprovementIsDesignRequirement = true ∧
       runningDistributedMachineClaimed = false :=

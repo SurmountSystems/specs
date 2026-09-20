@@ -259,4 +259,138 @@ def modelAndProofsWithoutExperimentsFixtureHasProof : Prop :=
 def modelAndProofsWithoutExperimentsFixtureHasNoExperiments : Prop :=
   modelAndProofsWithoutExperimentsFixture.hasCorollaryExperiments = false
 
+/--
+  Named science cycle steps as specification 0008 names them.
+  Distinct constructors. A mash of two names as one constructor is False.
+-/
+inductive ScienceStep where
+  | hypothesis
+  | model
+  | theory
+  | proof
+  | tests
+  | corollaryExperiment
+  deriving DecidableEq, Repr, BEq
+
+/--
+  A chain of science steps. Empty is the identity for composition.
+  Concatenation composes two chains. This is not a mash of encodings and proofs.
+-/
+inductive ScienceCycle where
+  | empty
+  | cons : ScienceStep → ScienceCycle → ScienceCycle
+  deriving DecidableEq, Repr, BEq
+
+def ScienceCycle.append : ScienceCycle → ScienceCycle → ScienceCycle
+  | .empty, c => c
+  | .cons s rest, c => .cons s (rest.append c)
+
+/-- Composition of two science cycles. Empty is identity. -/
+def composeScience (a b : ScienceCycle) : ScienceCycle :=
+  a.append b
+
+def ScienceCycle.singleton (s : ScienceStep) : ScienceCycle :=
+  .cons s .empty
+
+def ScienceCycle.toList : ScienceCycle → List ScienceStep
+  | .empty => []
+  | .cons s rest => s :: rest.toList
+
+def ScienceCycle.fromList : List ScienceStep → ScienceCycle
+  | [] => .empty
+  | s :: rest => .cons s (fromList rest)
+
+def requiredScienceSteps : List ScienceStep :=
+  [.hypothesis, .model, .theory, .proof, .tests, .corollaryExperiment]
+
+def ScienceCycle.containsAllRequired (c : ScienceCycle) : Bool :=
+  requiredScienceSteps.all (fun s => c.toList.contains s)
+
+def ScienceCycle.toEffort (c : ScienceCycle) : ScienceEffort :=
+  let xs := c.toList
+  { hasHypothesis := xs.contains .hypothesis
+    hasModel := xs.contains .model
+    hasTheory := xs.contains .theory
+    hasProof := xs.contains .proof
+    hasTests := xs.contains .tests
+    hasCorollaryExperiments := xs.contains .corollaryExperiment }
+
+/-- First half of the cycle: hypothesis, then model, then theory. -/
+def hypothesisThroughTheory : ScienceCycle :=
+  composeScience (ScienceCycle.singleton .hypothesis)
+    (composeScience (ScienceCycle.singleton .model)
+      (ScienceCycle.singleton .theory))
+
+/-- Second half of the cycle: proof, then tests, then corollary experiment. -/
+def proofThroughExperiments : ScienceCycle :=
+  composeScience (ScienceCycle.singleton .proof)
+    (composeScience (ScienceCycle.singleton .tests)
+      (ScienceCycle.singleton .corollaryExperiment))
+
+/--
+  The required Formal Vibefication science cycle as composition of the two
+  halves. Not a mashed claim that one constructor is every step.
+-/
+def composedCycle : ScienceCycle :=
+  composeScience hypothesisThroughTheory proofThroughExperiments
+
+def testsOnlyCycle : ScienceCycle :=
+  ScienceCycle.singleton .tests
+
+/-- Treating hypothesis as if it were the model constructor. -/
+def mashScienceSteps : Prop :=
+  ScienceStep.hypothesis = ScienceStep.model
+
+def mashScienceStepsIsFalse : Prop :=
+  mashScienceSteps → False
+
+def scienceStepsPairwiseDistinct : Prop :=
+  ScienceStep.hypothesis ≠ ScienceStep.model ∧
+    ScienceStep.hypothesis ≠ ScienceStep.theory ∧
+    ScienceStep.hypothesis ≠ ScienceStep.proof ∧
+    ScienceStep.hypothesis ≠ ScienceStep.tests ∧
+    ScienceStep.hypothesis ≠ ScienceStep.corollaryExperiment ∧
+    ScienceStep.model ≠ ScienceStep.theory ∧
+    ScienceStep.model ≠ ScienceStep.proof ∧
+    ScienceStep.model ≠ ScienceStep.tests ∧
+    ScienceStep.model ≠ ScienceStep.corollaryExperiment ∧
+    ScienceStep.theory ≠ ScienceStep.proof ∧
+    ScienceStep.theory ≠ ScienceStep.tests ∧
+    ScienceStep.theory ≠ ScienceStep.corollaryExperiment ∧
+    ScienceStep.proof ≠ ScienceStep.tests ∧
+    ScienceStep.proof ≠ ScienceStep.corollaryExperiment ∧
+    ScienceStep.tests ≠ ScienceStep.corollaryExperiment
+
+def scienceCycleAppendLeftId : Prop :=
+  ∀ c, composeScience ScienceCycle.empty c = c
+
+def scienceCycleAppendRightId : Prop :=
+  ∀ c, composeScience c ScienceCycle.empty = c
+
+def scienceCycleAppendAssoc : Prop :=
+  ∀ a b c, composeScience (composeScience a b) c = composeScience a (composeScience b c)
+
+def composedCycleEqualsRequiredList : Prop :=
+  ScienceCycle.toList composedCycle = requiredScienceSteps
+
+def composedCycleContainsAllRequired : Prop :=
+  ScienceCycle.containsAllRequired composedCycle = true
+
+def composedCycleConforms : Prop :=
+  conformingScience (ScienceCycle.toEffort composedCycle) = true
+
+def testsOnlyCycleDoesNotCompose : Prop :=
+  ScienceCycle.containsAllRequired testsOnlyCycle = false
+
+/--
+  Science cycle composition: the composed cycle is the required list in
+  order, that cycle is a conforming effort, a tests only chain is not,
+  and mashing two named steps as one constructor is False.
+-/
+def scienceCycleComposes : Prop :=
+  composedCycleEqualsRequiredList ∧
+    composedCycleConforms ∧
+    testsOnlyCycleDoesNotCompose ∧
+    mashScienceStepsIsFalse
+
 end FormalVibeficationSpec

@@ -72,6 +72,131 @@ theorem repeating_job_requires_durable :
     JobApproach.requiredWhenRepeats true .improveDurableTool = true :=
   rfl
 
+theorem lean_checker_later_session_can_run :
+    DurableToolKind.leanChecker.laterSessionCanRun = true :=
+  rfl
+
+theorem nix_check_later_session_can_run :
+    DurableToolKind.nixCheck.laterSessionCanRun = true :=
+  rfl
+
+theorem project_skill_later_session_can_run :
+    DurableToolKind.projectSkill.laterSessionCanRun = true :=
+  rfl
+
+theorem helper_next_to_compiler_later_session_can_run :
+    DurableToolKind.helperNextToCompiler.laterSessionCanRun = true :=
+  rfl
+
+theorem chat_reminder_is_not_durable :
+    DurableToolKind.chatReminder.conforming = false :=
+  rfl
+
+theorem chat_reminder_later_session_cannot_run :
+    DurableToolKind.chatReminder.laterSessionCanRun = false :=
+  rfl
+
+theorem throwaway_bash_is_not_durable :
+    DurableToolKind.throwawayBash.conforming = false :=
+  rfl
+
+theorem throwaway_python_is_not_durable :
+    DurableToolKind.throwawayPython.conforming = false :=
+  rfl
+
+theorem throwaway_bash_is_disposable_script :
+    DurableToolKind.throwawayBash.isDisposableScript = true :=
+  rfl
+
+theorem throwaway_python_is_disposable_script :
+    DurableToolKind.throwawayPython.isDisposableScript = true :=
+  rfl
+
+theorem throwaway_bash_is_not_product :
+    DurableToolKind.throwawayBash.isProduct = false :=
+  rfl
+
+theorem throwaway_python_is_not_product :
+    DurableToolKind.throwawayPython.isProduct = false :=
+  rfl
+
+theorem spec_check_as_durable_tool_conforms :
+    specCheckAsDurableTool.conforming = true :=
+  rfl
+
+theorem chat_reminder_as_tool_does_not_conform :
+    chatReminderAsTool.conforming = false :=
+  rfl
+
+theorem throwaway_bash_as_tool_does_not_conform :
+    throwawayBashAsTool.conforming = false :=
+  rfl
+
+theorem improving_bash_into_lean_checker_conforms :
+    (ToolImprovement.mk .throwawayBash .leanChecker).conforming = true :=
+  rfl
+
+theorem turning_lean_checker_into_python_does_not_conform :
+    (ToolImprovement.mk .leanChecker .throwawayPython).conforming = false :=
+  rfl
+
+theorem repeating_factory_improving_tool_conforms :
+    ({ jobRepeats := true, output := .improvedDurableTool } : ToolFactoryUse).conforming = true :=
+  rfl
+
+theorem repeating_factory_once_does_not_conform :
+    ({ jobRepeats := true, output := .performedJobOnce } : ToolFactoryUse).conforming = false :=
+  rfl
+
+theorem encode_improvement_lean_checker_conforms :
+    EncodeImprovementProof.leanChecker.conforming = true :=
+  rfl
+
+theorem encode_improvement_skill_step_conforms :
+    EncodeImprovementProof.skillStep.conforming = true :=
+  rfl
+
+theorem encode_improvement_nix_package_conforms :
+    EncodeImprovementProof.nixPackage.conforming = true :=
+  rfl
+
+theorem encode_improvement_chat_reminder_does_not_conform :
+    EncodeImprovementProof.chatReminder.conforming = false :=
+  rfl
+
+theorem check_policy_lean_checker_conforms :
+    CheckPolicy.leanChecker.conforming = true :=
+  rfl
+
+theorem check_policy_pure_nix_conforms :
+    CheckPolicy.pureNixEval.conforming = true :=
+  rfl
+
+theorem check_policy_bash_in_nix_does_not_conform :
+    CheckPolicy.bashInNix.conforming = false :=
+  rfl
+
+theorem check_policy_python_in_nix_does_not_conform :
+    CheckPolicy.pythonInNix.conforming = false :=
+  rfl
+
+theorem this_repo_collision_tags_conform :
+    thisRepoCollisionTags.conforming = true :=
+  rfl
+
+theorem lean_checker_maps_to_durable_job :
+    JobApproach.ofTool .leanChecker = JobApproach.improveDurableTool :=
+  rfl
+
+theorem throwaway_bash_maps_to_disposable_job :
+    JobApproach.ofTool .throwawayBash = JobApproach.disposableOnce :=
+  rfl
+
+theorem bash_python_nix_policy_matches_check_policy :
+    bashOrPythonAsNixCheckPolicy =
+      (CheckPolicy.bashInNix.conforming || CheckPolicy.pythonInNix.conforming) :=
+  rfl
+
 /-- Leftover unstack remains nonconforming (CATE). -/
 theorem leftover_unstack_still_fails :
     Cate.HyphenRepair.leftoverUnstack.conforming = false :=

@@ -116,6 +116,47 @@ def runCases : List Case :=
       mustAttemptDeterministicAnswers,
     expectTrue "timestamped note required when wrong or imprecise"
       timestampedNoteRequiredWhenWrongOrImprecise,
+    expectEqNat "leanMachineSpecNumber is 13" leanMachineSpecNumber 13,
+    expectTrue "a timestamped note names the question, the wrong or imprecise answer, and a clock time"
+      (TimestampedNote.conforming noteWithClockTime),
+    expectFalse "a note without a clock time does not conform to Clause 3.5"
+      (TimestampedNote.conforming noteWithoutClockTime),
+    expectFalse "a note that does not name the question does not conform"
+      (TimestampedNote.conforming noteMissingQuestion),
+    expectFalse "a note that does not name the wrong or imprecise answer does not conform"
+      (TimestampedNote.conforming noteMissingAnswer),
+    expectTrue "the live note with a clock time carries ticks"
+      noteWithClockTime.clockTime.isSome,
+    expectTrue "note storage is a product detail"
+      noteStorageIsProductDetail,
+    expectFalse "a shipped store for timestamped notes is not claimed"
+      shippedNoteStoreClaimed,
+    expectFalse "a missing timestamped note is not an acceptable substitute"
+      mashMissingNoteSubstitute.conforming,
+    expectTrue "writing a timestamped note when the answer is wrong or imprecise conforms"
+      wroteNoteOnWrongAnswer.conforming,
+    expectTrue "same question plus same notes yields the same encoded answer"
+      (encodedAttempt determinismQuestion determinismNotes ==
+        encodedAttempt determinismQuestion determinismNotes),
+    expectTrue "two attempts with the same question and the same notes and the same answer conform"
+      (AnswerAttempt.conformingPair sameInputSameAnswerA sameInputSameAnswerB),
+    expectFalse "two attempts with the same question and the same notes but different answers do not conform"
+      (AnswerAttempt.conformingPair mashNondeterministicA mashNondeterministicB),
+    expectTrue "proof same_question_same_notes_same_answer is available"
+      (match LeanMachineProofs.same_question_same_notes_same_answer with
+        | _ => true),
+    expectTrue "proof note_without_clock_time_does_not_conform is available"
+      (match LeanMachineProofs.note_without_clock_time_does_not_conform with
+        | _ => true),
+    expectTrue "proof encoded_attempt_is_congruent is available"
+      (match LeanMachineProofs.encoded_attempt_is_congruent with
+        | _ => true),
+    expectTrue "proof mash_nondeterministic_pair_does_not_conform is available"
+      (match LeanMachineProofs.mash_nondeterministic_pair_does_not_conform with
+        | _ => true),
+    expectTrue "proof mash_missing_note_substitute_does_not_conform is available"
+      (match LeanMachineProofs.mash_missing_note_substitute_does_not_conform with
+        | _ => true),
     expectTrue "distributed self improvement is a design requirement"
       distributedSelfImprovementIsDesignRequirement,
     expectFalse "a running distributed machine is not claimed"

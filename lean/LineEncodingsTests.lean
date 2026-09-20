@@ -161,9 +161,9 @@ def runCases : List Case :=
         "def encodedLines : Array MdLine := #[{ number := 1, text := \"a\" }]\n").isEmpty,
     expectTrue "spec_check leftover unstack list is Cate"
       leftoverUnstackPhrasesAreCate,
-    expectEqNat "thirteen meaning spec encoding comment paths"
+    expectEqNat "fourteen meaning spec encoding comment paths"
       meaningSpecEncodingRelPaths.size
-      13,
+      14,
     expectTrue "UnlicenseSpec is a meaning spec encoding path"
       (meaningSpecEncodingRelPaths.toList.contains "lean/UnlicenseSpec.lean"),
     expectTrue "FormalVibeficationSpec is a meaning spec encoding path"
@@ -190,6 +190,8 @@ def runCases : List Case :=
       (meaningSpecEncodingRelPaths.toList.contains "lean/SystemsLeanSpec.lean"),
     expectTrue "LeanMachineSpec is a meaning spec encoding path"
       (meaningSpecEncodingRelPaths.toList.contains "lean/LeanMachineSpec.lean"),
+    expectTrue "AnunnakiSpec is a meaning spec encoding path"
+      (meaningSpecEncodingRelPaths.toList.contains "lean/AnunnakiSpec.lean"),
     expectNonEmpty "leftover unstack in encodedLines prose fails"
       (findingsForLeftoverUnstackEncoded "0001_DOGE.md"
         (encodeFile "Do not write non markdown tooling.\n")),

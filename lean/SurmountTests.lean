@@ -22,6 +22,8 @@ import FormalVibeficationSpec
 import UnlicenseSpec
 import VocabularySpec
 import SpecProofs
+import LeanMachineSpec
+import AnunnakiSpec
 
 open Surmount
 open SpecRegistry
@@ -249,6 +251,20 @@ def runCases : List Case :=
       TechTreeSpec.liveContainsProofsOfThoseEncodings,
     expectFalse "MemexSpec live mash of encodings and proofs does not remain"
       MemexSpec.liveContainsProofsOfThoseEncodings,
+    expectFalse "Lean Machine live mash of encodings and proofs does not remain"
+      LeanMachineSpec.liveContainsProofsOfThoseEncodings,
+    expectTrue "Lean Machine companion encodings are split"
+      (LeanMachineSpec.liveContainsSpecEncodings &&
+        !LeanMachineSpec.liveContainsProofsOfThoseEncodings &&
+        LeanMachineSpec.markedAsSpecEncoding &&
+        !LeanMachineSpec.markedAsProof),
+    expectFalse "Anunnaki Encoding live mash of encodings and proofs does not remain"
+      AnunnakiSpec.liveContainsProofsOfThoseEncodings,
+    expectTrue "Anunnaki Encoding companion encodings are split"
+      (AnunnakiSpec.liveContainsSpecEncodings &&
+        !AnunnakiSpec.liveContainsProofsOfThoseEncodings &&
+        AnunnakiSpec.markedAsSpecEncoding &&
+        !AnunnakiSpec.markedAsProof),
     expectFalse "mashed companion meaning fixture does not conform"
       (FormalVibeficationSpec.conformingThisRepo
         { moduleName := "MashedCompanionMeaning"
@@ -268,6 +284,61 @@ def runCases : List Case :=
       Sssss.productClaimedNotSystemsLean.conforms,
     expectTrue "Lean Machine has numbered specification 0013 in SSSSS"
       Sssss.leanMachineHasNumberedSpec,
+    expectEqNat "registry Lean Machine is specification 0013"
+      SpecRegistry.leanMachineSpecNumber 13,
+    expectEqNat "Anunnaki Encoding is specification 0014"
+      Surmount.anunnakiSpecNumber 14,
+    expectEqNat "registry Anunnaki Encoding is specification 0014"
+      SpecRegistry.anunnakiSpecNumber 14,
+    expectEqNat "Anunnaki Encoding module agrees with registry"
+      Surmount.anunnakiSpecNumber SpecRegistry.anunnakiSpecNumber,
+    expectTrue "ENKI is the index" AnunnakiSpec.enkiIsIndex,
+    expectTrue "Anunnaki is the bitstream" AnunnakiSpec.anunnakiIsBitstream,
+    expectFalse "ENKI and Anunnaki are not one object"
+      AnunnakiSpec.enkiAndAnunnakiAreOneObject,
+    expectFalse "a conforming Anunnaki encoder is not claimed"
+      AnunnakiSpec.conformingEncoderClaimed,
+    expectFalse "Anunnaki Encoding does not replace CATE"
+      AnunnakiSpec.replacesCate,
+    expectFalse "Anunnaki Encoding does not replace SSSSS"
+      AnunnakiSpec.replacesSssss,
+    expectFalse "Anunnaki Encoding does not replace Majestic Memex"
+      AnunnakiSpec.replacesMemex,
+    expectTrue "composed science cycle is the required science steps"
+      (FormalVibeficationSpec.ScienceCycle.toList
+          FormalVibeficationSpec.composedCycle ==
+        FormalVibeficationSpec.requiredScienceSteps),
+    expectTrue "composed science cycle is conforming science"
+      (FormalVibeficationSpec.conformingScience
+        (FormalVibeficationSpec.ScienceCycle.toEffort
+          FormalVibeficationSpec.composedCycle)),
+    expectFalse "a tests only science cycle is not the required set"
+      (FormalVibeficationSpec.ScienceCycle.containsAllRequired
+        FormalVibeficationSpec.testsOnlyCycle),
+    expectTrue "science cycle composes in the stack"
+      scienceCycleComposesInStack,
+    expectTrue "Lean Machine must attempt deterministic answers"
+      LeanMachineSpec.mustAttemptDeterministicAnswers,
+    expectTrue "Lean Machine requires a timestamped note when wrong or imprecise"
+      LeanMachineSpec.timestampedNoteRequiredWhenWrongOrImprecise,
+    expectTrue "Lean Machine deterministic answers compose in the stack"
+      leanMachineDeterministicAnswersInStack,
+    expectTrue "a timestamped note with clock time conforms"
+      (LeanMachineSpec.TimestampedNote.conforming
+        LeanMachineSpec.noteWithClockTime),
+    expectFalse "a timestamped note without clock time does not conform"
+      (LeanMachineSpec.TimestampedNote.conforming
+        LeanMachineSpec.noteWithoutClockTime),
+    expectTrue "a timestamped note without clock time does not conform in the stack"
+      timestampedNoteWithoutClockDoesNotConform,
+    expectFalse "nondeterministic Lean Machine answers with the same notes do not conform"
+      (LeanMachineSpec.AnswerAttempt.conformingPair
+        LeanMachineSpec.mashNondeterministicA
+        LeanMachineSpec.mashNondeterministicB),
+    expectTrue "distributed self improvement is a design requirement"
+      LeanMachineSpec.distributedSelfImprovementIsDesignRequirement,
+    expectFalse "a running distributed machine is not claimed"
+      LeanMachineSpec.runningDistributedMachineClaimed,
     expectTrue "stack identities compose" stackIntegrates
   ]
 

@@ -26,6 +26,7 @@ import «0010_Surmount_Systems»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
 import «0013_Lean_Machine»
+import «0014_Anunnaki_Encoding»
 
 open LineEncodings
 
@@ -127,7 +128,13 @@ def compiledEncodings : Array EncodedSpec :=
       «0013_Lean_Machine».proofModuleName
       «0013_Lean_Machine».markedAsSpecEncoding
       «0013_Lean_Machine».markedAsProof
-      «0013_Lean_Machine».encodedLines
+      «0013_Lean_Machine».encodedLines,
+    ofSpec «0014_Anunnaki_Encoding».specNumber «0014_Anunnaki_Encoding».specFileName
+      «0014_Anunnaki_Encoding».siblingEncodingFileName
+      «0014_Anunnaki_Encoding».proofModuleName
+      «0014_Anunnaki_Encoding».markedAsSpecEncoding
+      «0014_Anunnaki_Encoding».markedAsProof
+      «0014_Anunnaki_Encoding».encodedLines
   ]
 
 def main (args : List String) : IO UInt32 := do

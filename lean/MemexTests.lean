@@ -129,7 +129,34 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       completeScienceEffortConforms,
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectTrue "exact MAJESTIC plus 0x01 has the magic prefix"
+      (hasMajesticMagicPrefix magicBytes),
+    expectTrue "magic prefix plus payload still has the magic prefix"
+      (hasMajesticMagicPrefix (magicBytes ++ [0xFF])),
+    expectFalse "empty bytes do not have the magic prefix"
+      (hasMajesticMagicPrefix []),
+    expectFalse "MAJESTIC plus 0x00 does not have the magic prefix"
+      (hasMajesticMagicPrefix
+        ("MAJESTIC".toList.map charByte ++ [0x00])),
+    expectFalse "SSTECHTREE01 does not have the Majestic Memex magic prefix"
+      (hasMajesticMagicPrefix (techTreeMagicString.toList.map charByte)),
+    expectEqString "typical grok archive is memex/grok/acct.majestic"
+      (typicalArchiveRel "grok" "acct") "memex/grok/acct.majestic",
+    expectFalse "there is no silent default archive"
+      silentDefaultArchiveExists,
+    expectTrue "live home scan does not walk the data root as a source"
+      liveHomeScan.conforming,
+    expectFalse "mash that walks the data root as a source does not conform"
+      mashWalksDataRoot.conforming,
+    expectFalse "a binary named majestic is not required"
+      requireBinaryNamedCrate,
+    expectEqNat "Public Domain Open Source Software is specification 0009"
+      MemexSpec.pdossSpecNumber 9,
+    expectFalse "this specification does not invent a second PDOSS number"
+      inventsSecondPdossSpec,
+    expectTrue "a numbered Vocabulary file MUST NOT exist"
+      numberedVocabularyFileMustNotExist
   ]
 
 def main (_args : List String) : IO UInt32 := do

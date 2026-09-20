@@ -88,8 +88,31 @@ def runCases : List Case :=
     expectFalse "missing SWMR is not ok" concurrencyNoSwmr.requiredOk,
     expectFalse "missing fencing by generation is not ok"
       concurrencyNoFence.requiredOk,
+    expectTrue "canonical ACID claim is ok" acidCanonical.ok,
+    expectFalse "ACID missing isolation is not ok" acidMissingIsolation.ok,
+    expectTrue "canonical trie progress is ok" trieProgressCanonical.ok,
+    expectFalse "trie progress that waits on a mutex is not ok"
+      trieProgressMutexDependent.ok,
+    expectFalse "durable map that is not a trie is not ok"
+      trieProgressNotTrie.ok,
+    expectFalse "mutex dependent trie concurrency is not ok"
+      concurrencyMutexDependentTrie.requiredOk,
+    expectFalse "shared leaf writers are not ok"
+      concurrencySharedLeaf.requiredOk,
+    expectTrue "dense identifier kind is ok"
+      (IdentifierKind.ok denseIdentifierFixture),
+    expectFalse "unicode code point identifier kind is not ok"
+      (IdentifierKind.ok unicodeCodePointPrimaryKeyFixture),
+    expectTrue "persist dense LanguageID and WordID is ok"
+      persistIdentityCanonical.ok,
+    expectFalse "Unicode as primary key does not persist"
+      persistIdentityUnicodePrimaryKey.ok,
+    expectFalse "bounce buffer is not required for a mapped read"
+      bounceBufferRequiredForMappedRead,
     expectTrue "canonical layout is ok" layoutCanonical.ok,
     expectFalse "missing mmap is not ok" layoutNoMmap.ok,
+    expectFalse "bounce buffer required for mapped read is not ok"
+      layoutBounceRequired.ok,
     expectEqNat "exactly two schema modes" SchemaMode.all.length 2,
     expectTrue "canonical schema is ok" schemaCanonical.ok,
     expectFalse "optional schema is not ok" schemaOptional.ok,
@@ -118,6 +141,16 @@ def runCases : List Case :=
     expectFalse "missing ACID does not conform" productNoAcid.conforms,
     expectTrue "optional extra writers still conform"
       productOptionalMultiWriter.conforms,
+    expectFalse "missing isolation does not conform"
+      productMissingIsolation.conforms,
+    expectFalse "Unicode primary key does not conform"
+      productUnicodePrimaryKey.conforms,
+    expectFalse "shared leaf writers do not conform"
+      productSharedLeaf.conforms,
+    expectFalse "mutex dependent trie does not conform"
+      productMutexDependentTrie.conforms,
+    expectFalse "bounce buffer required for mapped read does not conform"
+      productBounceRequired.conforms,
     -- Registry scan fixtures (stale numbers and wrong capitalization).
     expectNonEmpty "stale 0003_SSSSS token fails"
       (scanContent "0002_Systems_Lean.md"
@@ -209,7 +242,9 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       (conformingScience completeScienceFixture),
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectFalse "unicodeCodePointIsNotPrimaryKey"
+      (IdentifierKind.ok unicodeCodePointPrimaryKeyFixture)
   ]
 
 def main (_args : List String) : IO UInt32 := do

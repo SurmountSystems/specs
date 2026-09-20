@@ -150,7 +150,81 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       completeScienceCycleConforms,
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectTrue "human markdown is the contract humans read"
+      humanMarkdownIsTheHumanContract,
+    expectFalse "human markdown does not substitute for Lean spec encodings"
+      humanMarkdownSubstitutesForLeanSpecEncoding,
+    expectFalse "Lean proofs are not the specification"
+      leanProofIsTheSpec,
+    expectTrue "spec encodings state what must be true"
+      specEncodingsStateWhatMustBeTrue,
+    expectTrue "proofs live in a separate module"
+      proofsLiveInSeparateModule,
+    expectTrue "spec encoding fixture conforms"
+      (conformingThisRepo specEncodingFixture),
+    expectTrue "proof fixture conforms"
+      (conformingThisRepo proofFixture),
+    expectFalse "mashed spec and proof module does not conform"
+      (conformingThisRepo mashedFixture),
+    expectTrue "spec encoding module is not the proof module"
+      (specEncodingFixture.moduleName != proofFixture.moduleName),
+    expectTrue "human markdown is not a Lean spec encoding"
+      (Layer.humanMarkdownContract != Layer.leanSpecEncoding),
+    expectTrue "human markdown is not a Lean proof"
+      (Layer.humanMarkdownContract != Layer.leanProof),
+    expectTrue "human markdown is not product implementation"
+      (Layer.humanMarkdownContract != Layer.productImplementation),
+    expectTrue "Lean spec encoding is not a Lean proof"
+      (Layer.leanSpecEncoding != Layer.leanProof),
+    expectTrue "Lean spec encoding is not product implementation"
+      (Layer.leanSpecEncoding != Layer.productImplementation),
+    expectTrue "Lean proof is not product implementation"
+      (Layer.leanProof != Layer.productImplementation),
+    expectTrue "flake check is product implementation"
+      (ImplementationKind.flakeCheck.isProductImplementation),
+    expectTrue "Lake tests are product implementation"
+      (ImplementationKind.lakeTest.isProductImplementation),
+    expectTrue "GitHub Actions workflow is product implementation"
+      (ImplementationKind.githubActionsWorkflow.isProductImplementation),
+    expectFalse "flake check is not a second markdown linter"
+      (ImplementationKind.flakeCheck.isSecondMarkdownLinter),
+    expectFalse "Lake tests are not a second markdown linter"
+      (ImplementationKind.lakeTest.isSecondMarkdownLinter),
+    expectFalse "GitHub Actions workflow is not a second markdown linter"
+      (ImplementationKind.githubActionsWorkflow.isSecondMarkdownLinter),
+    expectTrue "product implementation is a third layer after encodings and proofs"
+      implementationIsThirdLayer,
+    expectFalse "product implementation is not a second markdown linter"
+      implementationIsSecondMarkdownLinter,
+    expectTrue "named gate is Nix flake check"
+      namedGateIsNixFlakeCheck,
+    expectFalse "writeShellApplication checkers are not allowed"
+      writeShellApplicationCheckersAllowed,
+    expectFalse "writeShellApplication is not the named gate"
+      writeShellApplicationIsNamedGate,
+    expectTrue "Lean spec_check is numbered markdown form"
+      specCheckIsMarkdownForm,
+    expectFalse "Lean spec_check is not a meaning encoding"
+      specCheckIsMeaningSpecEncoding,
+    expectTrue "pure Nix whitespace is form across the tree"
+      (FormAuthority.pureNixWhitespace.isForm),
+    expectTrue "Lean spec_check is form on numbered specifications"
+      (FormAuthority.leanSpecCheck.isForm),
+    expectFalse "pure Nix whitespace is not a meaning encoding"
+      (FormAuthority.pureNixWhitespace.isMeaningEncoding),
+    expectFalse "Lean spec_check is not a meaning encoding as form authority"
+      (FormAuthority.leanSpecCheck.isMeaningEncoding),
+    expectTrue "Lean spec_check is not pure Nix whitespace"
+      (FormAuthority.leanSpecCheck != FormAuthority.pureNixWhitespace),
+    expectTrue "dual whitespace coverage is required"
+      dualWhitespaceCoverageRequired,
+    expectFalse "push on red does not conform" pushOnRed.conforming,
+    expectTrue "push on green conforms" pushOnGreen.conforming,
+    expectEqNat "PDOSS is specification 0009" Ci.pdossSpecNumber 9,
+    expectTrue "Unlicense remains the license"
+      unlicenseRemainsTheLicense,
+    expectTrue "CI is not specification 0009" (specNumber != Ci.pdossSpecNumber)
   ]
 
 def main (_args : List String) : IO UInt32 := do

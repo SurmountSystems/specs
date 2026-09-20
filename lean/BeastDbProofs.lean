@@ -115,9 +115,58 @@ theorem concurrency_no_swmr_not_ok : concurrencyNoSwmr.requiredOk = false := by
 theorem concurrency_no_fence_not_ok : concurrencyNoFence.requiredOk = false := by
   decide
 
+theorem acid_canonical_ok : acidCanonical.ok = true := by decide
+
+theorem acid_missing_isolation_not_ok : acidMissingIsolation.ok = false := by
+  decide
+
+theorem trie_progress_canonical_ok : trieProgressCanonical.ok = true := by decide
+
+theorem trie_progress_mutex_dependent_not_ok :
+    trieProgressMutexDependent.ok = false := by
+  decide
+
+theorem trie_progress_not_trie_not_ok : trieProgressNotTrie.ok = false := by
+  decide
+
+theorem concurrency_mutex_dependent_trie_not_ok :
+    concurrencyMutexDependentTrie.requiredOk = false := by
+  decide
+
+theorem concurrency_shared_leaf_not_ok :
+    concurrencySharedLeaf.requiredOk = false := by
+  decide
+
+theorem shared_leaf_writers_do_not_conform : sharedLeafWritersDoNotConform :=
+  rfl
+
+theorem identifier_kind_dense_ok : IdentifierKind.ok .dense = true := rfl
+
+theorem identifier_kind_unicode_not_ok :
+    IdentifierKind.ok .unicodeCodePoint = false := rfl
+
+theorem dense_identifier_fixture_ok :
+    IdentifierKind.ok denseIdentifierFixture = true := rfl
+
+theorem unicode_code_point_is_not_primary_key :
+    unicodeCodePointIsNotPrimaryKey :=
+  rfl
+
+theorem persist_identity_canonical_ok :
+    persistIdentityCanonical.ok = true := by decide
+
+theorem persist_identity_unicode_primary_key_not_ok :
+    persistIdentityUnicodePrimaryKey.ok = false := by decide
+
+theorem bounce_buffer_not_required_for_mapped_read :
+    bounceBufferRequiredForMappedRead = false := rfl
+
 theorem layout_canonical_ok : layoutCanonical.ok = true := by decide
 
 theorem layout_no_mmap_not_ok : layoutNoMmap.ok = false := by decide
+
+theorem layout_bounce_required_not_ok : layoutBounceRequired.ok = false := by
+  decide
 
 theorem SchemaMode.ofFin_toFin (m : SchemaMode) :
     SchemaMode.ofFin m.toFin = m := by
@@ -185,6 +234,21 @@ theorem no_acid_does_not_conform :
 
 theorem optional_multi_writer_still_conforms :
     productOptionalMultiWriter.conforms = true := by decide
+
+theorem missing_isolation_does_not_conform :
+    productMissingIsolation.conforms = false := by decide
+
+theorem unicode_primary_key_does_not_conform :
+    productUnicodePrimaryKey.conforms = false := by decide
+
+theorem shared_leaf_product_does_not_conform :
+    productSharedLeaf.conforms = false := by decide
+
+theorem mutex_dependent_trie_does_not_conform :
+    productMutexDependentTrie.conforms = false := by decide
+
+theorem bounce_required_does_not_conform :
+    productBounceRequired.conforms = false := by decide
 
 theorem requires_science_cycle : requiresScienceCycle = true :=
   rfl

@@ -241,4 +241,48 @@ theorem complete_science_effort_conforms :
     completeScienceEffortConforms = true :=
   rfl
 
+theorem allow_unlicense_contribution_accepted :
+    contributionAccepted allowUnlicenseContribution = true :=
+  rfl
+
+theorem residual_attribution_unlicense_refused :
+    contributionAccepted residualAttributionUnlicenseContribution = false :=
+  rfl
+
+theorem dual_allow_residual_refused :
+    contributionAccepted dualAllowResidualContribution = false :=
+  rfl
+
+theorem specific_consent_unlicense_refused :
+    contributionAccepted specificConsentUnlicenseContribution = false :=
+  rfl
+
+theorem unread_unlicense_refused :
+    contributionAccepted unreadUnlicenseContribution = false :=
+  rfl
+
+theorem mash_residual_attribution_contribution_accepted
+    (h : residualAttributionContributionAccepted) : False :=
+  nomatch h
+
+theorem united_states_class_is_allow :
+    unitedStatesClass = NationalityClass.allow :=
+  rfl
+
+theorem france_class_is_residual_attribution :
+    franceClass = NationalityClass.residualAttribution :=
+  rfl
+
+theorem australia_class_is_specific_consent :
+    australiaClass = NationalityClass.specificConsent :=
+  rfl
+
+theorem users_not_restricted_by_nationality :
+    usersRestrictedByNationality = false :=
+  rfl
+
+theorem nationality_is_citizenship :
+    nationalityIsCitizenship = true :=
+  rfl
+
 end UnlicenseProofs

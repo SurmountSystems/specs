@@ -252,4 +252,92 @@ theorem complete_science_effort_conforms :
     completeScienceEffortConforms = true :=
   rfl
 
+theorem node_kind_code_inverse (k : NodeKind) :
+    nodeKindOfCode (nodeKindCode k) = some k := by
+  cases k <;> rfl
+
+theorem node_kind_code_0_none : nodeKindOfCode 0 = none := rfl
+
+theorem node_kind_code_7_none : nodeKindOfCode 7 = none := rfl
+
+theorem edge_kind_code_inverse (e : EdgeKind) :
+    edgeKindOfCode (edgeKindCode e) = some e := by
+  cases e <;> rfl
+
+theorem edge_kind_code_0_none : edgeKindOfCode 0 = none := rfl
+
+theorem edge_kind_code_5_none : edgeKindOfCode 5 = none := rfl
+
+theorem duplicate_ids_not_graph_ok :
+    graphOk duplicateIdNodes fixtureChain = false := by
+  native_decide
+
+theorem missing_endpoint_not_graph_ok :
+    graphOk [fixtureNode0, fixtureNode5] missingEndpointEdges = false := by
+  native_decide
+
+theorem non_ascii_path_not_graph_ok :
+    graphOk [nonAsciiPathNode] [] = false := by
+  native_decide
+
+theorem leftover_bytes_rejected :
+    decodeGraph (magicBytes ++ [0, 0] ++ [0x00]) = none := by
+  native_decide
+
+theorem empty_graph_without_leftover_decodes :
+    decodeGraph (magicBytes ++ [0, 0]) = some ([], []) := by
+  native_decide
+
+theorem decode_noncanonical_fe_65535 :
+    decodeCompactSize [0xFE, 0xFF, 0xFF, 0x00, 0x00] = none :=
+  rfl
+
+theorem encode_65536_is_fe_four_payload :
+    encodeCompactSize 65536 = [0xFE, 0x00, 0x00, 0x01, 0x00] :=
+  rfl
+
+theorem decode_encode_0_tail_aa :
+    decodeCompactSize (encodeCompactSize 0 ++ [0xAA]) = some (0, [0xAA]) :=
+  rfl
+
+theorem decode_encode_252_tail_aa :
+    decodeCompactSize (encodeCompactSize 252 ++ [0xAA]) = some (252, [0xAA]) :=
+  rfl
+
+theorem decode_encode_253_tail_aa :
+    decodeCompactSize (encodeCompactSize 253 ++ [0xAA]) = some (253, [0xAA]) :=
+  rfl
+
+theorem decode_encode_65535_tail_aa :
+    decodeCompactSize (encodeCompactSize 65535 ++ [0xAA]) = some (65535, [0xAA]) :=
+  rfl
+
+theorem decode_encode_65536_tail_aa :
+    decodeCompactSize (encodeCompactSize 65536 ++ [0xAA]) = some (65536, [0xAA]) :=
+  rfl
+
+theorem unpublished_vocabulary :
+    unpublishedBasename "0009_VOCABULARY.md" = true :=
+  rfl
+
+theorem unpublished_fargo :
+    unpublishedBasename "0005_fargo.md" = true :=
+  rfl
+
+theorem unpublished_0011_unlicense :
+    unpublishedBasename "0011_Unlicense.md" = true :=
+  rfl
+
+theorem unpublished_0009_unlicense :
+    unpublishedBasename "0009_Unlicense.md" = true :=
+  rfl
+
+theorem unpublished_not_pdoss :
+    unpublishedBasename "0009_PDOSS.md" = false :=
+  rfl
+
+theorem unpublished_not_majestic_memex :
+    unpublishedBasename "0012_Majestic_Memex.md" = false :=
+  rfl
+
 end TechTreeProofs

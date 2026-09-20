@@ -269,4 +269,83 @@ def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
 def completeScienceConforms : Prop :=
   FormalVibeficationSpec.completeScienceConforms
 
+/-- Four classes of contributor nationality. Nationality is citizenship. -/
+inductive NationalityClass where
+  | allow
+  | specificConsent
+  | residualAttribution
+  | unread
+  deriving DecidableEq, Repr, BEq
+
+/-- A Contribution is original expression offered for inclusion in a Work. -/
+structure Contribution where
+  dedicatedUnderUnlicense : Bool
+  nationalities : List NationalityClass
+  deriving DecidableEq, Repr, BEq
+
+/-- Allow class is the only accepted nationality class. -/
+def isAllowClass : NationalityClass → Bool
+  | .allow => true
+  | .specificConsent => false
+  | .residualAttribution => false
+  | .unread => false
+
+/-- Residual attribution, specific consent, and unread refuse a Contribution. -/
+def isRefusedClass : NationalityClass → Bool
+  | .allow => false
+  | .specificConsent => true
+  | .residualAttribution => true
+  | .unread => true
+
+/-- Dual or multiple nationality refuses if any one class is not Allow. -/
+def everyNationalityIsAllow (c : Contribution) : Bool :=
+  c.nationalities.all isAllowClass
+
+/-- Accepted iff dedicated under Unlicense and every nationality is Allow. -/
+def contributionAccepted (c : Contribution) : Bool :=
+  c.dedicatedUnderUnlicense && everyNationalityIsAllow c
+
+/-- Refused if any nationality is residual, specific consent, or unread. -/
+def contributionRefused (c : Contribution) : Bool :=
+  !c.dedicatedUnderUnlicense || c.nationalities.any isRefusedClass
+
+def unitedStatesClass : NationalityClass := .allow
+
+def franceClass : NationalityClass := .residualAttribution
+
+def australiaClass : NationalityClass := .specificConsent
+
+def allowUnlicenseContribution : Contribution :=
+  { dedicatedUnderUnlicense := true
+    nationalities := [.allow] }
+
+def residualAttributionUnlicenseContribution : Contribution :=
+  { dedicatedUnderUnlicense := true
+    nationalities := [.residualAttribution] }
+
+def dualAllowResidualContribution : Contribution :=
+  { dedicatedUnderUnlicense := true
+    nationalities := [.allow, .residualAttribution] }
+
+def specificConsentUnlicenseContribution : Contribution :=
+  { dedicatedUnderUnlicense := true
+    nationalities := [.specificConsent] }
+
+def unreadUnlicenseContribution : Contribution :=
+  { dedicatedUnderUnlicense := true
+    nationalities := [.unread] }
+
+def residualAttributionContributionAcceptedBool : Bool :=
+  contributionAccepted residualAttributionUnlicenseContribution
+
+/-- Mash: a residual attribution national Contribution is accepted. -/
+def residualAttributionContributionAccepted : Prop :=
+  contributionAccepted residualAttributionUnlicenseContribution = true
+
+/-- Users of a published Work are not restricted by nationality. -/
+def usersRestrictedByNationality : Bool := false
+
+/-- Nationality is citizenship, not residence, visa, employer, or computer. -/
+def nationalityIsCitizenship : Bool := true
+
 end UnlicenseSpec
