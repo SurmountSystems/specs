@@ -15,8 +15,9 @@
     https://proofofkeags.com/research/2026-07-20-taking-dont-trust-verify-seriously.html
 
   This file does not claim a conforming encoder. It does not claim
-  that CATE, SSSSS, or Majestic Memex are replaced. It does not
-  claim that ENKI is this bitstream.
+  a spelling converter program. It does not claim that CATE, SSSSS,
+  or Majestic Memex are replaced. It does not claim that ENKI is
+  this bitstream.
 
   Comments in this module use the CATE leftover unstack floor. They do
   not claim every comment is a complete American English thought.
@@ -57,7 +58,7 @@ def enkiAndAnunnakiAreOneObject : Bool := false
 
 def enkiHasNumberedSpecification : Bool := false
 
-/-- This grain does not replace CATE, SSSSS, or Majestic Memex. -/
+/-- This specification does not replace CATE, SSSSS, or Majestic Memex. -/
 def replacesCate : Bool := false
 
 def cateSpecNumber : Nat := 5
@@ -169,6 +170,70 @@ def normalizeFirstThenEncode : Bool := true
 
 def decodeMustRebuildOriginalSurface : Bool := true
 
+/--
+  One language keeps one LanguageID. A dialect does not get a different
+  LanguageID. Two spelling tables for one language share that id and the
+  frequency ranked word number. Surfaces may differ. The user's preference
+  selects which table decode uses. `surfaceTag` only lets those Bools
+  reduce. It is not a byte layout and it is not a LanguageID. These
+  fixtures are not an on disk layout and they are not a published CATE
+  LanguageID assignment. A spelling converter program is not claimed.
+-/
+structure SpellingTable where
+  languageId : Nat
+  rankNumber : Nat
+  surfaceTag : Nat
+  surface : String
+  deriving DecidableEq, Repr
+
+def fixtureLanguageId : Nat := 1
+
+def sharedRankNumber : Nat := 1
+
+def americanSpellingTable : SpellingTable :=
+  { languageId := fixtureLanguageId
+    rankNumber := sharedRankNumber
+    surfaceTag := 0
+    surface := "color" }
+
+/-- Regional surface data for the user preference fixture. Not specification prose. -/
+def regionalSpellingTable : SpellingTable :=
+  { languageId := fixtureLanguageId
+    rankNumber := sharedRankNumber
+    surfaceTag := 1
+    surface := "regional form" }
+
+def oneLanguageKeepsOneLanguageId : Bool :=
+  americanSpellingTable.languageId == regionalSpellingTable.languageId
+
+/-- The claim that a dialect needs its own LanguageID is false. -/
+def dialectNeedsOwnLanguageId : Bool := false
+
+def spellingTablesIsomorphicAtRank : Bool :=
+  oneLanguageKeepsOneLanguageId &&
+    americanSpellingTable.rankNumber == regionalSpellingTable.rankNumber &&
+    americanSpellingTable.surfaceTag != regionalSpellingTable.surfaceTag
+
+inductive SpellingPreference where
+  | repositoryAmerican
+  | userPreferred
+  deriving DecidableEq, Repr, BEq
+
+def tableFor (pref : SpellingPreference) : SpellingTable :=
+  match pref with
+  | .repositoryAmerican => americanSpellingTable
+  | .userPreferred => regionalSpellingTable
+
+def userPreferenceSelectsDecodeTable : Bool :=
+  (tableFor .userPreferred).surfaceTag == regionalSpellingTable.surfaceTag &&
+    (tableFor .userPreferred).rankNumber == sharedRankNumber &&
+    (tableFor .repositoryAmerican).surfaceTag == americanSpellingTable.surfaceTag &&
+    (tableFor .repositoryAmerican).languageId == fixtureLanguageId
+
+def spellingConverterProgramClaimed : Bool := false
+
+def spellingTableByteLayoutSpecified : Bool := false
+
 /-- Migration accepted only when a Lean check shows the new encoding is not longer. Corpus remains Residual. -/
 def migrationRequiresLeanNotLongerCheck : Bool := true
 
@@ -191,9 +256,11 @@ def cppFixturePinned : Bool := false
   Clause 6 leftover residual facts. All of these are false.
   RDPS, FilterScript, Carbonado, number 0015, ENKI as a numbered file,
   and fargo stay unassigned here. A stack program instruction set,
-  nested language, on disk join shape, compound word rules, default
-  Majestic use, who emits the stack program, and Huffman versus pages
-  length on a real corpus remain unspecified or unmeasured here.
+  nested language, on disk join shape, spelling table byte layout,
+  compound word rules, default Majestic use, who emits the stack
+  program, and Huffman versus pages length on a real corpus remain
+  unspecified or unmeasured here. A dialect does not need its own
+  LanguageID.
 -/
 def rdpsAssignedNumber : Bool := false
 
@@ -328,6 +395,20 @@ def mashFilterScriptAssignedNumber : Prop :=
 def mashFilterScriptAssignedNumberIsFalse : Prop :=
   mashFilterScriptAssignedNumber → False
 
+/-- Treating a dialect as needing its own LanguageID is Cons False. -/
+def mashDialectNeedsOwnLanguageId : Prop :=
+  dialectNeedsOwnLanguageId = true
+
+def mashDialectNeedsOwnLanguageIdIsFalse : Prop :=
+  mashDialectNeedsOwnLanguageId → False
+
+/-- Claiming a spelling converter program is Cons False. A converter program is not claimed. -/
+def mashSpellingConverterProgramClaimed : Prop :=
+  spellingConverterProgramClaimed = true
+
+def mashSpellingConverterProgramClaimedIsFalse : Prop :=
+  mashSpellingConverterProgramClaimed → False
+
 /-- Required Conformance holds iff every listed conjunct holds. -/
 def requiredConformanceHolds : Bool :=
   specNumber == 14 &&
@@ -365,6 +446,12 @@ def requiredConformanceHolds : Bool :=
     !repeatCharacterEqualsSymbolResidual &&
     normalizeFirstThenEncode &&
     decodeMustRebuildOriginalSurface &&
+    oneLanguageKeepsOneLanguageId &&
+    !dialectNeedsOwnLanguageId &&
+    spellingTablesIsomorphicAtRank &&
+    userPreferenceSelectsDecodeTable &&
+    !spellingConverterProgramClaimed &&
+    !spellingTableByteLayoutSpecified &&
     migrationRequiresLeanNotLongerCheck &&
     !migrationCorpusPinned &&
     englishFixturePinned &&

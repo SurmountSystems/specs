@@ -17,6 +17,7 @@
   8. Mash of spec encodings plus proofs in one module is False.
   9. Clause 6 leftover residual Bools stay false.
   10. Clause 6.5 leftover clashes are Cons False. This is not a second mash of spec encodings plus proofs.
+  11. A dialect does not need its own LanguageID. Two spelling tables for one language share the frequency ranked word number. The user's preference selects which table decode uses. A spelling converter program is not claimed. Claiming a spelling converter program is Cons False. The byte layout of a spelling table is not specified. FAIL if a dialect is encoded as needing its own LanguageID. FAIL if a spelling converter program is claimed.
 
   Lake roots for AnunnakiSpec, AnunnakiProofs, and anunnaki_tests
   exist in lean/lakefile.toml. This file does not import SpecRegistry
@@ -124,6 +125,26 @@ def runCases : List Case :=
     expectTrue "normalize first then encode" normalizeFirstThenEncode,
     expectTrue "decode MUST rebuild the original surface"
       decodeMustRebuildOriginalSurface,
+    expectTrue "one language keeps one LanguageID"
+      oneLanguageKeepsOneLanguageId,
+    expectFalse "a dialect does not need its own LanguageID"
+      dialectNeedsOwnLanguageId,
+    expectTrue "spelling tables are isomorphic at the frequency ranked word number"
+      spellingTablesIsomorphicAtRank,
+    expectEqNat "frequency ranked word number stays the same"
+      americanSpellingTable.rankNumber regionalSpellingTable.rankNumber,
+    expectEqNat "spelling tables share one LanguageID"
+      americanSpellingTable.languageId regionalSpellingTable.languageId,
+    expectTrue "the user's preference selects the decode table"
+      userPreferenceSelectsDecodeTable,
+    expectEqString "user preference presents the regional surface"
+      (tableFor .userPreferred).surface "regional form",
+    expectEqString "repository preference presents the American surface"
+      (tableFor .repositoryAmerican).surface "color",
+    expectFalse "a spelling converter program is not claimed"
+      spellingConverterProgramClaimed,
+    expectFalse "spelling table byte layout is not specified"
+      spellingTableByteLayoutSpecified,
     expectFalse "migration corpus is not pinned" migrationCorpusPinned,
     expectTrue "English fixture is in the v2 slice" englishFixturePinned,
     expectTrue "Lean 4 fixture is in the v2 slice" lean4FixturePinned,
@@ -220,7 +241,19 @@ def runCases : List Case :=
       mashFilterScriptAssignedNumber
       mashFilterScriptAssignedNumberIsFalse
       rfl
-      mash_filter_script_assigned_number_is_false
+      mash_filter_script_assigned_number_is_false,
+    expectConsFalse "treating a dialect as needing its own LanguageID is Cons False"
+      dialectNeedsOwnLanguageId
+      mashDialectNeedsOwnLanguageId
+      mashDialectNeedsOwnLanguageIdIsFalse
+      rfl
+      mash_dialect_needs_own_language_id_is_false,
+    expectConsFalse "claiming a spelling converter program is Cons False"
+      spellingConverterProgramClaimed
+      mashSpellingConverterProgramClaimed
+      mashSpellingConverterProgramClaimedIsFalse
+      rfl
+      mash_spelling_converter_claimed_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

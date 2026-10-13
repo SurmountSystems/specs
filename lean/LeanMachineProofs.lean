@@ -274,6 +274,11 @@ theorem mash_spec_and_proof_conforming_is_false :
   intro h
   exact Bool.noConfusion h
 
+theorem holy_safe_c_lean_machine_one_module_is_not_true :
+    holySafeCLeanMachineOneModule = true → False := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem required_conformance_iff :
     requiredConformanceHolds = true :=
   rfl

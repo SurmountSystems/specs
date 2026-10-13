@@ -132,7 +132,10 @@ def isOpenSoftware : Dedication → Bool
   | .apacheTwo => true
   | .cc0 => false
 
-/-- PDOSS test: public domain dedication of software that is open. -/
+/-- PDOSS test: public domain dedication of software that is open.
+    Mapping constructor `cc0` to false is residual honesty that CC0 is unpinned.
+    This mapping is not a legal evaluation of CC0. It does not prove that CC0
+    fails a legal test and it does not prove that CC0 meets PDOSS. -/
 def meetsPdoss (d : Dedication) : Bool :=
   meetsPublicDomainDedicationTest d && isOpenSoftware d
 
@@ -145,6 +148,13 @@ def cc0PinnedAsMeetingPdoss : Bool := false
 
 def mashCc0PinnedAsMeetingPdoss : Prop :=
   cc0PinnedAsMeetingPdoss = true
+
+/-- CC0 is not pinned. Setting this true is Cons False. Not a legal evaluation. -/
+def cc0Pinned : Bool := false
+
+/-- CC0 is not claimed to meet PDOSS. Setting this true is Cons False.
+    Not a legal evaluation of CC0. -/
+def cc0ClaimedMeetsPdoss : Bool := false
 
 def cc0IsClause12Pin : Bool := false
 

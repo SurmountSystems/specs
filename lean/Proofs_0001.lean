@@ -5,11 +5,10 @@
   establishes identities of that encoding. Numbered markdown remains
   the contract humans read.
 
-  Lake SpecProofs lists only named roots. An extra DogeProofs module
-  is not compiled from an import. Meaning encodings and proofs
-  therefore live in this root as well as in DogeSpec.lean and
-  DogeProofs.lean. That mash is leftover until the Lake file can
-  list those modules.
+  The line encoding copy in lean/Proofs_0001.lean is a proof copy so
+  the line encoding module compiles. lean/DogeSpec.lean and
+  lean/DogeProofs.lean are not Lake roots. That copy is not the
+  Formal Vibefication mash of spec encodings with proofs in one file.
 -/
 
 import «0001_DOGE»

@@ -67,6 +67,54 @@ def provenClaims : List ProvenClaim :=
 theorem proven_claim_count : provenClaims.length = 7 :=
   rfl
 
+/--
+  Honesty mash theorem names that stay outside the README catalog.
+  The names are strings. This module does not import those theorems.
+  provenClaims stays the seven catalog rows. This list is not rendered
+  into the README table.
+-/
+def honestyMashesOutsideCatalog : List String :=
+  [
+    "mash_compcert_verified_compilation_claimed_done_is_false",
+    "mash_slake_bootstrap_typecheck_claimed_done_is_false",
+    "mash_compcert_tso_satisfies_clause42_item6_is_false",
+    "mash_spelling_converter_claimed_is_false",
+    "mash_british_spelling_conforms_is_false",
+    "mash_byte_identity_claimed_true_is_false",
+    "mash_conforming_encoder_claimed_is_false",
+    "mash_safe_c_is_own_published_spec_number_is_false",
+    "mash_dialect_needs_own_language_id_is_false",
+    "mash_self_host_from_c_satisfies_bootstrap_is_false"
+  ]
+
+theorem honesty_mashes_outside_catalog_count :
+    honestyMashesOutsideCatalog.length = 10 :=
+  rfl
+
+theorem honesty_mashes_outside_catalog_names :
+    honestyMashesOutsideCatalog = [
+      "mash_compcert_verified_compilation_claimed_done_is_false",
+      "mash_slake_bootstrap_typecheck_claimed_done_is_false",
+      "mash_compcert_tso_satisfies_clause42_item6_is_false",
+      "mash_spelling_converter_claimed_is_false",
+      "mash_british_spelling_conforms_is_false",
+      "mash_byte_identity_claimed_true_is_false",
+      "mash_conforming_encoder_claimed_is_false",
+      "mash_safe_c_is_own_published_spec_number_is_false",
+      "mash_dialect_needs_own_language_id_is_false",
+      "mash_self_host_from_c_satisfies_bootstrap_is_false"
+    ] :=
+  rfl
+
+/-- True when `name` is a claim string in provenClaims. -/
+def honestyMashNameInProvenClaims (name : String) : Bool :=
+  provenClaims.any (fun c => c.claim == name)
+
+/-- No honesty mash name is also a claim in provenClaims. -/
+theorem honesty_mashes_outside_catalog_disjoint :
+    honestyMashesOutsideCatalog.filter honestyMashNameInProvenClaims = [] :=
+  rfl
+
 def existsAny : Bool :=
   !provenClaims.isEmpty
 

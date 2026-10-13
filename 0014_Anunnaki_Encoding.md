@@ -24,7 +24,7 @@ This document does not claim a conforming encoder. This document does not claim 
 
 ### 1.1 Status of this document
 
-1. This document is normative for the identity of Anunnaki Encoding as specification 0014, the split between CATE identity and Anunnaki rank, the width template, ones padding of unused template bits, payload pages of 256 and 65536, repeat character run length as a residual plane, encode then decode identity, Huffman coding as measurement and not the lemma spine, and the migration predicate that a later table is accepted only when a Lean check shows the new encoding is not longer on a pinned corpus.
+1. This document is normative for the identity of Anunnaki Encoding as specification 0014, the split between CATE identity and Anunnaki rank, the width template, ones padding of unused template bits, payload pages of 256 and 65536, repeat character run length as a residual plane, encode then decode identity, Huffman coding as measurement and not the lemma spine, the migration predicate that a later table is accepted only when a Lean check shows the new encoding is not longer on a pinned corpus, one LanguageID for one language, spelling tables that stay isomorphic at the frequency ranked word number, and decode that selects a spelling table by the user's preference.
 2. Versioning of this document SHALL follow [0000_spec.md](0000_spec.md) (the Surmount spec spec) and Semantic Versioning 2.0.0 (SemVer). Local path for SemVer: `ref/semver`.
 3. This specification is number 0014. The file name is `0014_Anunnaki_Encoding.md`. First publication of this specification as a numbered document is version 0.1.0 dated 20260920.
 4. Concise American Technical English (CATE) is specified in `0005_CATE.md`. CATE is specification 0005. CATE is not this specification.
@@ -47,7 +47,7 @@ Canonical pages:
 2. Taking "Don't Trust. Verify." Seriously (2026-07-20) - https://proofofkeags.com/research/2026-07-20-taking-dont-trust-verify-seriously.html
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
-2. Companion Lean modules under `lean/AnunnakiSpec.lean` encode selected claims such as this document's identity as specification 0014 with file name `0014_Anunnaki_Encoding.md`, ENKI as the index, Anunnaki as the bitstream, CATE as specification 0005, SSSSS as specification 0004, Majestic Memex as specification 0012, ones padding that rejects a claimed pad containing a zero, payload pages of 256 and 65536, Huffman coding as measurement only, and that a mash of spec encodings plus proofs in one module does not conform.
+2. Companion Lean modules under `lean/AnunnakiSpec.lean` encode selected claims such as this document's identity as specification 0014 with file name `0014_Anunnaki_Encoding.md`, ENKI as the index, Anunnaki as the bitstream, CATE as specification 0005, SSSSS as specification 0004, Majestic Memex as specification 0012, ones padding that rejects a claimed pad containing a zero, payload pages of 256 and 65536, Huffman coding as measurement only, that one language keeps one LanguageID, that a dialect does not require a new LanguageID, that two spelling tables for one language are isomorphic at the frequency ranked word number, that the user's preference selects which table decode uses, and that a mash of spec encodings plus proofs in one module does not conform.
 3. Proofs of those encodings live in `lean/AnunnakiProofs.lean`.
 4. The sibling line encoding of this markdown is `0014_Anunnaki_Encoding.lean`. Proofs of that line encoding live in `lean/Proofs_0014.lean`.
 5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, leftover unstack phrases, Residual heading, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Spec encodings of meaning MUST NOT be treated as a second markdown form checker. `spec_check` is form, not meaning.
@@ -92,7 +92,7 @@ The index named beside this encoding. ENKI is not the bitstream. ENKI has no num
 
 ### 3.3 Stack program
 
-A program in machine code that handles bits and bytes. It is the engine that walks a header and a payload. It is not the header. It is not the width template. This document does not specify an instruction set for it.
+A program in machine code that handles bits and bytes. It is the engine that walks a header and a payload. It is not the header. It is not the width template. This specification does not define an instruction set for that program.
 
 ### 3.4 Header
 
@@ -100,7 +100,7 @@ The language prefix together with the width template and the stored template bit
 
 ### 3.5 Language prefix
 
-The field that selects which language's tables the following payload indices hit. LanguageID values remain as specified in `0004_SSSSS.md` and `0005_CATE.md`.
+The field that selects which language's tables the following payload indices hit. LanguageID values remain as specified in `0004_SSSSS.md` and `0005_CATE.md`. One language keeps one LanguageID. A dialect does not get a different LanguageID. A dialect spelling is not a language change.
 
 ### 3.6 Width template
 
@@ -133,7 +133,7 @@ The table of the next 65536 lemmas of that language. A page 1 index is two paylo
 
 ### 3.11 Rank
 
-The position of a lemma in a page. Rank is not WordID.
+The position of a lemma in a page. Rank is not WordID. Variations of spelling are an isomorphism between vocabulary dictionary tables for one language. Different tables are maintained. The frequency ranked word number stays the same across those tables.
 
 ### 3.12 WordID
 
@@ -160,7 +160,7 @@ Unused bits in the last packed template byte set to one. A finished arm always e
 ### 4.1 Relation to CATE
 
 1. A conforming Anunnaki encoder MUST treat CATE WordID and LanguageID as catalog identity.
-2. A conforming Anunnaki encoder MUST treat page index as a rank of a WordID, not as a replacement WordID.
+2. A conforming Anunnaki encoder MUST treat page index as a rank of a WordID, not as a replacement WordID. Variations of spelling MUST be an isomorphism between vocabulary dictionary tables for one language. Different tables MUST be maintained. The frequency ranked word number MUST stay the same across those tables.
 3. Adding a token to the catalog MUST be recorded as a CATE event.
 4. Moving a lemma from one page to another MUST be recorded as an Anunnaki migration and MUST satisfy Clause 4.7.
 5. This document MUST NOT publish a numbered Vocabulary file. That ban remains `0005_CATE.md`.
@@ -169,7 +169,7 @@ Unused bits in the last packed template byte set to one. A finished arm always e
 ### 4.2 Relation to SSSSS
 
 1. A language run as specified in `0004_SSSSS.md` MAY be serialized with Anunnaki Encoding.
-2. A LanguageID prefix MUST appear when the language changes, including at the start of a stream, as specified in `0004_SSSSS.md` Clause 4.1 item 2.
+2. A LanguageID prefix MUST appear when the language changes, including at the start of a stream, as specified in `0004_SSSSS.md` Clause 4.1 item 2. A dialect spelling is not a language change. A dialect MUST NOT get a different LanguageID.
 3. Neural proposals that arise from attending Anunnaki ranks MUST be reduced to sequential LanguageID and WordID values before acceptance, as specified in `0004_SSSSS.md` Clause 4.4.
 4. The symbolic interface MUST perform decode when the header, the tables, and the payload are well formed. The neural path MUST NOT be required for that decode.
 5. This document MUST NOT be read as a second SSSSS specification. This document MUST NOT replace `0004_SSSSS.md`.
@@ -190,7 +190,7 @@ Unused bits in the last packed template byte set to one. A finished arm always e
 4. A claimed pad that contains a zero MUST be rejected.
 5. If the last arm's zero is the last bit of a template byte, pad length MUST be zero. That case is perfectly efficient.
 6. The header MUST store an explicit template bit length (or the byte count of the packed template). Ones padding fills unused bits inside that stored span. Ones padding MUST NOT be treated as a streaming end mark for an uncapped template.
-7. A walker MUST cap width at 8 payload bytes unless a later published revision names a larger cap. An unterminated run of ones that would exceed that cap MUST be rejected or treated as pad inside the stored span, never as an infinite arm.
+7. A walker MUST cap width at 8 payload bytes unless a later published revision names a larger cap. Ones inside the stored span are pad. An unterminated run of ones that would pass that 8 byte cap MUST be rejected, never as pad and never as an infinite arm.
 
 ### 4.5 Payload pages
 
@@ -205,7 +205,7 @@ Unused bits in the last packed template byte set to one. A finished arm always e
 ### 4.6 Residuals and lossless surface
 
 1. Encode MUST normalize first, then encode.
-2. Decode MUST rebuild the original surface, not only the normalized lemmas.
+2. Decode MUST rebuild the original surface, not only the normalized lemmas. The rebuilt surface is the frequency ranked word, shown from the user's spelling table. The rank stays the same. Decode MUST use the user's spelling preference to choose which vocabulary dictionary table supplies the surface spelling, so that spelling can be the regional form. Code and materials on that computer MUST be presented in that preferred spelling at decode time. This selection is a requirement of the encoding. It is not a claim that a converter program is shipped. This item does not specify a spelling table byte layout.
 3. Runs of space, tab, and other repeated characters MUST be stored in the repeat character residual as (character, count).
 4. Capitalization, punctuation, and other marks MUST use the symbol residual, not the repeat character residual.
 5. Vocabulary tables MUST NOT spend one slot per instance of a repeated indent character.
@@ -245,17 +245,17 @@ nix flake check "path:$PWD" --print-build-logs
 Work that claims this specification conforms if and only if all of the following hold:
 
 1. Numbered markdown is the contract humans read; the specification is also encoded in Lean; proofs live in separate Lean modules; Formal Vibefication citations keep the canonical Proof of Keags URLs; `spec_check` remains form and is not meaning (Clause 1.2 and Clause 4.9).
-2. CATE WordID and LanguageID remain catalog identity; page index is a rank, not a replacement WordID; this document does not replace `0005_CATE.md` (Clause 4.1).
+2. CATE WordID and LanguageID remain catalog identity; page index is a rank, not a replacement WordID; one language keeps one LanguageID; a dialect does not get a different LanguageID; two spelling tables for one language are isomorphic at the frequency ranked word number; this document does not replace `0005_CATE.md` (Clause 4.1 and Clause 4.2).
 3. Language runs remain as specified in `0004_SSSSS.md`; neural proposals reduce to sequential LanguageID and WordID before acceptance; this document is not a second SSSSS (Clause 4.2).
 4. Magic `MAJESTIC` plus byte `0x01`, extension `.majestic`, and Tech Tree `.sstt` remain as specified in `0012_Majestic_Memex.md` (Clause 4.3).
 5. Width arms are `0` / `10` / `110` / `1110` with zero terminating and each one adding one payload byte; unused bits in the last template byte are ones; a claimed pad that contains a zero is rejected; bit 7 is consumed first; width is capped at 8 payload bytes (Clause 4.4).
 6. Page 0 has 256 slots; page 1 has 65536 slots; multi byte indices are little endian; payload is bytes; Huffman coding is not the lemma spine (Clause 4.5).
-7. Encode normalizes first then encodes; decode rebuilds the original surface; repeat character residual is a plane of (character, count); symbol residual is separate (Clause 4.6).
+7. Encode normalizes first then encodes; decode rebuilds the original surface; decode uses the user's spelling preference to choose the vocabulary dictionary table so the surface spelling can be the regional form; code and materials on that computer are presented in that preferred spelling at decode time; that selection is not a claim that a converter program is shipped; repeat character residual is a plane of (character, count); symbol residual is separate (Clause 4.6).
 8. Encode then decode yields the original surface; a later table is accepted only when a Lean check shows the new encoding is not longer on a pinned corpus (Clause 4.7).
 9. No instruction listing for the stack program is published (Clause 4.8).
 10. Every published numbered markdown file has a sibling `NNNN_descriptive_name.lean`; proofs of those encodings live in `lean/Proofs_NNNN.lean`; the named gate in `0007_CI.md` remains the gate (Clause 4.10).
 11. ENKI is the index and is not this bitstream; ENKI has no numbered specification (Clause 1 and Clause 3.2).
-12. A conforming encoder is not claimed.
+12. A conforming encoder is not claimed. A spelling converter program is not claimed.
 
 This specification is not itself a conforming encoder. Meeting these items is a claim about work that claims this specification, not about this markdown file as a shipped codec.
 
@@ -269,18 +269,18 @@ This section is normative for residual honesty of this document. Silence about a
 
 1. RDPS is unpublished. This document does not assign RDPS a number and does not create a numbered file for it.
 2. FilterScript is unpublished. This document does not assign FilterScript a number and does not create a numbered file for it.
-3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. This document does not create a file for Carbonado.
+3. The Carbonado Network Protocol has no numbered specification file in this repository. It has no assigned specification number. This document does not create a file for Carbonado.
 4. Number 0015 is not assigned in this document. This document MUST NOT steal number 0015. The next unassigned number after this specification is 0015. Number 0015 is not Anunnaki Encoding.
 5. ENKI has no numbered specification. This document MUST NOT be read as creating `NNNN_ENKI.md`.
-6. fargo is unspecified. fargo has no numbered specification and no assigned number.
+6. fargo has no numbered specification and no assigned number.
 7. Lake wiring for this specification is in this repository: encodings in `lean/AnunnakiSpec.lean`, proofs in `lean/AnunnakiProofs.lean`, sibling `0014_Anunnaki_Encoding.lean`, and the `anunnaki_tests` check. Catalog tokens Anunnaki, bitstream, and ENKI live in `0005_CATE.md` and `aspell_words.txt`. This specification does not claim a conforming encoder.
 
 ### 6.2 Product that is not implemented
 
-1. Anunnaki Encoding work is ongoing. A conforming encoder is not claimed. This specification records the contract. It does not ship an encoder.
-2. A stack program instruction set is not specified. Emission of such a program from Lean Machine is not claimed.
+1. Anunnaki Encoding work is ongoing. A conforming encoder is not claimed. This specification records the contract. It does not ship an encoder. It does not ship a spelling converter program.
+2. This specification does not define a stack program instruction set. Emission of such a program from Lean Machine is not claimed.
 3. Nested language (English containing Lean containing a string) is in scope and is not specified here.
-4. The on disk join from CATE WordID to Anunnaki rank is not specified here. Existence of that join is locked. On disk shape is not.
+4. The on disk join from CATE WordID to Anunnaki rank is not specified here. Existence of that join is locked. On disk shape is not. The byte layout of a spelling table is not specified here. The isomorphism between those tables and the preference that selects a table at decode are specified in Clause 3.5, Clause 3.11, Clause 4.1, Clause 4.2, and Clause 4.6.
 5. The pinned corpus for Clause 4.7 is not named here. The corpus remains Residual.
 6. Compound word and technical term rules per language are not specified here.
 7. Whether Anunnaki is default `.majestic` text or a later `memex compress` command is not specified here.
@@ -298,24 +298,24 @@ This section is normative for residual honesty of this document. Silence about a
 ### 6.4 Product claims that are not ready for use
 
 1. beastdb, SSSSS, Slake, and Continuous Integration remain ongoing and not ready for use. This document MUST NOT be read as claiming that those products never started or do not exist.
-2. `lean/AnunnakiSpec.lean` encodes selected claims. `lean/AnunnakiProofs.lean` proves those claims. `0014_Anunnaki_Encoding.lean` encodes the physical lines of this markdown file. `lean/Proofs_0014.lean` proves identities of that line encoding. Those modules are not a proof that a conforming encoder exists. They are not a proof that CATE, SSSSS, or Majestic Memex are replaced.
+2. `lean/AnunnakiSpec.lean` encodes selected claims. `lean/AnunnakiProofs.lean` proves those claims. `0014_Anunnaki_Encoding.lean` encodes the physical lines of this markdown file. `lean/Proofs_0014.lean` proves identities of that line encoding. Those modules are not a proof that a conforming encoder exists. They are not a proof that a spelling converter program is shipped. They are not a proof that CATE, SSSSS, or Majestic Memex are replaced.
 3. Leftover residual facts in Clause 6.1 and Clause 6.2 are encoded in `lean/AnunnakiSpec.lean`. Proofs that leftover clashes are Cons False live in `lean/AnunnakiProofs.lean`.
 
 ### 6.5 Leftover clashes that are Cons False
 
 1. Treating ENKI and Anunnaki Encoding as one object is Cons False in `lean/AnunnakiProofs.lean`.
-2. Claiming a conforming encoder is Cons False in that same module.
+2. Claiming a conforming encoder is Cons False in that same module. Claiming a spelling converter program is Cons False in that same module.
 3. Treating number 0015 as this specification is Cons False in that same module. This document MUST NOT create `0015_*.md`.
 4. Treating the Carbonado Network Protocol as assigned a number here is Cons False in that same module. Carbonado stays unnumbered.
 5. Treating ENKI as having a numbered specification is Cons False in that same module. This document MUST NOT create `NNNN_ENKI.md`.
 6. Treating RDPS as assigned a number here is Cons False in that same module.
-7. Treating FilterScript as assigned a number here is Cons False in that same module.
+7. Treating FilterScript as assigned a number here is Cons False in that same module. Treating a dialect as needing its own LanguageID is Cons False in that same module.
 
 ## 7. Changelog
 
 ### 0.1.0 - 20260920
 
-First publication of Anunnaki Encoding as numbered specification 0014 with file name `0014_Anunnaki_Encoding.md`. Records ENKI as the index and Anunnaki as the bitstream. Records that this specification does not replace CATE (`0005_CATE.md`), SSSSS (`0004_SSSSS.md`), or Majestic Memex (`0012_Majestic_Memex.md`). Records width arms `0` / `10` / `110` / `1110`, ones padding that rejects a claimed pad containing a zero, bit 7 first, payload cap of 8 bytes, page 0 of 256 slots, page 1 of 65536 slots with little endian indices, repeat character residual as a plane of (character, count), separate symbol residual, normalize first then encode, decode that rebuilds the original surface, Huffman coding as measurement and not the lemma spine, and migration accepted only when a Lean check shows the new encoding is not longer. Records that a conforming encoder is not claimed. Records unpublished RDPS, FilterScript, and Carbonado Network Protocol. Records that number 0015 is not this specification. Records leftover clashes as Cons False in `lean/AnunnakiProofs.lean` for treating ENKI and Anunnaki Encoding as one object, claiming a conforming encoder, treating number 0015 as this specification, treating Carbonado as numbered, and treating ENKI, RDPS, or FilterScript as assigned a number here.
+First publication of Anunnaki Encoding as numbered specification 0014 with file name `0014_Anunnaki_Encoding.md`. Records ENKI as the index and Anunnaki as the bitstream. Records that this specification does not replace CATE (`0005_CATE.md`), SSSSS (`0004_SSSSS.md`), or Majestic Memex (`0012_Majestic_Memex.md`). Records width arms `0` / `10` / `110` / `1110`, ones padding that rejects a claimed pad containing a zero, bit 7 first, payload cap of 8 bytes, page 0 of 256 slots, page 1 of 65536 slots with little endian indices, repeat character residual as a plane of (character, count), separate symbol residual, normalize first then encode, decode that rebuilds the original surface, Huffman coding as measurement and not the lemma spine, and migration accepted only when a Lean check shows the new encoding is not longer. Records that a conforming encoder is not claimed. Records unpublished RDPS, FilterScript, and Carbonado Network Protocol. Records that number 0015 is not this specification. Records leftover clashes as Cons False in `lean/AnunnakiProofs.lean` for treating ENKI and Anunnaki Encoding as one object, claiming a conforming encoder, treating number 0015 as this specification, treating Carbonado as numbered, and treating ENKI, RDPS, or FilterScript as assigned a number here. Records that one language keeps one LanguageID, that a dialect does not get a different LanguageID, that variations of spelling are an isomorphism between vocabulary dictionary tables, and that the frequency ranked word number stays the same across those tables. Records that decode uses the user's spelling preference to choose the table, so code and materials on that computer are presented in that preferred spelling. Records that this selection is a requirement of the encoding and is not a claim that a converter program is shipped. Records that the byte layout of a spelling table is not specified. Records that treating a dialect as needing its own LanguageID is Cons False in that same module. Records that ones inside the stored span are pad and that an unterminated run of ones that would pass the 8 byte cap is rejected. Records that the rebuilt surface is the frequency ranked word, shown from the user's spelling table, and that the rank stays the same. Records that claiming a spelling converter program is Cons False in that same module.
 
 No prior public release of this specification exists.
 

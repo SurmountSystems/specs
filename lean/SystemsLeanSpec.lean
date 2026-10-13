@@ -318,6 +318,24 @@ def compCertWrongEmit : CompCertValidation :=
 /-- Live product honesty: the required CompCert step is not claimed done. -/
 def compCertVerifiedCompilationClaimedDone : Bool := false
 
+def mashCompCertVerifiedCompilationClaimedDone : Prop :=
+  compCertVerifiedCompilationClaimedDone = true
+
+def mashCompCertVerifiedCompilationClaimedDoneIsFalse : Prop :=
+  mashCompCertVerifiedCompilationClaimedDone → False
+
+/--
+  Clause 4.2 item 6 is `ccomp` of the freestanding C emit.
+  CompCertTSO, gcc, LLVM, and cc do not satisfy that step.
+-/
+def compCertTsoSatisfiesClause42Item6 : Bool := false
+
+def mashCompCertTsoSatisfiesClause42Item6 : Prop :=
+  compCertTsoSatisfiesClause42Item6 = true
+
+def mashCompCertTsoSatisfiesClause42Item6IsFalse : Prop :=
+  mashCompCertTsoSatisfiesClause42Item6 → False
+
 /-!
   Clause 3.10 and 4.2 item 7: bootstrapping a Slake compiler that fully typechecks
   is a required core validation step. A subset typecheck is not
@@ -357,6 +375,12 @@ def bootstrapWithoutTheorems : SlakeBootstrapTypecheck :=
 
 /-- Live product honesty: the required bootstrap typecheck is not claimed done. -/
 def slakeBootstrapTypecheckClaimedDone : Bool := false
+
+def mashSlakeBootstrapTypecheckClaimedDone : Prop :=
+  slakeBootstrapTypecheckClaimedDone = true
+
+def mashSlakeBootstrapTypecheckClaimedDoneIsFalse : Prop :=
+  mashSlakeBootstrapTypecheckClaimedDone → False
 
 /--
   Clause 4.2 item 7 last sentence: hosting from generated C does not
@@ -772,6 +796,15 @@ inductive CompCertRefines where
   | holds
   deriving DecidableEq, Repr, BEq
 
+/-- Inhabiting `holds` is not a claim that a real emit was refined. -/
+def compCertRefinesClaimedDone : Bool := false
+
+def mashCompCertRefinesClaimedDone : Prop :=
+  compCertRefinesClaimedDone = true
+
+def mashCompCertRefinesClaimedDoneIsFalse : Prop :=
+  mashCompCertRefinesClaimedDone → False
+
 inductive SafeCompCert where
   | holds
   deriving DecidableEq, Repr, BEq
@@ -932,6 +965,18 @@ inductive ObjectCow where
 inductive PageCow where
   | holds
   deriving DecidableEq, Repr, BEq
+
+/-- Clause 3.40: the PageCow copy is one 4096 byte page. -/
+def pageCowCopyBytes : Nat := 4096
+
+/-- Clause 3.40: the PageCow sector is 4096 bytes. -/
+def pageCowSectorBytes : Nat := 4096
+
+/-- Clause 3.40: a larger hardware page is allowed for the one client. -/
+def pageCowLargerHardwarePageAllowed : Bool := true
+
+/-- That larger hardware page is not a second copy. The copy stays one 4096 byte page. -/
+def pageCowLargerPageIsSecondCopy : Bool := false
 
 def secretObjectCowAccepted : Bool := false
 
@@ -1280,6 +1325,158 @@ def posixForkIsObjectCow : Bool := false
 
 def correspondenceRequiredBeforeIsomorphism : Bool := true
 
+/-- Clause 3.47: Fargo gates A through F. Adding a seventh constructor breaks Fin 6. -/
+def FargoGate.toFin : FargoGate → Fin 6
+  | .a => (0 : Fin 6)
+  | .b => (1 : Fin 6)
+  | .c => (2 : Fin 6)
+  | .d => (3 : Fin 6)
+  | .e => (4 : Fin 6)
+  | .f => (5 : Fin 6)
+
+def FargoGate.ofFin : Fin 6 → FargoGate
+  | ⟨0, _⟩ => .a
+  | ⟨1, _⟩ => .b
+  | ⟨2, _⟩ => .c
+  | ⟨3, _⟩ => .d
+  | ⟨4, _⟩ => .e
+  | ⟨5, _⟩ => .f
+
+/-- Clause 3.52: correspondence maps are statements, not an isomorphism theorem. -/
+inductive RustJudgment where
+  | sample
+  deriving DecidableEq, Repr, BEq
+
+inductive SafeCJudgment where
+  | sample
+  deriving DecidableEq, Repr, BEq
+
+def correspondsNamed : Bool := true
+
+def toSafeC : RustJudgment → Option SafeCJudgment
+  | .sample => none
+
+def toRust : SafeCJudgment → Option RustJudgment
+  | .sample => none
+
+def correspondenceMapsAreStatements : Bool := true
+
+def isomorphismTheoremNameAccepted : Bool := false
+
+def mashIsomorphismTheoremName : Prop :=
+  isomorphismTheoremNameAccepted = true
+
+def mashIsomorphismTheoremNameIsFalse : Prop :=
+  mashIsomorphismTheoremName → False
+
+/-- Clause 3.53: named C UbClass constructors. The product Fault table is not complete. -/
+inductive UbClass where
+  | signedOverflow
+  | uninitAutomatic
+  | useAfterFree
+  | doubleFree
+  | oobPointer
+  | dataRace
+  | strictAliasing
+  | restrictViolation
+  | invalidFree
+  | unsequencedSideEffect
+  | shiftExponentOutOfRange
+  | nullDeref
+  | pointerProvenance
+  | gnuVlaOrStatementExpr
+  | memcpyOverlap
+  | reallocOldPointer
+  deriving DecidableEq, Repr, BEq
+
+def UbClass.toFin : UbClass → Fin 16
+  | .signedOverflow => (0 : Fin 16)
+  | .uninitAutomatic => (1 : Fin 16)
+  | .useAfterFree => (2 : Fin 16)
+  | .doubleFree => (3 : Fin 16)
+  | .oobPointer => (4 : Fin 16)
+  | .dataRace => (5 : Fin 16)
+  | .strictAliasing => (6 : Fin 16)
+  | .restrictViolation => (7 : Fin 16)
+  | .invalidFree => (8 : Fin 16)
+  | .unsequencedSideEffect => (9 : Fin 16)
+  | .shiftExponentOutOfRange => (10 : Fin 16)
+  | .nullDeref => (11 : Fin 16)
+  | .pointerProvenance => (12 : Fin 16)
+  | .gnuVlaOrStatementExpr => (13 : Fin 16)
+  | .memcpyOverlap => (14 : Fin 16)
+  | .reallocOldPointer => (15 : Fin 16)
+
+def toFault : UbClass → Option FaultJudgment
+  | _ => none
+
+def fromCNamed : Bool := true
+
+def ubClassProductTableComplete : Bool := false
+
+/-- Clause 3.54: a pin of an address does not survive PosixFork. -/
+def pinSurvivesPosixFork : Bool := false
+
+def mashPinSurvivesPosixFork : Prop :=
+  pinSurvivesPosixFork = true
+
+def mashPinSurvivesPosixForkIsFalse : Prop :=
+  mashPinSurvivesPosixFork → False
+
+/-- Clause 4.5 item 16: glibc malloc is not UniqueBlock against untyped C. -/
+def glibcMallocIsUniqueBlockUntyped : Bool := false
+
+def mashGlibcMallocUntypedUniqueBlock : Prop :=
+  glibcMallocIsUniqueBlockUntyped = true
+
+def mashGlibcMallocUntypedUniqueBlockIsFalse : Prop :=
+  mashGlibcMallocUntypedUniqueBlock → False
+
+/-- Clause 4.5 item 12: a file that lacks a Mutex is not LockFree. -/
+def mutexFreeFileIsLockFree : Bool := false
+
+def mashMutexFreeFileIsLockFree : Prop :=
+  mutexFreeFileIsLockFree = true
+
+def mashMutexFreeFileIsLockFreeIsFalse : Prop :=
+  mashMutexFreeFileIsLockFree → False
+
+/-- Clause 3.57: twenty three Reject fixtures. Pass fixtures stay residual. -/
+def rejectFixtureCount : Nat := 23
+
+def safeCLakePackageShippedInThisRepo : Bool := false
+
+def number0015Assigned : Bool := false
+
+/-- Clause 6.4 item 90: Holy Lean, SafeC, and Lean Machine are not one module. -/
+def holyLeanSafeCLeanMachineOneModule : Bool := false
+
+def mashHolyLeanSafeCLeanMachine : Prop :=
+  holyLeanSafeCLeanMachineOneModule = true
+
+def mashHolyLeanSafeCLeanMachineIsFalse : Prop :=
+  mashHolyLeanSafeCLeanMachine → False
+
+/-- Clause 6.4 items 4 and 5: this document does not create a numbered SafeC file. -/
+def createsNumberedSafeCFile : Bool := false
+
+/-- SafeC is not its own published specification number. Clause 6.4 item 5. -/
+def safeCIsOwnPublishedSpecNumber : Bool := false
+
+def mashSafeCIsOwnPublishedSpecNumber : Prop :=
+  safeCIsOwnPublishedSpecNumber = true
+
+def mashSafeCIsOwnPublishedSpecNumberIsFalse : Prop :=
+  mashSafeCIsOwnPublishedSpecNumber → False
+
+/-- SafeC is carried by Systems Lean, specification 0002.
+    Number 0015 stays unassigned. fargo stays unnumbered. -/
+def safeCCarriedBySystemsLean : Bool :=
+  systemsLeanSpecNumber == 2 &&
+    !safeCIsOwnPublishedSpecNumber &&
+    !number0015Assigned &&
+    !SpecRegistry.fargoAssigned
+
 /-- Sampled v28 tokens that MUST appear in 0002 markdown (or residual). Nearby different words do not count. -/
 def v28SilenceTokens : List String :=
   [ "Perfect"
@@ -1323,5 +1520,175 @@ def v28RemainingSilenceTokenCount : Nat := 9
 
 def v28RemainingSilenceTokensNamedIn (hay : String) : Bool :=
   v28RemainingSilenceTokens.all (fun t => hay.contains t)
+
+/-!
+  SafeC depth. Clause 6.4 item 3, Clause 1, Clause 3.21, Clause 3.40,
+  Clause 3.46, and Clause 4.5 item 5. Encodings only. Proofs are separate.
+-/
+
+/-- A ref pin freezes an external text and proofs are built from that text. -/
+def refPinFreezesExternalText : Bool := true
+
+/-- The emit standard is freestanding ISO C. The pin file is absent. -/
+def emitStandardIsFreestandingIsoC : Bool := true
+
+/-- The pin file is absent because the license forbids storing the PDF. -/
+def isoCPinFileAbsentLicenseForbids : Bool := true
+
+/-- ISO catalog number for ISO/IEC 9899:2024. -/
+def isoCCatalogNumber : Nat := 82075
+
+/-- Edition of ISO/IEC 9899:2024. -/
+def isoCEdition : Nat := 5
+
+/-- One client is in scope. Ten thousand and ten million concurrent clients are not. -/
+def oneClientInScope : Bool := true
+
+def tenThousandConcurrentClientsInScope : Bool := false
+
+def tenMillionConcurrentClientsInScope : Bool := false
+
+/-- Meeting the one client aim is not claimed. -/
+def oneClientAimMet : Bool := false
+
+def linuxKernelMemoryModelRequired : Bool := true
+
+def cMemoryModelRequired : Bool := true
+
+def cxxMemoryModelRequired : Bool := true
+
+/-- One LLVM IR that Rust and Linux kernel C both accept for layout and virtual tables. -/
+def llvmIrMemoryAndVtableCompatible : Bool := true
+
+def systemsLeanFirstClassOnThatIr : Bool := true
+
+/-- This document does not invent an LLVM version number. -/
+def llvmVersionInvented : Bool := false
+
+/-- A running kernel is not claimed verified. -/
+def runningKernelVerified : Bool := false
+
+structure LiveUpdateLayout where
+  updatedCodeConsistent : Bool
+  programsInFlightConsistent : Bool
+  deriving DecidableEq, Repr
+
+def liveUpdateLayoutsConsistent (u : LiveUpdateLayout) : Bool :=
+  u.updatedCodeConsistent && u.programsInFlightConsistent
+
+/-- A restart is required only when the two layouts do not both stay consistent. -/
+def restartRequired (u : LiveUpdateLayout) : Bool :=
+  !liveUpdateLayoutsConsistent u
+
+/-- iris-lean is not required and is not a dependency. -/
+def irisLeanRequired : Bool := false
+
+/-- The typer target on the companion fragment is this document's Step. -/
+def typerMatchTarget : TyperFragment → StepState :=
+  typerStep
+
+/-- When a profile turns SafeCt on, timing does not depend on Secret. -/
+def safeCtTimingCarriesSecret : Bool := false
+
+/-- When a profile turns SafeCt on, cache behavior does not depend on Secret. -/
+def safeCtCacheCarriesSecret : Bool := false
+
+/-- When a profile turns SafeCt on, page faults do not depend on Secret. -/
+def safeCtPageFaultCarriesSecret : Bool := false
+
+/-- The three channels depend on Secret only when a carry flag is true. -/
+def safeCtChannelsDependOnSecret : Bool :=
+  safeCtTimingCarriesSecret || safeCtCacheCarriesSecret ||
+    safeCtPageFaultCarriesSecret
+
+/-- Failure to be constant time is not the SafeCt switch. -/
+def notConstantTimeIsSafeCtSwitch : Bool := false
+
+/-- A canonical public GitHub organization is out of scope for this one client system. -/
+def canonicalPublicGitHubOrgInScope : Bool := false
+
+/-- Clause 3.35 and Clause 6.4 item 20. SeqLock is named. Lock order is not claimed. -/
+def seqLockNamed : Bool := true
+
+def futexIsAtomicOnProcessSharedOrKernelWord : Bool := true
+
+def lockOrderClaimed : Bool := false
+
+/-- Clause 6.4 item 32. -/
+def pthreadUnlockIsSafeKernel : Bool := true
+
+def unlockWithoutHoldReject : Bool := true
+
+/-- Clause 6.4 items 58, 64, 67, 73, 81, and 84. -/
+def mapModesSharedPrivateAnonNamed : Bool := true
+
+def swmrAndMwmrAreStructureModes : Bool := true
+
+def c11AndCxxDataRaceRejectOrFault : Bool := true
+
+def checkBytesBeforeView : Bool := true
+
+def consLayersOnNamedJudgments : Bool := true
+
+def copyHandleWithoutProtocolIsUafClass : Bool := true
+
+def compCertExcludedUbClassRejectBeforeCcomp : Bool := true
+
+def consAndUbClassImplyConstantTime : Bool := false
+
+def sleanifySkillShipped : Bool := false
+
+def leanMachineReadyForUse : Bool := false
+
+def v28PackageNamesHostedAsDefault : Bool := true
+
+def integerOverflowSplitNamed : Bool := true
+
+def safeClaimWithSignedOverflowIsConsClash : Bool := true
+
+def phase0PairIsLockTokenAndAffineUnlock : Bool := true
+
+def reproduceStep1NamesArtifactKinds : Bool := true
+
+def inconsistencyReportPackageModuleCreatedHere : Bool := false
+
+/-- Clause 3 and Clause 6.4. Remaining v28 glossary rules captured in prose. -/
+def systemsLeanFollowsShapeOfRust : Bool := true
+
+def makeMutDenotesObjectCow : Bool := true
+
+def uniqueBlockRequiresEveryPageUnique : Bool := true
+
+def freestandingSectionNamed : Bool := true
+
+def glossaryWordAddedBeforeUse : Bool := true
+
+def reachablePanicIsReject : Bool := true
+
+def listEntryIsSafeKernel : Bool := true
+
+def blockRegionKindsNamed : Bool := true
+
+def immortalStorageNeverFreed : Bool := true
+
+def arenaChildFreeIsReject : Bool := true
+
+def addressWordNamesBlock : Bool := true
+
+def seqLockReadersSnapshotAndRetry : Bool := true
+
+def referenceCountOnlyAsCountedProtocol : Bool := true
+
+def abaToolsNamed : Bool := true
+
+def checkBytesIsNotSerde : Bool := true
+
+def dataRaceHasNoHappensBefore : Bool := true
+
+def tcbShrinkReplacesSameAbi : Bool := true
+
+def layoutPinRecordsWidths : Bool := true
+
+def clientsMustNotObserveLeakedExclusion : Bool := true
 
 end SystemsLean

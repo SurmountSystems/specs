@@ -66,13 +66,14 @@ theorem rephrased_hyphen_conforming :
   rfl
 
 theorem leftover_unstack_phrase_count :
-    leftoverUnstackPhrases.length = 5 :=
+    leftoverUnstackPhrases.length = 8 :=
   rfl
 
 theorem leftover_unstack_phrases_are :
     leftoverUnstackPhrases =
       ["non markdown", "must like", "LF only", "lock free tries",
-        "fully type checking"] :=
+        "fully type checking", "copy grain", "first grain",
+        "page grain"] :=
   rfl
 
 theorem leftover_constructors_map_to_floor_list :
@@ -100,6 +101,18 @@ theorem leftover_fully_type_checking_fails_floor :
     containsLeftoverUnstackPhrase leftoverFullyTypeCheckingProse = true :=
   by native_decide
 
+theorem leftover_copy_grain_fails_floor :
+    containsLeftoverUnstackPhrase leftoverCopyGrainProse = true :=
+  by native_decide
+
+theorem leftover_first_grain_fails_floor :
+    containsLeftoverUnstackPhrase leftoverFirstGrainProse = true :=
+  by native_decide
+
+theorem leftover_page_grain_fails_floor :
+    containsLeftoverUnstackPhrase leftoverPageGrainProse = true :=
+  by native_decide
+
 theorem high_assurance_meets_floor :
     leftoverUnstackFloorConforms allowedHighAssuranceProse = true :=
   by native_decide
@@ -110,6 +123,14 @@ theorem three_bit_meets_floor :
 
 theorem time_series_meets_floor :
     leftoverUnstackFloorConforms allowedTimeSeriesProse = true :=
+  by native_decide
+
+theorem grainier_meets_floor :
+    leftoverUnstackFloorConforms allowedGrainierProse = true :=
+  by native_decide
+
+theorem this_grain_meets_floor :
+    leftoverUnstackFloorConforms allowedThisGrainProse = true :=
   by native_decide
 
 theorem high_assurance_is_allowed_spaced :
@@ -260,6 +281,11 @@ theorem no_invented_conforming_product :
 
 theorem mash_cate_allows_invented_conforming_product_is_false :
     mashCateAllowsInventedConformingProductIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_british_spelling_conforms_is_false :
+    mashBritishSpellingConformsIsFalse := by
   intro h
   exact Bool.noConfusion h
 

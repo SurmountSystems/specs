@@ -236,7 +236,7 @@ The pairing of the symbolic interface and the neural path so work is not repeate
 1. Durable SSSSS state MUST be stored in beastdb as specified in [0003_beastdb.md](0003_beastdb.md).
 2. The core of SSSSS MUST be implemented in Systems Lean as specified in [0002_Systems_Lean.md](0002_Systems_Lean.md).
 3. SSSSS components that are safety critical, SSSSS components that run in environments with tight resources, and SSSSS components that are freestanding MUST be able to target the freestanding Slake path in [0002_Systems_Lean.md](0002_Systems_Lean.md). Those components MUST contain no managed Lean runtime and MUST NOT perform garbage collection on the freestanding product wire.
-4. CompCert verified compilation (Clause 3.20) is a REQUIRED core validation step for the freestanding C emit of the components named in item 3, as required by [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 4.2 item 6. Naming a residual MUST NOT substitute for this step. This document does not claim CompCert is pinned under this specifications repository's `ref/`.
+4. CompCert verified compilation (Clause 3.20) is a REQUIRED core validation step for the freestanding C emit of the components named in item 3, as defined in [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 3.9 and as required by that document's Clause 4.2 item 6. Naming a residual MUST NOT substitute for this step. This document does not claim CompCert is pinned under this specifications repository's `ref/`.
 5. Bootstrapping a Slake compiler that fully typechecks (Clause 3.21) is a REQUIRED core validation step for those same components, as required by [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 4.2 item 7. A named subset of modules is not enough. Naming a residual MUST NOT substitute for this step. A claim that the freestanding product hosts itself from generated C is a distinct claim and does not satisfy this step by itself.
 6. Residual honesty as defined in [0002_Systems_Lean.md](0002_Systems_Lean.md) remains required for the freestanding product wire. Residual honesty MUST NOT replace items 4 and 5.
 7. Items 1 through 6 are requirements. This document does not claim an SSSSS backed by beastdb, an SSSSS core built by Slake, CompCert validation of an SSSSS emit, or a Slake bootstrap that fully typechecks for SSSSS is implemented.
@@ -289,7 +289,7 @@ This section is normative for residual honesty of this document. It does not add
 ### 6.1 Unpublished specifications and unassigned numbers
 
 1. fargo has no assigned specification number. A previous plan that assigned number 0005 to fargo is withdrawn. Number 0005 is Concise American Technical English (`0005_CATE.md`). Number 0006 is Recursive Self Improvement (`0006_RSI.md`). This document does not invent a new number for fargo. This document does not require fargo.
-2. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. That mention is not an assignment. This document does not create a file for it.
+2. The Carbonado Network Protocol has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. That mention is not an assignment. This document does not create a file for it.
 
 ### 6.2 Lean Machine numbered as 0013
 

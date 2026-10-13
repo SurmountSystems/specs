@@ -158,6 +158,19 @@ theorem mash_cc0_pinned_as_meeting_pdoss
     (h : mashCc0PinnedAsMeetingPdoss) : False :=
   nomatch h
 
+/-- Setting `cc0Pinned` true is Cons False. Not a legal evaluation of CC0. -/
+theorem mash_cc0_pinned_is_false : cc0Pinned = true → False := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Setting `cc0ClaimedMeetsPdoss` true is Cons False.
+    Not a legal evaluation of CC0. This does not prove that CC0 fails a legal
+    test and it does not prove that CC0 meets PDOSS. -/
+theorem mash_cc0_claimed_meets_pdoss_is_false :
+    cc0ClaimedMeetsPdoss = true → False := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem mash_mit_meets_pdoss (h : mitMeetsPdoss) : False :=
   nomatch h
 

@@ -204,6 +204,15 @@ def runCases : List Case :=
     expectEmpty "high assurance 3 bit time series pass encodedLines leftover unstack"
       (findingsForLeftoverUnstackEncoded "0003_beastdb.md"
         (encodeFile "This uses high assurance, 3 bit color, and time series access.\n")),
+    expectNonEmpty "copy grain in encodedLines prose fails"
+      (findingsForLeftoverUnstackEncoded "0002_Systems_Lean.md"
+        (encodeFile "The copy grain stays 4096 bytes.\n")),
+    expectEmpty "coined grain names in inline code pass encodedLines leftover unstack"
+      (findingsForLeftoverUnstackEncoded "0002_Systems_Lean.md"
+        (encodeFile "Writers MUST NOT coin `copy grain`, `first grain`, or `page grain` for a PageCow copy. PageCow copies one 4096 byte page. That page is the ordinary 4KB page and it lines up with a 4KB sector. A larger hardware page is allowed when it improves performance for the one client. The copy stays one 4096 byte page. It is not a second copy size.\n")),
+    expectEmpty "grainier dithering passes encodedLines leftover unstack"
+      (findingsForLeftoverUnstackEncoded "0001_DOGE.md"
+        (encodeFile "Gaussian dithering appears grainier and less sharp.\n")),
     expectNonEmpty "leftover unstack in spec encoding block comments fails"
       (findingsForLeftoverUnstackComments "lean/FormalVibeficationSpec.lean"
         ("/-\n" ++

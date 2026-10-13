@@ -24,6 +24,7 @@ import VocabularySpec
 import SpecProofs
 import LeanMachineSpec
 import AnunnakiSpec
+import SystemsLeanProofs
 
 open Surmount
 open SpecRegistry
@@ -39,6 +40,12 @@ def expectTrue (name : String) (b : Bool) : Case :=
 
 def expectFalse (name : String) (b : Bool) : Case :=
   { name := name, ok := !b, detail := if !b then "" else "expected false" }
+
+/-- Names a Bool clash proof so the proof cannot be omitted. -/
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def expectEqNat (name : String) (got want : Nat) : Case :=
   if got == want then
@@ -344,9 +351,23 @@ def runCases : List Case :=
     expectFalse "number 0015 is not assigned"
       numberFifteenAssigned,
     expectTrue "Anunnaki Encoding is not specification 0015"
-      (anunnakiSpecNumber != 15),
+      (Surmount.anunnakiSpecNumber != 15),
     expectTrue "Surmount Systems is not specification 0015"
       (surmountSpecNumber != 15),
+    expectEqNat "Surmount Systems stays specification 0010"
+      surmountSpecNumber 10,
+    expectEqNat "SafeC is carried by Systems Lean specification 0002"
+      systemsLeanSpecNumber 2,
+    expectFalse "SafeC is not its own published spec number"
+      SystemsLean.safeCIsOwnPublishedSpecNumber,
+    expectTrue "SafeC is carried by Systems Lean"
+      SystemsLean.safeCCarriedBySystemsLean,
+    expectConsFalse "claiming SafeC is its own published spec number is Cons False"
+      SystemsLean.safeCIsOwnPublishedSpecNumber
+      SystemsLean.mashSafeCIsOwnPublishedSpecNumber
+      SystemsLean.mashSafeCIsOwnPublishedSpecNumberIsFalse
+      rfl
+      SystemsLean.mash_safe_c_is_own_published_spec_number_is_false,
     expectTrue "stack identities compose" stackIntegrates
   ]
 

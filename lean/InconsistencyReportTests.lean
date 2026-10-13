@@ -40,6 +40,18 @@ def fixtureStale : String :=
 def fixtureCurrent : String :=
   "# README\n\n" ++ wrapTable generatedTable ++ "\n"
 
+def expectHonestyNameAt (index : Nat) (want : String) : Case :=
+  match honestyMashesOutsideCatalog[index]? with
+  | some got =>
+    if got == want then
+      { name := s!"honesty mash {index} is {want}", ok := true }
+    else
+      { name := s!"honesty mash {index} is {want}", ok := false,
+        detail := s!"expected {want}, got {got}" }
+  | none =>
+    { name := s!"honesty mash {index} is {want}", ok := false,
+      detail := "missing name" }
+
 def runCases : List Case :=
   [
     expectEqNat "seven proven False mash claims" provenClaims.length 7,
@@ -75,7 +87,37 @@ def runCases : List Case :=
     expectTrue "kind is intentional nonconformance"
       (!((generatedTable.splitOn "intentional nonconformance theorem").length == 1)),
     expectTrue "tableSectionOk is the product check"
-      (tableSectionOk fixtureCurrent == readmeTableCurrent fixtureCurrent)
+      (tableSectionOk fixtureCurrent == readmeTableCurrent fixtureCurrent),
+    expectEqNat "ten honesty mashes outside the catalog"
+      honestyMashesOutsideCatalog.length 10,
+    expectHonestyNameAt 0
+      "mash_compcert_verified_compilation_claimed_done_is_false",
+    expectHonestyNameAt 1
+      "mash_slake_bootstrap_typecheck_claimed_done_is_false",
+    expectHonestyNameAt 2
+      "mash_compcert_tso_satisfies_clause42_item6_is_false",
+    expectHonestyNameAt 3
+      "mash_spelling_converter_claimed_is_false",
+    expectHonestyNameAt 4
+      "mash_british_spelling_conforms_is_false",
+    expectHonestyNameAt 5
+      "mash_byte_identity_claimed_true_is_false",
+    expectHonestyNameAt 6
+      "mash_conforming_encoder_claimed_is_false",
+    expectHonestyNameAt 7
+      "mash_safe_c_is_own_published_spec_number_is_false",
+    expectHonestyNameAt 8
+      "mash_dialect_needs_own_language_id_is_false",
+    expectHonestyNameAt 9
+      "mash_self_host_from_c_satisfies_bootstrap_is_false",
+    expectEqNat "shared honesty names"
+      (honestyMashesOutsideCatalog.filter honestyMashNameInProvenClaims).length 0,
+    expectTrue "a catalog claim name is recognized as shared"
+      (honestyMashNameInProvenClaims "mash_spec_and_proof"),
+    expectTrue "no honesty mash name is also in provenClaims"
+      (honestyMashesOutsideCatalog.all (fun n => !honestyMashNameInProvenClaims n)),
+    expectFalse "honesty list shares a proven claim"
+      (honestyMashesOutsideCatalog.any honestyMashNameInProvenClaims)
   ]
 
 def main (_args : List String) : IO UInt32 := do

@@ -415,6 +415,29 @@ theorem bootstrap_without_theorems_not_ok :
 theorem slake_bootstrap_typecheck_not_claimed_done :
     slakeBootstrapTypecheckClaimedDone = false := rfl
 
+theorem mash_compcert_verified_compilation_claimed_done_is_false :
+    mashCompCertVerifiedCompilationClaimedDoneIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_slake_bootstrap_typecheck_claimed_done_is_false :
+    mashSlakeBootstrapTypecheckClaimedDoneIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_compcert_tso_satisfies_clause42_item6_is_false :
+    mashCompCertTsoSatisfiesClause42Item6IsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem compcert_refines_not_claimed_done :
+    compCertRefinesClaimedDone = false := rfl
+
+theorem mash_compcert_refines_claimed_done_is_false :
+    mashCompCertRefinesClaimedDoneIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem self_host_from_generated_c_does_not_satisfy_typecheck :
     selfHostFromGeneratedCSatisfiesTypecheck = false := rfl
 
@@ -795,6 +818,28 @@ theorem beastdb_acid_owned_by_spec_0003 :
 theorem posix_fork_is_page_cow :
     posixForkIsPageCow = true := rfl
 
+theorem page_cow_copy_bytes :
+    pageCowCopyBytes = 4096 := rfl
+
+theorem page_cow_copy_is_ordinary_4kb_page :
+    pageCowCopyBytes = 4 * 1024 ∧
+      pageCowCopyBytes = 4096 ∧
+      pageCowCopyBytes ≠ 1024 ∧
+      pageCowCopyBytes ≠ 4 * 1000 := by
+  decide
+
+theorem page_cow_copy_lines_up_with_4kb_sector :
+    pageCowSectorBytes = pageCowCopyBytes ∧
+      pageCowSectorBytes = 4096 ∧
+      pageCowSectorBytes ≠ 512 := by
+  decide
+
+theorem page_cow_larger_hardware_page_for_one_client :
+    pageCowCopyBytes = 4096 ∧
+      pageCowLargerHardwarePageAllowed = true ∧
+      pageCowLargerPageIsSecondCopy = false := by
+  decide
+
 theorem posix_fork_is_not_object_cow :
     posixForkIsObjectCow = false := rfl
 
@@ -824,5 +869,222 @@ theorem mash_named_residual_identifiers_present_theories_is_false :
     mashNamedResidualIdentifiersPresentTheoriesIsFalse := by
   intro h
   exact Bool.noConfusion h
+
+theorem fargo_gate_roundtrip (g : FargoGate) :
+    FargoGate.ofFin (FargoGate.toFin g) = g := by
+  cases g <;> rfl
+
+theorem correspondence_maps_are_statements :
+    correspondenceMapsAreStatements = true := rfl
+
+theorem corresponds_is_named :
+    correspondsNamed = true := rfl
+
+theorem to_safe_c_on_sample_is_none :
+    toSafeC RustJudgment.sample = none := rfl
+
+theorem to_rust_on_sample_is_none :
+    toRust SafeCJudgment.sample = none := rfl
+
+theorem mash_isomorphism_theorem_name_is_false :
+    mashIsomorphismTheoremNameIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_pin_survives_posix_fork_is_false :
+    mashPinSurvivesPosixForkIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_glibc_malloc_untyped_unique_block_is_false :
+    mashGlibcMallocUntypedUniqueBlockIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_mutex_free_file_is_lock_free_is_false :
+    mashMutexFreeFileIsLockFreeIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem ub_class_product_table_not_complete :
+    ubClassProductTableComplete = false := rfl
+
+theorem safe_c_lake_package_not_shipped_here :
+    safeCLakePackageShippedInThisRepo = false := rfl
+
+theorem number_0015_unassigned :
+    number0015Assigned = false := rfl
+
+theorem mash_safe_c_is_own_published_spec_number_is_false :
+    mashSafeCIsOwnPublishedSpecNumberIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem safe_c_is_not_own_published_spec_number :
+    safeCIsOwnPublishedSpecNumber = false := rfl
+
+theorem creates_numbered_safe_c_file :
+    createsNumberedSafeCFile = false := rfl
+
+theorem safe_c_has_no_spec_number_and_no_numbered_file :
+    safeCIsOwnPublishedSpecNumber = false ∧
+      number0015Assigned = false ∧
+      createsNumberedSafeCFile = false :=
+  ⟨rfl, rfl, rfl⟩
+
+theorem safe_c_carried_by_systems_lean :
+    safeCCarriedBySystemsLean = true := rfl
+
+theorem mash_holy_lean_safec_lean_machine_is_false :
+    mashHolyLeanSafeCLeanMachineIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem ref_pin_freezes_external_text :
+    refPinFreezesExternalText = true := rfl
+
+theorem emit_standard_is_freestanding_iso_c :
+    emitStandardIsFreestandingIsoC = true := rfl
+
+theorem iso_c_pin_file_absent_because_license_forbids :
+    isoCPinFileAbsentLicenseForbids = true ∧
+      isoCCatalogNumber = 82075 ∧
+      isoCEdition = 5 := by
+  decide
+
+theorem one_client_not_ten_thousand_or_ten_million :
+    oneClientInScope = true ∧
+      tenThousandConcurrentClientsInScope = false ∧
+      tenMillionConcurrentClientsInScope = false ∧
+      oneClientAimMet = false := by
+  decide
+
+theorem memory_models_and_llvm_ir :
+    linuxKernelMemoryModelRequired = true ∧
+      cMemoryModelRequired = true ∧
+      cxxMemoryModelRequired = true ∧
+      llvmIrMemoryAndVtableCompatible = true ∧
+      systemsLeanFirstClassOnThatIr = true ∧
+      llvmVersionInvented = false ∧
+      runningKernelVerified = false := by
+  decide
+
+/--
+  When the memory layout of updated system code and of programs in flight
+  stays consistent, a restart is not required. This is not a claim that a
+  running kernel was verified.
+-/
+theorem live_update_consistent_layout_needs_no_restart (u : LiveUpdateLayout)
+    (h : liveUpdateLayoutsConsistent u = true) :
+    restartRequired u = false := by
+  unfold restartRequired
+  rw [h]
+  decide
+
+theorem iris_lean_not_required :
+    irisLeanRequired = false := rfl
+
+theorem typer_match_target_is_document_step :
+    typerMatchTarget = typerStep := rfl
+
+/-- Fragment case from `typer_sound_implication`. The product typer may still lag. -/
+theorem typer_match_target_fragment (p : TyperFragment)
+    (h : typerAccepts p = true) :
+    typerMatchTarget p ≠ StepState.fault :=
+  typer_sound_implication p h
+
+/-- Silence leaves SafeCt off. The channels do not depend on Secret. Constant time failure is not that switch. -/
+theorem safe_ct_channels_do_not_carry_secret :
+    safeCtOnByDefault = false ∧
+      safeCtTimingCarriesSecret = false ∧
+      safeCtCacheCarriesSecret = false ∧
+      safeCtPageFaultCarriesSecret = false ∧
+      safeCtChannelsDependOnSecret = false ∧
+      notConstantTimeIsSafeCtSwitch = false := by
+  decide
+
+theorem canonical_public_github_org_out_of_scope :
+    canonicalPublicGitHubOrgInScope = false := rfl
+
+theorem safec_depth_consistent :
+    refPinFreezesExternalText = true ∧
+      emitStandardIsFreestandingIsoC = true ∧
+      isoCPinFileAbsentLicenseForbids = true ∧
+      oneClientInScope = true ∧
+      tenThousandConcurrentClientsInScope = false ∧
+      tenMillionConcurrentClientsInScope = false ∧
+      oneClientAimMet = false ∧
+      linuxKernelMemoryModelRequired = true ∧
+      cMemoryModelRequired = true ∧
+      cxxMemoryModelRequired = true ∧
+      llvmIrMemoryAndVtableCompatible = true ∧
+      systemsLeanFirstClassOnThatIr = true ∧
+      llvmVersionInvented = false ∧
+      runningKernelVerified = false ∧
+      irisLeanRequired = false ∧
+      canonicalPublicGitHubOrgInScope = false ∧
+      safeCtTimingCarriesSecret = false ∧
+      safeCtCacheCarriesSecret = false ∧
+      safeCtPageFaultCarriesSecret = false ∧
+      safeCtChannelsDependOnSecret = false ∧
+      notConstantTimeIsSafeCtSwitch = false ∧
+      pageCowCopyBytes = 4096 ∧
+      pageCowLargerHardwarePageAllowed = true ∧
+      pageCowLargerPageIsSecondCopy = false ∧
+      compCertVerifiedCompilationClaimedDone = false ∧
+      slakeBootstrapTypecheckClaimedDone = false ∧
+      byteIdentityRequiredForConformingProduct = true ∧
+      byteIdentityOfEmitClaimedTrue = false := by
+  decide
+
+theorem v28_closed_rules_consistent :
+    seqLockNamed = true ∧
+      futexIsAtomicOnProcessSharedOrKernelWord = true ∧
+      lockOrderClaimed = false ∧
+      pthreadUnlockIsSafeKernel = true ∧
+      unlockWithoutHoldReject = true ∧
+      mapModesSharedPrivateAnonNamed = true ∧
+      swmrAndMwmrAreStructureModes = true ∧
+      c11AndCxxDataRaceRejectOrFault = true ∧
+      checkBytesBeforeView = true ∧
+      consLayersOnNamedJudgments = true ∧
+      copyHandleWithoutProtocolIsUafClass = true ∧
+      compCertExcludedUbClassRejectBeforeCcomp = true ∧
+      consAndUbClassImplyConstantTime = false ∧
+      sleanifySkillShipped = false ∧
+      leanMachineReadyForUse = false ∧
+      v28PackageNamesHostedAsDefault = true ∧
+      hostedLinuxLibcReplacesPrimaryEmit = false ∧
+      integerOverflowSplitNamed = true ∧
+      safeClaimWithSignedOverflowIsConsClash = true ∧
+      phase0PairIsLockTokenAndAffineUnlock = true ∧
+      reproduceStep1NamesArtifactKinds = true ∧
+      inconsistencyReportPackageModuleCreatedHere = false ∧
+      runningKernelVerified = false := by
+  decide
+
+theorem v28_glossary_rules_consistent :
+    systemsLeanFollowsShapeOfRust = true ∧
+      makeMutDenotesObjectCow = true ∧
+      uniqueBlockRequiresEveryPageUnique = true ∧
+      freestandingSectionNamed = true ∧
+      glossaryWordAddedBeforeUse = true ∧
+      reachablePanicIsReject = true ∧
+      listEntryIsSafeKernel = true ∧
+      blockRegionKindsNamed = true ∧
+      immortalStorageNeverFreed = true ∧
+      arenaChildFreeIsReject = true ∧
+      addressWordNamesBlock = true ∧
+      seqLockReadersSnapshotAndRetry = true ∧
+      referenceCountOnlyAsCountedProtocol = true ∧
+      abaToolsNamed = true ∧
+      checkBytesIsNotSerde = true ∧
+      dataRaceHasNoHappensBefore = true ∧
+      tcbShrinkReplacesSameAbi = true ∧
+      layoutPinRecordsWidths = true ∧
+      clientsMustNotObserveLeakedExclusion = true ∧
+      runningKernelVerified = false ∧
+      irisLeanRequired = false := by
+  decide
 
 end SystemsLean

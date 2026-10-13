@@ -24,6 +24,26 @@ def mashSelfHostFromCSatisfiesBootstrapFixture : Bool :=
 def mashSelfHostTheorem : mashSelfHostFromCSatisfiesBootstrapIsFalse :=
   mash_self_host_from_c_satisfies_bootstrap_is_false
 
+def mashCompCertVerifiedCompilationClaimedDoneTheorem :
+    mashCompCertVerifiedCompilationClaimedDoneIsFalse :=
+  mash_compcert_verified_compilation_claimed_done_is_false
+
+def mashSlakeBootstrapTypecheckClaimedDoneTheorem :
+    mashSlakeBootstrapTypecheckClaimedDoneIsFalse :=
+  mash_slake_bootstrap_typecheck_claimed_done_is_false
+
+def mashCompCertTsoSatisfiesClause42Item6Theorem :
+    mashCompCertTsoSatisfiesClause42Item6IsFalse :=
+  mash_compcert_tso_satisfies_clause42_item6_is_false
+
+def compCertRefinesNotClaimedDoneTheorem :
+    compCertRefinesClaimedDone = false :=
+  compcert_refines_not_claimed_done
+
+def mashCompCertRefinesClaimedDoneTheorem :
+    mashCompCertRefinesClaimedDoneIsFalse :=
+  mash_compcert_refines_claimed_done_is_false
+
 structure Case where
   name : String
   ok : Bool
@@ -52,6 +72,33 @@ def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
     (isFalse : Prop) (_same : isFalse = (clash -> False))
     (_proof : isFalse) : Case :=
   expectFalse name accepted
+
+def pageCowCopyBytesTheorem : pageCowCopyBytes = 4096 :=
+  page_cow_copy_bytes
+
+def pageCowLargerPagesTheorem :
+    pageCowCopyBytes = 4096 ∧
+      pageCowLargerHardwarePageAllowed = true ∧
+      pageCowLargerPageIsSecondCopy = false :=
+  page_cow_larger_hardware_page_for_one_client
+
+def createsNumberedSafeCFileTheorem : createsNumberedSafeCFile = false :=
+  creates_numbered_safe_c_file
+
+def safeCNoSpecNumberAndNoFileTheorem :
+    safeCIsOwnPublishedSpecNumber = false ∧
+      number0015Assigned = false ∧
+      createsNumberedSafeCFile = false :=
+  safe_c_has_no_spec_number_and_no_numbered_file
+
+def correspondsIsNamedTheorem : correspondsNamed = true :=
+  corresponds_is_named
+
+def toSafeCSampleNoneTheorem : toSafeC RustJudgment.sample = none :=
+  to_safe_c_on_sample_is_none
+
+def toRustSampleNoneTheorem : toRust SafeCJudgment.sample = none :=
+  to_rust_on_sample_is_none
 
 def runCases : List Case :=
   [
@@ -249,6 +296,18 @@ def runCases : List Case :=
       compCertWrongEmit.ok,
     expectFalse "live CompCert verified compilation is not claimed done"
       compCertVerifiedCompilationClaimedDone,
+    expectConsFalse "claiming CompCert verified compilation is done is false"
+      compCertVerifiedCompilationClaimedDone
+      mashCompCertVerifiedCompilationClaimedDone
+      mashCompCertVerifiedCompilationClaimedDoneIsFalse
+      rfl
+      mashCompCertVerifiedCompilationClaimedDoneTheorem,
+    expectConsFalse "CompCertTSO does not satisfy Clause 4.2 item 6"
+      compCertTsoSatisfiesClause42Item6
+      mashCompCertTsoSatisfiesClause42Item6
+      mashCompCertTsoSatisfiesClause42Item6IsFalse
+      rfl
+      mashCompCertTsoSatisfiesClause42Item6Theorem,
     expectTrue "conforming bootstrap typecheck includes theorems"
       bootstrapTypecheckIncludesTheorems,
     expectTrue "done bootstrap fixture includes theorems"
@@ -257,6 +316,12 @@ def runCases : List Case :=
       bootstrapWithoutTheorems.ok,
     expectFalse "live Slake bootstrap typecheck is not claimed done"
       slakeBootstrapTypecheckClaimedDone,
+    expectConsFalse "claiming the Slake bootstrap typecheck is done is false"
+      slakeBootstrapTypecheckClaimedDone
+      mashSlakeBootstrapTypecheckClaimedDone
+      mashSlakeBootstrapTypecheckClaimedDoneIsFalse
+      rfl
+      mashSlakeBootstrapTypecheckClaimedDoneTheorem,
     expectFalse "self host from generated C does not satisfy bootstrap typecheck"
       selfHostFromGeneratedCSatisfiesTypecheck,
     expectFalse "mash SelfHost From generated C satisfies bootstrap"
@@ -296,6 +361,14 @@ def runCases : List Case :=
       (slakeBootstrapTypecheckClaimedDone != canonicalProduct.bootstrapTypecheck.ok),
     expectFalse "SafeKernel does not imply SafeCompCert"
       safeKernelImpliesSafeCompCert,
+    expectFalse "CompCertRefines is not claimed done"
+      compCertRefinesClaimedDone,
+    expectConsFalse "claiming CompCertRefines is done is false"
+      compCertRefinesClaimedDone
+      mashCompCertRefinesClaimedDone
+      mashCompCertRefinesClaimedDoneIsFalse
+      rfl
+      mashCompCertRefinesClaimedDoneTheorem,
     expectFalse "UniqueBlock plus CopyHandle without protocol is not accepted"
       uniqueBlockCopyHandleWithoutProtocolAccepted,
     expectFalse "Secret plus ObjectCow is not accepted"
@@ -534,6 +607,10 @@ def runCases : List Case :=
       hostedLinuxLibcReplacesPrimaryEmit,
     expectFalse "SafeCt is off by default"
       safeCtOnByDefault,
+    expectFalse "SafeCt channels do not depend on Secret"
+      safeCtChannelsDependOnSecret,
+    expectFalse "failure to be constant time is not the SafeCt switch"
+      notConstantTimeIsSafeCtSwitch,
     expectFalse "LockFree is not Mutex absent"
       lockFreeMeansMutexAbsent,
     expectFalse "LockFree is not compare and swap"
@@ -544,6 +621,36 @@ def runCases : List Case :=
       beastdbAcidOwnedBySpec0003,
     expectTrue "PosixFork is PageCow"
       posixForkIsPageCow,
+    expectEqNat "PageCow copy is one 4096 byte page" pageCowCopyBytes 4096,
+    expectTrue "larger hardware page is allowed for one client"
+      pageCowLargerHardwarePageAllowed,
+    expectFalse "larger hardware page is not a second copy"
+      pageCowLargerPageIsSecondCopy,
+    expectFalse "iris-lean is not required" irisLeanRequired,
+    expectFalse "canonical public GitHub organization is out of scope"
+      canonicalPublicGitHubOrgInScope,
+    expectFalse "a running kernel is not claimed verified" runningKernelVerified,
+    expectTrue "freestanding ISO C is the emit standard"
+      emitStandardIsFreestandingIsoC,
+    expectTrue "one client is in scope" oneClientInScope,
+    expectTrue "SeqLock is named" seqLockNamed,
+    expectFalse "lock order is not claimed" lockOrderClaimed,
+    expectFalse "Cons plus UbClass does not imply constant time"
+      consAndUbClassImplyConstantTime,
+    expectFalse "sleanify is not a shipped skill" sleanifySkillShipped,
+    expectFalse "Lean Machine is not ready for use" leanMachineReadyForUse,
+    expectTrue "the Phase 0 pair is LockToken and AffineUnlock"
+      phase0PairIsLockTokenAndAffineUnlock,
+    expectTrue "ordinary Systems Lean follows the shape of Rust"
+      systemsLeanFollowsShapeOfRust,
+    expectTrue "make_mut denotes ObjectCow" makeMutDenotesObjectCow,
+    expectTrue "UniqueBlock requires every page unique"
+      uniqueBlockRequiresEveryPageUnique,
+    expectTrue "a reachable panic is Reject" reachablePanicIsReject,
+    expectTrue "clients must not observe leaked exclusion"
+      clientsMustNotObserveLeakedExclusion,
+    expectFalse "the package InconsistencyReport module is not created here"
+      inconsistencyReportPackageModuleCreatedHere,
     expectFalse "PosixFork is not ObjectCow"
       posixForkIsObjectCow,
     expectTrue "correspondence is required before isomorphism"
@@ -555,7 +662,59 @@ def runCases : List Case :=
     expectEqNat "remaining v28 silence token count stays 9"
       v28RemainingSilenceTokens.length v28RemainingSilenceTokenCount,
     expectTrue "remaining v28 silence tokens appear in 0002"
-      (v28RemainingSilenceTokensNamedIn encoded0002Haystack)
+      (v28RemainingSilenceTokensNamedIn encoded0002Haystack),
+    expectEqNat "Fargo gates A through F are six constructors"
+      (FargoGate.toFin FargoGate.f).val.succ 6,
+    expectTrue "correspondence maps are statements"
+      correspondenceMapsAreStatements,
+    expectTrue "Corresponds is named" correspondsNamed,
+    expectTrue "fromC is named" fromCNamed,
+    expectFalse "toSafeC on the sample judgment is still none"
+      (toSafeC RustJudgment.sample).isSome,
+    expectFalse "toRust on the sample judgment is still none"
+      (toRust SafeCJudgment.sample).isSome,
+    expectConsFalse "a theorem named Isomorphism is not accepted"
+      isomorphismTheoremNameAccepted
+      mashIsomorphismTheoremName
+      mashIsomorphismTheoremNameIsFalse
+      rfl
+      mash_isomorphism_theorem_name_is_false,
+    expectEqNat "named C UbClass constructors are sixteen"
+      (UbClass.toFin UbClass.reallocOldPointer).val.succ 16,
+    expectFalse "the product UbClass Fault table is not complete"
+      ubClassProductTableComplete,
+    expectConsFalse "a pin does not survive PosixFork"
+      pinSurvivesPosixFork
+      mashPinSurvivesPosixFork
+      mashPinSurvivesPosixForkIsFalse
+      rfl
+      mash_pin_survives_posix_fork_is_false,
+    expectConsFalse "glibc malloc is not UniqueBlock against untyped C"
+      glibcMallocIsUniqueBlockUntyped
+      mashGlibcMallocUntypedUniqueBlock
+      mashGlibcMallocUntypedUniqueBlockIsFalse
+      rfl
+      mash_glibc_malloc_untyped_unique_block_is_false,
+    expectConsFalse "a file that lacks a Mutex is not LockFree"
+      mutexFreeFileIsLockFree
+      mashMutexFreeFileIsLockFree
+      mashMutexFreeFileIsLockFreeIsFalse
+      rfl
+      mash_mutex_free_file_is_lock_free_is_false,
+    expectEqNat "Reject fixtures are twenty three"
+      rejectFixtureCount 23,
+    expectFalse "the SafeC lake package is not shipped in this repository"
+      safeCLakePackageShippedInThisRepo,
+    expectFalse "number 0015 is not assigned"
+      number0015Assigned,
+    expectFalse "this document does not create a numbered SafeC file"
+      createsNumberedSafeCFile,
+    expectConsFalse "holy lean safec lean machine mash is false"
+      holyLeanSafeCLeanMachineOneModule
+      mashHolyLeanSafeCLeanMachine
+      mashHolyLeanSafeCLeanMachineIsFalse
+      rfl
+      mash_holy_lean_safec_lean_machine_is_false,
   ]
 
 def main (_args : List String) : IO UInt32 := do

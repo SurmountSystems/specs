@@ -277,7 +277,12 @@ def runCases : List Case :=
       mashSpecAndProofConforming
       mashSpecAndProofConformingIsFalse
       rfl
-      LeanMachineProofs.mash_spec_and_proof_conforming_is_false
+      LeanMachineProofs.mash_spec_and_proof_conforming_is_false,
+    expectFalse "Holy Lean, SafeC, and Lean Machine as one module is not a conformance claim"
+      holySafeCLeanMachineOneModule,
+    expectTrue "proof holy_safe_c_lean_machine_one_module_is_not_true shows that mash Bool is not true"
+      (match LeanMachineProofs.holy_safe_c_lean_machine_one_module_is_not_true with
+        | _ => true)
   ]
 
 def main (_args : List String) : IO UInt32 := do

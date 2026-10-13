@@ -100,11 +100,11 @@ A library binary or C source emitted by Slake that contains no managed Lean runt
 
 ### 3.6 Proven ACID
 
-Atomicity, consistency, isolation, and durability as machine checked properties of the store, not as marketing language. This document requires those properties of a conforming implementation. This document is not those proofs, and it does not claim the proofs exist yet.
+Atomicity, consistency, isolation, and durability as machine checked properties of the store, not as marketing language. This document requires those properties of a conforming implementation. This document is not those proofs, and it does not claim the proofs exist yet. Specification 0003 keeps ownership of proved ACID for beastdb. [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 3.38 names that owner and does not move those theorems into Systems Lean.
 
 ### 3.7 Trie that does not use locks
 
-A trie in which progress of a reader or writer does not depend on another thread being scheduled to release a mutual exclusion lock on that trie. This document requires a conforming implementation to use tries that do not use locks. It does not claim such tries are implemented.
+A trie in which progress of a reader or writer does not depend on another thread being scheduled to release a mutual exclusion lock on that trie. This document requires a conforming implementation to use tries that do not use locks. It does not claim such tries are implemented. Specification 0003 keeps ownership of that requirement. [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 3.37 names `LockFree`. This document does not move that requirement into Systems Lean.
 
 ### 3.8 SWMR
 
@@ -128,7 +128,7 @@ A schema derived from stored data and then declared so later access and migratio
 
 ### 3.13 fargo
 
-The Surmount interoperability layer to be specified in a later numbered specification. fargo has no assigned specification number. That specification has not been published and this document does not assign it a shipped version. Compatibility with other stores and language ecosystems SHALL go through fargo (Clause 4.5).
+The Surmount interoperability layer to be specified in a later numbered specification. fargo has no assigned specification number. That specification has not been published and this document does not assign it a shipped version. Compatibility with other stores and language ecosystems SHALL go through fargo (Clause 4.5). The owning clause for that interoperability is [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 3.47, and that clause does not assign fargo a specification number.
 
 ### 3.14 LanguageID
 
@@ -166,12 +166,12 @@ A language native binding layer that calls into libbeastdb (or a shim) through t
 2. That core MUST be able to target the freestanding Slake path in that specification.
 3. libbeastdb MUST be a freestanding product library: it MUST contain no managed Lean runtime and MUST NOT perform garbage collection.
 4. The product name and library name MUST follow Clause 1.3.
-5. CompCert verified compilation (Clause 3.19) is a REQUIRED core validation step for the freestanding C emit of that core, as required by [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 4.2 item 6. Naming a residual MUST NOT substitute for this step. This document does not claim CompCert is pinned under this specifications repository's `ref/`.
+5. CompCert verified compilation (Clause 3.19) is a REQUIRED core validation step for the freestanding C emit of that core, as defined in [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 3.9 and as required by [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 4.2 item 6. Naming a residual MUST NOT substitute for this step. This document does not claim CompCert is pinned under this specifications repository's `ref/`.
 6. Bootstrapping a Slake compiler that fully typechecks (Clause 3.18) is a REQUIRED core validation step, as required by [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 4.2 item 7. A conforming build MUST use a Slake that typechecks the Systems Lean and Slake sources it is bootstrapped from, including theorems. A named subset of modules is not enough. Naming a residual MUST NOT substitute for this step. A claim that the freestanding product hosts itself from generated C is a distinct claim and does not satisfy this step by itself.
 
 ### 4.2 Proven ACID, tries that do not use locks, concurrency, and fencing by generation
 
-1. A conforming implementation MUST provide proven ACID transactions (Clause 3.6). This is a requirement. This document does not claim those proofs have been written.
+1. A conforming implementation MUST provide proven ACID transactions (Clause 3.6). This is a requirement. This document does not claim those proofs have been written. Specification 0003 keeps ownership of that claim, as [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 3.38 states, and this document does not move those theorems into Systems Lean.
 2. The durable map MUST be a trie that does not use locks (Clause 3.7). This is a requirement. This document does not claim such a trie is implemented.
 3. The required default concurrency MUST be SWMR (Clause 3.8).
 4. A conforming implementation MAY provide more than one writer, each operating only on disjoint leaves of the trie. That capability is optional. It is not required for conformance. When it is absent, SWMR remains required. When it is present, writers MUST NOT share a leaf.
@@ -199,8 +199,8 @@ A language native binding layer that calls into libbeastdb (or a shim) through t
 1. A conforming implementation MUST provide access by ordered keys and values.
 2. A conforming implementation MUST provide time series access.
 3. A conforming implementation MUST provide vector access.
-4. Compatibility with SQLite, RocksDB, and other stores named as prior art in Clause 2.3, and compatibility with other language ecosystems, SHALL be expressed through fargo (Clause 3.13; unpublished; no assigned specification number).
-5. A conforming implementation MUST NOT use a traditional foreign function interface (Clause 3.20) as the interoperability path. There is no traditional foreign function binding layer in this design. Interoperability goes through fargo.
+4. Compatibility with SQLite, RocksDB, and other stores named as prior art in Clause 2.3, and compatibility with other language ecosystems, SHALL be expressed through fargo (Clause 3.13; unpublished; no assigned specification number) as required by [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 3.47.
+5. A conforming implementation MUST NOT use a traditional foreign function interface (Clause 3.20) as the interoperability path. There is no traditional foreign function binding layer in this design. Interoperability goes through fargo, as [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 3.47 states, and fargo has no assigned specification number.
 6. Exact layout of time series points and vectors is defined by the implementation provided items 1 through 3 hold.
 7. Items 1 through 5 are requirements. This document does not claim access by ordered keys and values, time series access, vector access, or fargo shims are implemented. fargo itself has no numbered specification file in this repository.
 
@@ -244,7 +244,7 @@ This section is normative for residual honesty of this document. It does not add
 
 1. The Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`. That specification does not claim a conforming SSSSS implementation exists.
 2. fargo has no assigned specification number. A previous plan that assigned number 0005 to fargo is withdrawn. Number 0005 is Concise American Technical English (`0005_CATE.md`). Number 0006 is Recursive Self Improvement (`0006_RSI.md`). This document does not invent a new number for fargo. Clause 4.5 names fargo as the interoperability path; that is a requirement on a future product, not a claim that fargo is specified or implemented.
-3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. That mention is not an assignment. This document does not create a file for it.
+3. The Carbonado Network Protocol has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. That mention is not an assignment. This document does not create a file for it.
 
 ### 6.2 Unpinned prior art
 
@@ -273,7 +273,7 @@ This document specifies beastdb. The product is real, incomplete, and not ready 
 11. Mandatory schema with predefined and inferred modes remains a requirement (Clause 4.4). This document does not claim schema proofs exist. Treating inferred schema as a license to remain without a schema is Cons False in the beastdb proofs module.
 12. Proven migrations remain a requirement (Clause 4.4 item 4). This document does not claim those proofs exist.
 13. Access by ordered keys and values, time series access, and vector access remain requirements (Clause 4.5 items 1 through 3). This document does not claim those access patterns are implemented.
-14. Compatibility shims through fargo remain a requirement (Clause 4.5 item 4). fargo remains unspecified and has no assigned specification number. Treating a traditional foreign function interface as the interoperability path is Cons False in the beastdb proofs module.
+14. Compatibility shims through fargo remain a requirement (Clause 4.5 item 4). fargo has no assigned specification number. Treating a traditional foreign function interface as the interoperability path is Cons False in the beastdb proofs module.
 15. A freestanding `libbeastdb` built by a bootstrapped Slake that fully typechecks and compiled with CompCert remains a requirement (Clause 4.1). This document does not claim that library exists as a shipped product.
 16. beastdb is a real product, incomplete, and not ready for use. Claiming that beastdb never started is Cons False in the beastdb proofs module. Claiming that beastdb is ready for use is Cons False in that same module.
 17. Encodings of leftover not done flags and Cons fixtures belong in `lean/BeastDbSpec.lean` and proofs belong in `lean/BeastDbProofs.lean`. A mash of those modules is nonconforming. Companion proofs that those fixtures are False are not a claim that beastdb is ready for use. A theorem closed with `sorry` MUST NOT be counted as success.
@@ -293,7 +293,7 @@ This document specifies beastdb. The product is real, incomplete, and not ready 
 
 Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed.
 
-This 0.1.0 entry also records leftover depth on proven ACID, tries that do not use locks, `mmap`, mandatory schema, and fargo as unspecified interoperability. Clause 6.4 items 1 through 18 name those requirements as not done work, name Cons False for clashes this specification already states, keep the 0002 and 0003 boundary on specification 0002, and record that beastdb is real, incomplete, and not ready for use. Version remains 0.1.0. These sentences do not publish a new SemVer.
+This 0.1.0 entry also records leftover depth on proven ACID, tries that do not use locks, `mmap`, mandatory schema, and fargo as the interoperability path. fargo has no assigned specification number. Clause 6.4 items 1 through 18 name those requirements as not done work, name Cons False for clashes this specification already states, keep the 0002 and 0003 boundary on specification 0002, and record that beastdb is real, incomplete, and not ready for use. Version remains 0.1.0. These sentences do not publish a new SemVer.
 
 ### 1.0.0 - 20260824
 

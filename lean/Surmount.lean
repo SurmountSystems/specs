@@ -505,6 +505,13 @@ theorem byte_identity_models_agree :
     Ci.byteIdentity.claimedTrue = SpecRegistry.byteIdentityClaimedTrue :=
   rfl
 
+/-- The Systems Lean, CI, and registry byte identity flags are one claim. This is not emit equals ELF. -/
+theorem systems_lean_byte_identity_equals_ci_and_registry :
+    SystemsLean.byteIdentityOfEmitClaimedTrue = Ci.byteIdentity.claimedTrue ∧
+      SystemsLean.byteIdentityOfEmitClaimedTrue =
+        SpecRegistry.byteIdentityClaimedTrue :=
+  And.intro rfl rfl
+
 /-- Back linking: the form checker requires proofofkeags.com when Keagan is named. -/
 def keaganBacklinkRuleExists : Bool := true
 
@@ -662,6 +669,8 @@ def stackIntegrates : Bool :=
     SpecRegistry.ssssSpecNumber == 4 &&
     SpecRegistry.beastdbSpecNumber == 3 &&
     SpecRegistry.systemsLeanSpecNumber == 2 &&
+    !SystemsLean.safeCIsOwnPublishedSpecNumber &&
+    SystemsLean.safeCCarriedBySystemsLean &&
     SpecRegistry.surmountSystemsSpecNumber == 10 &&
     SpecRegistry.unlicenseSpecNumber == 9 &&
     SpecRegistry.techTreeSpecNumber == 11 &&

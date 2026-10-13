@@ -93,7 +93,7 @@ def runCases : List Case :=
       HyphenRepair.leftoverUnstack.conforming,
     expectTrue "rephrased hyphen is conforming"
       HyphenRepair.rephrasedOrdinaryEnglish.conforming,
-    expectEqNat "five leftover unstack phrases" leftoverUnstackPhrases.length 5,
+    expectEqNat "eight leftover unstack phrases" leftoverUnstackPhrases.length 8,
     expectTrue "leftover constructors map to the floor list"
       (leftoverUnstackPhraseConstructors.map LeftoverUnstackPhrase.surface ==
         leftoverUnstackPhrases),
@@ -107,12 +107,22 @@ def runCases : List Case :=
       (containsLeftoverUnstackPhrase leftoverLfOnlyProse),
     expectTrue "fully type checking prose fails leftover unstack floor"
       (containsLeftoverUnstackPhrase leftoverFullyTypeCheckingProse),
+    expectTrue "copy grain prose fails leftover unstack floor"
+      (containsLeftoverUnstackPhrase leftoverCopyGrainProse),
+    expectTrue "first grain prose fails leftover unstack floor"
+      (containsLeftoverUnstackPhrase leftoverFirstGrainProse),
+    expectTrue "page grain prose fails leftover unstack floor"
+      (containsLeftoverUnstackPhrase leftoverPageGrainProse),
     expectFalse "high assurance is not leftover unstack"
       (containsLeftoverUnstackPhrase allowedHighAssuranceProse),
     expectFalse "3 bit is not leftover unstack"
       (containsLeftoverUnstackPhrase allowedThreeBitProse),
     expectFalse "time series is not leftover unstack"
       (containsLeftoverUnstackPhrase allowedTimeSeriesProse),
+    expectTrue "grainier dithering meets leftover unstack floor"
+      (leftoverUnstackFloorConforms allowedGrainierProse),
+    expectTrue "This grain does not replace CATE meets leftover unstack floor"
+      (leftoverUnstackFloorConforms allowedThisGrainProse),
     expectTrue "high assurance is an allowed spaced phrase"
       (containsAllowedSpacedPhrase allowedHighAssuranceProse),
     expectTrue "rephrased lock tries prose meets leftover unstack floor"
@@ -265,7 +275,13 @@ def runCases : List Case :=
       mashCateAllowsInventedConformingProduct
       mashCateAllowsInventedConformingProductIsFalse
       rfl
-      mash_cate_allows_invented_conforming_product_is_false
+      mash_cate_allows_invented_conforming_product_is_false,
+    expectConsFalse "British spelling is not accepted"
+      britishSpellingConforms
+      mashBritishSpellingConforms
+      mashBritishSpellingConformsIsFalse
+      rfl
+      mash_british_spelling_conforms_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

@@ -102,6 +102,9 @@ def legalLeanFinished : Bool := false
 
 def holyLeanImplemented : Bool := false
 
+/-- Holy Lean, SafeC, and Lean Machine as one module. Clause 6.4 item 90 of Systems Lean. -/
+def holySafeCLeanMachineOneModule : Bool := false
+
 def conformingProductExists : Bool := false
 
 /-- Public Domain Open Source Software (PDOSS) is specification 0009. Unlicense remains the license. -/

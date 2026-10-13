@@ -893,11 +893,47 @@ def splitLines (s : String) : List String :=
 def precededByLib (cs : Array Char) (i : Nat) : Bool :=
   i ≥ 3 && ciMatchAt cs (i - 3) ['l', 'i', 'b']
 
+/-- Exact match of `needle` at index `i`. -/
+def matchExactAt (cs : Array Char) (i : Nat) (needle : String) : Bool :=
+  Id.run do
+    let n := needle.toList
+    let mut j := 0
+    for c in n do
+      let k := i + j
+      if k ≥ cs.size || cs[k]! != c then
+        return false
+      j := j + 1
+    return true
+
+/-- Next character is not part of a path or identifier token. -/
+def pathTokenEnded (cs : Array Char) (i : Nat) : Bool :=
+  i ≥ cs.size || !(cs[i]!.isAlphanum)
+
+/--
+  Real Lean filenames on disk whose module prefix is `BeastDb`.
+  The product name stays lowercase `beastdb`. These suffixes are not that name.
+-/
+def beastDbLeanFileSuffixes : List String :=
+  [".lean", "Spec.lean", "Proofs.lean", "Tests.lean"]
+
+/--
+  `BeastDb` as the Lean module prefix of a real `.lean` path
+  (`BeastDb.lean`, `BeastDbSpec.lean`, `BeastDbProofs.lean`,
+  `BeastDbTests.lean`), with or without a `lean/` directory prefix.
+-/
+def isBeastDbLeanPath (cs : Array Char) (i : Nat) : Bool :=
+  if sliceString cs i 7 != "BeastDb" then
+    false
+  else
+    beastDbLeanFileSuffixes.any fun suf =>
+      matchExactAt cs (i + 7) suf && pathTokenEnded cs (i + 7 + suf.length)
+
 /--
   Wrong capitalization of the product name: any case insensitive `beastdb`
   that is not exactly `beastdb`, and any case insensitive `libbeastdb` that
   is not exactly `libbeastdb`. Spaced or hyphenated `beast db` / `beast-db`
-  is always wrong.
+  is always wrong. A citation of a real Lean path such as
+  `lean/BeastDbSpec.lean` is not the product name.
 -/
 def scanBeastdbCaps (file : String) (lineNo : Nat) (line : String) : List Finding :=
   Id.run do
@@ -931,6 +967,8 @@ def scanBeastdbCaps (file : String) (lineNo : Nat) (line : String) : List Findin
         }]
     for i in findCiStarts line "beastdb" do
       if precededByLib cs i then
+        pure ()
+      else if isBeastDbLeanPath cs i then
         pure ()
       else
         let got := sliceString cs i "beastdb".length

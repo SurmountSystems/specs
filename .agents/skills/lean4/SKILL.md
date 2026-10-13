@@ -17,7 +17,7 @@ Prove or repair companion Lean meaning models in this repository. Authority is `
 
 ## Pack
 
-Read `skills/lean4-skills/plugins/lean4/skills/lean4/SKILL.md` and the prove, review, golf, and autoprove workflows. Use those loops when writing or repairing `lean/*.lean` in this repository. Init the pack with `git submodule update --init skills/lean4-skills`. The pack is original work under the MIT license. This repository's Unlicense does not relicense that pack.
+Read `skills/lean4-skills/plugins/lean4/skills/lean4/SKILL.md`. The prove cycle below names the synced commands `/lean4:prove`, `/lean4:autoprove`, `/lean4:checkpoint`, `/lean4:review`, and `/lean4:golf` in `skills/lean4-skills/plugins/lean4/commands/`. Use those commands when writing or repairing `lean/*.lean` in this repository. Init the pack with `git submodule update --init skills/lean4-skills`. The pack is original work under the MIT license. This repository's Unlicense does not relicense that pack. Do not paste the pack into this wrapper.
 
 ## This Lake package
 
@@ -40,7 +40,7 @@ Read `skills/lean4-skills/plugins/lean4/skills/lean4/SKILL.md` and the prove, re
 
 ## Prove cycle
 
-Plan, then Work, then Checkpoint, then Review. Use the pack prove and autoprove loops for the Work step. Use the pack review and golf workflows after a checkpoint. Sibling line encodings and `lean/Proofs_NNNN.lean` follow this cycle. Do not mash those proofs into `NNNN_descriptive_name.lean`. `include_str` is not a line encoding. Use explicit `MdLine` or `String` literals, one per physical markdown line.
+Plan, then Work, then Checkpoint, then Review, then golf. On disk those steps are `/lean4:prove` (`skills/lean4-skills/plugins/lean4/commands/prove.md`, guided, asks before each cycle), `/lean4:autoprove` (`skills/lean4-skills/plugins/lean4/commands/autoprove.md`, autonomous, with stop budgets), `/lean4:checkpoint` (`skills/lean4-skills/plugins/lean4/commands/checkpoint.md`, save point), `/lean4:review` (`skills/lean4-skills/plugins/lean4/commands/review.md`, read only), and `/lean4:golf` (`skills/lean4-skills/plugins/lean4/commands/golf.md`, improve proofs that already compile). Work uses `/lean4:prove` or `/lean4:autoprove`. After that work, use `/lean4:checkpoint`, then `/lean4:review`, then `/lean4:golf`. Read those command files. Do not paste their bodies here. A `/lean4:checkpoint` line that says to commit is host pack advice. This repository forbids agent commits. Sibling line encodings and `lean/Proofs_NNNN.lean` follow this cycle. Do not mash those proofs into `NNNN_descriptive_name.lean`. `include_str` is not a line encoding. Use explicit `MdLine` or `String` literals, one per physical markdown line.
 
 Horizon (this laptop) must not compile Lean or Lake. Do not run `lake build`, `lean`, or flake Lean checks on this laptop. Do not tell a specialist to compile tests on this laptop. The gate is `just check-remote` on surmount-1.
 

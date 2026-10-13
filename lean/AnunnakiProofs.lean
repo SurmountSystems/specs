@@ -165,6 +165,52 @@ theorem decode_rebuilds_original_surface :
     decodeMustRebuildOriginalSurface = true :=
   rfl
 
+theorem one_language_keeps_one_language_id :
+    oneLanguageKeepsOneLanguageId = true :=
+  rfl
+
+theorem dialect_does_not_need_own_language_id :
+    dialectNeedsOwnLanguageId = false :=
+  rfl
+
+theorem spelling_tables_isomorphic_at_rank :
+    spellingTablesIsomorphicAtRank = true :=
+  rfl
+
+theorem shared_rank_number_stays_the_same :
+    americanSpellingTable.rankNumber = regionalSpellingTable.rankNumber :=
+  rfl
+
+theorem shared_language_id_stays_the_same :
+    americanSpellingTable.languageId = regionalSpellingTable.languageId :=
+  rfl
+
+theorem surfaces_differ_at_shared_rank :
+    americanSpellingTable.surface = "color" ∧
+      regionalSpellingTable.surface = "regional form" :=
+  And.intro rfl rfl
+
+theorem user_preference_selects_decode_table :
+    userPreferenceSelectsDecodeTable = true :=
+  rfl
+
+theorem user_preference_presents_regional_surface :
+    (tableFor .userPreferred).surface = regionalSpellingTable.surface ∧
+      (tableFor .userPreferred).rankNumber = sharedRankNumber :=
+  And.intro rfl rfl
+
+theorem repository_preference_presents_american_surface :
+    (tableFor .repositoryAmerican).surface = americanSpellingTable.surface :=
+  rfl
+
+theorem spelling_converter_not_claimed :
+    spellingConverterProgramClaimed = false :=
+  rfl
+
+theorem spelling_table_byte_layout_unspecified :
+    spellingTableByteLayoutSpecified = false :=
+  rfl
+
 theorem migration_requires_lean_check :
     migrationRequiresLeanNotLongerCheck = true :=
   rfl
@@ -302,6 +348,16 @@ theorem mash_rdps_assigned_number_is_false :
 
 theorem mash_filter_script_assigned_number_is_false :
     mashFilterScriptAssignedNumberIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_dialect_needs_own_language_id_is_false :
+    mashDialectNeedsOwnLanguageIdIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_spelling_converter_claimed_is_false :
+    mashSpellingConverterProgramClaimedIsFalse := by
   intro h
   exact Bool.noConfusion h
 

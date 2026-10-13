@@ -4,9 +4,11 @@
 -/
 
 import SpecCheck
+import SpecRegistry
 import Cate
 
 open SpecCheck
+open SpecRegistry (scanBeastdbCaps scanContent isBeastDbLeanPath)
 
 structure Case where
   name : String
@@ -14,14 +16,13 @@ structure Case where
   detail : String := ""
   deriving Repr
 
-def expectEmpty (name : String) (diags : List Diag) : Case :=
+def expectEmpty {α : Type} [Repr α] (name : String) (diags : List α) : Case :=
   if diags.isEmpty then
     { name := name, ok := true }
   else
-    let msgs := diags.map Diag.format
-    { name := name, ok := false, detail := String.intercalate "; " msgs }
+    { name := name, ok := false, detail := s!"expected empty, got {repr diags}" }
 
-def expectNonEmpty (name : String) (diags : List Diag) : Case :=
+def expectNonEmpty {α : Type} (name : String) (diags : List α) : Case :=
   if diags.isEmpty then
     { name := name, ok := false, detail := "expected diagnostics, got none" }
   else
@@ -219,7 +220,30 @@ def runCases : List Case :=
       (checkNeverRealProductClaim f
         "```\nA conforming Lean Machine does not exist.\n```\n"),
     expectTrue "seven never-real product phrases"
-      (neverRealProductPhrases.length == 7)
+      (neverRealProductPhrases.length == 7),
+    -- beastdb product name versus real Lean paths
+    expectEmpty "lean/BeastDbSpec.lean citation passes"
+      (scanBeastdbCaps f 1 "Encodings live in `lean/BeastDbSpec.lean`.\n"),
+    expectEmpty "scanContent lean/BeastDbSpec.lean citation passes"
+      (scanContent "0003_beastdb.md" "Encodings live in `lean/BeastDbSpec.lean`.\n"),
+    expectEmpty "BeastDbProofs.lean citation passes"
+      (scanBeastdbCaps f 1 "Proofs live in `lean/BeastDbProofs.lean`.\n"),
+    expectEmpty "BeastDbTests.lean citation passes"
+      (scanBeastdbCaps f 1 "Runtime checks live in `lean/BeastDbTests.lean`.\n"),
+    expectEmpty "BeastDb.lean citation passes"
+      (scanBeastdbCaps f 1 "Thin export is `lean/BeastDb.lean`.\n"),
+    expectTrue "isBeastDbLeanPath at BeastDbSpec.lean"
+      (isBeastDbLeanPath "`lean/BeastDbSpec.lean`".toList.toArray 6),
+    expectFalse "isBeastDbLeanPath rejects product BeastDb"
+      (isBeastDbLeanPath "The product BeastDb is wrong.".toList.toArray 12),
+    expectNonEmpty "BeastDb as product name still fails"
+      (scanBeastdbCaps f 1 "The product BeastDb is wrongly capped.\n"),
+    expectNonEmpty "scanContent BeastDb as product name still fails"
+      (scanContent "0003_beastdb.md" "The product BeastDb is wrongly capped.\n"),
+    expectNonEmpty "BeastDB capitalization still fails"
+      (scanBeastdbCaps f 1 "The product BeastDB is wrongly capped.\n"),
+    expectNonEmpty "BEASTDB capitalization still fails"
+      (scanBeastdbCaps f 1 "The product BEASTDB is wrongly capped.\n")
   ]
 
 def main (_args : List String) : IO UInt32 := do

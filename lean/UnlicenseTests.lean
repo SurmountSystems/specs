@@ -25,6 +25,10 @@ def expectTrue (name : String) (b : Bool) : Case :=
 def expectFalse (name : String) (b : Bool) : Case :=
   { name := name, ok := !b, detail := if !b then "" else "expected false" }
 
+def expectConsFalse (name : String) (accepted : Bool)
+    (_proof : accepted = true -> False) : Case :=
+  expectFalse name accepted
+
 def expectEqNat (name : String) (got want : Nat) : Case :=
   if got == want then
     { name := name, ok := true }
@@ -133,6 +137,14 @@ def runCases : List Case :=
     expectFalse "CC0 is not a pinned instrument that meets PDOSS"
       cc0PinnedAsMeetingPdoss,
     expectFalse "CC0 is not a Clause 12 pin" cc0IsClause12Pin,
+    expectFalse "cc0Pinned stays false" cc0Pinned,
+    expectFalse "cc0ClaimedMeetsPdoss stays false" cc0ClaimedMeetsPdoss,
+    expectConsFalse "setting cc0Pinned true is Cons False"
+      cc0Pinned
+      UnlicenseProofs.mash_cc0_pinned_is_false,
+    expectConsFalse "claiming CC0 meets PDOSS is Cons False"
+      cc0ClaimedMeetsPdoss
+      UnlicenseProofs.mash_cc0_claimed_meets_pdoss_is_false,
     expectFalse "Unlicense does not replace named residual licenses"
       unlicenseReplacesNamedResidualLicenses,
     expectFalse "claiming MIT meets PDOSS is false" (meetsPdoss .mitGrant),

@@ -65,6 +65,9 @@ inductive LeftoverUnstackPhrase where
   | lfOnly
   | lockFreeTries
   | fullyTypeChecking
+  | copyGrain
+  | firstGrain
+  | pageGrain
   deriving DecidableEq, Repr, BEq
 
 def LeftoverUnstackPhrase.surface : LeftoverUnstackPhrase → String
@@ -73,9 +76,13 @@ def LeftoverUnstackPhrase.surface : LeftoverUnstackPhrase → String
   | .lfOnly => "LF only"
   | .lockFreeTries => "lock free tries"
   | .fullyTypeChecking => "fully type checking"
+  | .copyGrain => "copy grain"
+  | .firstGrain => "first grain"
+  | .pageGrain => "page grain"
 
 def leftoverUnstackPhraseConstructors : List LeftoverUnstackPhrase :=
-  [.nonMarkdown, .mustLike, .lfOnly, .lockFreeTries, .fullyTypeChecking]
+  [.nonMarkdown, .mustLike, .lfOnly, .lockFreeTries, .fullyTypeChecking,
+    .copyGrain, .firstGrain, .pageGrain]
 
 /--
   Floor list used by spec_check leftover unstack and by leftover unstack
@@ -156,6 +163,21 @@ def leftoverLfOnlyProse : String :=
 
 def leftoverFullyTypeCheckingProse : String :=
   "do not write fully type checking in prose"
+
+def leftoverCopyGrainProse : String :=
+  "do not write copy grain in prose"
+
+def leftoverFirstGrainProse : String :=
+  "do not write first grain in prose"
+
+def leftoverPageGrainProse : String :=
+  "do not write page grain in prose"
+
+def allowedGrainierProse : String :=
+  "Gaussian dithering appears grainier and less sharp"
+
+def allowedThisGrainProse : String :=
+  "This grain does not replace CATE"
 
 def allowedHighAssuranceProse : String :=
   "high assurance may stay when it already reads as English"
@@ -367,6 +389,18 @@ def mashCateAllowsInventedConformingProduct : Prop :=
 
 def mashCateAllowsInventedConformingProductIsFalse : Prop :=
   mashCateAllowsInventedConformingProduct → False
+
+/--
+  Scope: British spelling is nonconforming, including names we choose.
+  The American form of the example is catalog. This is not an aspell scan.
+-/
+def britishSpellingConforms : Bool := false
+
+def mashBritishSpellingConforms : Prop :=
+  britishSpellingConforms = true
+
+def mashBritishSpellingConformsIsFalse : Prop :=
+  mashBritishSpellingConforms → False
 
 /-- Informative prior art named by CATE is not a Clause 12 pin. -/
 def iso24495IsClause12Pin : Bool := false
