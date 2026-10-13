@@ -33,6 +33,45 @@ def markedAsProof : Bool := false
 
 def specClaimsImplementationExists : Bool := false
 
+/-- Clause 6.3 and Clause 6.4: SSSSS is real and incomplete. It is not ready for use. -/
+def sssssReadyForUse : Bool := false
+
+def mashSssssReadyForUse : Prop :=
+  sssssReadyForUse = true
+
+def mashSssssReadyForUseIsFalse : Prop :=
+  mashSssssReadyForUse → False
+
+/-- Clause 6.3: this document must not be read as claiming SSSSS never started. -/
+def sssssNeverStarted : Bool := false
+
+def mashSssssNeverStarted : Prop :=
+  sssssNeverStarted = true
+
+def mashSssssNeverStartedIsFalse : Prop :=
+  mashSssssNeverStarted → False
+
+/-- Clause 6.4 item 1: sequential language runs are a requirement, not done work. -/
+def sequentialIdentityImplemented : Bool := false
+
+/-- Clause 6.4 item 2: the hashing ban is a requirement, not a proof that an engine already obeys it. -/
+def hashingBanProvesEngineObeys : Bool := false
+
+def mashHashingBanProvesEngineObeys : Prop :=
+  hashingBanProvesEngineObeys = true
+
+def mashHashingBanProvesEngineObeysIsFalse : Prop :=
+  mashHashingBanProvesEngineObeys → False
+
+/-- Clause 4.7 and Clause 6.6: the neurosymbolic harness is specified and is not a shipped product. -/
+def neurosymbolicHarnessShipped : Bool := false
+
+def mashNeurosymbolicHarnessShipped : Prop :=
+  neurosymbolicHarnessShipped = true
+
+def mashNeurosymbolicHarnessShippedIsFalse : Prop :=
+  mashNeurosymbolicHarnessShipped → False
+
 def televisionCanonRequiredForConformance : Bool := false
 
 def leanMachineHasNumberedSpec : Bool := true

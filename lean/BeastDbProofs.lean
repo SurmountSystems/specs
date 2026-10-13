@@ -250,6 +250,50 @@ theorem mutex_dependent_trie_does_not_conform :
 theorem bounce_required_does_not_conform :
     productBounceRequired.conforms = false := by decide
 
+theorem proven_acid_not_done : provenAcidDone = false := rfl
+
+theorem tries_without_locks_not_done : triesWithoutLocksDone = false := rfl
+
+theorem mmap_not_done : mmapDone = false := rfl
+
+theorem schema_proofs_not_done : schemaProofsDone = false := rfl
+
+theorem fargo_not_specified : fargoSpecified = false := rfl
+
+theorem mash_marketing_acid_is_proven_acid_is_false :
+    mashMarketingAcidIsProvenAcidIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_mutex_trie_is_false : mashMutexTrieIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_bounce_buffer_required_is_false :
+    mashBounceBufferRequiredIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_inferred_schema_leaves_data_without_schema_is_false :
+    mashInferredSchemaLeavesDataWithoutSchemaIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_traditional_ffi_as_interop_path_is_false :
+    mashTraditionalFfiAsInteropPathIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_beastdb_never_started_is_false :
+    mashBeastdbNeverStartedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_beastdb_ready_for_use_is_false :
+    mashBeastdbReadyForUseIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem requires_science_cycle : requiresScienceCycle = true :=
   rfl
 

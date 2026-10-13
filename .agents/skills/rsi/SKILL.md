@@ -17,20 +17,20 @@ Read `0006_RSI.md` and `0005_CATE.md`. Do not paste those files into chat. Tool 
 Building a durable tool is implement work across more than one file.
 
 1. Track a `feat:` or `bug:` board item. Write a remaining work pointer under `~/.agents/reports/`.
-2. First tool: spawn a tightly scoped agent (`spawn_agent` on Zed or Surmount). Do not diagnose in the main session.
-3. A coordinator fans out. A specialist does greps, reads, edits, tests, and `nix flake check` when the job is hard. A specialist MUST NOT spawn another specialist.
-4. The main session reads short reports under `~/.agents/reports/` only. One command host question, one path already named, and the asked for report stay on the main session.
+2. First tool: spawn L2 (`spawn_agent` on Zed or Surmount; Grok: `spawn_subagent`). Do not diagnose on L1.
+3. L2 does the work (greps, reads, edits). L2 spawns an L3 only when the slice is hard. Easy work stays on the L2. An L3 implements, researches, or reviews. An L3 does not spawn. There is no L4. Horizon (this laptop) must not compile Lean or Lake. The gate is `just check-remote` on surmount-1.
+4. L1 reads short reports under `~/.agents/reports/` only. One command host question, one path already named, and the asked for report stay on L1.
 5. Never `git`. This repository forbids git unless the operator explicitly asks for that git work. Never `git add`. Never `git commit`.
 
-## Sub-agents
+## Agent depth
 
-Independent work streams with disjoint writes run as parallel tightly scoped agents (`0006_RSI.md` Clause 4.7). Shared files get one later pass. A new disjoint ask runs in parallel. Do not cancel a healthy live stream unless the operator said to stop.
+Independent work streams with disjoint writes run as parallel L2 coordinators (`0006_RSI.md` Clause 4.7). Shared files get one later pass. A new disjoint ask runs in parallel. Do not cancel a healthy live stream unless the operator said to stop.
 
-| Role | Does | Does not |
-|------|------|----------|
-| Coordinator (main session) | Status, spawn, wait, board, read asked for reports | Build the tool, greps, flake check |
-| Tightly scoped agent | Parallelize disjoint streams, write the coordinator report | Race shared files |
-| Specialist | Read 0006 and 0005, implement the tool, tests, residual, gate | Spawn another specialist |
+| Depth | Does | Does not |
+|-------|------|----------|
+| L1 | Status, spawn L2, wait, board, read asked for reports | Build the tool, greps, compile Lean or Lake, run the remote gate |
+| L2 | Does the work (greps, reads, edits). Parallelize disjoint streams. Spawns an L3 only when the slice is hard. Easy work stays on the L2. Writes the L2 report | Always spawn L3 for greps. Skip product edits. Race shared files. Compile Lean or Lake on this laptop (horizon) |
+| L3 | When spawned for a hard slice: implement, research, or review | Spawn. Coordinate. Compile Lean or Lake on this laptop (horizon) |
 
 ## Loop
 
@@ -53,10 +53,10 @@ Independent work streams with disjoint writes run as parallel tightly scoped age
 2. Treat this specification as a claim that a model trains itself again.
 3. Treat this skill or `0006_RSI.md` as specifying SSSP.
 4. Use scripture named in `0006_RSI.md` Clause 1.4 as a conformance item for Slake, beastdb, or SSSSS.
-5. Invent `0005_fargo.md`, a number for fargo, or a Carbonado numbered file. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0009 is Public Domain Open Source Software (PDOSS) (`0009_PDOSS.md`). Unlicense remains the license. Do not create `0009_VOCABULARY.md`. Do not steal 0007 or 0009 for fargo. Number 0011 is Surmount Systems Tech Tree. Number 0012 is Majestic Memex, planned.
+5. Invent `0005_fargo.md`, a number for fargo, or a Carbonado numbered file. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0009 is Public Domain Open Source Software (PDOSS) (`0009_PDOSS.md`). Unlicense remains the license. Do not create `0009_VOCABULARY.md`. Do not create `0009_Unlicense.md`. Do not steal 0007 or 0009 for fargo. Number 0011 is Surmount Systems Tech Tree. Do not create `0011_Unlicense.md`. Number 0012 is Majestic Memex (`0012_Majestic_Memex.md`). It is published. It is not planned. Number 0013 is Lean Machine (`0013_Lean_Machine.md`). Number 0014 is Anunnaki Encoding (`0014_Anunnaki_Encoding.md`). Number 0015 is unassigned. Do not invent 0015.
 6. Treat `bitmask-core`, `bitmask-next`, or RGB as deliverables of this skill.
 7. Fall back to a weaker testing workflow because it is familiar. If a stronger tool can state the theorem, use it.
-8. Prove tests that compile on this laptop when the project already requires a remote builder. Stop if that builder is unresponsive. This repository's gate remains `nix flake check`.
+8. Compile Lean or Lake on this laptop (horizon), or tell a specialist to compile tests here. The gate is `just check-remote` on surmount-1. Stop if that builder is unresponsive.
 
 ## Todos
 
@@ -68,6 +68,6 @@ Merge upsert `feat:` / `bug:` only. Never wipe the board. Never `git add`. Never
 2. A failing test for the named contract was observed before the product edit, and the same test passes, unless the operator said skip or the work is pure docs.
 3. Residual is written in full on disk.
 4. Names and UX parse as ordinary English.
-5. `nix flake check "path:$PWD" --print-build-logs` passed when this repository's checks apply.
+5. `just check-remote` on surmount-1 passed when this repository's checks apply.
 
 Reports under `~/.agents/reports/`. Call them reports, not joins.

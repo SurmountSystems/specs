@@ -224,4 +224,9 @@ theorem model_and_proofs_without_experiments_does_not_conform_prop :
 theorem complete_science_conforms : completeScienceConforms :=
   rfl
 
+theorem mash_collision_tags_spec_and_proof_is_false :
+    mashCollisionTagsSpecAndProofIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 end Vocabulary

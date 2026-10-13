@@ -50,7 +50,7 @@ theorem mash_hidden_split_is_false :
 
 theorem mash_false : markedAsProof = false := rfl
 
-theorem encoded_line_count : encodedLines.size = 338 := by
+theorem encoded_line_count : encodedLines.size = 353 := by
   native_decide
 
 theorem contains_formal_vibefication :
@@ -76,6 +76,21 @@ theorem contains_corollary_experiments :
 theorem contains_tests_are_not_enough :
     encodedLines.any (fun l =>
       (l.text.splitOn "tests are not enough").length != 1) = true := by
+  native_decide
+
+theorem contains_leftover_science_cycle_honesty :
+    encodedLines.any (fun l =>
+      (l.text.splitOn "Leftover science cycle honesty").length != 1) = true := by
+  native_decide
+
+theorem contains_unpinned_philosophy_pdfs :
+    encodedLines.any (fun l =>
+      (l.text.splitOn "Unpinned philosophy PDFs").length != 1) = true := by
+  native_decide
+
+theorem contains_philosophy_proofofkeags_path :
+    encodedLines.any (fun l =>
+      (l.text.splitOn "ref/philosophy/proofofkeags/").length != 1) = true := by
   native_decide
 
 end Proofs_0008

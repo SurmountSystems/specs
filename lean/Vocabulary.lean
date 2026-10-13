@@ -30,6 +30,12 @@ def liveContainsSpecEncodings : Bool := true
 
 def liveContainsProofsOfThoseEncodings : Bool := false
 
+def mashCollisionTagsSpecAndProof : Prop :=
+  liveContainsProofsOfThoseEncodings = true
+
+def mashCollisionTagsSpecAndProofIsFalse : Prop :=
+  mashCollisionTagsSpecAndProof → False
+
 def markedAsSpecEncoding : Bool := true
 
 def markedAsProof : Bool := false

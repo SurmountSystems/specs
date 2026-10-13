@@ -9,6 +9,7 @@ import MemexProofs
 import SpecRegistry
 
 open MemexSpec
+open MemexProofs
 open SpecRegistry
 
 structure Case where
@@ -34,6 +35,11 @@ def expectEqString (name : String) (got want : String) : Case :=
     { name := name, ok := true }
   else
     { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def expectEmpty {α : Type} [Repr α] (name : String) (xs : List α) : Case :=
   if xs.isEmpty then
@@ -156,7 +162,79 @@ def runCases : List Case :=
     expectFalse "this specification does not invent a second PDOSS number"
       inventsSecondPdossSpec,
     expectTrue "a numbered Vocabulary file MUST NOT exist"
-      numberedVocabularyFileMustNotExist
+      numberedVocabularyFileMustNotExist,
+    expectFalse "this repository does not wait on a finished memex command"
+      waitOnFinishedMemexCommand,
+    expectFalse "companion Lean does not prove the crate is finished"
+      companionLeanProvesCrateFinished,
+    expectFalse "mashed spec and proof fixture still fails"
+      (conformingThisRepo mashedFixture),
+    expectConsFalse "archive is not a Tech Tree file"
+      majesticArchiveIsSstt
+      mashArchiveIsSstt
+      mashArchiveIsSsttIsFalse
+      rfl
+      mash_archive_is_sstt_is_false,
+    expectConsFalse "archive extension is not .sstt"
+      (fileExtension == techTreeFileExtension)
+      mashExtensionIsSstt
+      mashExtensionIsSsttIsFalse
+      rfl
+      mash_extension_is_sstt_is_false,
+    expectConsFalse "magic is not SSTECHTREE01"
+      (magicString == techTreeMagicString)
+      mashMagicIsTechTree
+      mashMagicIsTechTreeIsFalse
+      rfl
+      mash_magic_is_tech_tree_is_false,
+    expectConsFalse "crate name is not the command"
+      (crateName == commandName)
+      mashCrateNameIsCommand
+      mashCrateNameIsCommandIsFalse
+      rfl
+      mash_crate_name_is_command_is_false,
+    expectConsFalse "this repository Unlicense does not cover the crate"
+      thisRepoUnlicenseCoversMajesticCrate
+      mashRepoUnlicenseCoversCrate
+      mashRepoUnlicenseCoversCrateIsFalse
+      rfl
+      mash_repo_unlicense_covers_crate_is_false,
+    expectConsFalse "the crate is not ready for use"
+      productReadyForUse
+      mashProductReadyForUse
+      mashProductReadyForUseIsFalse
+      rfl
+      mash_product_ready_for_use_is_false,
+    expectConsFalse "the crate is not claimed never started"
+      productNeverStarted
+      mashProductNeverStarted
+      mashProductNeverStartedIsFalse
+      rfl
+      mash_product_never_started_is_false,
+    expectConsFalse "waiting on a finished memex command is not accepted"
+      waitOnFinishedMemexCommand
+      mashWaitOnFinishedMemexCommand
+      mashWaitOnFinishedMemexCommandIsFalse
+      rfl
+      mash_wait_on_finished_memex_command_is_false,
+    expectConsFalse "loading .sstt does not make a .majestic archive a Tech Tree file"
+      (memexMayLoadSstt && majesticArchiveIsSstt)
+      mashLoadSsttMakesArchiveSstt
+      mashLoadSsttMakesArchiveSsttIsFalse
+      rfl
+      mash_load_sstt_makes_archive_sstt_is_false,
+    expectConsFalse "the Lake .sstt writer is not a shipped memex product"
+      ssttProducerShipped
+      mashLakeWriterIsShippedMemex
+      mashLakeWriterIsShippedMemexIsFalse
+      rfl
+      mash_lake_writer_is_shipped_memex_is_false,
+    expectConsFalse "mash that companion Lean proves the crate is finished is not accepted"
+      companionLeanProvesCrateFinished
+      mashCompanionLeanProvesCrateFinished
+      mashCompanionLeanProvesCrateFinishedIsFalse
+      rfl
+      mash_companion_lean_proves_crate_finished_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

@@ -341,6 +341,74 @@ def mashedFixture : LeanModuleRole :=
 def mashedIsNonconformingThisRepo : Prop :=
   conformingThisRepo mashedFixture = false
 
+/-!
+  Cons False for clashes Clause 6 already states. Each mash is the
+  accepted flag set true. The proofs module shows that mash implies
+  False. These encodings do not invent a number for Legal Lean or
+  Holy Lean. They do not claim a conforming implementation. Worship
+  is not a conformance conjunct.
+-/
+
+def mashWorshipRequiredForConformance : Prop :=
+  worshipRequiredForConformance = true
+
+def mashWorshipRequiredForConformanceIsFalse : Prop :=
+  mashWorshipRequiredForConformance → False
+
+def mashBeliefRequiredForConformance : Prop :=
+  beliefRequiredForConformance = true
+
+def mashBeliefRequiredForConformanceIsFalse : Prop :=
+  mashBeliefRequiredForConformance → False
+
+def mashTheologyIsMustForCompiler : Prop :=
+  theologyIsMustForCompiler = true
+
+def mashTheologyIsMustForCompilerIsFalse : Prop :=
+  mashTheologyIsMustForCompiler → False
+
+def mashLegalLeanHasSeparateNumber : Prop :=
+  legalLeanHasSeparateNumber = true
+
+def mashLegalLeanHasSeparateNumberIsFalse : Prop :=
+  mashLegalLeanHasSeparateNumber → False
+
+def mashHolyLeanHasSeparateNumber : Prop :=
+  holyLeanHasSeparateNumber = true
+
+def mashHolyLeanHasSeparateNumberIsFalse : Prop :=
+  mashHolyLeanHasSeparateNumber → False
+
+def mashLegalLeanFinished : Prop :=
+  legalLeanFinished = true
+
+def mashLegalLeanFinishedIsFalse : Prop :=
+  mashLegalLeanFinished → False
+
+def mashHolyLeanImplemented : Prop :=
+  holyLeanImplemented = true
+
+def mashHolyLeanImplementedIsFalse : Prop :=
+  mashHolyLeanImplemented → False
+
+def mashConformingProductExists : Prop :=
+  conformingProductExists = true
+
+def mashConformingProductExistsIsFalse : Prop :=
+  mashConformingProductExists → False
+
+def mashRunningDistributedMachineClaimed : Prop :=
+  runningDistributedMachineClaimed = true
+
+def mashRunningDistributedMachineClaimedIsFalse : Prop :=
+  mashRunningDistributedMachineClaimed → False
+
+def mashSpecAndProofConforming : Prop :=
+  conformingThisRepo mashedFixture = true
+
+def mashSpecAndProofConformingIsFalse : Prop :=
+  mashSpecAndProofConforming → False
+
 /-- Required Conformance holds iff every listed conjunct holds. -/
 def requiredConformanceHolds : Bool :=
   leanMachineAssigned &&

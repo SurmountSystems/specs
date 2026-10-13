@@ -192,6 +192,94 @@ def mashedFixture : LeanModuleRole :=
 def mashedIsNonconformingThisRepo : Prop :=
   conformingThisRepo mashedFixture = false
 
+/-- Spec encoding is not the proof. -/
+def mashSpecAndProof : Prop :=
+  Layer.leanSpecEncoding = Layer.leanProof
+
+def mashSpecAndProofIsFalse : Prop :=
+  mashSpecAndProof → False
+
+/-- A .majestic archive is not a Tech Tree file. -/
+def mashArchiveIsSstt : Prop :=
+  majesticArchiveIsSstt = true
+
+def mashArchiveIsSsttIsFalse : Prop :=
+  mashArchiveIsSstt → False
+
+/-- Archive extension is not .sstt. -/
+def mashExtensionIsSstt : Prop :=
+  fileExtension = techTreeFileExtension
+
+def mashExtensionIsSsttIsFalse : Prop :=
+  mashExtensionIsSstt → False
+
+/-- Magic MAJESTIC is not SSTECHTREE01. -/
+def mashMagicIsTechTree : Prop :=
+  magicString = techTreeMagicString
+
+def mashMagicIsTechTreeIsFalse : Prop :=
+  mashMagicIsTechTree → False
+
+/-- Crate name majestic is not command memex. -/
+def mashCrateNameIsCommand : Prop :=
+  crateName = commandName
+
+def mashCrateNameIsCommandIsFalse : Prop :=
+  mashCrateNameIsCommand → False
+
+/-- This repository Unlicense does not cover ~/majestic. -/
+def mashRepoUnlicenseCoversCrate : Prop :=
+  thisRepoUnlicenseCoversMajesticCrate = true
+
+def mashRepoUnlicenseCoversCrateIsFalse : Prop :=
+  mashRepoUnlicenseCoversCrate → False
+
+/-- The crate is not ready for use. -/
+def mashProductReadyForUse : Prop :=
+  productReadyForUse = true
+
+def mashProductReadyForUseIsFalse : Prop :=
+  mashProductReadyForUse → False
+
+/-- The crate is not claimed never started. -/
+def mashProductNeverStarted : Prop :=
+  productNeverStarted = true
+
+def mashProductNeverStartedIsFalse : Prop :=
+  mashProductNeverStarted → False
+
+/-- This repository does not wait on a finished memex command. -/
+def waitOnFinishedMemexCommand : Bool := false
+
+def mashWaitOnFinishedMemexCommand : Prop :=
+  waitOnFinishedMemexCommand = true
+
+def mashWaitOnFinishedMemexCommandIsFalse : Prop :=
+  mashWaitOnFinishedMemexCommand → False
+
+/-- Loading .sstt does not make a .majestic archive a Tech Tree file. -/
+def mashLoadSsttMakesArchiveSstt : Prop :=
+  memexMayLoadSstt = true ∧ majesticArchiveIsSstt = true
+
+def mashLoadSsttMakesArchiveSsttIsFalse : Prop :=
+  mashLoadSsttMakesArchiveSstt → False
+
+/-- The Lake .sstt writer is not a shipped memex product. -/
+def mashLakeWriterIsShippedMemex : Prop :=
+  ssttProducerShipped = true
+
+def mashLakeWriterIsShippedMemexIsFalse : Prop :=
+  mashLakeWriterIsShippedMemex → False
+
+/-- Companion Lean does not prove the crate is finished. -/
+def companionLeanProvesCrateFinished : Bool := false
+
+def mashCompanionLeanProvesCrateFinished : Prop :=
+  companionLeanProvesCrateFinished = true
+
+def mashCompanionLeanProvesCrateFinishedIsFalse : Prop :=
+  mashCompanionLeanProvesCrateFinished → False
+
 def formalVibeficationUrl : String :=
   "https://proofofkeags.com/research/2026-05-12-formal-vibefication.html"
 

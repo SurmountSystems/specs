@@ -166,6 +166,26 @@ theorem rust_fargo_process_unspecified :
     rustElevationProcessSpecifiedHere = false :=
   rfl
 
+theorem mash_byte_identity_claimed_true_is_false :
+    mashByteIdentityClaimedTrueIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_unsigned_as_general_skip_is_false :
+    mashUnsignedAsGeneralSkipIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_this_repo_claims_unsigned_exception_is_false :
+    mashThisRepoClaimsUnsignedExceptionIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_reality_check_claimed_done_is_false :
+    mashRealityCheckClaimedDoneIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem no_invented_ci_product :
     conformingCiProductClaimed = false :=
   rfl

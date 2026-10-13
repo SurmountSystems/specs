@@ -11,6 +11,7 @@
 import SpecCheck
 import VocabAspell
 import VocabularySpec
+import VocabularyProofs
 import Vocabulary
 
 open VocabAspell
@@ -39,6 +40,11 @@ def expectEqNat (name : String) (got want : Nat) : Case :=
     { name := name, ok := true }
   else
     { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def expectEmpty {α : Type} [Repr α] (name : String) (xs : List α) : Case :=
   if xs.isEmpty then
@@ -98,7 +104,19 @@ def hermeticCases : List Case :=
     expectTrue "vocabulary collision complete science cycle conforms"
       Vocabulary.completeScienceConformsHere,
     expectFalse "vocabulary collision tests alone are not sufficient"
-      Vocabulary.testsAloneAreSufficient
+      Vocabulary.testsAloneAreSufficient,
+    expectConsFalse "duplicate token check as complete ambiguity checker is not accepted"
+      VocabularySpec.duplicateTokenCheckIsCompleteAmbiguityChecker
+      VocabularySpec.mashDuplicateTokenCheckIsCompleteAmbiguityChecker
+      VocabularySpec.mashDuplicateTokenCheckIsCompleteAmbiguityCheckerIsFalse
+      rfl
+      VocabularyProofs.mash_duplicate_token_check_is_complete_ambiguity_checker_is_false,
+    expectConsFalse "catalog isomorphism as complete definitions is not accepted"
+      VocabularySpec.catalogIsomorphismProvesDefinitionsComplete
+      VocabularySpec.mashCatalogIsomorphismProvesDefinitionsComplete
+      VocabularySpec.mashCatalogIsomorphismProvesDefinitionsCompleteIsFalse
+      rfl
+      VocabularyProofs.mash_catalog_isomorphism_proves_definitions_complete_is_false
   ]
 
 def firstMismatch : List String → List String → Nat → Option (Nat × String × String)

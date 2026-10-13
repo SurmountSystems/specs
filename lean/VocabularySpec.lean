@@ -353,6 +353,24 @@ def fixtureEntries : List VocabEntry :=
     { letter := 'B', index := 1, word := "beastdb" }
   ]
 
+/-- Clause 6.3 item 2: the duplicate token check is not a complete ambiguity checker. -/
+def duplicateTokenCheckIsCompleteAmbiguityChecker : Bool := false
+
+def mashDuplicateTokenCheckIsCompleteAmbiguityChecker : Prop :=
+  duplicateTokenCheckIsCompleteAmbiguityChecker = true
+
+def mashDuplicateTokenCheckIsCompleteAmbiguityCheckerIsFalse : Prop :=
+  mashDuplicateTokenCheckIsCompleteAmbiguityChecker → False
+
+/-- Clause 6.7: catalog isomorphism does not prove that definitions are complete. -/
+def catalogIsomorphismProvesDefinitionsComplete : Bool := false
+
+def mashCatalogIsomorphismProvesDefinitionsComplete : Prop :=
+  catalogIsomorphismProvesDefinitionsComplete = true
+
+def mashCatalogIsomorphismProvesDefinitionsCompleteIsFalse : Prop :=
+  mashCatalogIsomorphismProvesDefinitionsComplete → False
+
 /-- This meaning model requires the Formal Vibefication science cycle. -/
 def requiresScienceCycle : Bool := true
 

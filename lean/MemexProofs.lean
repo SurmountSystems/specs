@@ -295,4 +295,71 @@ theorem numbered_vocabulary_file_must_not_exist :
     numberedVocabularyFileMustNotExist = true :=
   rfl
 
+theorem mash_spec_and_proof_is_false : mashSpecAndProofIsFalse := by
+  intro h
+  cases h
+
+theorem mash_archive_is_sstt_is_false : mashArchiveIsSsttIsFalse := by
+  intro h
+  cases h
+
+theorem mash_extension_is_sstt_is_false : mashExtensionIsSsttIsFalse := by
+  intro h
+  have : fileExtension ≠ techTreeFileExtension := by decide
+  exact this h
+
+theorem mash_magic_is_tech_tree_is_false : mashMagicIsTechTreeIsFalse := by
+  intro h
+  have : magicString ≠ techTreeMagicString := by decide
+  exact this h
+
+theorem mash_crate_name_is_command_is_false : mashCrateNameIsCommandIsFalse := by
+  intro h
+  have : crateName ≠ commandName := by decide
+  exact this h
+
+theorem mash_repo_unlicense_covers_crate_is_false :
+    mashRepoUnlicenseCoversCrateIsFalse := by
+  intro h
+  cases h
+
+theorem mash_product_ready_for_use_is_false :
+    mashProductReadyForUseIsFalse := by
+  intro h
+  cases h
+
+theorem mash_product_never_started_is_false :
+    mashProductNeverStartedIsFalse := by
+  intro h
+  cases h
+
+theorem wait_on_finished_memex_command :
+    waitOnFinishedMemexCommand = false :=
+  rfl
+
+theorem mash_wait_on_finished_memex_command_is_false :
+    mashWaitOnFinishedMemexCommandIsFalse := by
+  intro h
+  cases h
+
+theorem mash_load_sstt_makes_archive_sstt_is_false :
+    mashLoadSsttMakesArchiveSsttIsFalse := by
+  intro h
+  have : majesticArchiveIsSstt = false := rfl
+  exact Bool.noConfusion (this ▸ h.right)
+
+theorem mash_lake_writer_is_shipped_memex_is_false :
+    mashLakeWriterIsShippedMemexIsFalse := by
+  intro h
+  cases h
+
+theorem companion_lean_does_not_prove_crate_finished :
+    companionLeanProvesCrateFinished = false :=
+  rfl
+
+theorem mash_companion_lean_proves_crate_finished_is_false :
+    mashCompanionLeanProvesCrateFinishedIsFalse := by
+  intro h
+  cases h
+
 end MemexProofs

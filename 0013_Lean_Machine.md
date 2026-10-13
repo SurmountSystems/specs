@@ -242,19 +242,19 @@ This section is normative for residual honesty of this document. Silence about a
 
 ### 6.1 Unpublished specifications and unassigned numbers
 
-1. fargo is not specified. fargo has no assigned specification number. This document does not invent a number for fargo. This document does not steal 0005, 0006, 0007, 0008, 0009, 0010, 0011, 0012, or 0013 for fargo.
+1. fargo is not specified. fargo has no assigned specification number. This document does not invent a number for fargo. This document does not steal 0005, 0006, 0007, 0008, 0009, 0010, 0011, 0012, 0013, or 0014 for fargo.
 2. The Surmount Systems System Prompt (SSSP) is not specified. It has no numbered specification file in this repository. It has no assigned specification number. This document MUST NOT be read as creating SSSP.
-3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is Formal Vibefication (`0008_Formal_Vibefication.md`). Number 0009 is Public Domain Open Source Software (PDOSS) (`0009_PDOSS.md`). Unlicense remains the license. Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`). Number 0013 is this specification. This document does not create a file for Carbonado.
-4. Legal Lean is a named component of Lean Machine. Legal Lean has no separate numbered specification and no assigned number of its own. This document MUST NOT be read as creating `NNNN_Legal_Lean.md`.
-5. Holy Lean is a named component of Lean Machine. Holy Lean has no separate numbered specification and no assigned number of its own. This document MUST NOT be read as creating `NNNN_Holy_Lean.md`.
+3. The Carbonado Network Protocol is deferred. It has no numbered specification file in this repository. It has no assigned specification number. Number 0005 is CATE (`0005_CATE.md`). Number 0006 is RSI (`0006_RSI.md`), not Carbonado. Number 0007 is Continuous Integration (`0007_CI.md`). Number 0008 is Formal Vibefication (`0008_Formal_Vibefication.md`). Number 0009 is Public Domain Open Source Software (PDOSS) (`0009_PDOSS.md`). Unlicense remains the license. Number 0010 is Surmount Systems (`0010_Surmount_Systems.md`). Number 0011 is Surmount Systems Tech Tree (`0011_Surmount_Systems_Tech_Tree.md`). Number 0012 is Majestic `Memex` (`0012_Majestic_Memex.md`). Number 0013 is this specification. Number 0014 is Anunnaki Encoding (`0014_Anunnaki_Encoding.md`). This document does not create a file for Carbonado.
+4. Legal Lean is a named component of Lean Machine. Legal Lean has no separate numbered specification and no assigned number of its own. This document MUST NOT be read as creating `NNNN_Legal_Lean.md`. Treating Legal Lean as having a separate stack number is Cons False in `lean/LeanMachineProofs.lean`.
+5. Holy Lean is a named component of Lean Machine. Holy Lean has no separate numbered specification and no assigned number of its own. This document MUST NOT be read as creating `NNNN_Holy_Lean.md`. Treating Holy Lean as having a separate stack number is Cons False in `lean/LeanMachineProofs.lean`.
 6. Number 0009 was briefly Vocabulary, then Unlicense, and is now Public Domain Open Source Software (PDOSS) by operator order. Unlicense remains the license. The word catalog lives in CATE (`0005_CATE.md`). This document does not assign 0009 to fargo or to Carbonado. A numbered Vocabulary file MUST NOT exist. The form checker MUST fail if that file is present.
 
 ### 6.2 Product that is not implemented
 
-1. Lean Machine work is ongoing and is not ready for use. A conforming implementation is not claimed. This specification records the contract. It does not ship the machine.
-2. Legal Lean is ongoing named work. Automatic proof of legal concerns is not claimed done.
-3. Holy Lean is ongoing named work. A Lean encoding of scripture as a civilization set of rules is not claimed done.
-4. Distributed self improvement is a design requirement. A running distributed machine is not claimed.
+1. Lean Machine work is ongoing and is not ready for use. A conforming implementation is not claimed. This specification records the contract. It does not ship the machine. Treating a conforming Lean Machine as existing is Cons False in `lean/LeanMachineProofs.lean`.
+2. Legal Lean is ongoing named work. Automatic proof of legal concerns is not claimed done. Treating Legal Lean as finished is Cons False in `lean/LeanMachineProofs.lean`.
+3. Holy Lean is ongoing named work. A Lean encoding of scripture as a civilization set of rules is not claimed done. Treating Holy Lean as implemented is Cons False in `lean/LeanMachineProofs.lean`.
+4. Distributed self improvement is a design requirement. A running distributed machine is not claimed. Treating that design requirement as a claim that such a machine already runs is Cons False in `lean/LeanMachineProofs.lean`.
 5. Timestamped notes on wrong or imprecise answers are a requirement. A shipped store for those notes is not claimed.
 
 ### 6.3 Product claims that are not ready for use
@@ -262,7 +262,7 @@ This section is normative for residual honesty of this document. Silence about a
 1. beastdb, SSSSS, Slake, and Continuous Integration remain ongoing and not ready for use. This document MUST NOT be read as claiming that those products never started or do not exist.
 2. Byte identity of Slake emit is a requirement on a conforming Systems Lean and Slake product as specified in `0007_CI.md`. This document does not claim that match already holds.
 3. Neurosymbolic integration remains in `0004_SSSSS.md`. It is specified there. It is not a shipped product. This document does not move it here.
-4. `lean/LeanMachineSpec.lean` encodes selected claims. `lean/LeanMachineProofs.lean` proves those claims. `0013_Lean_Machine.lean` encodes the physical lines of this markdown file. `lean/Proofs_0013.lean` proves identities of that line encoding. Those modules are not a proof that a Lean Machine product exists. They are not a proof that beastdb, SSSSS, Slake, or Continuous Integration are ready for use.
+4. `lean/LeanMachineSpec.lean` encodes selected claims. `lean/LeanMachineProofs.lean` proves those claims. `0013_Lean_Machine.lean` encodes the physical lines of this markdown file. `lean/Proofs_0013.lean` proves identities of that line encoding. Those modules are not a proof that a Lean Machine product exists. They are not a proof that beastdb, SSSSS, Slake, or Continuous Integration are ready for use. A mash of spec encodings and proofs in one module is Cons False in `lean/LeanMachineProofs.lean`.
 
 ### 6.4 Pins and licenses this document does not add
 
@@ -272,10 +272,15 @@ This section is normative for residual honesty of this document. Silence about a
 
 ### 6.5 Informative items this document names
 
-1. Clause 4.8 (worship and scripture study) is informative. Existence of God is not proved either way. Belief is not a conformance conjunct.
+1. Clause 4.8 (worship and scripture study) is informative. Existence of God is not proved either way. Belief is not a conformance conjunct. Treating worship as a conformance conjunct is Cons False in `lean/LeanMachineProofs.lean`. Treating belief as a conformance conjunct is Cons False in that same module. Treating theology as a MUST for the compiler is Cons False in that same module.
 2. Legal scholars are wanted. They are not a runtime requirement.
 3. LLVM IR emission is MAY (Clause 4.3 item 5).
 4. SSSSS remains specification 0004. Application and neurosymbolic integration live there.
+
+### 6.6 Cons clashes this document already states
+
+1. The clashes named in Clause 6.1 items 4 and 5, Clause 6.2 items 1 through 4, Clause 6.3 item 4, and Clause 6.5 item 1 are Cons False in `lean/LeanMachineProofs.lean`. Those proofs do not make Lean Machine ready for use. They do not invent a number for Legal Lean or Holy Lean. They do not claim a conforming implementation.
+2. This document does not add a Cons for a clash this document does not state. Worship remains not a conformance conjunct.
 
 ## 7. Changelog
 
@@ -284,6 +289,8 @@ This section is normative for residual honesty of this document. Silence about a
 First publication of Lean Machine as numbered specification 0013 with file name `0013_Lean_Machine.md`. Records that Lean Machine was unassigned and that this encode assigns number 0013. Records Systems Lean as the high assurance compiler component following `0002_Systems_Lean.md`, with CompCert `ccomp` and a bootstrapped Slake that fully typechecks REQUIRED for that named path. Records Legal Lean and Holy Lean as named components without separate stack numbers. Records Unlicense of important work as specified in `0009_PDOSS.md`. Records a deterministic attempt to answer and timestamped notes when an answer is wrong or imprecise. Records distributed self improvement as a design requirement citing `0006_RSI.md`, not as a claim that the machine already runs. Records worship and scripture study as informative moral framing, not as a conformance conjunct. Records Formal Vibefication with canonical Proof of Keags URLs and back linking. Requires residual honesty that Lean Machine work is ongoing and is not ready for use, that a conforming implementation is not claimed, and that Legal Lean and Holy Lean are not done.
 
 This 0.1.0 also records: CATE is specification 0005; RSI is specification 0006; Continuous Integration is specification 0007; Formal Vibefication is specification 0008; Public Domain Open Source Software (PDOSS) is specification 0009; Unlicense remains the license; the word catalog is owned by CATE as specification 0005; a numbered Vocabulary file MUST NOT exist; Surmount Systems is specification 0010; Surmount Systems Tech Tree is specification 0011; Majestic Memex is specification 0012; this specification is number 0013; fargo has no assigned specification number; SSSP is not specified; Carbonado has no assigned number; Legal Lean and Holy Lean have no separate numbers; every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` whose physical lines match that markdown, with proofs in `lean/Proofs_NNNN.lean`, checked by `line_encodings_check`; this document does not claim that a conforming Lean Machine exists.
+
+This 0.1.0 also records Cons False for clashes this document already states: worship or belief as a conformance conjunct, theology as a MUST for the compiler, Legal Lean or Holy Lean as a separate stack number, Legal Lean as finished, Holy Lean as implemented, a claimed conforming Lean Machine, a running distributed machine treated as already existing, and a mash of spec encodings with proofs. Proofs live in `lean/LeanMachineProofs.lean`. Those proofs do not make Lean Machine ready for use.
 
 No prior public release of this specification exists.
 

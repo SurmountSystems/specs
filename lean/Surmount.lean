@@ -340,6 +340,49 @@ theorem claiming_beastdb_ready_is_inconsistent
     (h : SpecRegistry.beastdbProgress = .claimsReadyForUse) : False :=
   nomatch h
 
+/--
+  Composition of stack identities is not product readiness.
+  `stackIntegrates` remaining true does not mean products are ready.
+-/
+def compositionIsProductReadiness : Bool := false
+
+def mashCompositionAsProductReadiness : Prop :=
+  compositionIsProductReadiness = true
+
+def mashCompositionAsProductReadinessIsFalse : Prop :=
+  mashCompositionAsProductReadiness → False
+
+theorem composition_is_not_product_readiness :
+    compositionIsProductReadiness = false :=
+  rfl
+
+theorem mash_composition_as_product_readiness_is_false :
+    mashCompositionAsProductReadinessIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Number 0015 is unassigned. This composition does not invent 0015. -/
+def numberFifteenAssigned : Bool := false
+
+def mashNumberFifteenAssigned : Prop :=
+  numberFifteenAssigned = true
+
+def mashNumberFifteenAssignedIsFalse : Prop :=
+  mashNumberFifteenAssigned → False
+
+theorem number_fifteen_is_unassigned :
+    numberFifteenAssigned = false :=
+  rfl
+
+theorem mash_number_0015_assigned_is_false :
+    mashNumberFifteenAssignedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem anunnaki_is_not_0015 : anunnakiSpecNumber ≠ 15 := by decide
+
+theorem surmount_is_not_0015 : surmountSpecNumber ≠ 15 := by decide
+
 theorem leftover_unstack_as_conforming_is_inconsistent
     (h : Cate.HyphenRepair.leftoverUnstack.conforming = true) : False := by
   have hNo := Cate.leftover_unstack_nonconforming
@@ -775,7 +818,11 @@ def stackIntegrates : Bool :=
     !Sssss.mashClaimedNeuralGatedNotSystemsLean.conformingIntegration &&
     Sssss.canonicalProduct.conforms &&
     !Sssss.productClaimedNotSystemsLean.conforms &&
-    Sssss.productCanonicalIntegration.conforms
+    Sssss.productCanonicalIntegration.conforms &&
+    !compositionIsProductReadiness &&
+    !numberFifteenAssigned &&
+    !(anunnakiSpecNumber == 15) &&
+    !(surmountSpecNumber == 15)
 
 theorem surmount_integrates : stackIntegrates = true := rfl
 

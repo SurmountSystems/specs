@@ -140,6 +140,14 @@ def mitMeetsPdoss : Prop := meetsPdoss .mitGrant = true
 
 def apacheMeetsPdoss : Prop := meetsPdoss .apacheTwo = true
 
+/-- Residual honesty: CC0 is unpinned. Not a legal evaluation of CC0. -/
+def cc0PinnedAsMeetingPdoss : Bool := false
+
+def mashCc0PinnedAsMeetingPdoss : Prop :=
+  cc0PinnedAsMeetingPdoss = true
+
+def cc0IsClause12Pin : Bool := false
+
 def numberedSpecsAndLeanHere : LicenseOfWork := .unlicenseDedication
 
 def lean4SkillsPack : LicenseOfWork := .mitGrant
@@ -153,6 +161,12 @@ def thisRepoUnlicenseExceptNamedResidual : Prop :=
     lean4SkillsPack = LicenseOfWork.mitGrant ∧
     btcVerifiedPin = LicenseOfWork.apacheTwo ∧
     keaganEssays = LicenseOfWork.notThisRepoGrant
+
+/-- Clause 6.3: this Unlicense does not replace named residual licenses. -/
+def unlicenseReplacesNamedResidualLicenses : Bool := false
+
+def mashUnlicenseReplacesNamedResidualLicenses : Prop :=
+  unlicenseReplacesNamedResidualLicenses = true
 
 def unlicenseOfThisRepoAppliesToKeaganEssays : Bool := false
 
@@ -347,5 +361,11 @@ def usersRestrictedByNationality : Bool := false
 
 /-- Nationality is citizenship, not residence, visa, employer, or computer. -/
 def nationalityIsCitizenship : Bool := true
+
+/-- Clause 6.6: statute cites are not Clause 12 pins under `ref/`. -/
+def nationalityStatutesAreClause12Pins : Bool := false
+
+def mashNationalityStatutesAreClause12Pins : Prop :=
+  nationalityStatutesAreClause12Pins = true
 
 end UnlicenseSpec

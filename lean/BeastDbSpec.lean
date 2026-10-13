@@ -241,6 +241,13 @@ def persistIdentityUnicodePrimaryKey : PersistIdentityClaim :=
 
 def bounceBufferRequiredForMappedRead : Bool := false
 
+/-- Clause 4.3 item 3 and Clause 6.4 item 6: a bounce buffer is not required for a mapped read. -/
+def mashBounceBufferRequired : Prop :=
+  bounceBufferRequiredForMappedRead = true
+
+def mashBounceBufferRequiredIsFalse : Prop :=
+  mashBounceBufferRequired → False
+
 structure LayoutClaim where
   mmap : Bool
   simd : Bool
@@ -481,6 +488,76 @@ def productMutexDependentTrie : ClaimedProduct :=
 
 def productBounceRequired : ClaimedProduct :=
   { canonicalProduct with layout := layoutBounceRequired }
+
+/-!
+  Clause 6.4 leftover: required product work is not done. Cons False
+  fixtures name clashes this specification already states. Do not copy
+  Systems Lean durability, Props, or TSX fixtures.
+-/
+
+def provenAcidDone : Bool := false
+
+def triesWithoutLocksDone : Bool := false
+
+def mmapDone : Bool := false
+
+def schemaProofsDone : Bool := false
+
+def fargoSpecified : Bool := false
+
+/-- Clause 3.6 and Clause 6.4 item 1: marketing ACID is not proven ACID. -/
+def marketingAcidIsProvenAcid : Bool := false
+
+def mashMarketingAcidIsProvenAcid : Prop :=
+  marketingAcidIsProvenAcid = true
+
+def mashMarketingAcidIsProvenAcidIsFalse : Prop :=
+  mashMarketingAcidIsProvenAcid → False
+
+/-- Clause 3.7, Clause 4.2 item 2, and Clause 6.4 item 2: a trie whose progress waits on a mutual exclusion lock is not conforming. -/
+def mutexTrieAccepted : Bool := false
+
+def mashMutexTrie : Prop :=
+  mutexTrieAccepted = true
+
+def mashMutexTrieIsFalse : Prop :=
+  mashMutexTrie → False
+
+/-- Clause 3.12, Clause 4.4, and Clause 6.4 item 11: inferred schema is not a license to remain without a schema. -/
+def inferredSchemaLeavesDataWithoutSchemaAccepted : Bool := false
+
+def mashInferredSchemaLeavesDataWithoutSchema : Prop :=
+  inferredSchemaLeavesDataWithoutSchemaAccepted = true
+
+def mashInferredSchemaLeavesDataWithoutSchemaIsFalse : Prop :=
+  mashInferredSchemaLeavesDataWithoutSchema → False
+
+/-- Clause 4.5 item 5, Clause 6.4 item 14, and Clause 6.5 item 5: a traditional foreign function interface is not the interoperability path. -/
+def traditionalFfiAsInteropPathAccepted : Bool := false
+
+def mashTraditionalFfiAsInteropPath : Prop :=
+  traditionalFfiAsInteropPathAccepted = true
+
+def mashTraditionalFfiAsInteropPathIsFalse : Prop :=
+  mashTraditionalFfiAsInteropPath → False
+
+/-- Clause 6.3 item 3 and Clause 6.4 item 16: claiming that beastdb never started is not accepted. -/
+def beastdbNeverStartedAccepted : Bool := false
+
+def mashBeastdbNeverStarted : Prop :=
+  beastdbNeverStartedAccepted = true
+
+def mashBeastdbNeverStartedIsFalse : Prop :=
+  mashBeastdbNeverStarted → False
+
+/-- Clause 6.3 item 3 and Clause 6.4 item 16: claiming that beastdb is ready for use is not accepted. -/
+def beastdbReadyForUseAccepted : Bool := false
+
+def mashBeastdbReadyForUse : Prop :=
+  beastdbReadyForUseAccepted = true
+
+def mashBeastdbReadyForUseIsFalse : Prop :=
+  mashBeastdbReadyForUse → False
 
 /-!
   Formal Vibefication science cycle (specification 0008). This meaning

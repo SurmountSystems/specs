@@ -262,6 +262,30 @@ theorem rsi_retrain_not_conforming :
     RsiMeaning.modelRetrainsInThisRepo.conforming = false :=
   rfl
 
+theorem mash_chat_reminder_as_durable_tool_is_false :
+    mashChatReminderAsDurableToolIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_rsi_is_training_run_is_false :
+    mashRsiIsTrainingRunIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_this_document_creates_sssp_is_false :
+    mashThisDocumentCreatesSsspIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_sssp_has_numbered_spec_is_false :
+    mashSsspHasNumberedSpecIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem sssp_stays_unnumbered :
+    ssspHasNumberedSpec = false ∧ ssspAssignedNumber = none :=
+  And.intro sssp_unnumbered sssp_number_none
+
 /-- Scripture is not a conformance item for Slake, beastdb, or SSSSS. -/
 theorem scripture_not_required_for_slake :
     scriptureRequiredForSlake = false :=
@@ -327,6 +351,20 @@ theorem cate_number_is_five_and_carbonado_unassigned :
 theorem no_invented_conforming_agents :
     specClaimsEveryAgentConforms = false :=
   rfl
+
+theorem mash_spec_claims_every_agent_conforms_is_false :
+    mashSpecClaimsEveryAgentConformsIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem clause_4_not_already_met_by_every_session :
+    clause4AlreadyMetByEverySession = false :=
+  rfl
+
+theorem mash_clause_4_already_met_by_every_session_is_false :
+    mashClause4AlreadyMetByEverySessionIsFalse := by
+  intro h
+  exact Bool.noConfusion h
 
 /-- Unstated heuristics are not allowed. -/
 theorem unstated_heuristic_not_ok : unstatedHeuristicOk = false := rfl
@@ -539,5 +577,35 @@ theorem model_and_proofs_without_experiments_does_not_conform :
 
 theorem complete_science_conforms : completeScienceConforms :=
   rfl
+
+theorem mash_serialize_independent_is_false :
+    mashSerializeIndependentIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_reshape_test_without_contract_change_is_false :
+    mashReshapeTestWithoutContractChangeIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_rsi_replaces_leftover_unstack_is_false :
+    mashRsiReplacesLeftoverUnstackIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_rsi_is_bitmask_spec_is_false :
+    mashRsiIsBitmaskSpecIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_chat_only_residual_is_false :
+    mashChatOnlyResidualIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_meaning_proofs_are_second_form_checker_is_false :
+    mashMeaningProofsAreSecondFormCheckerIsFalse := by
+  intro h
+  exact Bool.noConfusion h
 
 end Rsi

@@ -490,6 +490,41 @@ def mashedFixture : LeanModuleRole :=
     markedAsSpecEncoding := true
     markedAsProof := true }
 
+def mashedIsNonconformingThisRepo : Prop :=
+  conformingThisRepo mashedFixture = false
+
+/-- Stated: spec encoding is not the proof. -/
+def mashSpecAndProof : Prop :=
+  Layer.leanSpecEncoding = Layer.leanProof
+
+def mashSpecAndProofIsFalse : Prop :=
+  mashSpecAndProof → False
+
+/-- Treating the Lake writer as a shipped Surmount product is Cons False. -/
+def mashLakeWriterAsShippedProduct : Prop :=
+  producerShipped = true
+
+def mashLakeWriterAsShippedProductIsFalse : Prop :=
+  mashLakeWriterAsShippedProduct → False
+
+/-- Copying full UInt64 CompactSize theorems into this Lake package is Cons False. -/
+def uint64TheoremsCopiedIntoThisLakePackage : Bool := false
+
+def mashCopiedUint64Theorems : Prop :=
+  uint64TheoremsCopiedIntoThisLakePackage = true
+
+def mashCopiedUint64TheoremsIsFalse : Prop :=
+  mashCopiedUint64Theorems → False
+
+/-- Wiring a producer into a product tree stays leftover. Treating that leftover as done is Cons False. -/
+def producerWiredIntoProductTree : Bool := false
+
+def mashProducerWiredIntoProductTree : Prop :=
+  producerWiredIntoProductTree = true
+
+def mashProducerWiredIntoProductTreeIsFalse : Prop :=
+  mashProducerWiredIntoProductTree → False
+
 def siblingLineEncodingsRequired : Bool := true
 
 def productsClaimedReadyForUse : Bool := false

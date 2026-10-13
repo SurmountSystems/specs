@@ -38,9 +38,9 @@ theorem mash_hidden_split_is_false :
         markedAsProof := markedAsProof } = false :=
   rfl
 
-theorem encoded_size : encodedLines.size = 203 := by native_decide
+theorem encoded_size : encodedLines.size = 544 := by native_decide
 
-theorem line_count : lineCount = 203 := by native_decide
+theorem line_count : lineCount = 544 := by native_decide
 
 theorem first_line :
     (encodedLines[0]!).text = "# Systems Lean" := by native_decide

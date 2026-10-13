@@ -241,19 +241,21 @@ This section is normative for residual honesty of this document. Silence about a
 3. Leftover `{account}.archive` files, `memex compress` writing `FILE.majestic.zst`, and `memex decompress` are crate details. They are not a second on disk magic.
 4. Search uses an embedded `ripgrep` engine in that crate. It does not spawn `rg`. That engine is not the full `rg` CLI.
 5. This document MUST NOT be read as claiming that product is ready for use.
+6. This specifications repository does not wait on a finished `memex` command. The crate at `~/majestic` remains a version 0.1 proof of concept still being built. This document does not freeze a finished command as a named gate. Companion Lean encodes a mash of waiting on a finished `memex` command as `False`.
 
 ### 6.3 Format and product that are not shipped here
 
-1. Specification 0011 specifies `.sstt`. This Lake package includes a Lean writer (`lean/Sstt.lean`). That writer is not a shipped memex product. This document does not claim that product is finished.
+1. Specification 0011 specifies `.sstt`. This format is not `.sstt`. This Lake package includes a Lean writer (`lean/Sstt.lean`). That writer is not a shipped memex product. Magic `MAJESTIC` plus byte `0x01` and extension `.majestic` remain distinct from Tech Tree magic `SSTECHTREE01` and extension `.sstt`. A later load of a `.sstt` file does not mix those formats. Companion Lean encodes a mash of those formats as `False`. This document does not claim that product is finished.
 2. Bitcoin `CompactSize` as proved in `btc-verified` is prior Lean proof for Tech Tree files. The Form 1 pin is `ref/btc-verified`. This Lake package does not vendor those theorems.
 3. `repo_links_check` does not parse every HTML `href`. The floor is markdown `[text](target)` links. Reference style links are residual.
-4. Bush 1945 is unpinned prior art. It is not under `ref/`.
+4. Bush 1945 is unpinned prior art. It is not under `ref/`. This effort does not add a Form 2 pin of that essay. Companion Lean does not encode Bush 1945 as a Clause 12 pin.
 
 ### 6.4 Product claims that are not ready for use
 
 1. The products named here are ongoing and are not ready for use. It MUST NOT be read as claiming that those products never started or do not exist.
 2. Byte identity of Slake emit is a requirement on a conforming Systems Lean and Slake product as specified in `0007_CI.md`. This document does not claim that match already holds.
 3. `lean/MemexSpec.lean` encodes selected claims. `lean/MemexProofs.lean` proves those claims. `0012_Majestic_Memex.lean` encodes the physical lines of this markdown file. `lean/Proofs_0012.lean` proves identities of that line encoding. Those modules are not a proof that the crate is finished. They are not a proof that beastdb, SSSSS, Slake, or Continuous Integration are ready for use.
+4. Companion Lean encodes clashes this document already states as `False`. A mash of `.majestic` archives with `.sstt` files is `False`. A mash of magic `MAJESTIC` with `SSTECHTREE01` is `False`. A mash of crate name `majestic` with command `memex` is `False`. A mash of this repository Unlicense covering `~/majestic` is `False`. A mash of spec encodings with proofs is `False`. A mash that the crate is ready for use is `False`. A mash that the crate never started is `False`. A mash of waiting on a finished `memex` command is `False`. A mash that a later load of `.sstt` makes a `.majestic` archive a Tech Tree file is `False`. A mash that the Lake `.sstt` writer is a shipped memex product is `False`. A mash that companion Lean proves the crate is finished is `False`. Those encodings are not a finished `memex` command.
 
 ### 6.5 Pins and licenses this document does not add
 
@@ -271,6 +273,8 @@ Numbered specifications `0005_CATE.md`, `0008_Formal_Vibefication.md`, `0009_PDO
 ### 0.1.0 - 20260831
 
 Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed.
+
+This 0.1.0 later records leftover residual depth: this format is not `.sstt`; this specifications repository does not wait on a finished `memex` command; Bush 1945 stays unpinned; companion Lean encodes named clashes this document already states as `False`.
 
 ### 1.0.0 - 20260827
 

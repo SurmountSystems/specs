@@ -25,7 +25,7 @@ When asking the operator a decision, write a complete American English question.
 
 ## Concise American Technical English (CATE)
 
-CATE is numbered specification `0005_CATE.md` (first publication 1.0.0, stack number corrected to 0005 in 1.1.0). It is not numbered specification 0006. Number 0006 is Recursive Self Improvement (`0006_RSI.md`). `0000_spec.md` (SemVer 1.4.0) keeps a short pointer only and does not restate CATE. fargo has no assigned number. Read `0005_CATE.md` before encoding or revising a numbered specification. Lean `spec_check` leftover unstack and residual heading checks ride along with form rules. Companion meaning encodings live under `lean/CateSpec.lean`. Proofs live under `lean/CateProofs.lean`.
+CATE is numbered specification `0005_CATE.md` (version 0.1.0). It is not numbered specification 0006. Number 0006 is Recursive Self Improvement (`0006_RSI.md`). `0000_spec.md` version 0.1.0 keeps a short pointer only and does not restate CATE. Changelog history records that a 1.0.0 first publication line, a 1.1.0 stack number correction, and a 1.4.0 spec spec line existed. fargo has no assigned number. Read `0005_CATE.md` before encoding or revising a numbered specification. Lean `spec_check` leftover unstack and residual heading checks ride along with form rules. Companion meaning encodings live under `lean/CateSpec.lean`. Proofs live under `lean/CateProofs.lean`.
 
 When writing a next implement prompt for leftover work, write complete CATE sentences. Name the real host, the real `just` recipe, and what the command proves. Do not paste opaque Nix fragments such as `path:$PWD` or `REPO_ROOT="$PWD"` as if those were the instruction. Wrong: a glued command line with `path:PWD` and `line_encodings_check with REPO_ROOT set`. Right: run the full Nix flake check on the remote builder host named surmount-1 using `just check-remote`. Also run the local-only check with `just check-local`. If a writer needs `REPO_ROOT` set to this repository, say that in a complete sentence.
 
@@ -85,8 +85,9 @@ Stack numbers in this repository:
 13. Number 0012 is Majestic Memex (`0012_Majestic_Memex.md`).
 14. Number 0013 is Lean Machine (`0013_Lean_Machine.md`).
 15. Number 0014 is Anunnaki Encoding (`0014_Anunnaki_Encoding.md`).
-16. fargo has no assigned number. Do not create `0005_fargo.md`. Do not invent a new number for fargo. Do not create `0006_fargo.md`.
-17. Carbonado Network Protocol: deferred; **do not create a file**; Carbonado has no assigned number. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is CI. Number 0008 is Formal Vibefication. Number 0009 is PDOSS. Number 0010 is Surmount Systems. Number 0011 is Surmount Systems Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean Machine. Number 0014 is Anunnaki Encoding. Do not steal 0005, 0006, 0007, 0008, 0009, 0010, 0011, 0012, 0013, or 0014 for fargo or Carbonado.
+16. Number 0015 is unassigned. Do not invent a number. Do not create `0015_Anunnaki_Encoding.md`.
+17. fargo has no assigned number. Do not create `0005_fargo.md`. Do not invent a new number for fargo. Do not create `0006_fargo.md`.
+18. Carbonado Network Protocol: deferred; **do not create a file**; Carbonado has no assigned number. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is CI. Number 0008 is Formal Vibefication. Number 0009 is PDOSS. Number 0010 is Surmount Systems. Number 0011 is Surmount Systems Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean Machine. Number 0014 is Anunnaki Encoding. Number 0015 is unassigned. Do not steal 0005, 0006, 0007, 0008, 0009, 0010, 0011, 0012, 0013, or 0014 for fargo or Carbonado.
 
 ## Residual for numbered specifications (must be complete on disk)
 

@@ -221,6 +221,90 @@ theorem mash_spec_and_proof_is_false : mashSpecAndProofIsFalse := by
   intro h
   cases h
 
+/-- Clause 6 leftover residual facts are false. -/
+theorem rdps_assigned_number : rdpsAssignedNumber = false := rfl
+
+theorem filter_script_assigned_number :
+    filterScriptAssignedNumber = false :=
+  rfl
+
+theorem carbonado_assigned_number : carbonadoAssignedNumber = false :=
+  rfl
+
+theorem number_0015_assigned : number0015Assigned = false := rfl
+
+theorem number_0015_is_this_specification :
+    number0015IsThisSpecification = false :=
+  rfl
+
+theorem creates_enki_numbered_file : createsEnkiNumberedFile = false :=
+  rfl
+
+theorem fargo_assigned_number : fargoAssignedNumber = false := rfl
+
+theorem stack_program_instruction_set_specified :
+    stackProgramInstructionSetSpecified = false :=
+  rfl
+
+theorem nested_language_specified : nestedLanguageSpecified = false :=
+  rfl
+
+theorem on_disk_join_shape_specified :
+    onDiskJoinShapeSpecified = false :=
+  rfl
+
+theorem compound_word_rules_specified :
+    compoundWordRulesSpecified = false :=
+  rfl
+
+theorem anunnaki_default_majestic_specified :
+    anunnakiDefaultMajesticSpecified = false :=
+  rfl
+
+theorem who_emits_stack_program_specified :
+    whoEmitsStackProgramSpecified = false :=
+  rfl
+
+theorem huffman_versus_pages_measured :
+    huffmanVersusPagesMeasured = false :=
+  rfl
+
+/-- Clause 6.5 leftover clashes are Cons False. -/
+theorem mash_enki_and_anunnaki_are_one_object_is_false :
+    mashEnkiAndAnunnakiAreOneObjectIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_conforming_encoder_claimed_is_false :
+    mashConformingEncoderClaimedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_number_0015_is_this_specification_is_false :
+    mashNumber0015IsThisSpecificationIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_carbonado_assigned_number_is_false :
+    mashCarbonadoAssignedNumberIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_enki_has_numbered_specification_is_false :
+    mashEnkiHasNumberedSpecificationIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_rdps_assigned_number_is_false :
+    mashRdpsAssignedNumberIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_filter_script_assigned_number_is_false :
+    mashFilterScriptAssignedNumberIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem required_conformance_iff :
     requiredConformanceHolds = true :=
   rfl

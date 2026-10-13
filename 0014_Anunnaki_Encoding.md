@@ -299,12 +299,23 @@ This section is normative for residual honesty of this document. Silence about a
 
 1. beastdb, SSSSS, Slake, and Continuous Integration remain ongoing and not ready for use. This document MUST NOT be read as claiming that those products never started or do not exist.
 2. `lean/AnunnakiSpec.lean` encodes selected claims. `lean/AnunnakiProofs.lean` proves those claims. `0014_Anunnaki_Encoding.lean` encodes the physical lines of this markdown file. `lean/Proofs_0014.lean` proves identities of that line encoding. Those modules are not a proof that a conforming encoder exists. They are not a proof that CATE, SSSSS, or Majestic Memex are replaced.
+3. Leftover residual facts in Clause 6.1 and Clause 6.2 are encoded in `lean/AnunnakiSpec.lean`. Proofs that leftover clashes are Cons False live in `lean/AnunnakiProofs.lean`.
+
+### 6.5 Leftover clashes that are Cons False
+
+1. Treating ENKI and Anunnaki Encoding as one object is Cons False in `lean/AnunnakiProofs.lean`.
+2. Claiming a conforming encoder is Cons False in that same module.
+3. Treating number 0015 as this specification is Cons False in that same module. This document MUST NOT create `0015_*.md`.
+4. Treating the Carbonado Network Protocol as assigned a number here is Cons False in that same module. Carbonado stays unnumbered.
+5. Treating ENKI as having a numbered specification is Cons False in that same module. This document MUST NOT create `NNNN_ENKI.md`.
+6. Treating RDPS as assigned a number here is Cons False in that same module.
+7. Treating FilterScript as assigned a number here is Cons False in that same module.
 
 ## 7. Changelog
 
 ### 0.1.0 - 20260920
 
-First publication of Anunnaki Encoding as numbered specification 0014 with file name `0014_Anunnaki_Encoding.md`. Records ENKI as the index and Anunnaki as the bitstream. Records that this specification does not replace CATE (`0005_CATE.md`), SSSSS (`0004_SSSSS.md`), or Majestic Memex (`0012_Majestic_Memex.md`). Records width arms `0` / `10` / `110` / `1110`, ones padding that rejects a claimed pad containing a zero, bit 7 first, payload cap of 8 bytes, page 0 of 256 slots, page 1 of 65536 slots with little endian indices, repeat character residual as a plane of (character, count), separate symbol residual, normalize first then encode, decode that rebuilds the original surface, Huffman coding as measurement and not the lemma spine, and migration accepted only when a Lean check shows the new encoding is not longer. Records that a conforming encoder is not claimed. Records unpublished RDPS, FilterScript, and Carbonado Network Protocol. Records that number 0015 is not this specification.
+First publication of Anunnaki Encoding as numbered specification 0014 with file name `0014_Anunnaki_Encoding.md`. Records ENKI as the index and Anunnaki as the bitstream. Records that this specification does not replace CATE (`0005_CATE.md`), SSSSS (`0004_SSSSS.md`), or Majestic Memex (`0012_Majestic_Memex.md`). Records width arms `0` / `10` / `110` / `1110`, ones padding that rejects a claimed pad containing a zero, bit 7 first, payload cap of 8 bytes, page 0 of 256 slots, page 1 of 65536 slots with little endian indices, repeat character residual as a plane of (character, count), separate symbol residual, normalize first then encode, decode that rebuilds the original surface, Huffman coding as measurement and not the lemma spine, and migration accepted only when a Lean check shows the new encoding is not longer. Records that a conforming encoder is not claimed. Records unpublished RDPS, FilterScript, and Carbonado Network Protocol. Records that number 0015 is not this specification. Records leftover clashes as Cons False in `lean/AnunnakiProofs.lean` for treating ENKI and Anunnaki Encoding as one object, claiming a conforming encoder, treating number 0015 as this specification, treating Carbonado as numbered, and treating ENKI, RDPS, or FilterScript as assigned a number here.
 
 No prior public release of this specification exists.
 

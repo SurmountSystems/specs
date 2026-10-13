@@ -130,6 +130,11 @@ def runCases : List Case :=
       (meetsPublicDomainDedicationTest .apacheTwo),
     expectFalse "Apache 2.0 does not meet PDOSS" (meetsPdoss .apacheTwo),
     expectFalse "CC0 is not pinned as meeting PDOSS" (meetsPdoss .cc0),
+    expectFalse "CC0 is not a pinned instrument that meets PDOSS"
+      cc0PinnedAsMeetingPdoss,
+    expectFalse "CC0 is not a Clause 12 pin" cc0IsClause12Pin,
+    expectFalse "Unlicense does not replace named residual licenses"
+      unlicenseReplacesNamedResidualLicenses,
     expectFalse "claiming MIT meets PDOSS is false" (meetsPdoss .mitGrant),
     expectEmpty "all published basenames including 0009 pass"
       (findingsForBasenames publishedBasenames),
@@ -168,7 +173,9 @@ def runCases : List Case :=
     expectTrue "France example class is residual attribution"
       (franceClass == NationalityClass.residualAttribution),
     expectTrue "Australia example class is specific consent"
-      (australiaClass == NationalityClass.specificConsent)
+      (australiaClass == NationalityClass.specificConsent),
+    expectFalse "nationality statutes are not Clause 12 pins"
+      nationalityStatutesAreClause12Pins
   ]
 
 def main (_args : List String) : IO UInt32 := do

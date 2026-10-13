@@ -299,24 +299,24 @@ This section is normative for residual honesty of this document. It does not add
 
 1. `0000_spec.md` Clause 12 binds external specifications this specifications repository cites to `ref/` in this repository.
 2. Lean 4, Idris 2, CompCert, and Rust are cited by [0002_Systems_Lean.md](0002_Systems_Lean.md) as Form 1 pins of the Systems Lean product tree, not of this specifications repository's `ref/`. This document does not move those pins here.
-3. There is no SSSSS product tree pin in this repository. SSSSS work is ongoing and is not ready for use. This document MUST NOT be read as claiming that SSSSS never started or does not exist.
+3. There is no SSSSS product tree pin in this repository. SSSSS is a real product. The work is incomplete, ongoing, and is not ready for use. This document MUST NOT be read as claiming that SSSSS never started or does not exist.
 4. beastdb is specified in this repository as `0003_beastdb.md`. That numbered specification is not a `ref/` pin of an upstream store.
 
 ### 6.4 Product requirements that are not ready for use
 
-This document specifies SSSSS. The work is ongoing and is not ready for use. It MUST NOT be read as claiming that SSSSS never started or does not exist. The following are requirements in Clause 4, not done work:
+This document specifies SSSSS. SSSSS is a real product. The work is incomplete, ongoing, and is not ready for use. It MUST NOT be read as claiming that SSSSS never started or does not exist. Claiming that SSSSS never started is Cons False in the SSSSS proofs module. Claiming that SSSSS is ready for use is Cons False in that same module. The following are requirements in Clause 4, not done work:
 
-1. Encoding as sequential language runs with LanguageID prefix only on change.
-2. Sequential LanguageID and sequential WordID as primary identity, including the hashing ban as a requirement (not as proof that an engine already obeys it).
-3. Combined capacity `2^64` languages times `2^64` WordIDs.
-4. Rosetta relations with RelationType and provenance tags.
-5. A deterministic pipeline given the same vocabulary and relation set, including ingest, tokenize, vocabulary lookup or insert, intermediate representation, and emit by inverse lookup.
-6. Failure or a named hole when no accepted mapping exists, without inventing hash identity.
-7. Reduction of any accepted neural proposal to sequential integers.
-8. Provisional marking of natural language translation unless Lean proven or high confidence.
-9. Durable state in beastdb.
-10. A Systems Lean core that can target the freestanding Slake path for components that are safety critical, that run in environments with tight resources, and that are freestanding, with CompCert verified compilation and a bootstrapped Slake that fully typechecks as required by Clause 4.6. Residual honesty does not substitute for those validation steps.
-11. Neurosymbolic integration as specified in Clause 4.7, including a symbolic interface in Systems Lean, a neural path used only when that interface cannot complete the action, tool improvements reduced to sequential integers, and a ban on substituting model training for tool improvement inside the harness. That integration is specified. It is not a shipped product.
+1. Encoding as sequential language runs with a `LanguageID` prefix only on change is a requirement. Sequential identity of those runs is not a claim that a store already assigns sequential integers. This document does not claim those runs are implemented.
+2. Sequential `LanguageID` and sequential `WordID` are primary identity. The hashing ban is a requirement in Clause 4.1 item 5. That ban is not a proof that an engine already obeys it. Treating the hashing ban as proof that an engine already uses sequential identity is Cons False in the SSSSS proofs module. An auxiliary digest that replaces sequential stored identity is already Cons False in that module. Do not wrap that `Bool` a second time. SSSSS remains ongoing and is not ready for use.
+3. Combined capacity `2^64` languages times `2^64` `WordID` values is a requirement. This document does not claim that capacity is implemented.
+4. Rosetta relations with `RelationType` and provenance tags are a requirement. This document does not claim a Rosetta store is implemented.
+5. A deterministic pipeline given the same vocabulary and relation set, including ingest, tokenize, vocabulary lookup or insert, intermediate representation, and emit by inverse lookup, is a requirement. This document does not claim a pipeline is implemented.
+6. Failure or a named hole when no accepted mapping exists, without inventing hash identity, is a requirement. This document does not claim that emit path is implemented.
+7. Reduction of any accepted neural proposal to sequential integers is a requirement. This document does not claim a neural proposer exists.
+8. Provisional marking of natural language translation unless Lean proven or high confidence is a requirement when that translation is offered. This document does not claim a natural language translator exists.
+9. Durable state in `beastdb` is a requirement. This document does not claim an SSSSS backed by `beastdb` is implemented.
+10. A Systems Lean core that can target the freestanding Slake path for components that are safety critical, that run in environments with tight resources, and that are freestanding, with CompCert verified compilation and a bootstrapped Slake that fully typechecks as required by Clause 4.6. Residual honesty does not substitute for those validation steps. Those steps remain requirements. They are not claimed done.
+11. Neurosymbolic integration as specified in Clause 4.7, including a symbolic interface in Systems Lean, a neural path used only when that interface cannot complete the action, tool improvements reduced to sequential integers, and a ban on substituting model training for tool improvement inside the harness. That integration is specified. It is not a shipped product. Claiming the harness is a distinct claim from optional neural proposals. Treating that specified harness as a shipped product is Cons False in the SSSSS proofs module. A claimed harness that spends neural work when the symbolic interface can complete the action is already Cons False in that module. Do not wrap that `Bool` a second time. SSSSS remains ongoing and is not ready for use.
 
 ### 6.5 Informative and optional items this document names
 
@@ -330,7 +330,7 @@ This document specifies SSSSS. The work is ongoing and is not ready for use. It 
 
 ### 6.6 Neurosymbolic integration is specified and is not shipped
 
-The neurosymbolic integration in Clause 4.7 is specified in this document. It is not a shipped product. SSSSS work is ongoing and is not ready for use. This document MUST NOT be read as claiming that SSSSS never started or does not exist. This document MUST NOT be read as claiming that a conforming neurosymbolic harness exists.
+The neurosymbolic integration in Clause 4.7 is specified in this document. It is not a shipped product. SSSSS is a real product. The work is incomplete, ongoing, and is not ready for use. This document MUST NOT be read as claiming that SSSSS never started or does not exist. This document MUST NOT be read as claiming that a conforming neurosymbolic harness exists. Treating that specified harness as a shipped product is Cons False in the SSSSS proofs module.
 
 ## 7. Changelog
 
@@ -338,7 +338,7 @@ The neurosymbolic integration in Clause 4.7 is specified in this document. It is
 
 Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed as unpublished working text.
 
-Adds neurosymbolic integration as Clause 4.7 with definitions of harness, symbolic interface, neural path, tool improvement call, and neurosymbolic combination. When a product claims that harness interface, it MUST expose the symbolic interface as an alternative deterministic interface, implement that interface in Systems Lean, keep recipe lookup and emit deterministic given the same vocabulary and Rosetta set, MUST NOT use the neural path for an action the symbolic interface can complete, MUST reduce tool improvements to sequential integers before acceptance, and MUST NOT substitute training a model for tool improvement inside the harness. Model Context Protocol and Agent Client Protocol MAY be named as other wires and are not forbidden. Lean Machine is specified in `0013_Lean_Machine.md`. The integration is specified and is not a shipped product. SSSSS work is ongoing and is not ready for use.
+Adds neurosymbolic integration as Clause 4.7 with definitions of harness, symbolic interface, neural path, tool improvement call, and neurosymbolic combination. When a product claims that harness interface, it MUST expose the symbolic interface as an alternative deterministic interface, implement that interface in Systems Lean, keep recipe lookup and emit deterministic given the same vocabulary and Rosetta set, MUST NOT use the neural path for an action the symbolic interface can complete, MUST reduce tool improvements to sequential integers before acceptance, and MUST NOT substitute training a model for tool improvement inside the harness. Model Context Protocol and Agent Client Protocol MAY be named as other wires and are not forbidden. Lean Machine is specified in `0013_Lean_Machine.md`. The integration is specified and is not a shipped product. SSSSS is a real product. The work is incomplete and is not ready for use. Clause 6.4 records sequential identity and the hashing ban as requirements, not as proof that an engine already obeys them. Treating the hashing ban as that proof is Cons False. Treating the specified neurosymbolic harness as a shipped product is Cons False. This document does not invent a number for fargo.
 
 ### 1.0.0 - 20260824
 

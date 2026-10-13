@@ -51,6 +51,11 @@ def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
   else
     { name := name, ok := true }
 
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
+
 def runCases : List Case :=
   [
     expectEqNat "Lean Machine is specification 0013" specNumber 13,
@@ -209,7 +214,70 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       completeScienceConformsHere,
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectTrue "markdown names Cons False"
+      («0013_Lean_Machine».encodedLines.any fun l =>
+        !((l.text.splitOn "Cons False").length == 1)),
+    expectConsFalse "worship as a conformance conjunct is not accepted"
+      worshipRequiredForConformance
+      mashWorshipRequiredForConformance
+      mashWorshipRequiredForConformanceIsFalse
+      rfl
+      LeanMachineProofs.mash_worship_required_for_conformance_is_false,
+    expectConsFalse "belief as a conformance conjunct is not accepted"
+      beliefRequiredForConformance
+      mashBeliefRequiredForConformance
+      mashBeliefRequiredForConformanceIsFalse
+      rfl
+      LeanMachineProofs.mash_belief_required_for_conformance_is_false,
+    expectConsFalse "theology as a MUST for the compiler is not accepted"
+      theologyIsMustForCompiler
+      mashTheologyIsMustForCompiler
+      mashTheologyIsMustForCompilerIsFalse
+      rfl
+      LeanMachineProofs.mash_theology_is_must_for_compiler_is_false,
+    expectConsFalse "Legal Lean as a separate stack number is not accepted"
+      legalLeanHasSeparateNumber
+      mashLegalLeanHasSeparateNumber
+      mashLegalLeanHasSeparateNumberIsFalse
+      rfl
+      LeanMachineProofs.mash_legal_lean_has_separate_number_is_false,
+    expectConsFalse "Holy Lean as a separate stack number is not accepted"
+      holyLeanHasSeparateNumber
+      mashHolyLeanHasSeparateNumber
+      mashHolyLeanHasSeparateNumberIsFalse
+      rfl
+      LeanMachineProofs.mash_holy_lean_has_separate_number_is_false,
+    expectConsFalse "Legal Lean as finished is not accepted"
+      legalLeanFinished
+      mashLegalLeanFinished
+      mashLegalLeanFinishedIsFalse
+      rfl
+      LeanMachineProofs.mash_legal_lean_finished_is_false,
+    expectConsFalse "Holy Lean as implemented is not accepted"
+      holyLeanImplemented
+      mashHolyLeanImplemented
+      mashHolyLeanImplementedIsFalse
+      rfl
+      LeanMachineProofs.mash_holy_lean_implemented_is_false,
+    expectConsFalse "a claimed conforming Lean Machine is not accepted"
+      conformingProductExists
+      mashConformingProductExists
+      mashConformingProductExistsIsFalse
+      rfl
+      LeanMachineProofs.mash_conforming_product_exists_is_false,
+    expectConsFalse "a running distributed machine as already existing is not accepted"
+      runningDistributedMachineClaimed
+      mashRunningDistributedMachineClaimed
+      mashRunningDistributedMachineClaimedIsFalse
+      rfl
+      LeanMachineProofs.mash_running_distributed_machine_claimed_is_false,
+    expectConsFalse "a mash of spec encodings and proofs is not accepted"
+      (conformingThisRepo mashedFixture)
+      mashSpecAndProofConforming
+      mashSpecAndProofConformingIsFalse
+      rfl
+      LeanMachineProofs.mash_spec_and_proof_conforming_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

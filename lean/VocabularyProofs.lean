@@ -207,6 +207,16 @@ theorem ofAspell_case_tie :
         { letter := 'C', index := 2, word := "changelog" }
       ] := rfl
 
+theorem mash_duplicate_token_check_is_complete_ambiguity_checker_is_false :
+    mashDuplicateTokenCheckIsCompleteAmbiguityCheckerIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_catalog_isomorphism_proves_definitions_complete_is_false :
+    mashCatalogIsomorphismProvesDefinitionsCompleteIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem requires_science_cycle : requiresScienceCycle = true :=
   rfl
 

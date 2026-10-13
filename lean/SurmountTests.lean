@@ -339,6 +339,14 @@ def runCases : List Case :=
       LeanMachineSpec.distributedSelfImprovementIsDesignRequirement,
     expectFalse "a running distributed machine is not claimed"
       LeanMachineSpec.runningDistributedMachineClaimed,
+    expectFalse "composition is not product readiness"
+      compositionIsProductReadiness,
+    expectFalse "number 0015 is not assigned"
+      numberFifteenAssigned,
+    expectTrue "Anunnaki Encoding is not specification 0015"
+      (anunnakiSpecNumber != 15),
+    expectTrue "Surmount Systems is not specification 0015"
+      (surmountSpecNumber != 15),
     expectTrue "stack identities compose" stackIntegrates
   ]
 

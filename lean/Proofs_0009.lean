@@ -50,7 +50,7 @@ theorem mash_hidden_split_is_false :
 
 theorem mash_false : markedAsProof = false := rfl
 
-theorem encoded_line_count : encodedLines.size = 698 := by
+theorem encoded_line_count : encodedLines.size = 700 := by
   native_decide
 
 theorem contains_pdoss :

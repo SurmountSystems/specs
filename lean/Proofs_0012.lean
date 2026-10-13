@@ -56,9 +56,9 @@ theorem mash_encoding_and_proofs_nonconforming :
         markedAsProof := true } = false :=
   rfl
 
-theorem encoded_size : encodedLines.size = 296 := by native_decide
+theorem encoded_size : encodedLines.size = 300 := by native_decide
 
-theorem line_count : lineCount = 296 := by native_decide
+theorem line_count : lineCount = 300 := by native_decide
 
 theorem line_count_matches_array : lineCount = encodedLines.size := rfl
 

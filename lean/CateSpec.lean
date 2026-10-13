@@ -172,12 +172,42 @@ def rephrasedLockTriesProse : String :=
 /-- The leftover unstack list is a floor, not a complete English checker. -/
 def leftoverUnstackFloorIsCompleteEnglish : Bool := false
 
+def mashLeftoverUnstackFloorAsCompleteEnglish : Prop :=
+  leftoverUnstackFloorIsCompleteEnglish = true
+
+def mashLeftoverUnstackFloorAsCompleteEnglishIsFalse : Prop :=
+  mashLeftoverUnstackFloorAsCompleteEnglish → False
+
+/-- Clause 6.4 item 2: the contradiction floor is not a checker of every sentence pair. -/
+def contradictionFloorIsEverySentencePair : Bool := false
+
+def mashContradictionFloorIsEverySentencePair : Prop :=
+  contradictionFloorIsEverySentencePair = true
+
+def mashContradictionFloorIsEverySentencePairIsFalse : Prop :=
+  mashContradictionFloorIsEverySentencePair → False
+
 /--
   Sibling encodedLines and comments in marked spec encoding modules are
   checked on this leftover unstack floor. Complete sentence quality is
   not fully mechanical.
 -/
 def leanSpecEncodingsUseLeftoverUnstackFloor : Bool := true
+
+/--
+  Clause 3.5 leftover unstack comment paths on marked meaning spec
+  encodings. This list is a floor, not a complete English checker.
+-/
+def leftoverUnstackCommentScanRelPaths : List String :=
+  ["lean/FormalVibeficationSpec.lean", "lean/VocabularySpec.lean",
+    "lean/Vocabulary.lean", "lean/TechTreeSpec.lean", "lean/MemexSpec.lean",
+    "lean/UnlicenseSpec.lean", "lean/CateSpec.lean", "lean/RsiSpec.lean",
+    "lean/CiSpec.lean", "lean/BeastDbSpec.lean", "lean/SssssSpec.lean",
+    "lean/SystemsLeanSpec.lean", "lean/LeanMachineSpec.lean",
+    "lean/AnunnakiSpec.lean"]
+
+def leftoverUnstackCommentScanIncludesAnunnakiSpec : Bool :=
+  leftoverUnstackCommentScanRelPaths.contains "lean/AnunnakiSpec.lean"
 
 def leftoverLockFreeTriesFailsFloor : Prop :=
   leftoverUnstackFloorConforms leftoverLockFreeTriesProse = false
@@ -320,8 +350,23 @@ def specMarkdownIsContract : Bool := true
 
 def meaningProofsAreSecondFormChecker : Bool := false
 
+/-- Clause 6.5 item 1: this document does not claim every agent already conforms. -/
+def everyAgentAlreadyConforms : Bool := false
+
+def mashEveryAgentAlreadyConforms : Prop :=
+  everyAgentAlreadyConforms = true
+
+def mashEveryAgentAlreadyConformsIsFalse : Prop :=
+  mashEveryAgentAlreadyConforms → False
+
 /-- Do not claim a conforming product exists unless the operator said it exists. -/
 def cateAllowsInventedConformingProduct : Bool := false
+
+def mashCateAllowsInventedConformingProduct : Prop :=
+  cateAllowsInventedConformingProduct = true
+
+def mashCateAllowsInventedConformingProductIsFalse : Prop :=
+  mashCateAllowsInventedConformingProduct → False
 
 /-- Informative prior art named by CATE is not a Clause 12 pin. -/
 def iso24495IsClause12Pin : Bool := false

@@ -224,6 +224,56 @@ theorem mashed_does_not_conform :
 
 theorem mash_hides_split : hidesSplit mashedFixture = true := rfl
 
+theorem mash_worship_required_for_conformance_is_false :
+    mashWorshipRequiredForConformanceIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_belief_required_for_conformance_is_false :
+    mashBeliefRequiredForConformanceIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_theology_is_must_for_compiler_is_false :
+    mashTheologyIsMustForCompilerIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_legal_lean_has_separate_number_is_false :
+    mashLegalLeanHasSeparateNumberIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_holy_lean_has_separate_number_is_false :
+    mashHolyLeanHasSeparateNumberIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_legal_lean_finished_is_false :
+    mashLegalLeanFinishedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_holy_lean_implemented_is_false :
+    mashHolyLeanImplementedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_conforming_product_exists_is_false :
+    mashConformingProductExistsIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_running_distributed_machine_claimed_is_false :
+    mashRunningDistributedMachineClaimedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_spec_and_proof_conforming_is_false :
+    mashSpecAndProofConformingIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem required_conformance_iff :
     requiredConformanceHolds = true :=
   rfl

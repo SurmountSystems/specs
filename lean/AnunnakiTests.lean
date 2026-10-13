@@ -15,6 +15,8 @@
   6. Ones padding is valid; a claimed pad that contains a zero is rejected.
   7. Science cycle tests alone are not sufficient.
   8. Mash of spec encodings plus proofs in one module is False.
+  9. Clause 6 leftover residual Bools stay false.
+  10. Clause 6.5 leftover clashes are Cons False. This is not a second mash of spec encodings plus proofs.
 
   Lake roots for AnunnakiSpec, AnunnakiProofs, and anunnaki_tests
   exist in lean/lakefile.toml. This file does not import SpecRegistry
@@ -25,6 +27,7 @@ import AnunnakiSpec
 import AnunnakiProofs
 
 open AnunnakiSpec
+open AnunnakiProofs
 
 structure Case where
   name : String
@@ -49,6 +52,11 @@ def expectEqString (name : String) (got want : String) : Case :=
     { name := name, ok := true }
   else
     { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def runCases : List Case :=
   [
@@ -145,7 +153,74 @@ def runCases : List Case :=
     expectFalse "products are not claimed ready for use"
       productsClaimedReadyForUse,
     expectFalse "products are not claimed never started"
-      productsClaimedNeverStarted
+      productsClaimedNeverStarted,
+    expectFalse "RDPS is not assigned a number here" rdpsAssignedNumber,
+    expectFalse "FilterScript is not assigned a number here"
+      filterScriptAssignedNumber,
+    expectFalse "Carbonado is not assigned a number here"
+      carbonadoAssignedNumber,
+    expectFalse "number 0015 is not assigned here" number0015Assigned,
+    expectFalse "number 0015 is not this specification"
+      number0015IsThisSpecification,
+    expectFalse "this specification does not create an ENKI numbered file"
+      createsEnkiNumberedFile,
+    expectFalse "fargo is not assigned a number here" fargoAssignedNumber,
+    expectFalse "a stack program instruction set is not specified"
+      stackProgramInstructionSetSpecified,
+    expectFalse "nested language is not specified here"
+      nestedLanguageSpecified,
+    expectFalse "on disk join shape is not specified here"
+      onDiskJoinShapeSpecified,
+    expectFalse "compound word rules are not specified here"
+      compoundWordRulesSpecified,
+    expectFalse "default Majestic use is not specified here"
+      anunnakiDefaultMajesticSpecified,
+    expectFalse "who emits the stack program is not specified here"
+      whoEmitsStackProgramSpecified,
+    expectFalse "Huffman versus pages length is not measured here"
+      huffmanVersusPagesMeasured,
+    expectConsFalse "treating ENKI and Anunnaki as one object is Cons False"
+      enkiAndAnunnakiAreOneObject
+      mashEnkiAndAnunnakiAreOneObject
+      mashEnkiAndAnunnakiAreOneObjectIsFalse
+      rfl
+      mash_enki_and_anunnaki_are_one_object_is_false,
+    expectConsFalse "claiming a conforming encoder is Cons False"
+      conformingEncoderClaimed
+      mashConformingEncoderClaimed
+      mashConformingEncoderClaimedIsFalse
+      rfl
+      mash_conforming_encoder_claimed_is_false,
+    expectConsFalse "treating number 0015 as this specification is Cons False"
+      number0015IsThisSpecification
+      mashNumber0015IsThisSpecification
+      mashNumber0015IsThisSpecificationIsFalse
+      rfl
+      mash_number_0015_is_this_specification_is_false,
+    expectConsFalse "treating Carbonado as assigned a number here is Cons False"
+      carbonadoAssignedNumber
+      mashCarbonadoAssignedNumber
+      mashCarbonadoAssignedNumberIsFalse
+      rfl
+      mash_carbonado_assigned_number_is_false,
+    expectConsFalse "treating ENKI as having a numbered specification is Cons False"
+      enkiHasNumberedSpecification
+      mashEnkiHasNumberedSpecification
+      mashEnkiHasNumberedSpecificationIsFalse
+      rfl
+      mash_enki_has_numbered_specification_is_false,
+    expectConsFalse "treating RDPS as assigned a number here is Cons False"
+      rdpsAssignedNumber
+      mashRdpsAssignedNumber
+      mashRdpsAssignedNumberIsFalse
+      rfl
+      mash_rdps_assigned_number_is_false,
+    expectConsFalse "treating FilterScript as assigned a number here is Cons False"
+      filterScriptAssignedNumber
+      mashFilterScriptAssignedNumber
+      mashFilterScriptAssignedNumberIsFalse
+      rfl
+      mash_filter_script_assigned_number_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

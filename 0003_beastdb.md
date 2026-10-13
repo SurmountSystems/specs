@@ -258,23 +258,26 @@ This section is normative for residual honesty of this document. It does not add
 
 ### 6.4 Product requirements that are not ready for use
 
-This document specifies beastdb. The work is ongoing and is not ready for use. It MUST NOT be read as claiming that beastdb never started or does not exist. The following are requirements in Clause 4, not done work:
+This document specifies beastdb. The product is real, incomplete, and not ready for use. The work is ongoing. It MUST NOT be read as claiming that beastdb never started or does not exist. The following are requirements in Clause 4, not done work:
 
-1. Proven ACID transactions.
-2. Tries that do not use locks.
-3. SWMR as the required default concurrency.
-4. Optional access by more than one writer on disjoint leaves (allowed, not required, and not specified as done work here).
-5. Structural operations fenced by generation.
-6. mmap of the durable image.
-7. SIMD scans and bulk operations.
-8. Zerocopy reads.
-9. Dense LanguageID and WordID.
-10. A representable Rosetta mapping for the Smart Symbolic Supercompiler specified in `0004_SSSSS.md`.
-11. Mandatory schema with predefined and inferred modes.
-12. Proven migrations.
-13. Access by ordered keys and values, time series access, and vector access.
-14. Compatibility shims through fargo.
-15. A freestanding libbeastdb built by a bootstrapped Slake that fully typechecks and compiled with CompCert as required by Clause 4.1.
+1. Proven ACID transactions (Clause 3.6 and Clause 4.2 item 1) remain a requirement. This document does not claim those proofs exist. Treating marketing ACID as proven ACID is Cons False in the beastdb proofs module. Specification 0003 remains the owner of beastdb ACID. This document does not move ACID into specification 0002.
+2. Tries that do not use locks (Clause 3.7 and Clause 4.2 item 2) remain a requirement. This document does not claim such tries are implemented. Treating a trie whose progress waits on a mutual exclusion lock as conforming is Cons False in the beastdb proofs module.
+3. `SWMR` (Clause 3.8) remains the required default concurrency. This document does not claim `SWMR` is implemented.
+4. Optional access by more than one writer on disjoint leaves remains allowed and not required (Clause 4.2 item 4). This document does not specify that capability as done work.
+5. Structural operations fenced by generation remain a requirement (Clause 4.2 item 5). This document does not claim fencing by generation is implemented.
+6. Memory mapping (`mmap`) of the durable image remains a requirement (Clause 4.3 item 1). This document does not claim `mmap` is implemented. Treating a bounce buffer as required for a mapped read is Cons False in the beastdb proofs module.
+7. SIMD scans and bulk operations remain a requirement (Clause 4.3 item 2). This document does not claim those operations are implemented.
+8. Zerocopy reads remain a requirement (Clause 4.3 item 3). This document does not claim zerocopy is implemented.
+9. Dense `LanguageID` and `WordID` remain a requirement (Clause 4.3 item 4). This document does not claim those identifiers are persisted.
+10. A representable Rosetta mapping for the Smart Symbolic Supercompiler specified in `0004_SSSSS.md` remains a requirement (Clause 4.3 item 5). This document does not claim that mapping is implemented.
+11. Mandatory schema with predefined and inferred modes remains a requirement (Clause 4.4). This document does not claim schema proofs exist. Treating inferred schema as a license to remain without a schema is Cons False in the beastdb proofs module.
+12. Proven migrations remain a requirement (Clause 4.4 item 4). This document does not claim those proofs exist.
+13. Access by ordered keys and values, time series access, and vector access remain requirements (Clause 4.5 items 1 through 3). This document does not claim those access patterns are implemented.
+14. Compatibility shims through fargo remain a requirement (Clause 4.5 item 4). fargo remains unspecified and has no assigned specification number. Treating a traditional foreign function interface as the interoperability path is Cons False in the beastdb proofs module.
+15. A freestanding `libbeastdb` built by a bootstrapped Slake that fully typechecks and compiled with CompCert remains a requirement (Clause 4.1). This document does not claim that library exists as a shipped product.
+16. beastdb is a real product, incomplete, and not ready for use. Claiming that beastdb never started is Cons False in the beastdb proofs module. Claiming that beastdb is ready for use is Cons False in that same module.
+17. Encodings of leftover not done flags and Cons fixtures belong in `lean/BeastDbSpec.lean` and proofs belong in `lean/BeastDbProofs.lean`. A mash of those modules is nonconforming. Companion proofs that those fixtures are False are not a claim that beastdb is ready for use. A theorem closed with `sorry` MUST NOT be counted as success.
+18. The 0002 and 0003 boundary stays on specification 0002. This document MUST NOT copy the durability call list as beastdb ACID, Cons on beastdb `Props` that do not attach, or `TSX` as beastdb ACID fixtures into `lean/BeastDbSpec.lean`. Specification 0003 still owns beastdb ACID as product meaning.
 
 ### 6.5 Out of scope items this document names
 
@@ -289,6 +292,8 @@ This document specifies beastdb. The work is ongoing and is not ready for use. I
 ### 0.1.0 - 20260831
 
 Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed.
+
+This 0.1.0 entry also records leftover depth on proven ACID, tries that do not use locks, `mmap`, mandatory schema, and fargo as unspecified interoperability. Clause 6.4 items 1 through 18 name those requirements as not done work, name Cons False for clashes this specification already states, keep the 0002 and 0003 boundary on specification 0002, and record that beastdb is real, incomplete, and not ready for use. Version remains 0.1.0. These sentences do not publish a new SemVer.
 
 ### 1.0.0 - 20260824
 

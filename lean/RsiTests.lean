@@ -14,9 +14,11 @@
 
 import Cate
 import Rsi
+import RsiProofs
 import SpecRegistry
 import SystemsLean
 import Vocabulary
+import VocabularyCollisionProofs
 
 open Rsi
 open SpecRegistry
@@ -56,6 +58,11 @@ def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
     { name := name, ok := false, detail := "expected diagnostics, got none" }
   else
     { name := name, ok := true }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def runCases : List Case :=
   [
@@ -327,7 +334,85 @@ def runCases : List Case :=
     expectTrue "a Lean checker maps to improving a durable tool"
       (JobApproach.ofTool .leanChecker == JobApproach.improveDurableTool),
     expectTrue "throwaway bash maps to a disposable job"
-      (JobApproach.ofTool .throwawayBash == JobApproach.disposableOnce)
+      (JobApproach.ofTool .throwawayBash == JobApproach.disposableOnce),
+    expectConsFalse "a chat reminder as a durable tool is not accepted"
+      chatReminderAsDurableToolAccepted
+      mashChatReminderAsDurableTool
+      mashChatReminderAsDurableToolIsFalse
+      rfl
+      mash_chat_reminder_as_durable_tool_is_false,
+    expectConsFalse "recursive self improvement as a training run is not accepted"
+      rsiIsTrainingRunAccepted
+      mashRsiIsTrainingRun
+      mashRsiIsTrainingRunIsFalse
+      rfl
+      mash_rsi_is_training_run_is_false,
+    expectConsFalse "this document creating SSSP is not accepted"
+      thisDocumentCreatesSssp
+      mashThisDocumentCreatesSssp
+      mashThisDocumentCreatesSsspIsFalse
+      rfl
+      mash_this_document_creates_sssp_is_false,
+    expectConsFalse "SSSP as numbered is not accepted"
+      ssspHasNumberedSpec
+      mashSsspHasNumberedSpec
+      mashSsspHasNumberedSpecIsFalse
+      rfl
+      mash_sssp_has_numbered_spec_is_false,
+    expectConsFalse "every agent already conforming is not accepted"
+      specClaimsEveryAgentConforms
+      mashSpecClaimsEveryAgentConforms
+      mashSpecClaimsEveryAgentConformsIsFalse
+      rfl
+      mash_spec_claims_every_agent_conforms_is_false,
+    expectConsFalse "Clause 4 already met by every session is not accepted"
+      clause4AlreadyMetByEverySession
+      mashClause4AlreadyMetByEverySession
+      mashClause4AlreadyMetByEverySessionIsFalse
+      rfl
+      mash_clause_4_already_met_by_every_session_is_false,
+    expectConsFalse "serializing independent streams is not accepted"
+      StreamSchedule.serializeIndependent.conforming
+      mashSerializeIndependent
+      mashSerializeIndependentIsFalse
+      rfl
+      mash_serialize_independent_is_false,
+    expectConsFalse "reshaping a test without a contract change is not accepted"
+      reshapeTestToPassWithoutContractChange
+      mashReshapeTestWithoutContractChange
+      mashReshapeTestWithoutContractChangeIsFalse
+      rfl
+      mash_reshape_test_without_contract_change_is_false,
+    expectConsFalse "leftover unstack as this specification is not accepted"
+      Vocabulary.rsiReplacesLeftoverUnstack
+      mashRsiReplacesLeftoverUnstack
+      mashRsiReplacesLeftoverUnstackIsFalse
+      rfl
+      mash_rsi_replaces_leftover_unstack_is_false,
+    expectConsFalse "this document as a bitmask specification is not accepted"
+      rsiIsBitmaskSpec
+      mashRsiIsBitmaskSpec
+      mashRsiIsBitmaskSpecIsFalse
+      rfl
+      mash_rsi_is_bitmask_spec_is_false,
+    expectConsFalse "chat as the residual record is not accepted"
+      ResidualHome.chatOnly.conforming
+      mashChatOnlyResidual
+      mashChatOnlyResidualIsFalse
+      rfl
+      mash_chat_only_residual_is_false,
+    expectConsFalse "meaning proofs as a second form checker is not accepted"
+      Vocabulary.meaningProofsAreSecondFormChecker
+      mashMeaningProofsAreSecondFormChecker
+      mashMeaningProofsAreSecondFormCheckerIsFalse
+      rfl
+      mash_meaning_proofs_are_second_form_checker_is_false,
+    expectConsFalse "collision tag encodings as already containing proofs is not accepted"
+      Vocabulary.liveContainsProofsOfThoseEncodings
+      Vocabulary.mashCollisionTagsSpecAndProof
+      Vocabulary.mashCollisionTagsSpecAndProofIsFalse
+      rfl
+      Vocabulary.mash_collision_tags_spec_and_proof_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

@@ -141,9 +141,27 @@ theorem leftover_unstack_floor_is_not_complete_english :
     leftoverUnstackFloorIsCompleteEnglish = false :=
   rfl
 
+theorem mash_leftover_unstack_floor_as_complete_english_is_false :
+    mashLeftoverUnstackFloorAsCompleteEnglishIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_contradiction_floor_is_every_sentence_pair_is_false :
+    mashContradictionFloorIsEverySentencePairIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem lean_spec_encodings_use_leftover_unstack_floor :
     leanSpecEncodingsUseLeftoverUnstackFloor = true :=
   rfl
+
+theorem leftover_unstack_comment_scan_path_count :
+    leftoverUnstackCommentScanRelPaths.length = 14 :=
+  rfl
+
+theorem leftover_unstack_comment_scan_includes_anunnaki_spec :
+    leftoverUnstackCommentScanIncludesAnunnakiSpec = true :=
+  by native_decide
 
 theorem allowed_spaced_phrase_count :
     allowedSpacedPhrases.length = 3 :=
@@ -231,9 +249,19 @@ theorem meaning_proofs_are_not_second_form_checker :
     meaningProofsAreSecondFormChecker = false :=
   rfl
 
+theorem mash_every_agent_already_conforms_is_false :
+    mashEveryAgentAlreadyConformsIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 theorem no_invented_conforming_product :
     cateAllowsInventedConformingProduct = false :=
   rfl
+
+theorem mash_cate_allows_invented_conforming_product_is_false :
+    mashCateAllowsInventedConformingProductIsFalse := by
+  intro h
+  exact Bool.noConfusion h
 
 theorem iso_24495_not_clause_12_pin :
     iso24495IsClause12Pin = false :=

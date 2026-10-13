@@ -251,4 +251,79 @@ theorem science_cycle_composes : scienceCycleComposes :=
     (And.intro composed_cycle_conforms
       (And.intro tests_only_cycle_does_not_compose mash_science_steps_is_false))
 
+theorem leftover_science_cycle_honesty :
+    leftoverScienceCycleHonesty = true :=
+  rfl
+
+theorem encoding_tests_are_not_product_experiments :
+    encodingTestsAreProductCorollaryExperiments = false :=
+  rfl
+
+theorem mash_leftover_science_with_product_experiments
+    (h : mashLeftoverScienceWithProductExperiments) : False :=
+  nomatch h
+
+theorem mash_leftover_science_with_product_experiments_is_false :
+    mashLeftoverScienceWithProductExperimentsIsFalse :=
+  mash_leftover_science_with_product_experiments
+
+theorem leftover_cycle_missing_experiments_does_not_compose :
+    leftoverCycleMissingExperimentsDoesNotCompose :=
+  rfl
+
+theorem leftover_cycle_missing_experiments_has_no_corollary :
+    leftoverCycleMissingExperimentsHasNoCorollary :=
+  rfl
+
+theorem leftover_cycle_is_not_tests_only :
+    leftoverCycleIsNotTestsOnly := by
+  intro h
+  injection h with hStep _
+  nomatch hStep
+
+theorem philosophy_pdfs_are_not_clause12_form2 :
+    philosophyPdfsAreClause12Form2Pins = false :=
+  rfl
+
+theorem philosophy_pdfs_do_not_replace_publisher_url :
+    philosophyPdfsReplacePublisherUrl = false :=
+  rfl
+
+theorem local_philosophy_pdf_path :
+    localPhilosophyPdfPath = "ref/philosophy/proofofkeags/" :=
+  rfl
+
+theorem local_philosophy_pdf_honesty_path :
+    localPhilosophyPdfHonestyPath =
+      "ref/philosophy/proofofkeags/SOURCE.md" :=
+  rfl
+
+theorem mash_local_pdf_as_clause12_pin
+    (h : mashLocalPdfAsClause12Pin) : False :=
+  nomatch h
+
+theorem mash_local_pdf_as_clause12_pin_is_false :
+    mashLocalPdfAsClause12PinIsFalse :=
+  mash_local_pdf_as_clause12_pin
+
+theorem mash_local_pdf_as_publisher_url
+    (h : mashLocalPdfAsPublisherUrl) : False :=
+  nomatch h
+
+theorem mash_local_pdf_as_publisher_url_is_false :
+    mashLocalPdfAsPublisherUrlIsFalse :=
+  mash_local_pdf_as_publisher_url
+
+theorem leftover_honesty_composes : leftoverHonestyComposes :=
+  And.intro leftover_science_cycle_honesty
+    (And.intro encoding_tests_are_not_product_experiments
+      (And.intro leftover_cycle_missing_experiments_does_not_compose
+        (And.intro leftover_cycle_is_not_tests_only
+          (And.intro mash_leftover_science_with_product_experiments_is_false
+            (And.intro philosophy_pdfs_are_not_clause12_form2
+              (And.intro philosophy_pdfs_do_not_replace_publisher_url
+                (And.intro essays_not_vendored_as_form2
+                  (And.intro mash_local_pdf_as_clause12_pin_is_false
+                    mash_local_pdf_as_publisher_url_is_false))))))))
+
 end FormalVibeficationProofs

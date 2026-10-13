@@ -10,6 +10,7 @@ import SpecRegistry
 import RepoLinks
 
 open TechTreeSpec
+open TechTreeProofs
 open SpecRegistry
 open RepoLinks
 
@@ -36,6 +37,11 @@ def expectEqString (name : String) (got want : String) : Case :=
     { name := name, ok := true }
   else
     { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def expectEmpty {α : Type} [Repr α] (name : String) (xs : List α) : Case :=
   if xs.isEmpty then
@@ -204,7 +210,25 @@ def runCases : List Case :=
     expectFalse "0009_PDOSS.md is not unpublished"
       (unpublishedBasename "0009_PDOSS.md"),
     expectFalse "0012_Majestic_Memex.md is not unpublished"
-      (unpublishedBasename "0012_Majestic_Memex.md")
+      (unpublishedBasename "0012_Majestic_Memex.md"),
+    expectConsFalse "Lake writer as a shipped Surmount product is not accepted"
+      producerShipped
+      mashLakeWriterAsShippedProduct
+      mashLakeWriterAsShippedProductIsFalse
+      rfl
+      mash_lake_writer_as_shipped_product_is_false,
+    expectConsFalse "copied UInt64 CompactSize theorems are not accepted"
+      uint64TheoremsCopiedIntoThisLakePackage
+      mashCopiedUint64Theorems
+      mashCopiedUint64TheoremsIsFalse
+      rfl
+      mash_copied_uint64_theorems_is_false,
+    expectConsFalse "a producer wired into a product tree is not accepted"
+      producerWiredIntoProductTree
+      mashProducerWiredIntoProductTree
+      mashProducerWiredIntoProductTreeIsFalse
+      rfl
+      mash_producer_wired_into_product_tree_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

@@ -340,4 +340,35 @@ theorem unpublished_not_majestic_memex :
     unpublishedBasename "0012_Majestic_Memex.md" = false :=
   rfl
 
+theorem mashed_is_nonconforming_this_repo :
+    mashedIsNonconformingThisRepo :=
+  rfl
+
+theorem mash_spec_and_proof_is_false : mashSpecAndProofIsFalse := by
+  intro h
+  cases h
+
+theorem mash_lake_writer_as_shipped_product_is_false :
+    mashLakeWriterAsShippedProductIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem uint64_theorems_not_copied :
+    uint64TheoremsCopiedIntoThisLakePackage = false :=
+  rfl
+
+theorem mash_copied_uint64_theorems_is_false :
+    mashCopiedUint64TheoremsIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem producer_not_wired_into_product_tree :
+    producerWiredIntoProductTree = false :=
+  rfl
+
+theorem mash_producer_wired_into_product_tree_is_false :
+    mashProducerWiredIntoProductTreeIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 end TechTreeProofs

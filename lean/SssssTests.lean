@@ -8,6 +8,7 @@
 -/
 
 import Sssss
+import SssssProofs
 import SpecRegistry
 
 open Sssss
@@ -49,6 +50,11 @@ def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
   else
     { name := name, ok := true }
 
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
+
 def runCases : List Case :=
   [
     expectEqNat "SSSSS is specification 0004" specNumber 4,
@@ -68,6 +74,34 @@ def runCases : List Case :=
     expectFalse "Carbonado is not assigned" carbonadoAssigned,
     expectFalse "this spec does not claim an implementation exists"
       specClaimsImplementationExists,
+    expectFalse "SSSSS is not ready for use" sssssReadyForUse,
+    expectConsFalse "claiming SSSSS is ready for use is Cons False"
+      sssssReadyForUse
+      mashSssssReadyForUse
+      mashSssssReadyForUseIsFalse
+      rfl
+      mash_sssss_ready_for_use_is_false,
+    expectFalse "SSSSS must not be read as never started" sssssNeverStarted,
+    expectConsFalse "claiming SSSSS never started is Cons False"
+      sssssNeverStarted
+      mashSssssNeverStarted
+      mashSssssNeverStartedIsFalse
+      rfl
+      mash_sssss_never_started_is_false,
+    expectFalse "sequential identity is not claimed implemented"
+      sequentialIdentityImplemented,
+    expectConsFalse "the hashing ban is not proof that an engine already obeys it"
+      hashingBanProvesEngineObeys
+      mashHashingBanProvesEngineObeys
+      mashHashingBanProvesEngineObeysIsFalse
+      rfl
+      mash_hashing_ban_proves_engine_obeys_is_false,
+    expectConsFalse "the neurosymbolic harness is not a shipped product"
+      neurosymbolicHarnessShipped
+      mashNeurosymbolicHarnessShipped
+      mashNeurosymbolicHarnessShippedIsFalse
+      rfl
+      mash_neurosymbolic_harness_shipped_is_false,
     expectFalse "television canon is not required for conformance"
       televisionCanonRequiredForConformance,
     expectTrue "Lean Machine has numbered specification 0013" leanMachineHasNumberedSpec,

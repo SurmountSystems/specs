@@ -45,9 +45,9 @@ inductive Multiplicity where
   spec change and breaks `multiplicity_card`.
 -/
 def Multiplicity.toFin : Multiplicity → Fin 3
-  | .erased => ⟨0, by decide⟩
-  | .once => ⟨1, by decide⟩
-  | .unrestricted => ⟨2, by decide⟩
+  | .erased => (0 : Fin 3)
+  | .once => (1 : Fin 3)
+  | .unrestricted => (2 : Fin 3)
 
 def Multiplicity.ofFin : Fin 3 → Multiplicity
   | ⟨0, _⟩ => .erased
@@ -382,9 +382,9 @@ inductive NovelLanguage where
   deriving DecidableEq, Repr, BEq
 
 def NovelLanguage.toFin : NovelLanguage → Fin 3
-  | .idris2 => ⟨0, by decide⟩
-  | .lean4IncludingSystemsLean => ⟨1, by decide⟩
-  | .pureNix => ⟨2, by decide⟩
+  | .idris2 => (0 : Fin 3)
+  | .lean4IncludingSystemsLean => (1 : Fin 3)
+  | .pureNix => (2 : Fin 3)
 
 def NovelLanguage.ofFin : Fin 3 → NovelLanguage
   | ⟨0, _⟩ => .idris2
@@ -738,5 +738,590 @@ def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
 
 def completeScienceConforms : Prop :=
   conformingScience completeScienceFixture = true
+
+/-!
+  Clause 3.11 through 3.48 and Clause 4.5: Safe judgments.
+  This module encodes names and Bool fixtures. It does not contain theorems.
+-/
+
+inductive SafeMem where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive SafeThr where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive SafeLayout where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive KernelModelOk where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive SafeKernel where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive CompCertFragment where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive CompCertRefines where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive SafeCompCert where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+/-- SafeCompCert implies SafeKernel. Clause 3.18 and Clause 4.5 item 1. -/
+def safeCompCertImpliesSafeKernel : SafeCompCert → SafeKernel :=
+  fun _ => .holds
+
+/-- The converse is False. SafeKernel does not imply SafeCompCert. -/
+def safeKernelImpliesSafeCompCert : Bool := false
+
+def mashSafeKernelImpliesSafeCompCert : Prop :=
+  safeKernelImpliesSafeCompCert = true
+
+def mashSafeKernelImpliesSafeCompCertIsFalse : Prop :=
+  mashSafeKernelImpliesSafeCompCert → False
+
+inductive RejectJudgment where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive FaultJudgment where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive StepState where
+  | ok
+  | fault
+  deriving DecidableEq, Repr, BEq
+
+/--
+  Clause 3.22 companion fragment for `TyperSound`.
+  Constructors are sample programs, not the product `typer`.
+  Systems Lean remains not ready for use.
+-/
+inductive TyperFragment where
+  /-- `CopyBits` of Bits: companion `typer` accepts; Step stays `ok`. -/
+  | copyBitsOfBits
+  /-- `UniqueBlock` `MoveOwner`: companion `typer` accepts; Step stays `ok`. -/
+  | uniqueBlockMoveOwner
+  /-- `UniqueBlock` `CopyHandle` without alias protocol: Reject; Step would Fault. -/
+  | uniqueBlockCopyHandleNoProtocol
+  /-- Heap omega as owner: Reject; Step would Fault. -/
+  | heapOmegaAsOwner
+  deriving DecidableEq, Repr, BEq
+
+/-- True when the companion `typer` accepts. False is Reject before emit. -/
+def typerAccepts : TyperFragment → Bool
+  | .copyBitsOfBits => true
+  | .uniqueBlockMoveOwner => true
+  | .uniqueBlockCopyHandleNoProtocol => false
+  | .heapOmegaAsOwner => false
+
+/-- Companion Step on the fragment. Rejected programs would reach Fault. -/
+def typerStep : TyperFragment → StepState
+  | .copyBitsOfBits => .ok
+  | .uniqueBlockMoveOwner => .ok
+  | .uniqueBlockCopyHandleNoProtocol => .fault
+  | .heapOmegaAsOwner => .fault
+
+/--
+  Clause 3.22: if the companion `typer` accepts, Step does not reach Fault.
+  This is not a claim that the product `typer` is done.
+-/
+def typerSoundImplication : Prop :=
+  ∀ p, typerAccepts p = true → typerStep p ≠ StepState.fault
+
+def typerSoundNamed : Bool := true
+
+/--
+  Companion fragment implication is proved. Product `typer` is not done.
+  Full product `TyperSound` still lags (Clause 6.4). A hole is not success.
+-/
+def typerSoundImplicationProved : Bool := true
+
+def panicFreeNamed : Bool := true
+
+def panicFreeAotNamed : Bool := true
+
+/--
+  Companion fragment implication is proved. The product AOT path is not
+  done. A hole is not success.
+-/
+def panicFreeAotImplicationProved : Bool := true
+
+def panicFreeImpliesSafeMem : Bool := false
+
+/-!
+  Clause 3.23 and Clause 3.24: PanicFree and the named PanicFreeAOT
+  implication on a companion fragment. Allocation failure and a hardware
+  fault are not panics. PanicFreeAOT is not TyperSound. The product AOT
+  path is not done.
+-/
+
+inductive PanicFreeFragment where
+  /-- PanicFree holds. Execution does not panic. -/
+  | typedPathNoPanic
+  /-- PanicFree does not hold. Execution would panic. -/
+  | reachableUnwrap
+  /-- PanicFree may still hold. Allocation failure is not a panic. -/
+  | allocationFailure
+  /-- PanicFree may still hold. A hardware fault is not a panic. -/
+  | hardwareFault
+  deriving DecidableEq, Repr, BEq
+
+def panicFreeHolds : PanicFreeFragment → Bool
+  | .typedPathNoPanic => true
+  | .reachableUnwrap => false
+  | .allocationFailure => true
+  | .hardwareFault => true
+
+inductive PanicOutcome where
+  | ok
+  | panic
+  | allocFail
+  | hardwareFault
+  deriving DecidableEq, Repr, BEq
+
+def panicFreeExec : PanicFreeFragment → PanicOutcome
+  | .typedPathNoPanic => .ok
+  | .reachableUnwrap => .panic
+  | .allocationFailure => .allocFail
+  | .hardwareFault => .hardwareFault
+
+/--
+  Clause 3.24: if PanicFree holds, execution does not reach a panic.
+  Companion fragment only. The product AOT path is not done.
+-/
+def panicFreeAotImplication : Prop :=
+  ∀ p, panicFreeHolds p = true → panicFreeExec p ≠ PanicOutcome.panic
+
+inductive UniqueBlock where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive CopyHandle where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+def uniqueBlockDefaultRcHeader : Bool := false
+
+def uniqueBlockCopyHandleWithoutProtocolAccepted : Bool := false
+
+def mashUniqueBlockCopyHandleNoProtocol : Prop :=
+  uniqueBlockCopyHandleWithoutProtocolAccepted = true
+
+def mashUniqueBlockCopyHandleNoProtocolIsFalse : Prop :=
+  mashUniqueBlockCopyHandleNoProtocol → False
+
+inductive Secret where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive ObjectCow where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+inductive PageCow where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+def secretObjectCowAccepted : Bool := false
+
+def mashSecretObjectCow : Prop :=
+  secretObjectCowAccepted = true
+
+def mashSecretObjectCowIsFalse : Prop :=
+  mashSecretObjectCow → False
+
+def secretPageCowAccepted : Bool := false
+
+def mashSecretPageCow : Prop :=
+  secretPageCowAccepted = true
+
+def mashSecretPageCowIsFalse : Prop :=
+  mashSecretPageCow → False
+
+def compCertFragmentContainerOfAccepted : Bool := false
+
+def mashCompCertFragmentContainerOf : Prop :=
+  compCertFragmentContainerOfAccepted = true
+
+def mashCompCertFragmentContainerOfIsFalse : Prop :=
+  mashCompCertFragmentContainerOf → False
+
+def panicFreeReachableUnwrapAccepted : Bool := false
+
+def mashPanicFreeReachableUnwrap : Prop :=
+  panicFreeReachableUnwrapAccepted = true
+
+def mashPanicFreeReachableUnwrapIsFalse : Prop :=
+  mashPanicFreeReachableUnwrap → False
+
+def compCertFragmentInlineAsmAccepted : Bool := false
+
+def mashCompCertFragmentInlineAsm : Prop :=
+  compCertFragmentInlineAsmAccepted = true
+
+def mashCompCertFragmentInlineAsmIsFalse : Prop :=
+  mashCompCertFragmentInlineAsm → False
+
+def linkFaceExportsUniqueBlockAsBitsAccepted : Bool := false
+
+def mashLinkFaceExportsUniqueBlockAsBits : Prop :=
+  linkFaceExportsUniqueBlockAsBitsAccepted = true
+
+def mashLinkFaceExportsUniqueBlockAsBitsIsFalse : Prop :=
+  mashLinkFaceExportsUniqueBlockAsBits → False
+
+def languageOmegaOnHeapOwnerAccepted : Bool := false
+
+def mashLanguageOmegaOnHeapOwner : Prop :=
+  languageOmegaOnHeapOwnerAccepted = true
+
+def mashLanguageOmegaOnHeapOwnerIsFalse : Prop :=
+  mashLanguageOmegaOnHeapOwner → False
+
+def uniqueOnlyPosixForkAccepted : Bool := false
+
+def mashUniqueOnlyPosixFork : Prop :=
+  uniqueOnlyPosixForkAccepted = true
+
+def mashUniqueOnlyPosixForkIsFalse : Prop :=
+  mashUniqueOnlyPosixFork → False
+
+def safeMemNonAtomicDataRaceAccepted : Bool := false
+
+def mashSafeMemNonAtomicDataRace : Prop :=
+  safeMemNonAtomicDataRaceAccepted = true
+
+def mashSafeMemNonAtomicDataRaceIsFalse : Prop :=
+  mashSafeMemNonAtomicDataRace → False
+
+def lockFreeFreeWithoutReclamationAccepted : Bool := false
+
+def mashLockFreeFreeWithoutReclamation : Prop :=
+  lockFreeFreeWithoutReclamationAccepted = true
+
+def mashLockFreeFreeWithoutReclamationIsFalse : Prop :=
+  mashLockFreeFreeWithoutReclamation → False
+
+def rwLockSharedAndExclusiveAccepted : Bool := false
+
+def mashRwLockSharedAndExclusive : Prop :=
+  rwLockSharedAndExclusiveAccepted = true
+
+def mashRwLockSharedAndExclusiveIsFalse : Prop :=
+  mashRwLockSharedAndExclusive → False
+
+def copyHandleLockTokenAccepted : Bool := false
+
+def mashCopyHandleLockToken : Prop :=
+  copyHandleLockTokenAccepted = true
+
+def mashCopyHandleLockTokenIsFalse : Prop :=
+  mashCopyHandleLockToken → False
+
+def casUniqueBlockPointerAccepted : Bool := false
+
+def mashCasUniqueBlockPointer : Prop :=
+  casUniqueBlockPointerAccepted = true
+
+def mashCasUniqueBlockPointerIsFalse : Prop :=
+  mashCasUniqueBlockPointer → False
+
+def casNonAtomicCellAccepted : Bool := false
+
+def mashCasNonAtomicCell : Prop :=
+  casNonAtomicCellAccepted = true
+
+def mashCasNonAtomicCellIsFalse : Prop :=
+  mashCasNonAtomicCell → False
+
+def threadSharedIsProcessShared : Bool := false
+
+def mashThreadSharedIsProcessShared : Prop :=
+  threadSharedIsProcessShared = true
+
+def mashThreadSharedIsProcessSharedIsFalse : Prop :=
+  mashThreadSharedIsProcessShared → False
+
+def posixForkIsForkJoin : Bool := false
+
+def mashPosixForkIsForkJoin : Prop :=
+  posixForkIsForkJoin = true
+
+def mashPosixForkIsForkJoinIsFalse : Prop :=
+  mashPosixForkIsForkJoin → False
+
+def posixForkIsBorrowOrOwned : Bool := false
+
+def mashPosixForkIsBorrowOrOwned : Prop :=
+  posixForkIsBorrowOrOwned = true
+
+def mashPosixForkIsBorrowOrOwnedIsFalse : Prop :=
+  mashPosixForkIsBorrowOrOwned → False
+
+def secretCopyIntoNonSecretAccepted : Bool := false
+
+def mashSecretCopyIntoNonSecret : Prop :=
+  secretCopyIntoNonSecretAccepted = true
+
+def mashSecretCopyIntoNonSecretIsFalse : Prop :=
+  mashSecretCopyIntoNonSecret → False
+
+def secretDontForkPosixForkAccepted : Bool := false
+
+def mashSecretDontForkPosixFork : Prop :=
+  secretDontForkPosixForkAccepted = true
+
+def mashSecretDontForkPosixForkIsFalse : Prop :=
+  mashSecretDontForkPosixFork → False
+
+def onceImpliesUniqueBlock : Bool := false
+
+def mashOnceImpliesUniqueBlock : Prop :=
+  onceImpliesUniqueBlock = true
+
+def mashOnceImpliesUniqueBlockIsFalse : Prop :=
+  mashOnceImpliesUniqueBlock → False
+
+def syscallDurabilityIsBeastdbAcid : Bool := false
+
+def mashSyscallDurabilityIsBeastdbAcid : Prop :=
+  syscallDurabilityIsBeastdbAcid = true
+
+def mashSyscallDurabilityIsBeastdbAcidIsFalse : Prop :=
+  mashSyscallDurabilityIsBeastdbAcid → False
+
+def beastdbPropsConsWithoutAttachAccepted : Bool := false
+
+def mashBeastdbPropsConsWithoutAttach : Prop :=
+  beastdbPropsConsWithoutAttachAccepted = true
+
+def mashBeastdbPropsConsWithoutAttachIsFalse : Prop :=
+  mashBeastdbPropsConsWithoutAttach → False
+
+def tsxIsBeastdbAcid : Bool := false
+
+def mashTsxIsBeastdbAcid : Prop :=
+  tsxIsBeastdbAcid = true
+
+def mashTsxIsBeastdbAcidIsFalse : Prop :=
+  mashTsxIsBeastdbAcid → False
+
+/-- Clause 6.4 item 80: grok-oss is not SafeC. -/
+def grokOssIsSafeC : Bool := false
+
+def mashGrokOssIsSafeC : Prop :=
+  grokOssIsSafeC = true
+
+def mashGrokOssIsSafeCIsFalse : Prop :=
+  mashGrokOssIsSafeC → False
+
+/-- Clause 6.4 item 76: the page cache is not RCU, and RCU is not the page cache. -/
+def pageCacheIsRcu : Bool := false
+
+def mashPageCacheIsRcu : Prop :=
+  pageCacheIsRcu = true
+
+def mashPageCacheIsRcuIsFalse : Prop :=
+  mashPageCacheIsRcu → False
+
+/-- Clause 3.47, Clause 4.5 item 9, and Clause 6.4 item 70: a crate that finished only Gate A is not Safe. -/
+def gateACrateIsSafe : Bool := false
+
+def mashGateACrateIsSafe : Prop :=
+  gateACrateIsSafe = true
+
+def mashGateACrateIsSafeIsFalse : Prop :=
+  mashGateACrateIsSafe → False
+
+/-- Clause 6.4 item 29: CHERI or MTE tagging does not replace UniqueBlock. -/
+def hardwareTagReplacesUniqueBlock : Bool := false
+
+def mashHardwareTagReplacesUniqueBlock : Prop :=
+  hardwareTagReplacesUniqueBlock = true
+
+def mashHardwareTagReplacesUniqueBlockIsFalse : Prop :=
+  mashHardwareTagReplacesUniqueBlock → False
+
+/-- Clause 6.4 item 66: automatic vectorization is not a SIMD proof. -/
+def autovectorizationIsSimdProof : Bool := false
+
+def mashAutovectorizationIsSimdProof : Prop :=
+  autovectorizationIsSimdProof = true
+
+def mashAutovectorizationIsSimdProofIsFalse : Prop :=
+  mashAutovectorizationIsSimdProof → False
+
+/-- Clause 6.4 item 41: a theorem named Perfect or ProvablyPerfect is not accepted. One fixture covers both banned names. -/
+def perfectTheoremNameAccepted : Bool := false
+
+def mashPerfectTheoremName : Prop :=
+  perfectTheoremNameAccepted = true
+
+def mashPerfectTheoremNameIsFalse : Prop :=
+  mashPerfectTheoremName → False
+
+/-- Clause 6.4 item 49: a typed link input is not claimed proved. -/
+def typedLinkInputClaimedProved : Bool := false
+
+def mashTypedLinkInputClaimedProved : Prop :=
+  typedLinkInputClaimedProved = true
+
+def mashTypedLinkInputClaimedProvedIsFalse : Prop :=
+  mashTypedLinkInputClaimedProved → False
+
+/-- Clause 6.4 item 49: Cons on every export is not claimed proved. -/
+def consOnEveryExportClaimedProved : Bool := false
+
+def mashConsOnEveryExportClaimedProved : Prop :=
+  consOnEveryExportClaimedProved = true
+
+def mashConsOnEveryExportClaimedProvedIsFalse : Prop :=
+  mashConsOnEveryExportClaimedProved → False
+
+/-- Clause 6.4 item 48: the memcpy equation is not a present theorem. -/
+def memcpyEquationPresentTheorem : Bool := false
+
+def mashMemcpyEquationPresentTheorem : Prop :=
+  memcpyEquationPresentTheorem = true
+
+def mashMemcpyEquationPresentTheoremIsFalse : Prop :=
+  mashMemcpyEquationPresentTheorem → False
+
+/-- Clause 6.4 items 42 and 46: AtomicCell, AtomicTxn, UsesLock, and LockHandled are named and are not present theories. -/
+def namedResidualIdentifiersPresentTheories : Bool := false
+
+def mashNamedResidualIdentifiersPresentTheories : Prop :=
+  namedResidualIdentifiersPresentTheories = true
+
+def mashNamedResidualIdentifiersPresentTheoriesIsFalse : Prop :=
+  mashNamedResidualIdentifiersPresentTheories → False
+
+def namedResidualIdentifiers : List String :=
+  ["AtomicCell", "AtomicTxn", "UsesLock", "LockHandled"]
+
+inductive PassingMode where
+  | copyBits
+  | moveOwner
+  | loanShared
+  | loanMut
+  | copyHandle
+  deriving DecidableEq, Repr, BEq
+
+def PassingMode.toFin : PassingMode → Fin 5
+  | .copyBits => (0 : Fin 5)
+  | .moveOwner => (1 : Fin 5)
+  | .loanShared => (2 : Fin 5)
+  | .loanMut => (3 : Fin 5)
+  | .copyHandle => (4 : Fin 5)
+
+def PassingMode.ofFin : Fin 5 → PassingMode
+  | ⟨0, _⟩ => .copyBits
+  | ⟨1, _⟩ => .moveOwner
+  | ⟨2, _⟩ => .loanShared
+  | ⟨3, _⟩ => .loanMut
+  | ⟨4, _⟩ => .copyHandle
+
+inductive SafeProfile where
+  | hostedLinuxLibc
+  | libcOnly
+  | fargoLlvm
+  | freestandingKernel
+  deriving DecidableEq, Repr, BEq
+
+def heapOmegaAsOwnerRejected : Bool := true
+
+def bitsTrivialIsCopyBits : Bool := true
+
+def heapOmegaRejectCollapsedIntoBitsTrivial : Bool := false
+
+def fargoHasSpecNumber : Bool := false
+
+inductive FargoGate where
+  | a
+  | b
+  | c
+  | d
+  | e
+  | f
+  deriving DecidableEq, Repr, BEq
+
+def fargoGatesAreCorrespondenceObligations : Bool := true
+
+def llvmCcPathCalledCompCertProved : Bool := false
+
+def slakePrimaryEmitIsFreestandingC : Bool := true
+
+def hostedLinuxLibcReplacesPrimaryEmit : Bool := false
+
+def safeCtOnByDefault : Bool := false
+
+def lockFreeMeansMutexAbsent : Bool := false
+
+def lockFreeMeansCompareAndSwap : Bool := false
+
+def acidIsCompareAndSwap : Bool := false
+
+def beastdbAcidOwnedBySpec0003 : Bool := true
+
+def posixForkIsPageCow : Bool := true
+
+def posixForkIsObjectCow : Bool := false
+
+def correspondenceRequiredBeforeIsomorphism : Bool := true
+
+/-- Sampled v28 tokens that MUST appear in 0002 markdown (or residual). Nearby different words do not count. -/
+def v28SilenceTokens : List String :=
+  [ "Perfect"
+  , "ProvablyPerfect"
+  , "AtomicCell"
+  , "AtomicTxn"
+  , "UsesLock"
+  , "LockHandled"
+  , "LinkFace"
+  , "Props"
+  , "memcpy equation"
+  , "shift exponent out of range"
+  , "sleanify observation list"
+  , "Slake is not its own repository"
+  , "Rust atomic types map to AtomicCell"
+  , "default trait object fat pointer fields"
+  , "CAS on UniqueBlock pointer Reject"
+  , "CAS on non-AtomicCell Reject"
+  ]
+
+def v28SilenceTokenCount : Nat := 16
+
+def v28SilenceTokensNamedIn (hay : String) : Bool :=
+  v28SilenceTokens.all (fun t => hay.contains t)
+
+
+/-- Remaining silent v28 phrases that MUST appear in 0002 markdown. Nearby different words do not count. -/
+def v28RemainingSilenceTokens : List String :=
+  [ "framing, locks, FDs, and UAF"
+  , "residual means no model yet"
+  , "C representation padding first"
+  , "not all of rustc"
+  , "Linux once and smp helpers"
+  , "every lock name is named"
+  , "Phase 0 pair"
+  , "glossary as inductives"
+  , "glossary words do not clash"
+  ]
+
+def v28RemainingSilenceTokenCount : Nat := 9
+
+def v28RemainingSilenceTokensNamedIn (hay : String) : Bool :=
+  v28RemainingSilenceTokens.all (fun t => hay.contains t)
 
 end SystemsLean

@@ -308,11 +308,26 @@ This section is normative for residual honesty of this document. Silence about a
 5. Surmount Systems is specified in `0010_Surmount_Systems.md`. Surmount Systems is not this specification.
 6. Ahead of time emission is named in ordinary English. That phrasing is not a license to write leftover unstack.
 
+### 6.6 Leftover science cycle honesty
+
+1. Clause 4.12 requires a hypothesis, a model, a theory, a proof, tests, and corollary experiments. Tests in `lean/FormalVibeficationTests.lean` check encodings of that cycle. Those tests are not corollary experiments of beastdb, SSSSS, Slake, or Continuous Integration.
+2. A complete science cycle fixture in `lean/FormalVibeficationSpec.lean` is a fixture. It is not a claim that product work has observed the running system.
+3. A leftover science cycle that has a hypothesis, a model, a theory, a proof, and tests, and that still lacks corollary experiments, does not compose the required cycle. Companion Lean SHALL treat that leftover chain as not composing. This is not the tests only cycle. This document does not paste that theorem.
+4. Companion Lean SHALL treat a mash of leftover science cycle honesty with a claim that those products already completed corollary experiments as `False`. This is not `mash_spec_and_proof`. This document does not paste that theorem.
+
+### 6.7 Unpinned philosophy PDFs
+
+1. Local copies under `ref/philosophy/proofofkeags/` are for readers. They are not Clause 12 Form 2 pins. They are not an Unlicense grant. Honesty notes live at `ref/philosophy/proofofkeags/SOURCE.md`.
+2. Canonical URLs remain https://proofofkeags.com/research/2026-05-12-formal-vibefication.html and https://proofofkeags.com/research/2026-07-20-taking-dont-trust-verify-seriously.html . Citations SHALL keep those publisher links (back linking).
+3. This repository does not vendor those essays as Form 2 copies of a standard this repository owns.
+4. Other local philosophy PDFs under `ref/philosophy/` are for readers. They are not Clause 12 pins of this document.
+5. Companion Lean SHALL treat a mash of those local philosophy PDFs with a Clause 12 Form 2 pin as `False`. Companion Lean SHALL treat a mash of those local copies with the publisher URL as if they were the same layer as `False`. This document does not paste those theorems.
+
 ## 7. Changelog
 
 ### 0.1.0 - 20260831
 
-Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed. This line also records the science cycle: Formal Vibefication requires a hypothesis, a model, a theory, a proof, tests, and corollary experiments; tests alone are not enough.
+Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed. This line also records the science cycle: Formal Vibefication requires a hypothesis, a model, a theory, a proof, tests, and corollary experiments; tests alone are not enough. This line also records leftover science cycle honesty: tests of those encodings are not corollary experiments of the products named here. Local philosophy PDFs under `ref/philosophy/` are unpinned for this document; they are not Clause 12 Form 2 pins; essays remain cited by URL with back linking to https://proofofkeags.com .
 
 ### 1.0.0 - 20260825
 

@@ -280,6 +280,40 @@ def RsiMeaning.conforming : RsiMeaning → Bool
   | .loopOfToolsAndResidual => true
   | .modelRetrainsInThisRepo => false
 
+/-- Clause 3.3 and Clause 4.1 item 4: a chat reminder is not a durable tool. -/
+def chatReminderAsDurableToolAccepted : Bool := false
+
+def mashChatReminderAsDurableTool : Prop :=
+  chatReminderAsDurableToolAccepted = true
+
+def mashChatReminderAsDurableToolIsFalse : Prop :=
+  mashChatReminderAsDurableTool → False
+
+/-- Clause 1 and Clause 4.6 item 2: this specification is not a claim that a model trains itself again in this repository. -/
+def rsiIsTrainingRunAccepted : Bool := false
+
+def mashRsiIsTrainingRun : Prop :=
+  rsiIsTrainingRunAccepted = true
+
+def mashRsiIsTrainingRunIsFalse : Prop :=
+  mashRsiIsTrainingRun → False
+
+/-- Clause 4.6 item 4 and Clause 6.1 item 1: this document does not create SSSP. -/
+def thisDocumentCreatesSssp : Bool := false
+
+def mashThisDocumentCreatesSssp : Prop :=
+  thisDocumentCreatesSssp = true
+
+def mashThisDocumentCreatesSsspIsFalse : Prop :=
+  mashThisDocumentCreatesSssp → False
+
+/-- Clause 6.1 item 1: SSSP has no numbered specification. -/
+def mashSsspHasNumberedSpec : Prop :=
+  ssspHasNumberedSpec = true
+
+def mashSsspHasNumberedSpecIsFalse : Prop :=
+  mashSsspHasNumberedSpec → False
+
 def scriptureRequiredForSlake : Bool := false
 
 def scriptureRequiredForBeastdb : Bool := false
@@ -317,6 +351,21 @@ def leanMachineSharedPatternSpecified : Bool := false
 def carbonadoIsCate : Bool := false
 
 def specClaimsEveryAgentConforms : Bool := false
+
+def mashSpecClaimsEveryAgentConforms : Prop :=
+  specClaimsEveryAgentConforms = true
+
+def mashSpecClaimsEveryAgentConformsIsFalse : Prop :=
+  mashSpecClaimsEveryAgentConforms → False
+
+/-- Clause 6.4 item 4: Clause 4 is not already met by every session. -/
+def clause4AlreadyMetByEverySession : Bool := false
+
+def mashClause4AlreadyMetByEverySession : Prop :=
+  clause4AlreadyMetByEverySession = true
+
+def mashClause4AlreadyMetByEverySessionIsFalse : Prop :=
+  mashClause4AlreadyMetByEverySession → False
 
 def unstatedHeuristicOk : Bool := false
 
@@ -391,6 +440,48 @@ def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
 
 def completeScienceConforms : Prop :=
   completeScienceCycleConforms = true
+
+/-- Clause 3.25 item 8 and Clause 4.7: serializing independent streams does not conform. -/
+def mashSerializeIndependent : Prop :=
+  StreamSchedule.serializeIndependent.conforming = true
+
+def mashSerializeIndependentIsFalse : Prop :=
+  mashSerializeIndependent → False
+
+/-- Clause 3.25 item 9 and Clause 4.3: reshaping a test after the product edit does not conform. -/
+def mashReshapeTestWithoutContractChange : Prop :=
+  reshapeTestToPassWithoutContractChange = true
+
+def mashReshapeTestWithoutContractChangeIsFalse : Prop :=
+  mashReshapeTestWithoutContractChange → False
+
+/-- Clause 3.25 item 5: leftover unstack is CATE, not this specification. -/
+def mashRsiReplacesLeftoverUnstack : Prop :=
+  Vocabulary.rsiReplacesLeftoverUnstack = true
+
+def mashRsiReplacesLeftoverUnstackIsFalse : Prop :=
+  mashRsiReplacesLeftoverUnstack → False
+
+/-- Clause 4.8 item 5: this document is not a bitmask specification. -/
+def mashRsiIsBitmaskSpec : Prop :=
+  rsiIsBitmaskSpec = true
+
+def mashRsiIsBitmaskSpecIsFalse : Prop :=
+  mashRsiIsBitmaskSpec → False
+
+/-- Clause 4.5: chat is not the residual record. -/
+def mashChatOnlyResidual : Prop :=
+  ResidualHome.chatOnly.conforming = true
+
+def mashChatOnlyResidualIsFalse : Prop :=
+  mashChatOnlyResidual → False
+
+/-- Clause 1.2 item 5 and Clause 3.25 item 2: meaning proofs are not a second form checker. -/
+def mashMeaningProofsAreSecondFormChecker : Prop :=
+  Vocabulary.meaningProofsAreSecondFormChecker = true
+
+def mashMeaningProofsAreSecondFormCheckerIsFalse : Prop :=
+  mashMeaningProofsAreSecondFormChecker → False
 
 /-!
   Clause 3.25 / 4.10: same English word, different trees.

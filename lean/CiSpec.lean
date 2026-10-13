@@ -196,6 +196,34 @@ def rustElevationProcessSpecifiedHere : Bool := false
 
 def conformingCiProductClaimed : Bool := false
 
+/-- Clause 4.7 and Clause 6.3 item 2: claiming byte identity already true is a clash. -/
+def mashByteIdentityClaimedTrue : Prop :=
+  byteIdentity.claimedTrue = true
+
+def mashByteIdentityClaimedTrueIsFalse : Prop :=
+  mashByteIdentityClaimedTrue → False
+
+/-- Clause 4.3 and Clause 6.2: treating the named exception as a general skip is a clash. -/
+def mashUnsignedAsGeneralSkip : Prop :=
+  DualTreeException.applies generalSkip = true
+
+def mashUnsignedAsGeneralSkipIsFalse : Prop :=
+  mashUnsignedAsGeneralSkip → False
+
+/-- Clause 6.2 item 2: this repository claiming the unsigned exception is a clash. -/
+def mashThisRepoClaimsUnsignedException : Prop :=
+  thisRepoClaimsUnsignedException = true
+
+def mashThisRepoClaimsUnsignedExceptionIsFalse : Prop :=
+  mashThisRepoClaimsUnsignedException → False
+
+/-- Clause 4.8 and Clause 6.3 item 3: claiming the reality check done is a clash. -/
+def mashRealityCheckClaimedDone : Prop :=
+  sssssBeastDbReality.claimedDone = true
+
+def mashRealityCheckClaimedDoneIsFalse : Prop :=
+  mashRealityCheckClaimedDone → False
+
 /-- Public Domain Open Source Software (PDOSS) is specification 0009. Unlicense remains the license. -/
 def pdossSpecNumber : Nat := 9
 

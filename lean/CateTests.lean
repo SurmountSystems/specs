@@ -11,6 +11,7 @@
 -/
 
 import Cate
+import CateProofs
 import SpecRegistry
 
 open Cate
@@ -51,6 +52,11 @@ def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
     { name := name, ok := false, detail := "expected diagnostics, got none" }
   else
     { name := name, ok := true }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def runCases : List Case :=
   [
@@ -136,6 +142,10 @@ def runCases : List Case :=
       leftoverUnstackFloorIsCompleteEnglish,
     expectTrue "Lean spec encodings use leftover unstack floor"
       leanSpecEncodingsUseLeftoverUnstackFloor,
+    expectEqNat "fourteen leftover unstack comment scan paths"
+      leftoverUnstackCommentScanRelPaths.length 14,
+    expectTrue "AnunnakiSpec is a leftover unstack comment scan path"
+      (leftoverUnstackCommentScanRelPaths.contains "lean/AnunnakiSpec.lean"),
     expectEqNat "three allowed spaced phrases" allowedSpacedPhrases.length 3,
     expectFalse "residual silence is not conforming" residualSilent.conforming,
     expectTrue "residual written is conforming" residualWritten.conforming,
@@ -231,7 +241,31 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       completeScienceCycleConforms,
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectConsFalse "leftover unstack floor as complete English is not accepted"
+      leftoverUnstackFloorIsCompleteEnglish
+      mashLeftoverUnstackFloorAsCompleteEnglish
+      mashLeftoverUnstackFloorAsCompleteEnglishIsFalse
+      rfl
+      mash_leftover_unstack_floor_as_complete_english_is_false,
+    expectConsFalse "contradiction floor as every sentence pair is not accepted"
+      contradictionFloorIsEverySentencePair
+      mashContradictionFloorIsEverySentencePair
+      mashContradictionFloorIsEverySentencePairIsFalse
+      rfl
+      mash_contradiction_floor_is_every_sentence_pair_is_false,
+    expectConsFalse "every agent already conforming is not accepted"
+      everyAgentAlreadyConforms
+      mashEveryAgentAlreadyConforms
+      mashEveryAgentAlreadyConformsIsFalse
+      rfl
+      mash_every_agent_already_conforms_is_false,
+    expectConsFalse "invented conforming product is not accepted"
+      cateAllowsInventedConformingProduct
+      mashCateAllowsInventedConformingProduct
+      mashCateAllowsInventedConformingProductIsFalse
+      rfl
+      mash_cate_allows_invented_conforming_product_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

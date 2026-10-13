@@ -393,4 +393,94 @@ def scienceCycleComposes : Prop :=
     testsOnlyCycleDoesNotCompose ∧
     mashScienceStepsIsFalse
 
+/--
+  Leftover science cycle honesty: encodings of the cycle, and tests of
+  those encodings, are not corollary experiments of the products named
+  in this specification.
+-/
+def leftoverScienceCycleHonesty : Bool := true
+
+def encodingTestsAreProductCorollaryExperiments : Bool := false
+
+/-- Distinct constructors. Leftover encodings are not product experiments. -/
+inductive ScienceHonestyLayer where
+  | leftoverCycleEncodings
+  | productCorollaryExperiments
+  deriving DecidableEq, Repr, BEq
+
+/-- Treating leftover cycle encodings as if product corollary experiments already ran. -/
+def mashLeftoverScienceWithProductExperiments : Prop :=
+  ScienceHonestyLayer.leftoverCycleEncodings =
+    ScienceHonestyLayer.productCorollaryExperiments
+
+def mashLeftoverScienceWithProductExperimentsIsFalse : Prop :=
+  mashLeftoverScienceWithProductExperiments → False
+
+/--
+  Leftover Cons cycle: hypothesis, model, theory, proof, and tests, with
+  no corollary experiment. This is not the tests only cycle.
+-/
+def leftoverCycleMissingExperiments : ScienceCycle :=
+  .cons .hypothesis
+    (.cons .model
+      (.cons .theory
+        (.cons .proof
+          (.cons .tests .empty))))
+
+def leftoverCycleMissingExperimentsDoesNotCompose : Prop :=
+  ScienceCycle.containsAllRequired leftoverCycleMissingExperiments = false
+
+def leftoverCycleMissingExperimentsHasNoCorollary : Prop :=
+  (ScienceCycle.toEffort leftoverCycleMissingExperiments).hasCorollaryExperiments =
+    false
+
+def leftoverCycleIsNotTestsOnly : Prop :=
+  leftoverCycleMissingExperiments ≠ testsOnlyCycle
+
+/--
+  Unpinned philosophy PDFs: local copies for readers, publisher URL, and
+  a Clause 12 Form 2 pin are distinct. Local copies are not Form 2 pins
+  and do not replace the publisher page.
+-/
+inductive PhilosophyArtifact where
+  | publisherUrl
+  | localPhilosophyPdf
+  | clause12Form2Pin
+  deriving DecidableEq, Repr, BEq
+
+def localPhilosophyPdfPath : String := "ref/philosophy/proofofkeags/"
+
+def localPhilosophyPdfHonestyPath : String :=
+  "ref/philosophy/proofofkeags/SOURCE.md"
+
+def philosophyPdfsAreClause12Form2Pins : Bool := false
+
+def philosophyPdfsReplacePublisherUrl : Bool := false
+
+/-- Treating local philosophy PDFs as a Clause 12 Form 2 pin. -/
+def mashLocalPdfAsClause12Pin : Prop :=
+  PhilosophyArtifact.localPhilosophyPdf = PhilosophyArtifact.clause12Form2Pin
+
+def mashLocalPdfAsClause12PinIsFalse : Prop :=
+  mashLocalPdfAsClause12Pin → False
+
+/-- Treating local philosophy PDFs as the publisher URL layer. -/
+def mashLocalPdfAsPublisherUrl : Prop :=
+  PhilosophyArtifact.localPhilosophyPdf = PhilosophyArtifact.publisherUrl
+
+def mashLocalPdfAsPublisherUrlIsFalse : Prop :=
+  mashLocalPdfAsPublisherUrl → False
+
+def leftoverHonestyComposes : Prop :=
+  leftoverScienceCycleHonesty = true ∧
+    encodingTestsAreProductCorollaryExperiments = false ∧
+    leftoverCycleMissingExperimentsDoesNotCompose ∧
+    leftoverCycleIsNotTestsOnly ∧
+    mashLeftoverScienceWithProductExperimentsIsFalse ∧
+    philosophyPdfsAreClause12Form2Pins = false ∧
+    philosophyPdfsReplacePublisherUrl = false ∧
+    essaysMayBeVendoredAsForm2 = false ∧
+    mashLocalPdfAsClause12PinIsFalse ∧
+    mashLocalPdfAsPublisherUrlIsFalse
+
 end FormalVibeficationSpec

@@ -205,6 +205,52 @@ def runCases : List Case :=
         | _ => true),
     expectTrue "proof science_cycle_composes is available"
       (match FormalVibeficationProofs.science_cycle_composes with
+        | _ => true),
+    expectTrue "leftover science cycle honesty holds"
+      leftoverScienceCycleHonesty,
+    expectFalse "encoding tests are not product corollary experiments"
+      encodingTestsAreProductCorollaryExperiments,
+    expectFalse "leftover Cons cycle missing experiments does not compose"
+      (ScienceCycle.containsAllRequired leftoverCycleMissingExperiments),
+    expectFalse "leftover Cons cycle missing experiments has no corollary experiments"
+      (ScienceCycle.toEffort leftoverCycleMissingExperiments).hasCorollaryExperiments,
+    expectTrue "leftover Cons cycle is not the tests only cycle"
+      (leftoverCycleMissingExperiments != testsOnlyCycle),
+    expectFalse "mashing leftover encodings with product experiments does not hold"
+      (ScienceHonestyLayer.leftoverCycleEncodings ==
+        ScienceHonestyLayer.productCorollaryExperiments),
+    expectFalse "philosophy PDFs are not Clause 12 Form 2 pins"
+      philosophyPdfsAreClause12Form2Pins,
+    expectFalse "philosophy PDFs do not replace the publisher URL"
+      philosophyPdfsReplacePublisherUrl,
+    expectEqString "local philosophy PDF path is proofofkeags copies"
+      localPhilosophyPdfPath "ref/philosophy/proofofkeags/",
+    expectEqString "local philosophy PDF honesty notes path"
+      localPhilosophyPdfHonestyPath
+      "ref/philosophy/proofofkeags/SOURCE.md",
+    expectFalse "mashing local PDFs with a Clause 12 pin does not hold"
+      (PhilosophyArtifact.localPhilosophyPdf ==
+        PhilosophyArtifact.clause12Form2Pin),
+    expectFalse "mashing local PDFs with the publisher URL does not hold"
+      (PhilosophyArtifact.localPhilosophyPdf ==
+        PhilosophyArtifact.publisherUrl),
+    expectTrue "proof mash_leftover_science_with_product_experiments_is_false is available"
+      (match FormalVibeficationProofs.mash_leftover_science_with_product_experiments_is_false with
+        | _ => true),
+    expectTrue "proof leftover_cycle_missing_experiments_does_not_compose is available"
+      (match FormalVibeficationProofs.leftover_cycle_missing_experiments_does_not_compose with
+        | _ => true),
+    expectTrue "proof leftover_cycle_is_not_tests_only is available"
+      (match FormalVibeficationProofs.leftover_cycle_is_not_tests_only with
+        | _ => true),
+    expectTrue "proof mash_local_pdf_as_clause12_pin_is_false is available"
+      (match FormalVibeficationProofs.mash_local_pdf_as_clause12_pin_is_false with
+        | _ => true),
+    expectTrue "proof mash_local_pdf_as_publisher_url_is_false is available"
+      (match FormalVibeficationProofs.mash_local_pdf_as_publisher_url_is_false with
+        | _ => true),
+    expectTrue "proof leftover_honesty_composes is available"
+      (match FormalVibeficationProofs.leftover_honesty_composes with
         | _ => true)
   ]
 

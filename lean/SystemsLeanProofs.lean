@@ -476,4 +476,353 @@ theorem live_claimed_done_differs_from_canonical_bootstrap :
     slakeBootstrapTypecheckClaimedDone ≠ canonicalProduct.bootstrapTypecheck.ok := by
   decide
 
+theorem SafeCompCert_implies_SafeKernel (c : SafeCompCert) :
+    safeCompCertImpliesSafeKernel c = SafeKernel.holds :=
+  rfl
+
+theorem mash_safe_kernel_implies_safe_compcert_is_false :
+    mashSafeKernelImpliesSafeCompCertIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_unique_block_copy_handle_no_protocol_is_false :
+    mashUniqueBlockCopyHandleNoProtocolIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_secret_object_cow_is_false :
+    mashSecretObjectCowIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_secret_page_cow_is_false :
+    mashSecretPageCowIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_compcert_fragment_container_of_is_false :
+    mashCompCertFragmentContainerOfIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_panic_free_reachable_unwrap_is_false :
+    mashPanicFreeReachableUnwrapIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_compcert_fragment_inline_asm_is_false :
+    mashCompCertFragmentInlineAsmIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_link_face_exports_unique_block_as_bits_is_false :
+    mashLinkFaceExportsUniqueBlockAsBitsIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_language_omega_on_heap_owner_is_false :
+    mashLanguageOmegaOnHeapOwnerIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_unique_only_posix_fork_is_false :
+    mashUniqueOnlyPosixForkIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_safe_mem_non_atomic_data_race_is_false :
+    mashSafeMemNonAtomicDataRaceIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_lock_free_free_without_reclamation_is_false :
+    mashLockFreeFreeWithoutReclamationIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_rw_lock_shared_and_exclusive_is_false :
+    mashRwLockSharedAndExclusiveIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_copy_handle_lock_token_is_false :
+    mashCopyHandleLockTokenIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_cas_unique_block_pointer_is_false :
+    mashCasUniqueBlockPointerIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_cas_non_atomic_cell_is_false :
+    mashCasNonAtomicCellIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_thread_shared_is_process_shared_is_false :
+    mashThreadSharedIsProcessSharedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_posix_fork_is_fork_join_is_false :
+    mashPosixForkIsForkJoinIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_posix_fork_is_borrow_or_owned_is_false :
+    mashPosixForkIsBorrowOrOwnedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_secret_copy_into_non_secret_is_false :
+    mashSecretCopyIntoNonSecretIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_secret_dont_fork_posix_fork_is_false :
+    mashSecretDontForkPosixForkIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_once_implies_unique_block_is_false :
+    mashOnceImpliesUniqueBlockIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_syscall_durability_is_beastdb_acid_is_false :
+    mashSyscallDurabilityIsBeastdbAcidIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_beastdb_props_cons_without_attach_is_false :
+    mashBeastdbPropsConsWithoutAttachIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_tsx_is_beastdb_acid_is_false :
+    mashTsxIsBeastdbAcidIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_grok_oss_is_safe_c_is_false :
+    mashGrokOssIsSafeCIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_page_cache_is_rcu_is_false :
+    mashPageCacheIsRcuIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_gate_a_crate_is_safe_is_false :
+    mashGateACrateIsSafeIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_hardware_tag_replaces_unique_block_is_false :
+    mashHardwareTagReplacesUniqueBlockIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_autovectorization_is_simd_proof_is_false :
+    mashAutovectorizationIsSimdProofIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_perfect_theorem_name_is_false :
+    mashPerfectTheoremNameIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem typer_sound_named : typerSoundNamed = true := rfl
+
+/-- Companion fragment only. Product `typer` is not done. -/
+theorem typer_sound_implication_proved :
+    typerSoundImplicationProved = true := rfl
+
+/--
+  Clause 3.22 companion `TyperSound` on `TyperFragment`.
+  Accepted programs Step `ok`. Rejected programs do not satisfy the premise.
+  Product `typer` is not done. Systems Lean remains not ready for use.
+-/
+theorem typer_sound_implication : typerSoundImplication := by
+  intro p hAcc
+  cases p with
+  | copyBitsOfBits =>
+    intro hFault
+    nomatch hFault
+  | uniqueBlockMoveOwner =>
+    intro hFault
+    nomatch hFault
+  | uniqueBlockCopyHandleNoProtocol =>
+    exact Bool.noConfusion hAcc
+  | heapOmegaAsOwner =>
+    exact Bool.noConfusion hAcc
+
+theorem typer_accepts_copy_bits_of_bits :
+    typerAccepts .copyBitsOfBits = true := rfl
+
+theorem typer_accepts_unique_block_move_owner :
+    typerAccepts .uniqueBlockMoveOwner = true := rfl
+
+theorem typer_rejects_unique_block_copy_handle_no_protocol :
+    typerAccepts .uniqueBlockCopyHandleNoProtocol = false := rfl
+
+theorem typer_rejects_heap_omega_as_owner_fragment :
+    typerAccepts .heapOmegaAsOwner = false := rfl
+
+theorem typer_step_copy_bits_of_bits_ok :
+    typerStep .copyBitsOfBits = StepState.ok := rfl
+
+theorem typer_step_unique_block_move_owner_ok :
+    typerStep .uniqueBlockMoveOwner = StepState.ok := rfl
+
+theorem typer_step_copy_handle_no_protocol_would_fault :
+    typerStep .uniqueBlockCopyHandleNoProtocol = StepState.fault := rfl
+
+theorem typer_step_heap_omega_as_owner_would_fault :
+    typerStep .heapOmegaAsOwner = StepState.fault := rfl
+
+/-- At least one accepted program and at least one rejected program. -/
+theorem typer_sound_implication_not_vacuous :
+    (∃ p, typerAccepts p = true ∧ typerStep p ≠ StepState.fault) ∧
+      ∃ p, typerAccepts p = false :=
+  ⟨⟨.copyBitsOfBits, rfl, fun h => nomatch h⟩,
+    ⟨.uniqueBlockCopyHandleNoProtocol, rfl⟩⟩
+
+theorem panic_free_named : panicFreeNamed = true := rfl
+
+theorem panic_free_aot_named : panicFreeAotNamed = true := rfl
+
+theorem panic_free_aot_implication_proved :
+    panicFreeAotImplicationProved = true := rfl
+
+/--
+  Companion fragment: if PanicFree holds, execution does not panic.
+  The product AOT path is not done.
+-/
+theorem panic_free_aot_implication : panicFreeAotImplication := by
+  intro p h
+  cases p with
+  | typedPathNoPanic =>
+    intro contra
+    cases contra
+  | reachableUnwrap =>
+    cases h
+  | allocationFailure =>
+    intro contra
+    cases contra
+  | hardwareFault =>
+    intro contra
+    cases contra
+
+theorem panic_free_holds_typed_path_no_panic :
+    panicFreeHolds .typedPathNoPanic = true := rfl
+
+theorem panic_free_exec_typed_path_no_panic_not_panic :
+    panicFreeExec .typedPathNoPanic ≠ PanicOutcome.panic := by
+  intro h
+  cases h
+
+theorem panic_free_does_not_hold_reachable_unwrap :
+    panicFreeHolds .reachableUnwrap = false := rfl
+
+theorem panic_free_exec_reachable_unwrap_is_panic :
+    panicFreeExec .reachableUnwrap = PanicOutcome.panic := rfl
+
+theorem panic_free_holds_allocation_failure :
+    panicFreeHolds .allocationFailure = true := rfl
+
+theorem panic_free_exec_allocation_failure_not_panic :
+    panicFreeExec .allocationFailure ≠ PanicOutcome.panic := by
+  intro h
+  cases h
+
+theorem panic_free_holds_hardware_fault :
+    panicFreeHolds .hardwareFault = true := rfl
+
+theorem panic_free_exec_hardware_fault_not_panic :
+    panicFreeExec .hardwareFault ≠ PanicOutcome.panic := by
+  intro h
+  cases h
+
+/-- At least one holding program and at least one program that is not PanicFree. -/
+theorem panic_free_aot_implication_not_vacuous :
+    (∃ p, panicFreeHolds p = true ∧ panicFreeExec p ≠ PanicOutcome.panic) ∧
+      ∃ p, panicFreeHolds p = false :=
+  ⟨⟨.typedPathNoPanic, rfl, fun h => nomatch h⟩, ⟨.reachableUnwrap, rfl⟩⟩
+
+theorem panic_free_does_not_follow_from_safe_mem :
+    panicFreeImpliesSafeMem = false := rfl
+
+theorem unique_block_has_no_default_rc_header :
+    uniqueBlockDefaultRcHeader = false := rfl
+
+theorem heap_omega_as_owner_rejected :
+    heapOmegaAsOwnerRejected = true := rfl
+
+theorem heap_omega_reject_not_collapsed_into_bits_trivial :
+    heapOmegaRejectCollapsedIntoBitsTrivial = false := rfl
+
+theorem fargo_has_no_spec_number :
+    fargoHasSpecNumber = false := rfl
+
+theorem llvm_cc_path_not_called_compcert_proved :
+    llvmCcPathCalledCompCertProved = false := rfl
+
+theorem slake_primary_emit_is_freestanding_c :
+    slakePrimaryEmitIsFreestandingC = true := rfl
+
+theorem hosted_linux_libc_does_not_replace_primary_emit :
+    hostedLinuxLibcReplacesPrimaryEmit = false := rfl
+
+theorem safe_ct_off_by_default :
+    safeCtOnByDefault = false := rfl
+
+theorem lock_free_is_not_mutex_absent :
+    lockFreeMeansMutexAbsent = false := rfl
+
+theorem lock_free_is_not_compare_and_swap :
+    lockFreeMeansCompareAndSwap = false := rfl
+
+theorem acid_is_not_compare_and_swap :
+    acidIsCompareAndSwap = false := rfl
+
+theorem beastdb_acid_owned_by_spec_0003 :
+    beastdbAcidOwnedBySpec0003 = true := rfl
+
+theorem posix_fork_is_page_cow :
+    posixForkIsPageCow = true := rfl
+
+theorem posix_fork_is_not_object_cow :
+    posixForkIsObjectCow = false := rfl
+
+theorem correspondence_required_before_isomorphism :
+    correspondenceRequiredBeforeIsomorphism = true := rfl
+
+theorem passing_mode_roundtrip (m : PassingMode) :
+    PassingMode.ofFin (PassingMode.toFin m) = m := by
+  cases m <;> rfl
+
+theorem mash_typed_link_input_claimed_proved_is_false :
+    mashTypedLinkInputClaimedProvedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_cons_on_every_export_claimed_proved_is_false :
+    mashConsOnEveryExportClaimedProvedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_memcpy_equation_present_theorem_is_false :
+    mashMemcpyEquationPresentTheoremIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_named_residual_identifiers_present_theories_is_false :
+    mashNamedResidualIdentifiersPresentTheoriesIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 end SystemsLean

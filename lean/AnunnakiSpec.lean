@@ -187,6 +187,42 @@ def nixFixturePinned : Bool := false
 
 def cppFixturePinned : Bool := false
 
+/--
+  Clause 6 leftover residual facts. All of these are false.
+  RDPS, FilterScript, Carbonado, number 0015, ENKI as a numbered file,
+  and fargo stay unassigned here. A stack program instruction set,
+  nested language, on disk join shape, compound word rules, default
+  Majestic use, who emits the stack program, and Huffman versus pages
+  length on a real corpus remain unspecified or unmeasured here.
+-/
+def rdpsAssignedNumber : Bool := false
+
+def filterScriptAssignedNumber : Bool := false
+
+def carbonadoAssignedNumber : Bool := false
+
+def number0015Assigned : Bool := false
+
+def number0015IsThisSpecification : Bool := false
+
+def createsEnkiNumberedFile : Bool := false
+
+def fargoAssignedNumber : Bool := false
+
+def stackProgramInstructionSetSpecified : Bool := false
+
+def nestedLanguageSpecified : Bool := false
+
+def onDiskJoinShapeSpecified : Bool := false
+
+def compoundWordRulesSpecified : Bool := false
+
+def anunnakiDefaultMajesticSpecified : Bool := false
+
+def whoEmitsStackProgramSpecified : Bool := false
+
+def huffmanVersusPagesMeasured : Bool := false
+
 def siblingLineEncodingsRequired : Bool := true
 
 def siblingProofsAreSeparateModules : Bool := true
@@ -245,6 +281,53 @@ def mashSpecAndProof : Prop :=
 def mashSpecAndProofIsFalse : Prop :=
   mashSpecAndProof → False
 
+/--
+  Clause 6.5 leftover clashes. Treating a leftover as accepted is Cons False.
+  Mash of spec encodings plus proofs stays `mashSpecAndProofIsFalse` above.
+  Do not restate that mash as a new catalog identity here.
+-/
+def mashEnkiAndAnunnakiAreOneObject : Prop :=
+  enkiAndAnunnakiAreOneObject = true
+
+def mashEnkiAndAnunnakiAreOneObjectIsFalse : Prop :=
+  mashEnkiAndAnunnakiAreOneObject → False
+
+def mashConformingEncoderClaimed : Prop :=
+  conformingEncoderClaimed = true
+
+def mashConformingEncoderClaimedIsFalse : Prop :=
+  mashConformingEncoderClaimed → False
+
+def mashNumber0015IsThisSpecification : Prop :=
+  number0015IsThisSpecification = true
+
+def mashNumber0015IsThisSpecificationIsFalse : Prop :=
+  mashNumber0015IsThisSpecification → False
+
+def mashCarbonadoAssignedNumber : Prop :=
+  carbonadoAssignedNumber = true
+
+def mashCarbonadoAssignedNumberIsFalse : Prop :=
+  mashCarbonadoAssignedNumber → False
+
+def mashEnkiHasNumberedSpecification : Prop :=
+  enkiHasNumberedSpecification = true
+
+def mashEnkiHasNumberedSpecificationIsFalse : Prop :=
+  mashEnkiHasNumberedSpecification → False
+
+def mashRdpsAssignedNumber : Prop :=
+  rdpsAssignedNumber = true
+
+def mashRdpsAssignedNumberIsFalse : Prop :=
+  mashRdpsAssignedNumber → False
+
+def mashFilterScriptAssignedNumber : Prop :=
+  filterScriptAssignedNumber = true
+
+def mashFilterScriptAssignedNumberIsFalse : Prop :=
+  mashFilterScriptAssignedNumber → False
+
 /-- Required Conformance holds iff every listed conjunct holds. -/
 def requiredConformanceHolds : Bool :=
   specNumber == 14 &&
@@ -297,7 +380,21 @@ def requiredConformanceHolds : Bool :=
     conformingThisRepo specEncodingFixture &&
     conformingThisRepo proofFixture &&
     !conformingThisRepo mashedFixture &&
-    !FormalVibeficationSpec.testsAloneAreSufficient
+    !FormalVibeficationSpec.testsAloneAreSufficient &&
+    !rdpsAssignedNumber &&
+    !filterScriptAssignedNumber &&
+    !carbonadoAssignedNumber &&
+    !number0015Assigned &&
+    !number0015IsThisSpecification &&
+    !createsEnkiNumberedFile &&
+    !fargoAssignedNumber &&
+    !stackProgramInstructionSetSpecified &&
+    !nestedLanguageSpecified &&
+    !onDiskJoinShapeSpecified &&
+    !compoundWordRulesSpecified &&
+    !anunnakiDefaultMajesticSpecified &&
+    !whoEmitsStackProgramSpecified &&
+    !huffmanVersusPagesMeasured
 
 def formalVibeficationUrl : String :=
   "https://proofofkeags.com/research/2026-05-12-formal-vibefication.html"

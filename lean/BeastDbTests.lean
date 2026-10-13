@@ -8,6 +8,7 @@
 -/
 
 import BeastDb
+import BeastDbProofs
 import SpecRegistry
 
 open BeastDb
@@ -48,6 +49,11 @@ def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
     { name := name, ok := false, detail := "expected diagnostics, got none" }
   else
     { name := name, ok := true }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def runCases : List Case :=
   [
@@ -151,6 +157,53 @@ def runCases : List Case :=
       productMutexDependentTrie.conforms,
     expectFalse "bounce buffer required for mapped read does not conform"
       productBounceRequired.conforms,
+    expectFalse "proven ACID is not done" provenAcidDone,
+    expectFalse "tries that do not use locks are not done" triesWithoutLocksDone,
+    expectFalse "mmap is not done" mmapDone,
+    expectFalse "schema proofs are not done" schemaProofsDone,
+    expectFalse "fargo is not specified" fargoSpecified,
+    expectConsFalse "marketing ACID is not proven ACID"
+      marketingAcidIsProvenAcid
+      mashMarketingAcidIsProvenAcid
+      mashMarketingAcidIsProvenAcidIsFalse
+      rfl
+      mash_marketing_acid_is_proven_acid_is_false,
+    expectConsFalse "a mutex trie is not accepted"
+      mutexTrieAccepted
+      mashMutexTrie
+      mashMutexTrieIsFalse
+      rfl
+      mash_mutex_trie_is_false,
+    expectConsFalse "a bounce buffer is not required for a mapped read"
+      bounceBufferRequiredForMappedRead
+      mashBounceBufferRequired
+      mashBounceBufferRequiredIsFalse
+      rfl
+      mash_bounce_buffer_required_is_false,
+    expectConsFalse "inferred schema is not a license to remain without a schema"
+      inferredSchemaLeavesDataWithoutSchemaAccepted
+      mashInferredSchemaLeavesDataWithoutSchema
+      mashInferredSchemaLeavesDataWithoutSchemaIsFalse
+      rfl
+      mash_inferred_schema_leaves_data_without_schema_is_false,
+    expectConsFalse "a traditional foreign function interface is not the interoperability path"
+      traditionalFfiAsInteropPathAccepted
+      mashTraditionalFfiAsInteropPath
+      mashTraditionalFfiAsInteropPathIsFalse
+      rfl
+      mash_traditional_ffi_as_interop_path_is_false,
+    expectConsFalse "claiming that beastdb never started is not accepted"
+      beastdbNeverStartedAccepted
+      mashBeastdbNeverStarted
+      mashBeastdbNeverStartedIsFalse
+      rfl
+      mash_beastdb_never_started_is_false,
+    expectConsFalse "claiming that beastdb is ready for use is not accepted"
+      beastdbReadyForUseAccepted
+      mashBeastdbReadyForUse
+      mashBeastdbReadyForUseIsFalse
+      rfl
+      mash_beastdb_ready_for_use_is_false,
     -- Registry scan fixtures (stale numbers and wrong capitalization).
     expectNonEmpty "stale 0003_SSSSS token fails"
       (scanContent "0002_Systems_Lean.md"

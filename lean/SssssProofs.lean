@@ -56,6 +56,37 @@ theorem carbonado_unassigned :
 theorem no_implementation_claimed :
     specClaimsImplementationExists = false := rfl
 
+/-- SSSSS is real and incomplete. It is not ready for use. -/
+theorem sssss_not_ready_for_use :
+    sssssReadyForUse = false := rfl
+
+theorem mash_sssss_ready_for_use_is_false :
+    mashSssssReadyForUseIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem sssss_did_start :
+    sssssNeverStarted = false := rfl
+
+theorem mash_sssss_never_started_is_false :
+    mashSssssNeverStartedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Sequential identity is a requirement. Assignment is not claimed implemented. -/
+theorem sequential_identity_not_implemented :
+    sequentialIdentityImplemented = false := rfl
+
+theorem mash_hashing_ban_proves_engine_obeys_is_false :
+    mashHashingBanProvesEngineObeysIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem mash_neurosymbolic_harness_shipped_is_false :
+    mashNeurosymbolicHarnessShippedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 /-- Clause 1.3: television canon is not a conformance item. -/
 theorem cultural_marker_not_required :
     televisionCanonRequiredForConformance = false := rfl

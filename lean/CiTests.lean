@@ -2,13 +2,16 @@
   Runtime checks for the CI meaning model (0007_CI.md).
   Theorems in CiProofs.lean already fail to typecheck if the model is widened
   (CI numbered 0005 or 0006, unsigned without exception treated as
-  conforming, commit on red treated as conforming, layers mashed,
-  byte identity claimed true, emit = ELF treated as proved).
+  conforming, unsigned treated as a general skip, this repository claiming
+  the unsigned exception, commit on red treated as conforming, layers mashed,
+  byte identity claimed true, emit = ELF treated as proved, reality check
+  claimed done).
   This executable re-checks the decidable facts so a silent Bool
   regression prints FAIL lines, matching spec_check_tests style.
 -/
 
 import Ci
+import CiProofs
 import SpecRegistry
 
 open Ci
@@ -49,6 +52,11 @@ def expectNonEmpty {α : Type} (name : String) (xs : List α) : Case :=
     { name := name, ok := false, detail := "expected diagnostics, got none" }
   else
     { name := name, ok := true }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def runCases : List Case :=
   [
@@ -224,7 +232,31 @@ def runCases : List Case :=
     expectEqNat "PDOSS is specification 0009" Ci.pdossSpecNumber 9,
     expectTrue "Unlicense remains the license"
       unlicenseRemainsTheLicense,
-    expectTrue "CI is not specification 0009" (specNumber != Ci.pdossSpecNumber)
+    expectTrue "CI is not specification 0009" (specNumber != Ci.pdossSpecNumber),
+    expectConsFalse "byte identity claimed true is not accepted"
+      byteIdentity.claimedTrue
+      mashByteIdentityClaimedTrue
+      mashByteIdentityClaimedTrueIsFalse
+      rfl
+      mash_byte_identity_claimed_true_is_false,
+    expectConsFalse "unsigned as a general skip is not accepted"
+      (DualTreeException.applies generalSkip)
+      mashUnsignedAsGeneralSkip
+      mashUnsignedAsGeneralSkipIsFalse
+      rfl
+      mash_unsigned_as_general_skip_is_false,
+    expectConsFalse "this repository claiming the unsigned exception is not accepted"
+      thisRepoClaimsUnsignedException
+      mashThisRepoClaimsUnsignedException
+      mashThisRepoClaimsUnsignedExceptionIsFalse
+      rfl
+      mash_this_repo_claims_unsigned_exception_is_false,
+    expectConsFalse "reality check claimed done is not accepted"
+      sssssBeastDbReality.claimedDone
+      mashRealityCheckClaimedDone
+      mashRealityCheckClaimedDoneIsFalse
+      rfl
+      mash_reality_check_claimed_done_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

@@ -9,8 +9,12 @@
 
 import SystemsLean
 import SystemsLeanProofs
+import «0002_Systems_Lean»
 
 open SystemsLean
+
+def encoded0002Haystack : String :=
+  «0002_Systems_Lean».encodedLines.foldl (fun acc l => acc ++ l.text ++ "\n") ""
 
 /-- Tests-only mash fixture: hosting from generated C does not satisfy bootstrap. -/
 def mashSelfHostFromCSatisfiesBootstrapFixture : Bool :=
@@ -43,6 +47,11 @@ def expectEqString (name : String) (got want : String) : Case :=
     { name := name, ok := true }
   else
     { name := name, ok := false, detail := s!"expected {want}, got {got}" }
+
+def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
+    (isFalse : Prop) (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name accepted
 
 def runCases : List Case :=
   [
@@ -284,7 +293,269 @@ def runCases : List Case :=
     expectTrue "live CompCert claimed done differs from canonical CompCert ok"
       (compCertVerifiedCompilationClaimedDone != canonicalProduct.compCert.ok),
     expectTrue "live bootstrap claimed done differs from canonical bootstrap ok"
-      (slakeBootstrapTypecheckClaimedDone != canonicalProduct.bootstrapTypecheck.ok)
+      (slakeBootstrapTypecheckClaimedDone != canonicalProduct.bootstrapTypecheck.ok),
+    expectFalse "SafeKernel does not imply SafeCompCert"
+      safeKernelImpliesSafeCompCert,
+    expectFalse "UniqueBlock plus CopyHandle without protocol is not accepted"
+      uniqueBlockCopyHandleWithoutProtocolAccepted,
+    expectFalse "Secret plus ObjectCow is not accepted"
+      secretObjectCowAccepted,
+    expectFalse "Secret plus PageCow is not accepted"
+      secretPageCowAccepted,
+    expectFalse "CompCertFragment plus container_of is not accepted"
+      compCertFragmentContainerOfAccepted,
+    expectFalse "PanicFree plus a reachable unwrap is not accepted"
+      panicFreeReachableUnwrapAccepted,
+    expectConsFalse "CompCertFragment plus an inline assembly island is not accepted"
+      compCertFragmentInlineAsmAccepted
+      mashCompCertFragmentInlineAsm
+      mashCompCertFragmentInlineAsmIsFalse
+      rfl
+      mash_compcert_fragment_inline_asm_is_false,
+    expectConsFalse "A link face that exports UniqueBlock as bits is not accepted"
+      linkFaceExportsUniqueBlockAsBitsAccepted
+      mashLinkFaceExportsUniqueBlockAsBits
+      mashLinkFaceExportsUniqueBlockAsBitsIsFalse
+      rfl
+      mash_link_face_exports_unique_block_as_bits_is_false,
+    expectConsFalse "Language level omega on a heap OwnerHandle is not accepted"
+      languageOmegaOnHeapOwnerAccepted
+      mashLanguageOmegaOnHeapOwner
+      mashLanguageOmegaOnHeapOwnerIsFalse
+      rfl
+      mash_language_omega_on_heap_owner_is_false,
+    expectConsFalse "A unique only profile together with PosixFork is not accepted"
+      uniqueOnlyPosixForkAccepted
+      mashUniqueOnlyPosixFork
+      mashUniqueOnlyPosixForkIsFalse
+      rfl
+      mash_unique_only_posix_fork_is_false,
+    expectConsFalse "SafeMem plus a data race on a cell that is not atomic is not accepted"
+      safeMemNonAtomicDataRaceAccepted
+      mashSafeMemNonAtomicDataRace
+      mashSafeMemNonAtomicDataRaceIsFalse
+      rfl
+      mash_safe_mem_non_atomic_data_race_is_false,
+    expectConsFalse "LockFree that frees a node with no reclamation protocol is not accepted"
+      lockFreeFreeWithoutReclamationAccepted
+      mashLockFreeFreeWithoutReclamation
+      mashLockFreeFreeWithoutReclamationIsFalse
+      rfl
+      mash_lock_free_free_without_reclamation_is_false,
+    expectConsFalse "RwLock that holds many LoanShared and one LoanMut at once is not accepted"
+      rwLockSharedAndExclusiveAccepted
+      mashRwLockSharedAndExclusive
+      mashRwLockSharedAndExclusiveIsFalse
+      rfl
+      mash_rw_lock_shared_and_exclusive_is_false,
+    expectConsFalse "CopyHandle of a LockToken is not accepted"
+      copyHandleLockTokenAccepted
+      mashCopyHandleLockToken
+      mashCopyHandleLockTokenIsFalse
+      rfl
+      mash_copy_handle_lock_token_is_false,
+    expectConsFalse "Compare and swap on a UniqueBlock pointer is not accepted"
+      casUniqueBlockPointerAccepted
+      mashCasUniqueBlockPointer
+      mashCasUniqueBlockPointerIsFalse
+      rfl
+      mash_cas_unique_block_pointer_is_false,
+    expectConsFalse "Compare and swap on a cell that is not AtomicCell is not accepted"
+      casNonAtomicCellAccepted
+      mashCasNonAtomicCell
+      mashCasNonAtomicCellIsFalse
+      rfl
+      mash_cas_non_atomic_cell_is_false,
+    expectConsFalse "ThreadShared is not ProcessShared"
+      threadSharedIsProcessShared
+      mashThreadSharedIsProcessShared
+      mashThreadSharedIsProcessSharedIsFalse
+      rfl
+      mash_thread_shared_is_process_shared_is_false,
+    expectConsFalse "PosixFork is not ForkJoin"
+      posixForkIsForkJoin
+      mashPosixForkIsForkJoin
+      mashPosixForkIsForkJoinIsFalse
+      rfl
+      mash_posix_fork_is_fork_join_is_false,
+    expectConsFalse "PosixFork is not BorrowOrOwned"
+      posixForkIsBorrowOrOwned
+      mashPosixForkIsBorrowOrOwned
+      mashPosixForkIsBorrowOrOwnedIsFalse
+      rfl
+      mash_posix_fork_is_borrow_or_owned_is_false,
+    expectConsFalse "CopyHandle or CopyBits of Secret into a sink that is not Secret is not accepted"
+      secretCopyIntoNonSecretAccepted
+      mashSecretCopyIntoNonSecret
+      mashSecretCopyIntoNonSecretIsFalse
+      rfl
+      mash_secret_copy_into_non_secret_is_false,
+    expectConsFalse "PosixFork while a Secret with DontFork is live is not accepted"
+      secretDontForkPosixForkAccepted
+      mashSecretDontForkPosixFork
+      mashSecretDontForkPosixForkIsFalse
+      rfl
+      mash_secret_dont_fork_posix_fork_is_false,
+    expectConsFalse "Once does not imply UniqueBlock"
+      onceImpliesUniqueBlock
+      mashOnceImpliesUniqueBlock
+      mashOnceImpliesUniqueBlockIsFalse
+      rfl
+      mash_once_implies_unique_block_is_false,
+    expectConsFalse "The durability call list is not beastdb ACID"
+      syscallDurabilityIsBeastdbAcid
+      mashSyscallDurabilityIsBeastdbAcid
+      mashSyscallDurabilityIsBeastdbAcidIsFalse
+      rfl
+      mash_syscall_durability_is_beastdb_acid_is_false,
+    expectConsFalse "Cons on beastdb Props that do not attach is not accepted"
+      beastdbPropsConsWithoutAttachAccepted
+      mashBeastdbPropsConsWithoutAttach
+      mashBeastdbPropsConsWithoutAttachIsFalse
+      rfl
+      mash_beastdb_props_cons_without_attach_is_false,
+    expectConsFalse "TSX is not beastdb ACID"
+      tsxIsBeastdbAcid
+      mashTsxIsBeastdbAcid
+      mashTsxIsBeastdbAcidIsFalse
+      rfl
+      mash_tsx_is_beastdb_acid_is_false,
+    expectConsFalse "grok-oss is not SafeC"
+      grokOssIsSafeC
+      mashGrokOssIsSafeC
+      mashGrokOssIsSafeCIsFalse
+      rfl
+      mash_grok_oss_is_safe_c_is_false,
+    expectConsFalse "the page cache is not RCU"
+      pageCacheIsRcu
+      mashPageCacheIsRcu
+      mashPageCacheIsRcuIsFalse
+      rfl
+      mash_page_cache_is_rcu_is_false,
+    expectConsFalse "a crate that has completed only Gate A is not Safe"
+      gateACrateIsSafe
+      mashGateACrateIsSafe
+      mashGateACrateIsSafeIsFalse
+      rfl
+      mash_gate_a_crate_is_safe_is_false,
+    expectConsFalse "hardware tagging does not replace UniqueBlock"
+      hardwareTagReplacesUniqueBlock
+      mashHardwareTagReplacesUniqueBlock
+      mashHardwareTagReplacesUniqueBlockIsFalse
+      rfl
+      mash_hardware_tag_replaces_unique_block_is_false,
+    expectConsFalse "automatic vectorization is not a SIMD proof"
+      autovectorizationIsSimdProof
+      mashAutovectorizationIsSimdProof
+      mashAutovectorizationIsSimdProofIsFalse
+      rfl
+      mash_autovectorization_is_simd_proof_is_false,
+    expectConsFalse "a theorem named Perfect or ProvablyPerfect is not accepted"
+      perfectTheoremNameAccepted
+      mashPerfectTheoremName
+      mashPerfectTheoremNameIsFalse
+      rfl
+      mash_perfect_theorem_name_is_false,
+    expectConsFalse "a typed link input is not claimed proved"
+      typedLinkInputClaimedProved
+      mashTypedLinkInputClaimedProved
+      mashTypedLinkInputClaimedProvedIsFalse
+      rfl
+      mash_typed_link_input_claimed_proved_is_false,
+    expectConsFalse "Cons on every export is not claimed proved"
+      consOnEveryExportClaimedProved
+      mashConsOnEveryExportClaimedProved
+      mashConsOnEveryExportClaimedProvedIsFalse
+      rfl
+      mash_cons_on_every_export_claimed_proved_is_false,
+    expectConsFalse "the memcpy equation is not a present theorem"
+      memcpyEquationPresentTheorem
+      mashMemcpyEquationPresentTheorem
+      mashMemcpyEquationPresentTheoremIsFalse
+      rfl
+      mash_memcpy_equation_present_theorem_is_false,
+    expectConsFalse "AtomicCell, AtomicTxn, UsesLock, and LockHandled are not present theories"
+      namedResidualIdentifiersPresentTheories
+      mashNamedResidualIdentifiersPresentTheories
+      mashNamedResidualIdentifiersPresentTheoriesIsFalse
+      rfl
+      mash_named_residual_identifiers_present_theories_is_false,
+    expectTrue "TyperSound is named" typerSoundNamed,
+    expectTrue "TyperSound implication is proved on the companion fragment"
+      typerSoundImplicationProved,
+    expectTrue "companion typer accepts CopyBits of Bits"
+      (typerAccepts .copyBitsOfBits),
+    expectTrue "companion typer accepts UniqueBlock MoveOwner"
+      (typerAccepts .uniqueBlockMoveOwner),
+    expectFalse "companion typer rejects UniqueBlock CopyHandle without protocol"
+      (typerAccepts .uniqueBlockCopyHandleNoProtocol),
+    expectFalse "companion typer rejects heap omega as owner"
+      (typerAccepts .heapOmegaAsOwner),
+    expectTrue "accepted CopyBits of Bits does not Step to Fault"
+      (typerStep .copyBitsOfBits != .fault),
+    expectTrue "accepted UniqueBlock MoveOwner does not Step to Fault"
+      (typerStep .uniqueBlockMoveOwner != .fault),
+    expectTrue "rejected CopyHandle without protocol would Fault under Step"
+      (typerStep .uniqueBlockCopyHandleNoProtocol == .fault),
+    expectTrue "rejected heap omega as owner would Fault under Step"
+      (typerStep .heapOmegaAsOwner == .fault),
+    expectTrue "PanicFree is named" panicFreeNamed,
+    expectTrue "PanicFreeAOT is named" panicFreeAotNamed,
+    expectTrue "PanicFreeAOT implication is claimed proved"
+      panicFreeAotImplicationProved,
+    expectTrue "typed path with PanicFree does not panic"
+      (panicFreeHolds .typedPathNoPanic &&
+        panicFreeExec .typedPathNoPanic != PanicOutcome.panic),
+    expectFalse "reachable unwrap is not PanicFree"
+      (panicFreeHolds .reachableUnwrap),
+    expectTrue "reachable unwrap executes as panic"
+      (panicFreeExec .reachableUnwrap == PanicOutcome.panic),
+    expectTrue "allocation failure may still be PanicFree and is not a panic"
+      (panicFreeHolds .allocationFailure &&
+        panicFreeExec .allocationFailure != PanicOutcome.panic),
+    expectTrue "hardware fault may still be PanicFree and is not a panic"
+      (panicFreeHolds .hardwareFault &&
+        panicFreeExec .hardwareFault != PanicOutcome.panic),
+    expectFalse "PanicFree does not follow from SafeMem"
+      panicFreeImpliesSafeMem,
+    expectFalse "UniqueBlock has no default reference count header"
+      uniqueBlockDefaultRcHeader,
+    expectTrue "heap omega as owner is rejected"
+      heapOmegaAsOwnerRejected,
+    expectFalse "heap omega reject is not Bits Trivial"
+      heapOmegaRejectCollapsedIntoBitsTrivial,
+    expectFalse "fargo has no specification number"
+      fargoHasSpecNumber,
+    expectFalse "LLVM or cc path is not called CompCert proved"
+      llvmCcPathCalledCompCertProved,
+    expectTrue "Slake primary emit is freestanding C"
+      slakePrimaryEmitIsFreestandingC,
+    expectFalse "HostedLinuxLibc does not replace primary emit"
+      hostedLinuxLibcReplacesPrimaryEmit,
+    expectFalse "SafeCt is off by default"
+      safeCtOnByDefault,
+    expectFalse "LockFree is not Mutex absent"
+      lockFreeMeansMutexAbsent,
+    expectFalse "LockFree is not compare and swap"
+      lockFreeMeansCompareAndSwap,
+    expectFalse "ACID is not compare and swap"
+      acidIsCompareAndSwap,
+    expectTrue "beastdb ACID is owned by specification 0003"
+      beastdbAcidOwnedBySpec0003,
+    expectTrue "PosixFork is PageCow"
+      posixForkIsPageCow,
+    expectFalse "PosixFork is not ObjectCow"
+      posixForkIsObjectCow,
+    expectTrue "correspondence is required before isomorphism"
+      correspondenceRequiredBeforeIsomorphism,
+    expectEqNat "sampled v28 silence token count stays 16"
+      v28SilenceTokens.length v28SilenceTokenCount,
+    expectTrue "sampled v28 silence tokens appear in 0002"
+      (v28SilenceTokensNamedIn encoded0002Haystack),
+    expectEqNat "remaining v28 silence token count stays 9"
+      v28RemainingSilenceTokens.length v28RemainingSilenceTokenCount,
+    expectTrue "remaining v28 silence tokens appear in 0002"
+      (v28RemainingSilenceTokensNamedIn encoded0002Haystack)
   ]
 
 def main (_args : List String) : IO UInt32 := do

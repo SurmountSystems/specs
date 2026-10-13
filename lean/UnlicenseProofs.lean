@@ -99,6 +99,14 @@ theorem this_repo_unlicense_except_named_residual :
   dsimp [thisRepoUnlicenseExceptNamedResidual]
   decide
 
+theorem unlicense_does_not_replace_named_residual_licenses :
+    unlicenseReplacesNamedResidualLicenses = false :=
+  rfl
+
+theorem mash_unlicense_replaces_named_residual_licenses
+    (h : mashUnlicenseReplacesNamedResidualLicenses) : False :=
+  nomatch h
+
 theorem numbered_specs_and_lean_are_unlicense :
     numberedSpecsAndLeanHere = LicenseOfWork.unlicenseDedication :=
   rfl
@@ -138,6 +146,17 @@ theorem apache_two_does_not_meet_pdoss : meetsPdoss .apacheTwo = false :=
 
 theorem cc0_does_not_meet_pdoss : meetsPdoss .cc0 = false :=
   rfl
+
+theorem cc0_is_not_pinned_as_meeting_pdoss :
+    cc0PinnedAsMeetingPdoss = false :=
+  rfl
+
+theorem cc0_is_not_clause_12_pin : cc0IsClause12Pin = false :=
+  rfl
+
+theorem mash_cc0_pinned_as_meeting_pdoss
+    (h : mashCc0PinnedAsMeetingPdoss) : False :=
+  nomatch h
 
 theorem mash_mit_meets_pdoss (h : mitMeetsPdoss) : False :=
   nomatch h
@@ -284,5 +303,13 @@ theorem users_not_restricted_by_nationality :
 theorem nationality_is_citizenship :
     nationalityIsCitizenship = true :=
   rfl
+
+theorem nationality_statutes_are_not_clause_12_pins :
+    nationalityStatutesAreClause12Pins = false :=
+  rfl
+
+theorem mash_nationality_statutes_are_clause_12_pins
+    (h : mashNationalityStatutesAreClause12Pins) : False :=
+  nomatch h
 
 end UnlicenseProofs
