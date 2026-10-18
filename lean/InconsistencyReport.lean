@@ -9,6 +9,12 @@
   is a checker. It is not a second markdown form suite.
 -/
 
+import AnunnakiProofs
+import CateProofs
+import CiProofs
+import SystemsLeanProofs
+import UnlicenseProofs
+
 namespace InconsistencyReport
 
 /-- Marker that opens the generated table in README.md. -/
@@ -67,28 +73,40 @@ def provenClaims : List ProvenClaim :=
 theorem proven_claim_count : provenClaims.length = 7 :=
   rfl
 
+/-- Last component of a declaration name. -/
+def declBaseName : Lean.Name → String
+  | .str _ s => s
+  | .num p _ => declBaseName p
+  | .anonymous => ""
+
 /--
-  Honesty mash theorem names that stay outside the README catalog.
-  The names are strings. This module does not import those theorems.
-  provenClaims stays the seven catalog rows. This list is not rendered
-  into the README table.
+  Honesty mash theorems that stay outside the README catalog.
+  Each entry is a resolved constant. Deleting or renaming that
+  theorem fails elaboration. provenClaims stays the seven catalog
+  rows. This list is not rendered into the README table.
 -/
-def honestyMashesOutsideCatalog : List String :=
+def honestyMashTheorems : List Lean.Name :=
   [
-    "mash_compcert_verified_compilation_claimed_done_is_false",
-    "mash_slake_bootstrap_typecheck_claimed_done_is_false",
-    "mash_compcert_tso_satisfies_clause42_item6_is_false",
-    "mash_spelling_converter_claimed_is_false",
-    "mash_british_spelling_conforms_is_false",
-    "mash_byte_identity_claimed_true_is_false",
-    "mash_conforming_encoder_claimed_is_false",
-    "mash_safe_c_is_own_published_spec_number_is_false",
-    "mash_dialect_needs_own_language_id_is_false",
-    "mash_self_host_from_c_satisfies_bootstrap_is_false"
+    ``SystemsLean.mash_compcert_verified_compilation_claimed_done_is_false,
+    ``SystemsLean.mash_slake_bootstrap_typecheck_claimed_done_is_false,
+    ``SystemsLean.mash_compcert_tso_satisfies_clause42_item6_is_false,
+    ``AnunnakiProofs.mash_spelling_converter_claimed_is_false,
+    ``Cate.mash_british_spelling_conforms_is_false,
+    ``Ci.mash_byte_identity_claimed_true_is_false,
+    ``AnunnakiProofs.mash_conforming_encoder_claimed_is_false,
+    ``SystemsLean.mash_safe_c_is_own_published_spec_number_is_false,
+    ``AnunnakiProofs.mash_dialect_needs_own_language_id_is_false,
+    ``SystemsLean.mash_self_host_from_c_satisfies_bootstrap_is_false,
+    ``UnlicenseProofs.mash_cc0_pinned_is_false,
+    ``UnlicenseProofs.mash_cc0_claimed_meets_pdoss_is_false
   ]
 
+/-- String names are the last component of honestyMashTheorems. -/
+def honestyMashesOutsideCatalog : List String :=
+  honestyMashTheorems.map declBaseName
+
 theorem honesty_mashes_outside_catalog_count :
-    honestyMashesOutsideCatalog.length = 10 :=
+    honestyMashesOutsideCatalog.length = 12 :=
   rfl
 
 theorem honesty_mashes_outside_catalog_names :
@@ -102,7 +120,9 @@ theorem honesty_mashes_outside_catalog_names :
       "mash_conforming_encoder_claimed_is_false",
       "mash_safe_c_is_own_published_spec_number_is_false",
       "mash_dialect_needs_own_language_id_is_false",
-      "mash_self_host_from_c_satisfies_bootstrap_is_false"
+      "mash_self_host_from_c_satisfies_bootstrap_is_false",
+      "mash_cc0_pinned_is_false",
+      "mash_cc0_claimed_meets_pdoss_is_false"
     ] :=
   rfl
 

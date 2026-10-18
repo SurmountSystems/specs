@@ -88,8 +88,8 @@ def runCases : List Case :=
       (!((generatedTable.splitOn "intentional nonconformance theorem").length == 1)),
     expectTrue "tableSectionOk is the product check"
       (tableSectionOk fixtureCurrent == readmeTableCurrent fixtureCurrent),
-    expectEqNat "ten honesty mashes outside the catalog"
-      honestyMashesOutsideCatalog.length 10,
+    expectEqNat "twelve honesty mashes outside the catalog"
+      honestyMashesOutsideCatalog.length 12,
     expectHonestyNameAt 0
       "mash_compcert_verified_compilation_claimed_done_is_false",
     expectHonestyNameAt 1
@@ -110,6 +110,10 @@ def runCases : List Case :=
       "mash_dialect_needs_own_language_id_is_false",
     expectHonestyNameAt 9
       "mash_self_host_from_c_satisfies_bootstrap_is_false",
+    expectHonestyNameAt 10
+      "mash_cc0_pinned_is_false",
+    expectHonestyNameAt 11
+      "mash_cc0_claimed_meets_pdoss_is_false",
     expectEqNat "shared honesty names"
       (honestyMashesOutsideCatalog.filter honestyMashNameInProvenClaims).length 0,
     expectTrue "a catalog claim name is recognized as shared"
