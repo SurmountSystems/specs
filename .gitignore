@@ -9,5 +9,6 @@ result-*
 .pre-commit-config.yaml
 
 # Lean / Lake local build products (never ship host-linked caches)
+.lake
 lean/.lake/
 lean/lake-manifest.json

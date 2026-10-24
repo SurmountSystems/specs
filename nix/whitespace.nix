@@ -1,6 +1,9 @@
 # Pure Nix checker: project-owned trailing whitespace and tab-only leading indent.
 #
-# Call as: import ./nix/whitespace.nix { inherit lib; } ./.;
+# Call as: import ./nix/whitespace.nix { inherit lib; } root
+# root is a path, or a string store path from toString of cleanSourceWith.
+# A string store path is walked with builtins.readDir. lib.fileset.fileFilter
+# rejects that string and rejects a set, so fileFilter is not used for it.
 # Returns: list of "path:line: message" strings (empty = ok).
 #
 # Not Lean. Not bash. Evaluation is the check (see flake checks.whitespace).
@@ -13,12 +16,14 @@ root:
 let
 	inherit (builtins)
 		readFile
+		readDir
 		split
 		stringLength
 		substring
 		filter
 		isString
 		pathExists
+		attrNames
 		;
 	inherit (lib) fileset;
 
@@ -97,7 +102,40 @@ let
 	skipsLeadingSpaceRule =
 		rel: lib.hasSuffix ".lean" rel || lib.hasSuffix ".yml" rel || lib.hasSuffix ".yaml" rel;
 
-	# Prefer fileset: only text-ish candidates enter the set (PDFs never matched).
+	# Directory base names that are build products. A string store root is
+	# already filtered, and these names are still not descended into.
+	skipDirName =
+		name:
+		name == ".git"
+		|| name == ".direnv"
+		|| name == ".lake"
+		|| name == "result"
+		|| lib.hasPrefix "result-" name;
+
+	# lib.fileset.fileFilter rejects a store path string. Walk that root here.
+	readDirFiles =
+		dir:
+		let
+			listing = readDir dir;
+		in
+		lib.concatMap (
+			name:
+			let
+				typ = listing.${name};
+				child = dir + "/" + name;
+			in
+			if typ == "directory" then
+				if skipDirName name || isSkipped (relOf child) then
+					[ ]
+				else
+					readDirFiles child
+			else if typ == "regular" then
+				[ child ]
+			else
+				[ ]
+		) (attrNames listing);
+
+	# Prefer fileset when root is a path: only text-ish candidates enter the set (PDFs never matched).
 	ownedFileset =
 		fileset.fileFilter (
 			file:
@@ -141,12 +179,18 @@ let
 			++ maybe "/.git"
 			++ maybe "/.direnv"
 			++ maybe "/lean/.lake"
+			++ maybe "/.lake"
 			++ maybe "/result"
 		);
 
 	selectedFileset = fileset.difference candidateFileset excludeTrees;
 
-	allPaths = fileset.toList selectedFileset;
+	# A path root still uses fileset. A string root never reaches fileFilter.
+	allPaths =
+		if isString root then
+			readDirFiles root
+		else
+			fileset.toList selectedFileset;
 
 	pathsToCheck = filter (
 		path:

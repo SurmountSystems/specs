@@ -13,6 +13,7 @@ default:
 # Same underlying gate as CI: all flake checks for this system.
 # Equivalent to: nix flake check "path:$PWD" --print-build-logs
 # Uses path: so untracked flake files still evaluate (pure git tree is not required).
+# path: copies this working tree. flake.nix repoSrc drops Lake caches, .git, and result links before they are derivation inputs. check, check-local, and check-remote share that filter.
 # Uses this machine's Nix config, which may send builds to a remote builder.
 check:
 	nix flake check "path:{{justfile_directory()}}" --print-build-logs

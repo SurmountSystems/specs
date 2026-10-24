@@ -36,11 +36,49 @@
 					}
 				);
 
+			# Working tree the checks read, and the tree a remote builder receives.
+			# path: copies every name. Nix 2.35 defaultPathFilter keeps them all,
+			# including Lake caches, .git, and result links. This drops those.
+			# Untracked numbered specifications and Lean sources stay in.
+			# ref/ pins and skills/lean4-skills stay in.
+			repoSrc = nixpkgs.lib.cleanSourceWith {
+				name = "spec-repo-src";
+				src = ./.;
+				filter =
+					path: type:
+					let
+						base = baseNameOf path;
+						pathStr = toString path;
+						rootStr = toString ./.;
+						rel =
+							if pathStr == rootStr then
+								""
+							else if nixpkgs.lib.hasPrefix (rootStr + "/") pathStr then
+								nixpkgs.lib.removePrefix (rootStr + "/") pathStr
+							else
+								base;
+						isBuildProduct =
+							base == ".git"
+							|| base == ".direnv"
+							|| base == ".lake"
+							|| rel == "lean/.lake"
+							|| nixpkgs.lib.hasPrefix "lean/.lake/" rel
+							|| base == "result"
+							|| nixpkgs.lib.hasPrefix "result-" base
+							|| base == "lake-manifest.json"
+							|| base == ".pre-commit-config.yaml"
+							|| nixpkgs.lib.hasSuffix ".olean" base
+							|| nixpkgs.lib.hasSuffix ".ilean" base;
+					in
+					!isBuildProduct;
+			};
+
 			# Pure Nix project-wide whitespace gate (trailing WS; tab leading indent).
 			# Empty list = ok. Non-empty = "path:line: message" diagnostics.
+			# Same filtered tree as the remote checks, so the gate does not read Lake caches.
 			whitespaceViolations = import ./nix/whitespace.nix {
 				lib = nixpkgs.lib;
-			} ./.;
+			} (toString repoSrc);
 		in
 		{
 			# Debug: nix eval path:$PWD#lib.whitespaceViolations
@@ -399,7 +437,7 @@
 					# Numbered specs only (not README / AGENTS / UNLICENSE).
 					numberedSpecFiles = "^[0-9]{4}_[A-Za-z0-9_]+\\.md$";
 					pre-commit-check = git-hooks.lib.${system}.run {
-						src = ./.;
+						src = repoSrc;
 						hooks = {
 							spec_check = {
 								enable = true;
@@ -433,7 +471,7 @@
 								];
 							}
 							''
-								export REPO_ROOT=${./.}
+								export REPO_ROOT=${repoSrc}
 								cd "$REPO_ROOT"
 								spec_check
 								mkdir -p "$out"
@@ -547,7 +585,7 @@
 								];
 							}
 							''
-								export REPO_ROOT=${./.}
+								export REPO_ROOT=${repoSrc}
 								cd "$REPO_ROOT"
 								vocab_aspell_tests
 								mkdir -p "$out"
@@ -678,7 +716,7 @@
 								];
 							}
 							''
-								export REPO_ROOT=${./.}
+								export REPO_ROOT=${repoSrc}
 								mkdir -p "$out"
 								sstt_write --self-check -o "$out/tech_tree.sstt"
 								echo ok > "$out/result"
@@ -707,7 +745,7 @@
 								];
 							}
 							''
-								export REPO_ROOT=${./.}
+								export REPO_ROOT=${repoSrc}
 								cd "$REPO_ROOT"
 								repo_links_check
 								mkdir -p "$out"
@@ -737,7 +775,7 @@
 								];
 							}
 							''
-								export REPO_ROOT=${./.}
+								export REPO_ROOT=${repoSrc}
 								cd "$REPO_ROOT"
 								line_encodings_check
 								mkdir -p "$out"
@@ -767,7 +805,7 @@
 								];
 							}
 							''
-								export REPO_ROOT=${./.}
+								export REPO_ROOT=${repoSrc}
 								cd "$REPO_ROOT"
 								word_stats
 								mkdir -p "$out"
@@ -797,7 +835,7 @@
 								];
 							}
 							''
-								export REPO_ROOT=${./.}
+								export REPO_ROOT=${repoSrc}
 								cd "$REPO_ROOT"
 								inconsistency_report
 								mkdir -p "$out"
