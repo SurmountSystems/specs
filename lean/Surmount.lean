@@ -361,23 +361,36 @@ theorem mash_composition_as_product_readiness_is_false :
   intro h
   exact Bool.noConfusion h
 
-/-- Number 0015 is unassigned. This composition does not invent 0015. -/
-def numberFifteenAssigned : Bool := false
+/-- The Operator assigned number 0015 to the session bus. -/
+def numberFifteenAssignedToSessionBus : Bool := true
 
-def mashNumberFifteenAssigned : Prop :=
-  numberFifteenAssigned = true
-
-def mashNumberFifteenAssignedIsFalse : Prop :=
-  mashNumberFifteenAssigned → False
-
-theorem number_fifteen_is_unassigned :
-    numberFifteenAssigned = false :=
+theorem number_fifteen_assigned_to_session_bus :
+    numberFifteenAssignedToSessionBus = true :=
   rfl
 
-theorem mash_number_0015_assigned_is_false :
-    mashNumberFifteenAssignedIsFalse := by
+/-- A published numbered file for 0015 does not exist. The draft is missing. -/
+def numberFifteenPublishedFileExists : Bool := false
+
+def mashNumberFifteenPublishedFileExists : Prop :=
+  numberFifteenPublishedFileExists = true
+
+def mashNumberFifteenPublishedFileExistsIsFalse : Prop :=
+  mashNumberFifteenPublishedFileExists → False
+
+theorem number_fifteen_published_file_does_not_exist :
+    numberFifteenPublishedFileExists = false :=
+  rfl
+
+theorem mash_number_fifteen_published_file_exists_is_false :
+    mashNumberFifteenPublishedFileExistsIsFalse := by
   intro h
   exact Bool.noConfusion h
+
+/-- Assignment of number 0015 does not imply a published file. -/
+theorem number_fifteen_assignment_does_not_imply_published_file :
+    numberFifteenAssignedToSessionBus = true ∧
+      numberFifteenPublishedFileExists = false :=
+  And.intro rfl rfl
 
 theorem anunnaki_is_not_0015 : anunnakiSpecNumber ≠ 15 := by decide
 
@@ -829,7 +842,8 @@ def stackIntegrates : Bool :=
     !Sssss.productClaimedNotSystemsLean.conforms &&
     Sssss.productCanonicalIntegration.conforms &&
     !compositionIsProductReadiness &&
-    !numberFifteenAssigned &&
+    numberFifteenAssignedToSessionBus &&
+    !numberFifteenPublishedFileExists &&
     !(anunnakiSpecNumber == 15) &&
     !(surmountSpecNumber == 15)
 

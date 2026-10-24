@@ -3,6 +3,8 @@
 
 	inputs = {
 		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+		# Pinned nixpkgs that packages lean4 4.35.0. Main nixpkgs stays put.
+		nixpkgs-lean.url = "github:NixOS/nixpkgs/02c087f3fe673c9e317f206a627cb6b910336dbe";
 		git-hooks = {
 			url = "github:cachix/git-hooks.nix";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -13,6 +15,7 @@
 		{
 			self,
 			nixpkgs,
+			nixpkgs-lean,
 			git-hooks,
 		}:
 		let
@@ -23,6 +26,15 @@
 				"aarch64-darwin"
 			];
 			forAllSystems = nixpkgs.lib.genAttrs systems;
+
+			# Replace only lean4. Its closure stays on nixpkgs-lean.
+			pkgsFor =
+				system:
+				nixpkgs.legacyPackages.${system}.extend (
+					final: prev: {
+						lean4 = nixpkgs-lean.legacyPackages.${system}.lean4;
+					}
+				);
 
 			# Pure Nix project-wide whitespace gate (trailing WS; tab leading indent).
 			# Empty list = ok. Non-empty = "path:line: message" diagnostics.
@@ -40,7 +52,7 @@
 			packages = forAllSystems (
 				system:
 				let
-					pkgs = nixpkgs.legacyPackages.${system};
+					pkgs = pkgsFor system;
 
 					# Lake lives in lean/. Sibling NNNN_descriptive.lean encodings and the
 					# numbered markdown those encodings match sit at the repository root
@@ -84,9 +96,14 @@
 					};
 
 					# Shared Lean build env (sandbox-clean leanSrc; no host .lake).
+					# libleanrt.a from lean4 4.35.0 references std::__detail::__wait_impl
+					# at GLIBCXX_3.4.35. That libstdc++ is nixpkgs-lean gcc 16, not the
+					# main nixpkgs stdenv. Link with the nixpkgs-lean stdenv. gmp and
+					# libuv come from that same pin so the link does not mix glibc.
+					leanLinkPkgs = nixpkgs-lean.legacyPackages.${system};
 					leanBuildInputs = [
-						pkgs.gmp
-						pkgs.libuv
+						leanLinkPkgs.gmp
+						leanLinkPkgs.libuv
 					];
 					mkLeanBin =
 						{
@@ -95,7 +112,7 @@
 							binName,
 							description,
 						}:
-						pkgs.stdenv.mkDerivation {
+						leanLinkPkgs.stdenv.mkDerivation {
 							inherit pname;
 							version = "1.0.0";
 							src = leanSrc;
@@ -332,9 +349,11 @@
 						binName = "inconsistency_report";
 						description = "Lean checker that README.md contains a current table of proven logical inconsistencies in Lean meaning models";
 					};
+
+					lean4 = pkgs.lean4;
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests anunnaki_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests anunnaki_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report lean4;
 					default = spec_check;
 				}
 			);
@@ -364,7 +383,7 @@
 			checks = forAllSystems (
 				system:
 				let
-					pkgs = nixpkgs.legacyPackages.${system};
+					pkgs = pkgsFor system;
 					spec = self.packages.${system}.spec_check;
 					aspellEnv = pkgs.aspellWithDicts (dicts: [ dicts.en ]);
 					# Hook binary: same Lean tool with aspell on PATH (makeWrapper; no shell app).
@@ -822,7 +841,7 @@
 			devShells = forAllSystems (
 				system:
 				let
-					pkgs = nixpkgs.legacyPackages.${system};
+					pkgs = pkgsFor system;
 					preCommit = self.checks.${system}.pre-commit-check;
 					# aspellWithDicts so local hooks and ad-hoc spec_check can spell-check.
 					# Bare nixpkgs#aspell cannot find en_US word lists without the wrapper.

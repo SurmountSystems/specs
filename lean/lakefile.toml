@@ -102,6 +102,7 @@ name = "WordStats"
 
 [[lean_lib]]
 name = "InconsistencyReport"
+roots = ["InconsistencyReport", "SessionBusSpec", "SessionBusProofs"]
 
 [[lean_lib]]
 name = "SpecProofs"

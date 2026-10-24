@@ -348,8 +348,12 @@ def runCases : List Case :=
       LeanMachineSpec.runningDistributedMachineClaimed,
     expectFalse "composition is not product readiness"
       compositionIsProductReadiness,
-    expectFalse "number 0015 is not assigned"
-      numberFifteenAssigned,
+    expectTrue "the Operator assigned number 0015 to the session bus"
+      numberFifteenAssignedToSessionBus,
+    expectFalse "a published file for number 0015 does not exist"
+      numberFifteenPublishedFileExists,
+    expectTrue "assignment of number 0015 does not imply a published file"
+      (numberFifteenAssignedToSessionBus && !numberFifteenPublishedFileExists),
     expectTrue "Anunnaki Encoding is not specification 0015"
       (Surmount.anunnakiSpecNumber != 15),
     expectTrue "Surmount Systems is not specification 0015"

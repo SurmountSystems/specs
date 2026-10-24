@@ -1087,4 +1087,260 @@ theorem v28_glossary_rules_consistent :
       irisLeanRequired = false := by
   decide
 
+theorem block_unique_when_owner_count_is_one (b : BlockInProcess)
+    (h : b.ownerCount = 1) : b.isUnique = true := by
+  unfold BlockInProcess.isUnique
+  rw [h]
+  rfl
+
+theorem loan_is_not_an_owner (b : BlockInProcess) (n : Nat) :
+    (b.addLoans n).ownerCount = b.ownerCount ∧
+      (b.addLoans n).isUnique = b.isUnique ∧
+      (b.addInteriorLoan).ownerCount = b.ownerCount ∧
+      (b.addInteriorLoan).interiorLoanCount = b.interiorLoanCount + 1 := by
+  exact ⟨rfl, rfl, rfl, rfl⟩
+
+theorem move_owner_source_does_not_remain
+    (source : BlockInProcess) (receiverOwners : Nat)
+    (h : source.isUnique = true) :
+    source.isUnique = true ∧
+      (moveOwnerFromUnique source receiverOwners).1.ownerCount = 0 ∧
+      (moveOwnerFromUnique source receiverOwners).1.isUnique = false ∧
+      (moveOwnerFromUnique source receiverOwners).2 = receiverOwners + 1 ∧
+      (moveOwnerFromUnique source receiverOwners).1.processId = source.processId ∧
+      (moveOwnerFromUnique source receiverOwners).1.loanCount = source.loanCount := by
+  exact ⟨h, rfl, rfl, rfl, rfl, rfl⟩
+
+theorem copy_handle_owner_without_protocol_rejected :
+    copyHandleOwnerAccepted false OwnerHandle.holds = false ∧
+      copyHandleOwnerAccepted false OwnerHandle.holds =
+        uniqueBlockCopyHandleWithoutProtocolAccepted ∧
+      copyHandleExtraOwner 1 = 2 ∧
+      copyHandleOwnerAccepted true OwnerHandle.holds = true := by
+  decide
+
+theorem owner_count_is_not_a_header_field :
+    ownerCountIsHeaderField = false ∧
+      exactOwnerCountOnHeaderClaimed = false ∧
+      uniqueBlockDefaultRcHeader = false := by
+  decide
+
+theorem free_rejects_when_count_says_another_owner (b : BlockInProcess)
+    (h : Nat.blt 1 b.ownerCount = true) :
+    freeIsReject b = true := by
+  unfold freeIsReject
+  rw [h]
+  rfl
+
+theorem free_rejects_when_interior_loan_live (b : BlockInProcess)
+    (h : (b.interiorLoanCount != 0) = true) :
+    freeIsReject b = true := by
+  unfold freeIsReject
+  rw [h]
+  rw [Bool.or_true]
+
+theorem free_two_owners_rejected :
+    freeIsReject
+      { processId := 0, ownerCount := 2, loanCount := 0, interiorLoanCount := 0 } =
+      true :=
+  free_rejects_when_count_says_another_owner _ (by decide)
+
+theorem free_unique_with_interior_loan_rejected :
+    freeIsReject
+      { processId := 0, ownerCount := 1, loanCount := 1, interiorLoanCount := 1 } =
+      true :=
+  free_rejects_when_interior_loan_live _ (by decide)
+
+theorem free_unique_block_without_interior_loan_not_rejected :
+    freeIsReject
+      { processId := 0, ownerCount := 1, loanCount := 0, interiorLoanCount := 0 } =
+      false := by
+  decide
+
+theorem data_race_is_not_safe_thr (a b : ThrEvent) (h : isDataRace a b = true) :
+    safeThrHoldsOnPair a b = false ∧ safeThrAllowsDataRace = false := by
+  constructor
+  · unfold safeThrHoldsOnPair
+    rw [h]
+    rfl
+  · rfl
+
+theorem data_race_has_no_happens_before_edge (a b : ThrEvent)
+    (h : isDataRace a b = true) :
+    a.happensBeforeEdge = false ∧ b.happensBeforeEdge = false ∧
+      dataRaceHasNoHappensBefore = true := by
+  unfold isDataRace at h
+  have right {x y : Bool} (hx : (x && y) = true) : y = true := by
+    cases x with
+    | true => exact hx
+    | false => cases hx
+  have left {x y : Bool} (hx : (x && y) = true) : x = true := by
+    cases x with
+    | true => rfl
+    | false => cases hx
+  -- isDataRace is notAtomic && (noHappensBefore && samePlace)
+  have noHbAndPlace := right h
+  have noHb := left noHbAndPlace
+  exact ⟨(beq_iff_eq).mp (left noHb), (beq_iff_eq).mp (right noHb), rfl⟩
+
+theorem happens_before_edge_blocks_data_race (a b : ThrEvent)
+    (h : a.happensBeforeEdge = true) :
+    isDataRace a b = false ∧ dataRaceHasNoHappensBefore = true := by
+  refine ⟨?_, rfl⟩
+  simp only [isDataRace, h, Bool.and_false, Bool.false_and, Bool.true_beq]
+
+theorem other_happens_before_edge_blocks_data_race (a b : ThrEvent)
+    (h : b.happensBeforeEdge = true) :
+    isDataRace a b = false ∧ dataRaceHasNoHappensBefore = true := by
+  refine ⟨?_, rfl⟩
+  simp only [isDataRace, h, Bool.and_false, Bool.false_and, Bool.true_beq]
+
+theorem atomic_cell_event_is_not_data_race (a b : ThrEvent) (hAt : a.atomic = true) :
+    isDataRace a b = false := by
+  unfold isDataRace
+  rw [hAt]
+  have notAtomic : ((true == false) && (b.atomic == false)) = false := rfl
+  rw [notAtomic]
+  rfl
+
+theorem atomic_cell_sample_is_not_a_data_race :
+    isDataRace atomicCellWrite plainRaceRead = false :=
+  atomic_cell_event_is_not_data_race atomicCellWrite plainRaceRead rfl
+
+theorem sample_pair_is_a_data_race :
+    isDataRace plainRaceWrite plainRaceRead = true ∧
+      safeMemNonAtomicDataRaceAccepted = false := by
+  decide
+
+theorem sample_race_is_not_safe_thr :
+    safeThrHoldsOnPair plainRaceWrite plainRaceRead = false ∧
+      safeThrAllowsDataRace = false :=
+  data_race_is_not_safe_thr plainRaceWrite plainRaceRead sample_pair_is_a_data_race.1
+
+theorem sample_race_derives_safe_mem_mash :
+    mashSafeMemNonAtomicDataRaceIsFalse := by
+  have h := sample_pair_is_a_data_race
+  have _race : isDataRace plainRaceWrite plainRaceRead = true := h.1
+  exact mash_safe_mem_non_atomic_data_race_is_false
+
+theorem atomic_program_order_does_not_verify_kernel :
+    atomicCellProgramOrder earlierAtomicCell laterAtomicCell = true ∧
+      programOrderProvesMainlineLinux = false ∧
+      atomicProgramOrderProvesRunningKernel = false ∧
+      runningKernelVerified = false ∧
+      linuxKernelMemoryModelRequired = true := by
+  decide
+
+theorem official_compcert_does_not_prove_threads (c : SafeCompCert) :
+    officialCompCertProvesThreads = false ∧
+      safeCompCertImpliesThreadProof = false ∧
+      safeCompCertImpliesSafeKernel c = SafeKernel.holds := by
+  exact ⟨rfl, rfl, rfl⟩
+
+theorem safe_thr_stays_on_the_safe_kernel_side :
+    safeThrRequiredForSafeKernel = true ∧
+      safeThrIsCompCertThreadProof = false ∧
+      SafeKernelConjuncts.holds kernelWithSafeThr = true ∧
+      SafeKernelConjuncts.holds kernelMissingSafeThr = false := by
+  decide
+
+theorem lock_free_is_the_three_part_claim :
+    LockFreeOp.holds lockFreeSample = true ∧
+      lockFreeMeansMutexAbsent = false ∧
+      lockFreeMeansCompareAndSwap = false ∧
+      lockFreeIsWaitFree = false ∧
+      lockFreeIsObstructionFree = false ∧
+      lockFreeProofsClaimedDone = false := by
+  decide
+
+theorem wait_free_and_obstruction_free_are_not_lock_free :
+    WaitFreeOp.holds waitFreeSample = true ∧
+      ObstructionFreeOp.holds obstructionFreeSample = true ∧
+      LockFreeOp.holds lockFreeMissingSpec = false ∧
+      lockFreeIsWaitFree = false ∧
+      lockFreeIsObstructionFree = false := by
+  decide
+
+theorem lock_free_free_without_reclamation_matches_fixture :
+    reclamationFreeAccepted freeNoReclamation = false ∧
+      reclamationFreeAccepted freeNoReclamation =
+        lockFreeFreeWithoutReclamationAccepted ∧
+      lockFreeProofsClaimedDone = false := by
+  decide
+
+theorem lock_free_free_without_reclamation_keeps_mash :
+    mashLockFreeFreeWithoutReclamationIsFalse := by
+  have h := lock_free_free_without_reclamation_matches_fixture
+  have _rejected : reclamationFreeAccepted freeNoReclamation = false := h.1
+  exact mash_lock_free_free_without_reclamation_is_false
+
+theorem channel_move_owner_removes_sender (receiverBefore : Nat) :
+    (moveOwnerChannel 1 receiverBefore).senderOwnersAfter = 0 ∧
+      (moveOwnerChannel 1 receiverBefore).receiverOwnersAfter = receiverBefore + 1 ∧
+      (moveOwnerChannel 1 receiverBefore).cargo = ChannelCargo.moveOwner := by
+  exact ⟨rfl, rfl, rfl⟩
+
+theorem channel_copy_bits_adds_no_owner (sender receiver : Nat) :
+    (copyBitsChannel sender receiver).receiverOwnersAfter =
+        (copyBitsChannel sender receiver).receiverOwnersBefore ∧
+      (copyBitsChannel sender receiver).senderOwnersAfter =
+        (copyBitsChannel sender receiver).senderOwnersBefore ∧
+      (copyBitsChannel sender receiver).cargo = ChannelCargo.copyBits := by
+  exact ⟨rfl, rfl, rfl⟩
+
+theorem channel_traffic_is_not_posix_fork :
+    ForkJoin.holds oneProcessForkJoin = true ∧
+      channelIsPosixFork = false ∧
+      channelIsForkJoinTraffic = true ∧
+      channelImplementationClaimed = false ∧
+      posixForkIsForkJoin = false ∧
+      posixForkCreatesAnotherProcess = true := by
+  decide
+
+theorem misaligned_explicit_packed_rejected :
+    explicitPackedRejected misalignedExplicitPacked = true ∧
+      explicitPackedRejected undocumentedExplicitPacked = true ∧
+      explicitPackedRejected alignedExplicitPacked = false ∧
+      autovectorizationIsSimdProof = false := by
+  decide
+
+theorem explicit_packed_op_is_not_atomic_cell :
+    alignedExplicitPacked.atomicLocation = false ∧
+      explicitPackedIsAtomicCell = false ∧
+      autovectorizationIsSimdProof = false := by
+  decide
+
+theorem explicit_packed_keeps_autovectorization_mash :
+    mashAutovectorizationIsSimdProofIsFalse := by
+  have h := explicit_packed_op_is_not_atomic_cell
+  have _notCell : explicitPackedIsAtomicCell = false := h.2.1
+  exact mash_autovectorization_is_simd_proof_is_false
+
+theorem cache_secret_violation_only_when_safe_ct_on :
+    cacheCarriesSecretRejected false true = false ∧
+      cacheCarriesSecretRejected true true = true ∧
+      cacheCarriesSecretRejected true false = false ∧
+      safeCtOnByDefault = false ∧
+      safeCtCacheCarriesSecret = false ∧
+      notConstantTimeIsSafeCtSwitch = false := by
+  decide
+
+theorem explicit_packed_is_not_automatic_and_not_atomic_location :
+    explicitPackedIsAutomatic = false ∧
+      explicitPackedIsAtomicLocation = false ∧
+      packedOpcodeCatalogClaimedDone = false ∧
+      explicitPackedIsAtomicCell = false ∧
+      autovectorizationIsSimdProof = false ∧
+      explicitPackedRejected alignedExplicitPacked = false ∧
+      explicitPackedRejected misalignedExplicitPacked = true := by
+  decide
+
+theorem atomic_program_order_is_not_lkmm_proof :
+    atomicCellProgramOrder earlierAtomicCell laterAtomicCell = true ∧
+      atomicProgramOrderProvesLkmm = false ∧
+      programOrderProvesMainlineLinux = false ∧
+      linuxKernelMemoryModelRequired = true ∧
+      runningKernelVerified = false := by
+  decide
+
 end SystemsLean

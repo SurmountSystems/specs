@@ -100,6 +100,228 @@ def toSafeCSampleNoneTheorem : toSafeC RustJudgment.sample = none :=
 def toRustSampleNoneTheorem : toRust SafeCJudgment.sample = none :=
   to_rust_on_sample_is_none
 
+def blockUniqueWhenOwnerCountIsOneTheorem :
+    ({ processId := 0, ownerCount := 1, loanCount := 3, interiorLoanCount := 2 :
+        BlockInProcess }).isUnique = true :=
+  block_unique_when_owner_count_is_one _ rfl
+
+def loanIsNotAnOwnerTheorem :
+    (({ processId := 0, ownerCount := 1, loanCount := 0, interiorLoanCount := 0 :
+        BlockInProcess }).addLoans 4).ownerCount = 1 :=
+  (loan_is_not_an_owner
+    { processId := 0, ownerCount := 1, loanCount := 0, interiorLoanCount := 0 }
+    4).1
+
+def moveOwnerSourceDoesNotRemainTheorem :
+    (moveOwnerFromUnique
+      { processId := 4, ownerCount := 1, loanCount := 2, interiorLoanCount := 0 }
+      5).1.ownerCount = 0 :=
+  (move_owner_source_does_not_remain
+    { processId := 4, ownerCount := 1, loanCount := 2, interiorLoanCount := 0 }
+    5 rfl).2.1
+
+def copyHandleOwnerWithoutProtocolRejectedTheorem :
+    copyHandleOwnerAccepted false OwnerHandle.holds = false ∧
+      copyHandleOwnerAccepted false OwnerHandle.holds =
+        uniqueBlockCopyHandleWithoutProtocolAccepted :=
+  ⟨copy_handle_owner_without_protocol_rejected.1,
+    copy_handle_owner_without_protocol_rejected.2.1⟩
+
+def ownerCountIsNotAHeaderFieldTheorem :
+    ownerCountIsHeaderField = false ∧ uniqueBlockDefaultRcHeader = false :=
+  ⟨owner_count_is_not_a_header_field.1, owner_count_is_not_a_header_field.2.2⟩
+
+def freeRejectsWhenCountSaysAnotherOwnerTheorem :
+    freeIsReject
+      { processId := 0, ownerCount := 2, loanCount := 0, interiorLoanCount := 0 } =
+      true :=
+  free_rejects_when_count_says_another_owner _ (by decide)
+
+def freeRejectsWhenInteriorLoanLiveTheorem :
+    freeIsReject
+      { processId := 0, ownerCount := 1, loanCount := 1, interiorLoanCount := 1 } =
+      true :=
+  free_rejects_when_interior_loan_live _ (by decide)
+
+def freeTwoOwnersRejectedTheorem :
+    freeIsReject
+      { processId := 0, ownerCount := 2, loanCount := 0, interiorLoanCount := 0 } =
+      true :=
+  free_two_owners_rejected
+
+def freeUniqueWithInteriorLoanRejectedTheorem :
+    freeIsReject
+      { processId := 0, ownerCount := 1, loanCount := 1, interiorLoanCount := 1 } =
+      true :=
+  free_unique_with_interior_loan_rejected
+
+def freeUniqueWithoutInteriorLoanTheorem :
+    freeIsReject
+      { processId := 0, ownerCount := 1, loanCount := 0, interiorLoanCount := 0 } =
+      false :=
+  free_unique_block_without_interior_loan_not_rejected
+
+def samplePairIsADataRaceTheorem :
+    isDataRace plainRaceWrite plainRaceRead = true ∧
+      safeMemNonAtomicDataRaceAccepted = false :=
+  sample_pair_is_a_data_race
+
+def dataRaceIsNotSafeThrTheorem :
+    safeThrHoldsOnPair plainRaceWrite plainRaceRead = false :=
+  (data_race_is_not_safe_thr plainRaceWrite plainRaceRead
+    samplePairIsADataRaceTheorem.1).1
+
+def sampleRaceIsNotSafeThrTheorem :
+    safeThrHoldsOnPair plainRaceWrite plainRaceRead = false ∧
+      safeThrAllowsDataRace = false :=
+  sample_race_is_not_safe_thr
+
+def dataRaceHasNoHappensBeforeEdgeTheorem :
+    plainRaceWrite.happensBeforeEdge = false ∧
+      plainRaceRead.happensBeforeEdge = false ∧
+      dataRaceHasNoHappensBefore = true :=
+  data_race_has_no_happens_before_edge plainRaceWrite plainRaceRead
+    samplePairIsADataRaceTheorem.1
+
+def happensBeforeEdgeBlocksTheorem :
+    isDataRace { plainRaceWrite with happensBeforeEdge := true } plainRaceRead = false ∧
+      dataRaceHasNoHappensBefore = true :=
+  happens_before_edge_blocks_data_race
+    { plainRaceWrite with happensBeforeEdge := true } plainRaceRead rfl
+
+def otherHappensBeforeEdgeBlocksTheorem :
+    isDataRace plainRaceWrite { plainRaceRead with happensBeforeEdge := true } = false ∧
+      dataRaceHasNoHappensBefore = true :=
+  other_happens_before_edge_blocks_data_race plainRaceWrite
+    { plainRaceRead with happensBeforeEdge := true } rfl
+
+def atomicCellEventIsNotDataRaceTheorem :
+    isDataRace atomicCellWrite plainRaceRead = false :=
+  atomic_cell_event_is_not_data_race atomicCellWrite plainRaceRead rfl
+
+def atomicCellSampleIsNotADataRaceTheorem :
+    isDataRace atomicCellWrite plainRaceRead = false :=
+  atomic_cell_sample_is_not_a_data_race
+
+def atomicProgramOrderDoesNotVerifyKernelTheorem :
+    atomicCellProgramOrder earlierAtomicCell laterAtomicCell = true ∧
+      programOrderProvesMainlineLinux = false ∧
+      runningKernelVerified = false :=
+  ⟨atomic_program_order_does_not_verify_kernel.1,
+    atomic_program_order_does_not_verify_kernel.2.1,
+    atomic_program_order_does_not_verify_kernel.2.2.2.1⟩
+
+def officialCompCertDoesNotProveThreadsTheorem :
+    officialCompCertProvesThreads = false ∧
+      safeCompCertImpliesThreadProof = false ∧
+      safeCompCertImpliesSafeKernel SafeCompCert.holds = SafeKernel.holds :=
+  official_compcert_does_not_prove_threads .holds
+
+def safeThrStaysOnTheSafeKernelSideTheorem :
+    safeThrRequiredForSafeKernel = true ∧
+      safeThrIsCompCertThreadProof = false ∧
+      SafeKernelConjuncts.holds kernelMissingSafeThr = false :=
+  ⟨safe_thr_stays_on_the_safe_kernel_side.1,
+    safe_thr_stays_on_the_safe_kernel_side.2.1,
+    safe_thr_stays_on_the_safe_kernel_side.2.2.2⟩
+
+def lockFreeIsTheThreePartClaimTheorem :
+    LockFreeOp.holds lockFreeSample = true ∧
+      lockFreeMeansMutexAbsent = false ∧
+      lockFreeMeansCompareAndSwap = false ∧
+      lockFreeProofsClaimedDone = false :=
+  ⟨lock_free_is_the_three_part_claim.1,
+    lock_free_is_the_three_part_claim.2.1,
+    lock_free_is_the_three_part_claim.2.2.1,
+    lock_free_is_the_three_part_claim.2.2.2.2.2⟩
+
+def waitFreeAndObstructionFreeAreNotLockFreeTheorem :
+    WaitFreeOp.holds waitFreeSample = true ∧
+      ObstructionFreeOp.holds obstructionFreeSample = true ∧
+      LockFreeOp.holds lockFreeMissingSpec = false ∧
+      lockFreeIsWaitFree = false ∧
+      lockFreeIsObstructionFree = false :=
+  wait_free_and_obstruction_free_are_not_lock_free
+
+def lockFreeFreeWithoutReclamationTheorem :
+    reclamationFreeAccepted freeNoReclamation = false ∧
+      reclamationFreeAccepted freeNoReclamation =
+        lockFreeFreeWithoutReclamationAccepted :=
+  ⟨lock_free_free_without_reclamation_matches_fixture.1,
+    lock_free_free_without_reclamation_matches_fixture.2.1⟩
+
+def lockFreeFreeWithoutReclamationKeepsMashTheorem :
+    mashLockFreeFreeWithoutReclamationIsFalse :=
+  lock_free_free_without_reclamation_keeps_mash
+
+def sampleRaceDerivesSafeMemMashTheorem :
+    mashSafeMemNonAtomicDataRaceIsFalse :=
+  sample_race_derives_safe_mem_mash
+
+def channelMoveOwnerRemovesSenderTheorem :
+    (moveOwnerChannel 1 0).senderOwnersAfter = 0 ∧
+      (moveOwnerChannel 1 0).receiverOwnersAfter = 1 :=
+  ⟨(channel_move_owner_removes_sender 0).1,
+    (channel_move_owner_removes_sender 0).2.1⟩
+
+def channelCopyBitsAddsNoOwnerTheorem :
+    (copyBitsChannel 2 0).receiverOwnersAfter = 0 ∧
+      (copyBitsChannel 2 0).senderOwnersAfter = 2 :=
+  ⟨(channel_copy_bits_adds_no_owner 2 0).1,
+    (channel_copy_bits_adds_no_owner 2 0).2.1⟩
+
+def channelTrafficIsNotPosixForkTheorem :
+    ForkJoin.holds oneProcessForkJoin = true ∧
+      channelIsPosixFork = false ∧
+      channelImplementationClaimed = false ∧
+      posixForkIsForkJoin = false :=
+  ⟨channel_traffic_is_not_posix_fork.1,
+    channel_traffic_is_not_posix_fork.2.1,
+    channel_traffic_is_not_posix_fork.2.2.2.1,
+    channel_traffic_is_not_posix_fork.2.2.2.2.1⟩
+
+def misalignedExplicitPackedRejectedTheorem :
+    explicitPackedRejected misalignedExplicitPacked = true ∧
+      explicitPackedRejected undocumentedExplicitPacked = true ∧
+      autovectorizationIsSimdProof = false :=
+  ⟨misaligned_explicit_packed_rejected.1,
+    misaligned_explicit_packed_rejected.2.1,
+    misaligned_explicit_packed_rejected.2.2.2⟩
+
+def explicitPackedOpIsNotAtomicCellTheorem :
+    alignedExplicitPacked.atomicLocation = false ∧
+      explicitPackedIsAtomicCell = false :=
+  ⟨explicit_packed_op_is_not_atomic_cell.1,
+    explicit_packed_op_is_not_atomic_cell.2.1⟩
+
+def explicitPackedIsNotAutomaticAndNotAtomicLocationTheorem :
+    explicitPackedIsAutomatic = false ∧
+      explicitPackedIsAtomicLocation = false ∧
+      packedOpcodeCatalogClaimedDone = false :=
+  ⟨explicit_packed_is_not_automatic_and_not_atomic_location.1,
+    explicit_packed_is_not_automatic_and_not_atomic_location.2.1,
+    explicit_packed_is_not_automatic_and_not_atomic_location.2.2.1⟩
+
+def atomicProgramOrderIsNotLkmmProofTheorem :
+    atomicProgramOrderProvesLkmm = false ∧
+      programOrderProvesMainlineLinux = false ∧
+      linuxKernelMemoryModelRequired = true :=
+  ⟨atomic_program_order_is_not_lkmm_proof.2.1,
+    atomic_program_order_is_not_lkmm_proof.2.2.1,
+    atomic_program_order_is_not_lkmm_proof.2.2.2.1⟩
+
+def explicitPackedKeepsAutovectorizationMashTheorem :
+    mashAutovectorizationIsSimdProofIsFalse :=
+  explicit_packed_keeps_autovectorization_mash
+
+def cacheSecretViolationOnlyWhenSafeCtOnTheorem :
+    cacheCarriesSecretRejected false true = false ∧
+      cacheCarriesSecretRejected true true = true ∧
+      safeCtOnByDefault = false :=
+  ⟨cache_secret_violation_only_when_safe_ct_on.1,
+    cache_secret_violation_only_when_safe_ct_on.2.1,
+    cache_secret_violation_only_when_safe_ct_on.2.2.2.1⟩
+
 def runCases : List Case :=
   [
     expectTrue "Systems Lean live module contains spec encodings"
@@ -715,6 +937,87 @@ def runCases : List Case :=
       mashHolyLeanSafeCLeanMachineIsFalse
       rfl
       mash_holy_lean_safec_lean_machine_is_false,
+    expectTrue "UniqueBlock means the owner count in that process is one"
+      ({ processId := 0, ownerCount := 1, loanCount := 3, interiorLoanCount := 2 :
+          BlockInProcess }).isUnique,
+    expectTrue "a loan is not an owner"
+      ((({ processId := 0, ownerCount := 1, loanCount := 0, interiorLoanCount := 0 :
+          BlockInProcess }).addLoans 4).ownerCount == 1),
+    expectTrue "MoveOwner leaves the source with no owner"
+      ((moveOwnerFromUnique
+        { processId := 4, ownerCount := 1, loanCount := 2, interiorLoanCount := 0 }
+        5).1.ownerCount == 0),
+    expectFalse "CopyHandle of an OwnerHandle with no alias protocol is Reject"
+      (copyHandleOwnerAccepted false OwnerHandle.holds),
+    expectFalse "the owner count is not a header field"
+      ownerCountIsHeaderField,
+    expectTrue "free while another owner remains is Reject"
+      (freeIsReject
+        { processId := 0, ownerCount := 2, loanCount := 0, interiorLoanCount := 0 }),
+    expectTrue "free while an interior loan is live is Reject"
+      (freeIsReject
+        { processId := 0, ownerCount := 1, loanCount := 1, interiorLoanCount := 1 }),
+    expectFalse "free of a unique block with no interior loan is not that Reject"
+      (freeIsReject
+        { processId := 0, ownerCount := 1, loanCount := 0, interiorLoanCount := 0 }),
+    expectFalse "a data race on a location that is not atomic is not SafeThr"
+      (safeThrHoldsOnPair plainRaceWrite plainRaceRead),
+    expectTrue "a data race has no happens before edge"
+      dataRaceHasNoHappensBefore,
+    expectFalse "an AtomicCell event is not that data race"
+      (isDataRace atomicCellWrite plainRaceRead),
+    expectTrue "atomic operations on AtomicCell follow program order"
+      (atomicCellProgramOrder earlierAtomicCell laterAtomicCell),
+    expectFalse "program order does not prove mainline Linux"
+      programOrderProvesMainlineLinux,
+    expectFalse "program order on AtomicCell is not a proof of the Linux kernel memory model"
+      atomicProgramOrderProvesLkmm,
+    expectFalse "official CompCert does not prove threads"
+      officialCompCertProvesThreads,
+    expectFalse "SafeCompCert does not imply a thread proof"
+      safeCompCertImpliesThreadProof,
+    expectFalse "SafeKernel does not hold when SafeThr is absent"
+      (SafeKernelConjuncts.holds kernelMissingSafeThr),
+    expectFalse "SafeThr is not a CompCert thread proof"
+      safeThrIsCompCertThreadProof,
+    expectTrue "LockFree matches a sequential specification under a named sharing mode"
+      (LockFreeOp.holds lockFreeSample),
+    expectFalse "LockFree is not wait free"
+      lockFreeIsWaitFree,
+    expectFalse "LockFree is not obstruction free"
+      lockFreeIsObstructionFree,
+    expectFalse "LockFree proofs are not claimed done"
+      lockFreeProofsClaimedDone,
+    expectTrue "wait free finishes in a bounded number of its own steps"
+      (WaitFreeOp.holds waitFreeSample),
+    expectTrue "obstruction free finishes if it runs alone"
+      (ObstructionFreeOp.holds obstructionFreeSample),
+    expectFalse "a free with no reclamation protocol is not LockFree"
+      (reclamationFreeAccepted freeNoReclamation),
+    expectTrue "channel MoveOwner removes the sender and adds the receiver"
+      ((moveOwnerChannel 1 0).senderOwnersAfter == 0 &&
+        (moveOwnerChannel 1 0).receiverOwnersAfter == 1),
+    expectTrue "channel CopyBits does not add an owner"
+      ((copyBitsChannel 2 0).receiverOwnersAfter ==
+        (copyBitsChannel 2 0).receiverOwnersBefore),
+    expectFalse "that channel is not PosixFork"
+      channelIsPosixFork,
+    expectFalse "a channel implementation is not claimed"
+      channelImplementationClaimed,
+    expectTrue "a misaligned explicit packed operation is Reject"
+      (explicitPackedRejected misalignedExplicitPacked),
+    expectFalse "an explicit packed operation is not AtomicCell"
+      explicitPackedIsAtomicCell,
+    expectFalse "an explicit packed operation is not an automatic packed vector operation"
+      explicitPackedIsAutomatic,
+    expectFalse "an explicit packed operation is not an atomic location"
+      explicitPackedIsAtomicLocation,
+    expectFalse "a full opcode catalog is not claimed done"
+      packedOpcodeCatalogClaimedDone,
+    expectFalse "cache behavior that carries Secret is not Reject when SafeCt is off"
+      (cacheCarriesSecretRejected false true),
+    expectTrue "cache behavior that carries Secret is Reject when SafeCt is on"
+      (cacheCarriesSecretRejected true true),
   ]
 
 def main (_args : List String) : IO UInt32 := do

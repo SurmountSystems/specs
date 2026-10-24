@@ -42,6 +42,13 @@ def main (args : List String) : IO UInt32 := do
     IO.eprintln usage
     return 2
   let repo ← resolveRepoRoot
+  let scanned ← scanBuiltInconsistencies repo
+  let audit := auditCatalog scanned catalog
+  if !audit.missing.isEmpty || !audit.spurious.isEmpty then
+    IO.eprintln "inconsistency_report: built source scan disagrees with the catalog"
+    IO.eprintln (formatAudit audit)
+    IO.eprintln s!"inconsistency_report: missing {audit.missing.length}, spurious {audit.spurious.length}"
+    return 1
   let readmePath := repo / readmeFileName
   if !(← readmePath.pathExists) then
     IO.eprintln s!"inconsistency_report: missing {readmeFileName}"
@@ -71,5 +78,5 @@ def main (args : List String) : IO UInt32 := do
       IO.eprintln "inconsistency_report: run inconsistency_report --write to refresh"
     return 1
   IO.println
-    (s!"inconsistency_report: {provenClaims.length} proven False mash claims, table current")
+    (s!"inconsistency_report: {catalog.length} built inconsistency proofs, table current")
   return 0

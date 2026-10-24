@@ -1691,4 +1691,339 @@ def layoutPinRecordsWidths : Bool := true
 
 def clientsMustNotObserveLeakedExclusion : Bool := true
 
+/-!
+  Clause 3.25, Clause 3.26, and Clause 3.28.
+  Owner count is the size of the owner set in one process.
+  It is not a header field and it is not a reference count.
+  A loan is not an owner.
+-/
+
+structure BlockInProcess where
+  processId : Nat
+  ownerCount : Nat
+  loanCount : Nat
+  interiorLoanCount : Nat
+  deriving DecidableEq, Repr
+
+def BlockInProcess.isUnique (b : BlockInProcess) : Bool :=
+  b.ownerCount == 1
+
+def BlockInProcess.addLoans (b : BlockInProcess) (n : Nat) : BlockInProcess :=
+  { b with loanCount := b.loanCount + n }
+
+def BlockInProcess.addInteriorLoan (b : BlockInProcess) : BlockInProcess :=
+  { b with
+    loanCount := b.loanCount + 1
+    interiorLoanCount := b.interiorLoanCount + 1 }
+
+/-- MoveOwner from a unique block. The source owner count becomes zero. -/
+def moveOwnerFromUnique (source : BlockInProcess) (receiverOwners : Nat) :
+    BlockInProcess × Nat :=
+  ({ source with ownerCount := 0 }, receiverOwners + 1)
+
+inductive OwnerHandle where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+/-- CopyHandle of an OwnerHandle. Without an alias protocol the result is Reject. -/
+def copyHandleOwnerAccepted (aliasProtocol : Bool) (_owner : OwnerHandle) : Bool :=
+  aliasProtocol
+
+/-- CopyHandle creates an extra owner when the alias protocol allows it. -/
+def copyHandleExtraOwner (ownerCount : Nat) : Nat :=
+  ownerCount + 1
+
+/-- Clause 3.26. The owner count is not a header field. An exact header count is not claimed. -/
+def ownerCountIsHeaderField : Bool := false
+
+def exactOwnerCountOnHeaderClaimed : Bool := false
+
+/--
+  Free is Reject while another owner remains, or while an interior loan is live.
+  Clause 3.11 item 4 and Clause 3.28.
+-/
+def freeIsReject (b : BlockInProcess) : Bool :=
+  (Nat.blt 1 b.ownerCount) || (b.interiorLoanCount != 0)
+
+/-!
+  Clause 3.12. A data race is two threads, one location that is not atomic,
+  at least one write, and no happens before edge.
+-/
+
+inductive ThrAccess where
+  | read
+  | write
+  deriving DecidableEq, Repr, BEq
+
+structure ThrEvent where
+  threadId : Nat
+  location : Nat
+  access : ThrAccess
+  atomic : Bool
+  happensBeforeEdge : Bool
+  deriving DecidableEq, Repr
+
+def isDataRace (a b : ThrEvent) : Bool :=
+  let notAtomic := (a.atomic == false) && (b.atomic == false)
+  let noHappensBefore :=
+    (a.happensBeforeEdge == false) && (b.happensBeforeEdge == false)
+  let samePlace :=
+    (a.threadId != b.threadId) &&
+      (a.location == b.location) &&
+      ((a.access == .write) || (b.access == .write))
+  notAtomic && (noHappensBefore && samePlace)
+
+/-- That pattern is not SafeThr. -/
+def safeThrHoldsOnPair (a b : ThrEvent) : Bool :=
+  !isDataRace a b
+
+def safeThrAllowsDataRace : Bool := false
+
+def plainRaceWrite : ThrEvent :=
+  { threadId := 0
+    location := 7
+    access := .write
+    atomic := false
+    happensBeforeEdge := false }
+
+def plainRaceRead : ThrEvent :=
+  { threadId := 1
+    location := 7
+    access := .read
+    atomic := false
+    happensBeforeEdge := false }
+
+def atomicCellWrite : ThrEvent :=
+  { threadId := 0
+    location := 7
+    access := .write
+    atomic := true
+    happensBeforeEdge := false }
+
+/-- Atomic operations follow the order the program writes. Clause 3.12. -/
+structure AtomicCellEvent where
+  programIndex : Nat
+  deriving DecidableEq, Repr
+
+def atomicCellProgramOrder (earlier later : AtomicCellEvent) : Bool :=
+  decide (earlier.programIndex < later.programIndex)
+
+def earlierAtomicCell : AtomicCellEvent :=
+  { programIndex := 0 }
+
+def laterAtomicCell : AtomicCellEvent :=
+  { programIndex := 1 }
+
+/--
+  Clause 3.14: KernelModelOk is not a proof of mainline Linux.
+  Clause 6.4 item 17: a running kernel is not claimed verified.
+  Program order on AtomicCell events does not flip those flags.
+-/
+def programOrderProvesMainlineLinux : Bool := false
+
+/-- Clause 3.12 and Clause 6.4 item 17. Program order is not a proof of the Linux kernel memory model. -/
+def atomicProgramOrderProvesLkmm : Bool := false
+
+def atomicProgramOrderProvesRunningKernel : Bool := false
+
+/-- Clause 3.16. Official CompCert does not prove threads. -/
+def officialCompCertProvesThreads : Bool := false
+
+/-- SafeCompCert implies SafeKernel. That implication is not a thread proof. -/
+def safeCompCertImpliesThreadProof : Bool := false
+
+/-- SafeThr on the SafeKernel side is not a CompCert thread proof. -/
+def safeThrIsCompCertThreadProof : Bool := false
+
+/-- Clause 3.15. SafeThr is a conjunct of SafeKernel. -/
+def safeThrRequiredForSafeKernel : Bool := true
+
+structure SafeKernelConjuncts where
+  safeMem : Bool
+  safeThr : Bool
+  safeLayout : Bool
+  kernelModelOk : Bool
+  deriving DecidableEq, Repr
+
+def SafeKernelConjuncts.holds (k : SafeKernelConjuncts) : Bool :=
+  k.safeMem && k.safeThr && k.safeLayout && k.kernelModelOk
+
+def kernelWithSafeThr : SafeKernelConjuncts :=
+  { safeMem := true, safeThr := true, safeLayout := true, kernelModelOk := true }
+
+def kernelMissingSafeThr : SafeKernelConjuncts :=
+  { safeMem := true, safeThr := false, safeLayout := true, kernelModelOk := true }
+
+/-!
+  Clause 3.37 and Clause 3.55.
+  LockFree is not the absence of a Mutex, not compare and swap,
+  not wait free, and not obstruction free.
+-/
+
+inductive SharingMode where
+  | named
+  deriving DecidableEq, Repr, BEq
+
+structure LockFreeOp where
+  mode : SharingMode
+  matchesSequentialSpec : Bool
+  leavesInconsistentState : Bool
+  blocksOtherAllowedParty : Bool
+  deriving DecidableEq, Repr
+
+def LockFreeOp.holds (op : LockFreeOp) : Bool :=
+  (op.mode == .named) &&
+    op.matchesSequentialSpec &&
+    (!op.leavesInconsistentState) &&
+    (!op.blocksOtherAllowedParty)
+
+def lockFreeIsWaitFree : Bool := false
+
+def lockFreeIsObstructionFree : Bool := false
+
+/-- Clause 3.37 and Clause 6.4. Proofs of LockFree are not claimed done. -/
+def lockFreeProofsClaimedDone : Bool := false
+
+structure WaitFreeOp where
+  ownStepBound : Nat
+  finishesWithinBound : Bool
+  deriving DecidableEq, Repr
+
+/-- Wait free means the operation finishes in a bounded number of its own steps. -/
+def WaitFreeOp.holds (w : WaitFreeOp) : Bool :=
+  w.finishesWithinBound && decide (0 < w.ownStepBound)
+
+structure ObstructionFreeOp where
+  runsAlone : Bool
+  finishes : Bool
+  deriving DecidableEq, Repr
+
+/-- Obstruction free means the operation finishes if it runs alone. -/
+def ObstructionFreeOp.holds (o : ObstructionFreeOp) : Bool :=
+  o.runsAlone && o.finishes
+
+def lockFreeSample : LockFreeOp :=
+  { mode := .named
+    matchesSequentialSpec := true
+    leavesInconsistentState := false
+    blocksOtherAllowedParty := false }
+
+def lockFreeMissingSpec : LockFreeOp :=
+  { mode := .named
+    matchesSequentialSpec := false
+    leavesInconsistentState := false
+    blocksOtherAllowedParty := false }
+
+def waitFreeSample : WaitFreeOp :=
+  { ownStepBound := 4, finishesWithinBound := true }
+
+def obstructionFreeSample : ObstructionFreeOp :=
+  { runsAlone := true, finishes := true }
+
+structure ReclamationFree where
+  callsItselfLockFree : Bool
+  namesReclamationProtocol : Bool
+  deriving DecidableEq, Repr
+
+/-- A free that names no reclamation protocol is not accepted as LockFree. -/
+def reclamationFreeAccepted (a : ReclamationFree) : Bool :=
+  a.callsItselfLockFree && a.namesReclamationProtocol
+
+def freeNoReclamation : ReclamationFree :=
+  { callsItselfLockFree := true, namesReclamationProtocol := false }
+
+/-!
+  Clause 3.42 and Clause 6.4 item 30.
+  ForkJoin joins threads inside one process.
+  A channel carries MoveOwner or CopyBits. That channel is not PosixFork.
+  An implementation of the channel is not claimed.
+-/
+
+structure ForkJoin where
+  joinsThreadsInsideOneProcess : Bool
+  deriving DecidableEq, Repr
+
+def ForkJoin.holds (f : ForkJoin) : Bool :=
+  f.joinsThreadsInsideOneProcess
+
+def oneProcessForkJoin : ForkJoin :=
+  { joinsThreadsInsideOneProcess := true }
+
+def posixForkCreatesAnotherProcess : Bool := true
+
+inductive ChannelCargo where
+  | moveOwner
+  | copyBits
+  deriving DecidableEq, Repr, BEq
+
+structure ChannelSend where
+  cargo : ChannelCargo
+  senderOwnersBefore : Nat
+  senderOwnersAfter : Nat
+  receiverOwnersBefore : Nat
+  receiverOwnersAfter : Nat
+  deriving DecidableEq, Repr
+
+def moveOwnerChannel (senderBefore receiverBefore : Nat) : ChannelSend :=
+  { cargo := .moveOwner
+    senderOwnersBefore := senderBefore
+    senderOwnersAfter := senderBefore - 1
+    receiverOwnersBefore := receiverBefore
+    receiverOwnersAfter := receiverBefore + 1 }
+
+def copyBitsChannel (senderBefore receiverBefore : Nat) : ChannelSend :=
+  { cargo := .copyBits
+    senderOwnersBefore := senderBefore
+    senderOwnersAfter := senderBefore
+    receiverOwnersBefore := receiverBefore
+    receiverOwnersAfter := receiverBefore }
+
+def channelIsPosixFork : Bool := false
+
+def channelIsForkJoinTraffic : Bool := true
+
+def channelImplementationClaimed : Bool := false
+
+/-!
+  Clause 6.4 items 14 and 66.
+  An explicit packed vector operation requires a documented alignment.
+  It is not an atomic location. No opcode list.
+-/
+
+structure ExplicitPackedOp where
+  alignmentDocumented : Bool
+  aligned : Bool
+  atomicLocation : Bool
+  deriving DecidableEq, Repr
+
+def explicitPackedRejected (op : ExplicitPackedOp) : Bool :=
+  (!op.alignmentDocumented) || (!op.aligned) || op.atomicLocation
+
+def explicitPackedIsAtomicCell : Bool := false
+
+/-- Clause 6.4 item 14. An explicit packed vector operation is not an automatic one. -/
+def explicitPackedIsAutomatic : Bool := false
+
+/-- Clause 6.4 item 14. An explicit packed vector operation is not an atomic location. -/
+def explicitPackedIsAtomicLocation : Bool := false
+
+/-- Clause 6.4 item 14. A full opcode catalog is not claimed done. This definition names no opcodes. -/
+def packedOpcodeCatalogClaimedDone : Bool := false
+
+def misalignedExplicitPacked : ExplicitPackedOp :=
+  { alignmentDocumented := true, aligned := false, atomicLocation := false }
+
+def undocumentedExplicitPacked : ExplicitPackedOp :=
+  { alignmentDocumented := false, aligned := true, atomicLocation := false }
+
+def alignedExplicitPacked : ExplicitPackedOp :=
+  { alignmentDocumented := true, aligned := true, atomicLocation := false }
+
+/--
+  Clause 3.46. When SafeCt is on, cache behavior does not carry Secret.
+  Failure to be constant time is not that switch. Not a cache line state machine.
+-/
+def cacheCarriesSecretRejected (safeCtOn carriesSecret : Bool) : Bool :=
+  safeCtOn && carriesSecret
+
 end SystemsLean

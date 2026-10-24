@@ -18,6 +18,9 @@
   9. Clause 6 leftover residual Bools stay false.
   10. Clause 6.5 leftover clashes are Cons False. This is not a second mash of spec encodings plus proofs.
   11. A dialect does not need its own LanguageID. Two spelling tables for one language share the frequency ranked word number. The user's preference selects which table decode uses. A spelling converter program is not claimed. Claiming a spelling converter program is Cons False. The byte layout of a spelling table is not specified. FAIL if a dialect is encoded as needing its own LanguageID. FAIL if a spelling converter program is claimed.
+  12. Page 0 has 256 slots and a page 0 index is one payload byte, the arm `0`. Page 1 has 65536 slots and a page 1 index is two little endian payload bytes, the arm `10`. FAIL if those widths drift.
+  13. Width arms `0`, `10`, `110`, and `1110` mean 1, 2, 3, and 4 payload bytes. The same rule continues through 8 payload bytes. Seven ones then a zero is accepted. Eight ones then a zero is a finished arm of 9 payload bytes and is rejected. FAIL if that 9 payload byte arm is accepted.
+  14. No instruction listing for the stack program is published. FAIL if that flag is true. Assuming the flag is true is Cons False.
 
   Lake roots for AnunnakiSpec, AnunnakiProofs, and anunnaki_tests
   exist in lean/lakefile.toml. This file does not import SpecRegistry
@@ -58,6 +61,43 @@ def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
     (isFalse : Prop) (_same : isFalse = (clash -> False))
     (_proof : isFalse) : Case :=
   expectFalse name accepted
+
+def expectCitedEq (name : String) (got want : Option Nat)
+    (_proof : got = want) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := "width arm mismatch" }
+
+def citeBoolEq (name : String) (got want : Bool) (_proof : got = want) : Case :=
+  if got == want then
+    { name := name, ok := true }
+  else
+    { name := name, ok := false, detail := "bool mismatch" }
+
+def citeNamedArmBits
+    (_proof : armBits 0 = arm0Bits ∧
+      armBits 1 = arm10Bits ∧
+      armBits 2 = arm110Bits ∧
+      armBits 3 = arm1110Bits) : Case :=
+  expectTrue "named arm bits are ones followed by a zero"
+    (armBits 0 == arm0Bits &&
+      armBits 1 == arm10Bits &&
+      armBits 2 == arm110Bits &&
+      armBits 3 == arm1110Bits)
+
+/-- Cites the accepted arm specification. The proof arguments must be well typed. -/
+def citeAccepted (name : String) (bits : List Bool) (n : Nat)
+    (_h : acceptedPayloadBytes bits = some n)
+    (_spec : finishedArm bits = true ∧
+      armExceedsCap (leadingOnes bits) = false ∧
+      n = payloadBytesFromLeadingOnes (leadingOnes bits))
+    (_within : n ≤ payloadByteCap) : Case :=
+  expectTrue name
+    (finishedArm bits &&
+      !armExceedsCap (leadingOnes bits) &&
+      payloadBytesFromLeadingOnes (leadingOnes bits) == n &&
+      acceptedPayloadBytes bits == some n)
 
 def runCases : List Case :=
   [
@@ -102,6 +142,67 @@ def runCases : List Case :=
     expectEqNat "arm 1110 payload is four bytes"
       (payloadBytesFromLeadingOnes 3) 4,
     expectEqNat "payload byte cap is 8" payloadByteCap 8,
+    citeBoolEq "arm 0 is a finished arm" (finishedArm arm0Bits) true
+      (arm0_means_one_payload_byte).1,
+    expectCitedEq "arm 0 means 1 payload byte"
+      (acceptedPayloadBytes arm0Bits) (some 1)
+      (arm0_means_one_payload_byte).2,
+    citeBoolEq "arm 10 is a finished arm" (finishedArm arm10Bits) true
+      (arm10_means_two_payload_bytes).1,
+    expectCitedEq "arm 10 means 2 payload bytes"
+      (acceptedPayloadBytes arm10Bits) (some 2)
+      (arm10_means_two_payload_bytes).2,
+    citeBoolEq "arm 110 is a finished arm" (finishedArm arm110Bits) true
+      (arm110_means_three_payload_bytes).1,
+    expectCitedEq "arm 110 means 3 payload bytes"
+      (acceptedPayloadBytes arm110Bits) (some 3)
+      (arm110_means_three_payload_bytes).2,
+    citeBoolEq "arm 1110 is a finished arm" (finishedArm arm1110Bits) true
+      (arm1110_means_four_payload_bytes).1,
+    expectCitedEq "arm 1110 means 4 payload bytes"
+      (acceptedPayloadBytes arm1110Bits) (some 4)
+      (arm1110_means_four_payload_bytes).2,
+    citeNamedArmBits named_arm_bits,
+    citeAccepted "accepted arm 0 stays inside the cap" arm0Bits 1
+      (arm0_means_one_payload_byte).2
+      (accepted_payload_bytes_spec arm0Bits 1 (arm0_means_one_payload_byte).2)
+      (accepted_payload_within_cap arm0Bits 1 (arm0_means_one_payload_byte).2),
+    citeAccepted "accepted arm 10 stays inside the cap" arm10Bits 2
+      (arm10_means_two_payload_bytes).2
+      (accepted_payload_bytes_spec arm10Bits 2 (arm10_means_two_payload_bytes).2)
+      (accepted_payload_within_cap arm10Bits 2 (arm10_means_two_payload_bytes).2),
+    citeAccepted "longest accepted arm is 8 payload bytes" (armBits 7) 8
+      (longest_accepted_arm).1
+      (accepted_payload_bytes_spec (armBits 7) 8 (longest_accepted_arm).1)
+      (accepted_payload_within_cap (armBits 7) 8 (longest_accepted_arm).1),
+    expectCitedEq "eight ones then a zero is rejected"
+      (acceptedPayloadBytes (armBits 8)) none
+      (nine_payload_arm_rejected).1,
+    citeBoolEq "nine payload byte arm is still a finished shape"
+      (finishedArm (armBits 8)) true
+      (nine_payload_arm_rejected).2.2.2,
+    citeBoolEq "eight leading ones exceed the cap" (armExceedsCap 8) true
+      (nine_payload_arm_rejected).2.2.1,
+    citeBoolEq "seven leading ones do not exceed the cap" (armExceedsCap 7) false
+      (longest_accepted_arm).2.2.1,
+    expectCitedEq "width rule reaches five payload bytes"
+      (payloadBytesIfWithinCap 4) (some 5)
+      (width_rule_continues_to_cap).2.2.2.2.1,
+    expectCitedEq "width rule rejects nine payload bytes"
+      (payloadBytesIfWithinCap 8) none
+      (width_rule_continues_to_cap).2.2.2.2.2.2.2.2,
+    citeBoolEq "an empty list is not a finished arm" (finishedArm []) false
+      empty_is_not_a_finished_arm,
+    citeBoolEq "ones padding is not a finished arm" (finishedArm padOnesFixture) false
+      pad_ones_are_not_a_finished_arm,
+    expectCitedEq "page 0 index width is arm 0"
+      (acceptedPayloadBytes arm0Bits) (some page0IndexBytes)
+      page0_index_width_is_arm0,
+    expectCitedEq "page 1 index width is arm 10"
+      (acceptedPayloadBytes arm10Bits) (some page1IndexBytes)
+      (page1_index_width_is_arm10).1,
+    citeBoolEq "page 1 index width proof keeps little endian" page1LittleEndian true
+      (page1_index_width_is_arm10).2,
     expectTrue "ones padding fixture is valid"
       (claimedPadIsValid padOnesFixture),
     expectTrue "claimed pad that contains a zero is rejected"
@@ -188,6 +289,11 @@ def runCases : List Case :=
     expectFalse "fargo is not assigned a number here" fargoAssignedNumber,
     expectFalse "a stack program instruction set is not specified"
       stackProgramInstructionSetSpecified,
+    expectFalse "an instruction listing is not published"
+      instructionListingPublished,
+    citeBoolEq "listing flag matches the unspecified instruction set"
+      instructionListingPublished stackProgramInstructionSetSpecified
+      listing_matches_unspecified_instruction_set,
     expectFalse "nested language is not specified here"
       nestedLanguageSpecified,
     expectFalse "on disk join shape is not specified here"
@@ -253,7 +359,13 @@ def runCases : List Case :=
       mashSpellingConverterProgramClaimed
       mashSpellingConverterProgramClaimedIsFalse
       rfl
-      mash_spelling_converter_claimed_is_false
+      mash_spelling_converter_claimed_is_false,
+    expectConsFalse "publishing an instruction listing is Cons False"
+      instructionListingPublished
+      mashInstructionListingPublished
+      mashInstructionListingPublishedIsFalse
+      rfl
+      mash_instruction_listing_published_is_false
   ]
 
 def main (_args : List String) : IO UInt32 := do

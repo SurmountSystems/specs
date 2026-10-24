@@ -115,6 +115,159 @@ theorem arm110_leading_ones : leadingOnes arm110Bits = 2 := rfl
 
 theorem arm1110_leading_ones : leadingOnes arm1110Bits = 3 := rfl
 
+/-- Clause 3.7: arm `0` means the next payload item is 1 byte. -/
+theorem arm0_means_one_payload_byte :
+    finishedArm arm0Bits = true ∧
+      acceptedPayloadBytes arm0Bits = some 1 :=
+  And.intro rfl rfl
+
+/-- Clause 3.7: arm `10` means the next payload item is 2 bytes. -/
+theorem arm10_means_two_payload_bytes :
+    finishedArm arm10Bits = true ∧
+      acceptedPayloadBytes arm10Bits = some 2 :=
+  And.intro rfl rfl
+
+/-- Clause 3.7: arm `110` means the next payload item is 3 bytes. -/
+theorem arm110_means_three_payload_bytes :
+    finishedArm arm110Bits = true ∧
+      acceptedPayloadBytes arm110Bits = some 3 :=
+  And.intro rfl rfl
+
+/-- Clause 3.7: arm `1110` means the next payload item is 4 bytes. -/
+theorem arm1110_means_four_payload_bytes :
+    finishedArm arm1110Bits = true ∧
+      acceptedPayloadBytes arm1110Bits = some 4 :=
+  And.intro rfl rfl
+
+/-- The named arms are the same bit lists as ones followed by a zero. -/
+theorem named_arm_bits :
+    armBits 0 = arm0Bits ∧
+      armBits 1 = arm10Bits ∧
+      armBits 2 = arm110Bits ∧
+      armBits 3 = arm1110Bits :=
+  And.intro rfl (And.intro rfl (And.intro rfl rfl))
+
+/--
+  Clause 3.7: "The same rule continues at five bytes and beyond as further
+  ones then a zero, up to the cap in Clause 4.4."
+  Seven ones then a zero is 8 payload bytes. Eight ones then a zero is rejected.
+-/
+theorem width_rule_continues_to_cap :
+    payloadBytesIfWithinCap 0 = some 1 ∧
+      payloadBytesIfWithinCap 1 = some 2 ∧
+      payloadBytesIfWithinCap 2 = some 3 ∧
+      payloadBytesIfWithinCap 3 = some 4 ∧
+      payloadBytesIfWithinCap 4 = some 5 ∧
+      payloadBytesIfWithinCap 5 = some 6 ∧
+      payloadBytesIfWithinCap 6 = some 7 ∧
+      payloadBytesIfWithinCap 7 = some 8 ∧
+      payloadBytesIfWithinCap 8 = none := by
+  decide
+
+/--
+  Clause 4.4 item 7. The longest accepted arm is seven ones followed by a zero.
+-/
+theorem longest_accepted_arm :
+    acceptedPayloadBytes (armBits 7) = some 8 ∧
+      payloadBytesIfWithinCap 7 = some 8 ∧
+      armExceedsCap 7 = false ∧
+      finishedArm (armBits 7) = true :=
+  And.intro rfl (And.intro rfl (And.intro rfl rfl))
+
+/--
+  Clause 3.7 and Clause 4.4 item 7. Eight ones followed by a zero is a finished
+  arm whose payload byte count is 9, and that count is rejected.
+-/
+theorem nine_payload_arm_rejected :
+    acceptedPayloadBytes (armBits 8) = none ∧
+      payloadBytesIfWithinCap 8 = none ∧
+      armExceedsCap 8 = true ∧
+      finishedArm (armBits 8) = true :=
+  And.intro rfl (And.intro rfl (And.intro rfl rfl))
+
+theorem empty_is_not_a_finished_arm : finishedArm [] = false := rfl
+
+/-- Clause 3.16: trailing ones with no closing zero are padding, not an arm. -/
+theorem pad_ones_are_not_a_finished_arm :
+    finishedArm padOnesFixture = false :=
+  rfl
+
+private theorem cond_some_inv {α : Type} (c : Bool) (a n : α)
+    (h : cond c (some a) none = some n) : c = true ∧ n = a := by
+  cases c with
+  | false =>
+    change (none = some n) at h
+    cases h
+  | true =>
+    change (some a = some n) at h
+    injection h with hEq
+    cases hEq
+    exact And.intro rfl rfl
+
+private theorem and_eq_true_split (a b : Bool) (h : (a && b) = true) :
+    a = true ∧ b = true := by
+  match a, b with
+  | true, true => exact And.intro rfl rfl
+  | true, false => cases h
+  | false, true => cases h
+  | false, false => cases h
+
+private theorem not_true_is_false (a : Bool) (h : (!a) = true) : a = false := by
+  cases a with
+  | false => rfl
+  | true => cases h
+
+/--
+  An accepted width is a finished arm. The cap rejects that arm when the
+  payload byte count is greater than 8. The count is the number of ones plus one.
+-/
+theorem accepted_payload_bytes_spec (bits : List Bool) (n : Nat)
+    (h : acceptedPayloadBytes bits = some n) :
+    finishedArm bits = true ∧
+      armExceedsCap (leadingOnes bits) = false ∧
+      n = payloadBytesFromLeadingOnes (leadingOnes bits) := by
+  unfold acceptedPayloadBytes at h
+  have hCond :=
+    cond_some_inv
+      (finishedArm bits && !armExceedsCap (leadingOnes bits))
+      (payloadBytesFromLeadingOnes (leadingOnes bits))
+      n
+      h
+  have hParts := and_eq_true_split _ _ hCond.1
+  have hCap := not_true_is_false _ hParts.2
+  exact And.intro hParts.1 (And.intro hCap hCond.2)
+
+/-- Clause 4.4 item 7. An accepted payload byte count is at most 8. -/
+theorem accepted_payload_within_cap (bits : List Bool) (n : Nat)
+    (h : acceptedPayloadBytes bits = some n) :
+    n ≤ payloadByteCap := by
+  have hSpec := accepted_payload_bytes_spec bits n h
+  have hEq : n = payloadBytesFromLeadingOnes (leadingOnes bits) := hSpec.2.2
+  have hNotEx : armExceedsCap (leadingOnes bits) = false := hSpec.2.1
+  unfold armExceedsCap at hNotEx
+  have hNot :
+      ¬ payloadByteCap < payloadBytesFromLeadingOnes (leadingOnes bits) :=
+    of_decide_eq_false hNotEx
+  have hLe :
+      payloadBytesFromLeadingOnes (leadingOnes bits) ≤ payloadByteCap :=
+    Nat.not_lt.mp hNot
+  subst hEq
+  exact hLe
+
+/-- Clause 3.9: "A page 0 index is one payload byte." That width is arm `0`. -/
+theorem page0_index_width_is_arm0 :
+    acceptedPayloadBytes arm0Bits = some page0IndexBytes :=
+  rfl
+
+/--
+  Clause 3.10: "A page 1 index is two payload bytes."
+  Clause 4.5 item 3: "A page 1 index MUST be little endian."
+-/
+theorem page1_index_width_is_arm10 :
+    acceptedPayloadBytes arm10Bits = some page1IndexBytes ∧
+      page1LittleEndian = true :=
+  And.intro rfl rfl
+
 theorem pad_ones_fixture_is_valid :
     claimedPadIsValid padOnesFixture = true :=
   rfl
@@ -292,6 +445,15 @@ theorem stack_program_instruction_set_specified :
     stackProgramInstructionSetSpecified = false :=
   rfl
 
+/-- Clause 4.8 item 2. No instruction listing for the stack program is published. -/
+theorem instruction_listing_is_not_published :
+    instructionListingPublished = false :=
+  rfl
+
+theorem listing_matches_unspecified_instruction_set :
+    instructionListingPublished = stackProgramInstructionSetSpecified :=
+  rfl
+
 theorem nested_language_specified : nestedLanguageSpecified = false :=
   rfl
 
@@ -358,6 +520,12 @@ theorem mash_dialect_needs_own_language_id_is_false :
 
 theorem mash_spelling_converter_claimed_is_false :
     mashSpellingConverterProgramClaimedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Clause 4.8 item 2. Assuming the instruction listing is published yields False. -/
+theorem mash_instruction_listing_published_is_false :
+    mashInstructionListingPublishedIsFalse := by
   intro h
   exact Bool.noConfusion h
 

@@ -85,13 +85,23 @@ Stack numbers in this repository:
 13. Number 0012 is Majestic Memex (`0012_Majestic_Memex.md`).
 14. Number 0013 is Lean Machine (`0013_Lean_Machine.md`).
 15. Number 0014 is Anunnaki Encoding (`0014_Anunnaki_Encoding.md`).
-16. Number 0015 is unassigned. Do not invent a number. Do not create `0015_Anunnaki_Encoding.md`.
+16. The Operator assigned number 0015 to the session bus, and the numbered file is not in the tree because the draft is missing. Do not create `0015_Anunnaki_Encoding.md`.
 17. fargo has no assigned number. Do not create `0005_fargo.md`. Do not invent a new number for fargo. Do not create `0006_fargo.md`.
-18. Carbonado Network Protocol: deferred; **do not create a file**; Carbonado has no assigned number. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is CI. Number 0008 is Formal Vibefication. Number 0009 is PDOSS. Number 0010 is Surmount Systems. Number 0011 is Surmount Systems Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean Machine. Number 0014 is Anunnaki Encoding. Number 0015 is unassigned. Do not steal 0005, 0006, 0007, 0008, 0009, 0010, 0011, 0012, 0013, or 0014 for fargo or Carbonado.
+18. Carbonado Network Protocol: deferred; **do not create a file**; Carbonado has no assigned number. Number 0005 is CATE. Number 0006 is RSI. Number 0007 is CI. Number 0008 is Formal Vibefication. Number 0009 is PDOSS. Number 0010 is Surmount Systems. Number 0011 is Surmount Systems Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean Machine. Number 0014 is Anunnaki Encoding. The Operator assigned number 0015 to the session bus, and the numbered file is not in the tree because the draft is missing. Do not steal 0005, 0006, 0007, 0008, 0009, 0010, 0011, 0012, 0013, or 0014 for fargo or Carbonado.
 
 ## Residual for numbered specifications (must be complete on disk)
 
 Residual for numbered specifications MUST be written in full on disk: a residual clause in the numbered specification and/or `RESIDUAL.md` at the repository root. A parenthetical planned file name in Scope is not enough by itself. List unpublished specifications, unassigned numbers, unpinned prior art, unimplemented product claims, and out of scope items the document names. Use complete sentences. Do not invent shipped versions for unpublished specs. Do not create numbered specification files the operator forbade (today: `0005_fargo.md` is withdrawn and must not exist; `0009_Unlicense.md` MUST NOT exist; `0009_VOCABULARY.md` is withdrawn and must not exist; `0011_Unlicense.md` MUST NOT exist; any Carbonado numbered file).
+
+## Clarify by proving
+
+When the operator clarifies a contradiction or an open residual, do the proof work in that same effort. A chat answer is not that work. A clarification is addressed when a Lean proof, a residual sentence, or a numbered clause states the resolution, and a later check can fail if the resolution is dropped. Parallelize work whose write sets do not share a file. Prefer completeness, depth, and richness of the proof over a shorter answer. Do not fill an unspecified detail just to complete a pattern.
+
+The Anunnaki stack program opcodes are specified while a prototype is being built. Specification 0014 Clause 4.8 item 2 stays: the specification does not publish an instruction listing until that prototype names the instructions. The clause on disk says this document must not publish an instruction listing for that program. Prove the locks the current text already has. Do not invent opcode names. Do not assign new specification numbers.
+
+## Inconsistency inventory
+
+When a proven inconsistency is surfaced, keep a count and an updated inventory in the same turn. The inventory is `/home/hunter/.agents/reports/proven-inconsistency-inventory.md`. The catalog in `lean/InconsistencyReport.lean` is the full set of inconsistency theorems that package elaborates. The count is 168. A hand list of length 7 and a second hand list of length 12 are not the bar. The full set is the bar. A Bool flag equal to false is not an inconsistency. Do not treat a chat sentence as the inventory.
 
 ## Project skills live under `.agents/skills/`
 

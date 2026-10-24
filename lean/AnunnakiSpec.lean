@@ -126,6 +126,41 @@ def terminatesWithZero (bits : List Bool) : Bool :=
   | some b => !b
   | none => false
 
+/--
+  Clause 3.7: "Zero terminates the count. Each one adds one payload byte."
+  Clause 3.16: "A finished arm always ends in zero".
+  A finished arm is a run of ones followed by one zero, and nothing else.
+-/
+def finishedArm (bits : List Bool) : Bool :=
+  !bits.isEmpty &&
+    terminatesWithZero bits &&
+    bits.dropLast.all (fun b => b)
+
+/-- Ones followed by one terminating zero. Clause 3.7. -/
+def armBits (ones : Nat) : List Bool :=
+  List.replicate ones true ++ [false]
+
+/--
+  Clause 3.7: "The same rule continues at five bytes and beyond as further
+  ones then a zero, up to the cap in Clause 4.4."
+  Payload byte count is the number of ones plus one.
+  Reject that count when it is greater than 8.
+-/
+def payloadBytesIfWithinCap (ones : Nat) : Option Nat :=
+  cond (!armExceedsCap ones)
+    (some (payloadBytesFromLeadingOnes ones))
+    none
+
+/--
+  Clause 3.7 and Clause 4.4 item 7: "A walker MUST cap width at 8 payload
+  bytes". Accept a finished arm only when the payload byte count is at most 8.
+  Eight ones followed by a zero means 9 payload bytes and is rejected.
+-/
+def acceptedPayloadBytes (bits : List Bool) : Option Nat :=
+  cond (finishedArm bits && !armExceedsCap (leadingOnes bits))
+    (some (payloadBytesFromLeadingOnes (leadingOnes bits)))
+    none
+
 /-- Unused bits in the last template byte are ones. Reject a claimed pad that contains a zero. -/
 def claimedPadIsValid (pad : List Bool) : Bool :=
   pad.all (fun b => b)
@@ -278,6 +313,13 @@ def fargoAssignedNumber : Bool := false
 
 def stackProgramInstructionSetSpecified : Bool := false
 
+/--
+  Clause 4.8 item 2: "This document MUST NOT publish an instruction listing
+  for that program." Clause 5 item 9: "No instruction listing for the stack
+  program is published." This flag is false. It is not an instruction listing.
+-/
+def instructionListingPublished : Bool := false
+
 def nestedLanguageSpecified : Bool := false
 
 def onDiskJoinShapeSpecified : Bool := false
@@ -409,6 +451,16 @@ def mashSpellingConverterProgramClaimed : Prop :=
 def mashSpellingConverterProgramClaimedIsFalse : Prop :=
   mashSpellingConverterProgramClaimed → False
 
+/--
+  Clause 4.8 item 2. Treating the instruction listing as published is Cons False.
+  This specification does not list those instructions.
+-/
+def mashInstructionListingPublished : Prop :=
+  instructionListingPublished = true
+
+def mashInstructionListingPublishedIsFalse : Prop :=
+  mashInstructionListingPublished → False
+
 /-- Required Conformance holds iff every listed conjunct holds. -/
 def requiredConformanceHolds : Bool :=
   specNumber == 14 &&
@@ -433,6 +485,19 @@ def requiredConformanceHolds : Bool :=
     payloadBytesFromLeadingOnes 2 == 3 &&
     payloadBytesFromLeadingOnes 3 == 4 &&
     payloadByteCap == 8 &&
+    finishedArm arm0Bits &&
+    finishedArm arm10Bits &&
+    finishedArm arm110Bits &&
+    finishedArm arm1110Bits &&
+    acceptedPayloadBytes arm0Bits == some 1 &&
+    acceptedPayloadBytes arm10Bits == some 2 &&
+    acceptedPayloadBytes arm110Bits == some 3 &&
+    acceptedPayloadBytes arm1110Bits == some 4 &&
+    acceptedPayloadBytes (armBits 7) == some 8 &&
+    acceptedPayloadBytes (armBits 8) == none &&
+    payloadBytesIfWithinCap 4 == some 5 &&
+    payloadBytesIfWithinCap 7 == some 8 &&
+    payloadBytesIfWithinCap 8 == none &&
     claimedPadIsValid padOnesFixture &&
     mustRejectClaimedPad padContainsZeroFixture &&
     padUnusedBitsWithOnes &&
@@ -476,6 +541,7 @@ def requiredConformanceHolds : Bool :=
     !createsEnkiNumberedFile &&
     !fargoAssignedNumber &&
     !stackProgramInstructionSetSpecified &&
+    !instructionListingPublished &&
     !nestedLanguageSpecified &&
     !onDiskJoinShapeSpecified &&
     !compoundWordRulesSpecified &&

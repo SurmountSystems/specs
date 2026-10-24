@@ -353,7 +353,7 @@ Flake layout:
 
 Numbered specification `0002_Systems_Lean.md` is the contract that humans read. Companion Lean modules under `lean/SystemsLeanSpec.lean` encode selected checkable claims from that spec: the multiplicity set `{0, 1, omega}`, erasure of multiplicity 0 at compile time, a finite use count model for linear (exactly once), affine (at most once), erased (zero runtime uses), and unrestricted (any Nat of uses), a freestanding product wire with no managed Lean runtime and no garbage collection, residual honesty composed with that wire (Clause 5 item 2: a freestanding product with no managed Lean runtime and no garbage collection, or every remaining blocker named and tracked), CompCert verified compilation and a bootstrapped Slake that fully typechecks as required Clause 5 conjuncts (a named residual does not excuse either), the novel language set (Idris 2, Lean 4 including Systems Lean, and pure Nix), Unlicense vs upstream `ref/` hygiene with product tree directory names `Idris2`, `lean4`, `CompCert`, and `rust`, stack targeting as a claim that fails when a Clause 4.4 component cannot target Slake, one Clause 5 conformance predicate over those facts, and the fact that this specification is number 0002 (the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`, not 0003; beastdb is specified in `0003_beastdb.md`). Optional LLVM IR emission is modeled and is not required for conformance.
 
-Those encodings also name SafeMem, SafeThr, SafeLayout, SafeKernel, and SafeCompCert, the implication that SafeCompCert implies SafeKernel and that the converse is false, Reject versus Fault versus Step, TyperSound and PanicFreeAOT as named encodings whose proofs may lag, PanicFree as a separate conjunct from SafeMem, UniqueBlock without a default reference count header, five passing modes, heap use of omega as an owner as a refusal distinct from Trivial CopyBits, the profiles HostedLinuxLibc, LibcOnly, FargoLlvm, and FreestandingKernel, correspondence before isomorphism, Cons fixtures that are false, lock catalog names and a linear LockToken, ObjectCow distinct from PageCow, Secret, Fargo gates A through F as prove obligations rather than a specification number, correspondence maps as statements, and UbClass names. The v28 SafeC lake package is leftover in the Systems Lean product tree. It is not a shipped product in this specifications repository. Number 0015 stays unassigned.
+Those encodings also name SafeMem, SafeThr, SafeLayout, SafeKernel, and SafeCompCert, the implication that SafeCompCert implies SafeKernel and that the converse is false, Reject versus Fault versus Step, TyperSound and PanicFreeAOT as named encodings whose proofs may lag, PanicFree as a separate conjunct from SafeMem, UniqueBlock without a default reference count header, five passing modes, heap use of omega as an owner as a refusal distinct from Trivial CopyBits, the profiles HostedLinuxLibc, LibcOnly, FargoLlvm, and FreestandingKernel, correspondence before isomorphism, Cons fixtures that are false, lock catalog names and a linear LockToken, ObjectCow distinct from PageCow, Secret, Fargo gates A through F as prove obligations rather than a specification number, correspondence maps as statements, and UbClass names. The v28 SafeC lake package is leftover in the Systems Lean product tree. It is not a shipped product in this specifications repository. The Operator assigned number 0015 to the session bus, and the numbered file is not in the tree because the draft is missing.
 
 Those modules are meaning proofs. They do not replace the markdown spec. They do not duplicate `spec_check` form rules (ASCII, tabs, RFC 2119 citation, spelling, wrapping to a column, hyphenation, bullets). Form checking remains `checks.spec_check`. Meaning model tests are `checks.systems_lean_tests` (Lake executable `systems_lean_tests`).
 
@@ -419,18 +419,179 @@ The `/rsi` skill is the factory for this checker: a later session runs `word_sta
 
 ### 7.16 Proven logical inconsistency table
 
-`0000_spec.md` Clause 17.1 item 8 requires this README to keep a current table of proven logical inconsistency in this repository's Lean meaning models. The Lean program `inconsistency_report` generates or checks the marked table. Reasoning lives in `RESIDUAL.md`. The listed claims are intentional nonconformance theorems (a mashed spec encoding plus proof is `False`). They are not a stack numbering bug. Formal Vibefication as specification 0008 also requires a science cycle: a hypothesis, a model, a theory, a proof, tests, and corollary experiments. Tests alone are not enough. Companion meaning models for CATE, RSI, Continuous Integration, beastdb, SSSSS, Systems Lean, Surmount Systems Tech Tree, Majestic Memex, Public Domain Open Source Software (PDOSS; Unlicense remains the license), Lean Machine, Anunnaki Encoding, the CATE word catalog, and Vocabulary collision encodings reuse `FormalVibeficationSpec.ScienceEffort` and `conformingScience`. Tests without a model do not conform. A model and proofs without corollary experiments do not conform. Those facts are not new mash theorems. The table below still lists the same seven mash claims. Products named in this program are real, incomplete, and not ready for use.
+`0000_spec.md` Clause 17.1 item 8 requires this README to keep a current table of proven logical inconsistency in this repository's Lean meaning models. The Lean program `inconsistency_report` generates or checks the marked table. Reasoning lives in `RESIDUAL.md`. The listed claims are intentional nonconformance theorems (a mashed spec encoding plus proof is `False`). They are not a stack numbering bug. Formal Vibefication as specification 0008 also requires a science cycle: a hypothesis, a model, a theory, a proof, tests, and corollary experiments. Tests alone are not enough. Companion meaning models for CATE, RSI, Continuous Integration, beastdb, SSSSS, Systems Lean, Surmount Systems Tech Tree, Majestic Memex, Public Domain Open Source Software (PDOSS; Unlicense remains the license), Lean Machine, Anunnaki Encoding, the CATE word catalog, and Vocabulary collision encodings reuse `FormalVibeficationSpec.ScienceEffort` and `conformingScience`. Tests without a model do not conform. A model and proofs without corollary experiments do not conform. Those facts are not new mash theorems. The table below lists the full catalog of 168 inconsistency theorems. Products named in this program are real, incomplete, and not ready for use.
 
 <!-- inconsistency-report -->
 | Exists | File | Claim | Kind |
 | --- | --- | --- | --- |
-| yes | `lean/FormalVibeficationProofs.lean` | `mash_spec_and_proof` | intentional nonconformance theorem |
-| yes | `lean/FormalVibeficationProofs.lean` | `mash_homes_is_inconsistent` | intentional nonconformance theorem |
-| yes | `lean/UnlicenseProofs.lean` | `mash_spec_and_proof` | intentional nonconformance theorem |
-| yes | `lean/UnlicenseProofs.lean` | `mash_mit_meets_pdoss` | intentional nonconformance theorem |
-| yes | `lean/UnlicenseProofs.lean` | `mash_apache_meets_pdoss` | intentional nonconformance theorem |
-| yes | `lean/Surmount.lean` | `mash_layers_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_carbonado_assigned_number_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_conforming_encoder_claimed_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_dialect_needs_own_language_id_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_enki_and_anunnaki_are_one_object_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_enki_has_numbered_specification_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_filter_script_assigned_number_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_instruction_listing_published_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_number_0015_is_this_specification_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_rdps_assigned_number_is_false` | intentional nonconformance theorem |
 | yes | `lean/AnunnakiProofs.lean` | `mash_spec_and_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/AnunnakiProofs.lean` | `mash_spelling_converter_claimed_is_false` | intentional nonconformance theorem |
+| yes | `lean/BeastDbProofs.lean` | `mash_beastdb_never_started_is_false` | intentional nonconformance theorem |
+| yes | `lean/BeastDbProofs.lean` | `mash_beastdb_ready_for_use_is_false` | intentional nonconformance theorem |
+| yes | `lean/BeastDbProofs.lean` | `mash_bounce_buffer_required_is_false` | intentional nonconformance theorem |
+| yes | `lean/BeastDbProofs.lean` | `mash_inferred_schema_leaves_data_without_schema_is_false` | intentional nonconformance theorem |
+| yes | `lean/BeastDbProofs.lean` | `mash_marketing_acid_is_proven_acid_is_false` | intentional nonconformance theorem |
+| yes | `lean/BeastDbProofs.lean` | `mash_mutex_trie_is_false` | intentional nonconformance theorem |
+| yes | `lean/BeastDbProofs.lean` | `mash_traditional_ffi_as_interop_path_is_false` | intentional nonconformance theorem |
+| yes | `lean/CateProofs.lean` | `mash_british_spelling_conforms_is_false` | intentional nonconformance theorem |
+| yes | `lean/CateProofs.lean` | `mash_cate_allows_invented_conforming_product_is_false` | intentional nonconformance theorem |
+| yes | `lean/CateProofs.lean` | `mash_contradiction_floor_is_every_sentence_pair_is_false` | intentional nonconformance theorem |
+| yes | `lean/CateProofs.lean` | `mash_every_agent_already_conforms_is_false` | intentional nonconformance theorem |
+| yes | `lean/CateProofs.lean` | `mash_leftover_unstack_as_conforming` | intentional nonconformance theorem |
+| yes | `lean/CateProofs.lean` | `mash_leftover_unstack_floor_as_complete_english_is_false` | intentional nonconformance theorem |
+| yes | `lean/CateProofs.lean` | `mash_unpublished_0009` | intentional nonconformance theorem |
+| yes | `lean/CiProofs.lean` | `mash_byte_identity_claimed_true_is_false` | intentional nonconformance theorem |
+| yes | `lean/CiProofs.lean` | `mash_reality_check_claimed_done_is_false` | intentional nonconformance theorem |
+| yes | `lean/CiProofs.lean` | `mash_spec_and_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/CiProofs.lean` | `mash_this_repo_claims_unsigned_exception_is_false` | intentional nonconformance theorem |
+| yes | `lean/CiProofs.lean` | `mash_unsigned_as_general_skip_is_false` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_homes_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_leftover_science_with_product_experiments` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_leftover_science_with_product_experiments_is_false` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_local_pdf_as_clause12_pin` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_local_pdf_as_clause12_pin_is_false` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_local_pdf_as_publisher_url` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_local_pdf_as_publisher_url_is_false` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_science_steps` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_science_steps_is_false` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_spec_and_proof` | intentional nonconformance theorem |
+| yes | `lean/FormalVibeficationProofs.lean` | `mash_spec_and_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `holy_safe_c_lean_machine_one_module_is_not_true` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_belief_required_for_conformance_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_conforming_product_exists_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_holy_lean_has_separate_number_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_holy_lean_implemented_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_legal_lean_finished_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_legal_lean_has_separate_number_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_running_distributed_machine_claimed_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_spec_and_proof_conforming_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_theology_is_must_for_compiler_is_false` | intentional nonconformance theorem |
+| yes | `lean/LeanMachineProofs.lean` | `mash_worship_required_for_conformance_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_archive_is_sstt_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_companion_lean_proves_crate_finished_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_crate_name_is_command_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_extension_is_sstt_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_lake_writer_is_shipped_memex_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_load_sstt_makes_archive_sstt_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_magic_is_tech_tree_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_product_never_started_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_product_ready_for_use_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_repo_unlicense_covers_crate_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_spec_and_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/MemexProofs.lean` | `mash_wait_on_finished_memex_command_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_chat_only_residual_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_chat_reminder_as_durable_tool_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_clause_4_already_met_by_every_session_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_meaning_proofs_are_second_form_checker_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_reshape_test_without_contract_change_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_rsi_is_bitmask_spec_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_rsi_is_training_run_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_rsi_replaces_leftover_unstack_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_serialize_independent_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_spec_claims_every_agent_conforms_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_sssp_has_numbered_spec_is_false` | intentional nonconformance theorem |
+| yes | `lean/RsiProofs.lean` | `mash_this_document_creates_sssp_is_false` | intentional nonconformance theorem |
+| yes | `lean/SessionBusProofs.lean` | `mash_conforming_session_bus_program_claimed_is_false` | intentional nonconformance theorem |
+| yes | `lean/SessionBusProofs.lean` | `mash_spec_and_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `claimed_integration_that_uses_neural_while_symbolic_can` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `mash_auxiliary_replaces_sequential_is_false` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `mash_claimed_neural_while_symbolic_can_is_false` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `mash_claimed_not_systems_lean_is_false_as_false` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `mash_hashing_ban_proves_engine_obeys_is_false` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `mash_neurosymbolic_harness_shipped_is_false` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `mash_spend_neural_when_symbolic_can_is_false` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `mash_sssss_never_started_is_false` | intentional nonconformance theorem |
+| yes | `lean/SssssProofs.lean` | `mash_sssss_ready_for_use_is_false` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `cate_number_disagreement_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `claiming_beastdb_ready_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `claiming_emit_equals_elf_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `leftover_unstack_as_conforming_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `mash_composition_as_product_readiness_is_false` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `mash_layers_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `mash_number_fifteen_published_file_exists_is_false` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `mash_spec_and_proof` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `mash_vocabulary_not_cate` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `omitting_0008_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `omitting_0009_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `omitting_0011_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `omitting_0012_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `product_unification_does_not_license_markdown_theorems` | intentional nonconformance theorem |
+| yes | `lean/Surmount.lean` | `surmount_number_disagreement_is_inconsistent` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `explicit_packed_keeps_autovectorization_mash` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `lock_free_free_without_reclamation_keeps_mash` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_autovectorization_is_simd_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_beastdb_props_cons_without_attach_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_cas_non_atomic_cell_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_cas_unique_block_pointer_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_compcert_fragment_container_of_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_compcert_fragment_inline_asm_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_compcert_refines_claimed_done_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_compcert_tso_satisfies_clause42_item6_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_compcert_verified_compilation_claimed_done_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_cons_on_every_export_claimed_proved_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_copy_handle_lock_token_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_gate_a_crate_is_safe_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_glibc_malloc_untyped_unique_block_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_grok_oss_is_safe_c_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_hardware_tag_replaces_unique_block_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_holy_lean_safec_lean_machine_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_isomorphism_theorem_name_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_language_omega_on_heap_owner_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_link_face_exports_unique_block_as_bits_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_lock_free_free_without_reclamation_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_memcpy_equation_present_theorem_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_mutex_free_file_is_lock_free_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_named_residual_identifiers_present_theories_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_once_implies_unique_block_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_page_cache_is_rcu_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_panic_free_reachable_unwrap_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_perfect_theorem_name_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_pin_survives_posix_fork_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_posix_fork_is_borrow_or_owned_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_posix_fork_is_fork_join_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_rw_lock_shared_and_exclusive_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_safe_c_is_own_published_spec_number_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_safe_kernel_implies_safe_compcert_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_safe_mem_non_atomic_data_race_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_secret_copy_into_non_secret_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_secret_dont_fork_posix_fork_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_secret_object_cow_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_secret_page_cow_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_self_host_from_c_satisfies_bootstrap_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_slake_bootstrap_typecheck_claimed_done_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_syscall_durability_is_beastdb_acid_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_thread_shared_is_process_shared_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_tsx_is_beastdb_acid_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_typed_link_input_claimed_proved_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_unique_block_copy_handle_no_protocol_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `mash_unique_only_posix_fork_is_false` | intentional nonconformance theorem |
+| yes | `lean/SystemsLeanProofs.lean` | `sample_race_derives_safe_mem_mash` | intentional nonconformance theorem |
+| yes | `lean/TechTreeProofs.lean` | `mash_copied_uint64_theorems_is_false` | intentional nonconformance theorem |
+| yes | `lean/TechTreeProofs.lean` | `mash_lake_writer_as_shipped_product_is_false` | intentional nonconformance theorem |
+| yes | `lean/TechTreeProofs.lean` | `mash_producer_wired_into_product_tree_is_false` | intentional nonconformance theorem |
+| yes | `lean/TechTreeProofs.lean` | `mash_spec_and_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_apache_meets_pdoss` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_cc0_claimed_meets_pdoss_is_false` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_cc0_pinned_as_meeting_pdoss` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_cc0_pinned_is_false` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_mit_meets_pdoss` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_nationality_statutes_are_clause_12_pins` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_residual_attribution_contribution_accepted` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_spec_and_proof` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_spec_and_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/UnlicenseProofs.lean` | `mash_unlicense_replaces_named_residual_licenses` | intentional nonconformance theorem |
+| yes | `lean/VocabularyCollisionProofs.lean` | `mash_collision_tags_spec_and_proof_is_false` | intentional nonconformance theorem |
+| yes | `lean/VocabularyProofs.lean` | `mash_catalog_isomorphism_proves_definitions_complete_is_false` | intentional nonconformance theorem |
+| yes | `lean/VocabularyProofs.lean` | `mash_duplicate_token_check_is_complete_ambiguity_checker_is_false` | intentional nonconformance theorem |
 <!-- /inconsistency-report -->
 
 Hermetic fixtures are `checks.inconsistency_report_tests`. The repository scan is `checks.inconsistency_report` with `REPO_ROOT` set. `inconsistency_report --write` refreshes the marked table.
@@ -462,7 +623,7 @@ The pre-commit Lean hook matches only numbered specifications (`^[0-9]{4}_[A-Za-
 
 Remaining work for the numbered specification program is written in full in [RESIDUAL.md](RESIDUAL.md). Clause 6 of [0003_beastdb.md](0003_beastdb.md) is the residual record for that specification. Clause 6 of [0004_SSSSS.md](0004_SSSSS.md) is the residual record for SSSSS. Clause 6 of [0005_CATE.md](0005_CATE.md) is the residual record for CATE. Clause 6 of [0006_RSI.md](0006_RSI.md) is the residual record for Recursive Self Improvement. Clause 6 of [0007_CI.md](0007_CI.md) is the residual record for Continuous Integration and stack consistency. Clause 6 of [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md) is the residual record for Formal Vibefication. Clause 6 of [0005_CATE.md](0005_CATE.md) also records that the word catalog lives in CATE and that number 0009 is Public Domain Open Source Software (PDOSS). Clause 6 of [0009_PDOSS.md](0009_PDOSS.md) is the residual record for Public Domain Open Source Software. Clause 6 of [0010_Surmount_Systems.md](0010_Surmount_Systems.md) is the residual record for Surmount Systems stack composition. A parenthetical planned file name in Scope is not enough by itself.
 
-Do not create `0005_fargo.md`. Number 0005 is CATE. Number 0006 is Recursive Self Improvement. Do not invent a number for fargo. Do not create a numbered specification for Carbonado unless the operator asks. Number 0006 is RSI, not Carbonado. Number 0007 is Continuous Integration. Number 0008 is Formal Vibefication. Number 0009 is Public Domain Open Source Software (PDOSS). Unlicense remains the license. Do not create `0009_VOCABULARY.md`. Number 0010 is Surmount Systems. Number 0011 is Surmount Systems Tech Tree. Do not create `0011_Unlicense.md`. Number 0014 is Anunnaki Encoding. Number 0015 is unassigned. Do not assign 0009 or 0014 to fargo or Carbonado. Do not invent number 0015. beastdb, SSSSS, Slake, and Continuous Integration are ongoing and not ready for use. Do not write that they never started or do not exist. Do not claim Slake emit already matches object files as identical bytes. Numbered specification `0010_Surmount_Systems.md` is the human contract for stack composition. `lean/Surmount.lean` is a model of composition of those identities. It is not a proof that Slake emit already matches ELF or that beastdb is ready for use. Every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` and a proof module `lean/Proofs_NNNN.lean`. Companion models named in 7.14 place encodings in Spec modules and theorems in Proofs modules. Mixing encodings and proofs in one mash is remaining work only if a later module reintroduces theorems into a Spec file. Lean Machine is specified in `0013_Lean_Machine.md`. SSSP is not specified. ISO 24495-1:2023 and the US Federal Plain Language Guidelines are not pinned under `ref/`. CATE does not replace RFC 2119. CATE is specification 0005. The Systems Lean product tree that already holds Lean 4, CompCert, Idris 2, and Rust as git submodules is `/home/hunter/Projects/ai/iso`. Do not copy those four trees into this repository's `ref/`. The unsigned commit exception in `0007_CI.md` is unique and is not claimed by this specifications repository.
+Do not create `0005_fargo.md`. Number 0005 is CATE. Number 0006 is Recursive Self Improvement. Do not invent a number for fargo. Do not create a numbered specification for Carbonado unless the operator asks. Number 0006 is RSI, not Carbonado. Number 0007 is Continuous Integration. Number 0008 is Formal Vibefication. Number 0009 is Public Domain Open Source Software (PDOSS). Unlicense remains the license. Do not create `0009_VOCABULARY.md`. Number 0010 is Surmount Systems. Number 0011 is Surmount Systems Tech Tree. Do not create `0011_Unlicense.md`. Number 0014 is Anunnaki Encoding. The Operator assigned number 0015 to the session bus, and the numbered file is not in the tree because the draft is missing. Do not assign 0009 or 0014 to fargo or Carbonado. beastdb, SSSSS, Slake, and Continuous Integration are ongoing and not ready for use. Do not write that they never started or do not exist. Do not claim Slake emit already matches object files as identical bytes. Numbered specification `0010_Surmount_Systems.md` is the human contract for stack composition. `lean/Surmount.lean` is a model of composition of those identities. It is not a proof that Slake emit already matches ELF or that beastdb is ready for use. Every published numbered markdown file has a sibling `NNNN_descriptive_name.lean` and a proof module `lean/Proofs_NNNN.lean`. Companion models named in 7.14 place encodings in Spec modules and theorems in Proofs modules. Mixing encodings and proofs in one mash is remaining work only if a later module reintroduces theorems into a Spec file. Lean Machine is specified in `0013_Lean_Machine.md`. SSSP is not specified. ISO 24495-1:2023 and the US Federal Plain Language Guidelines are not pinned under `ref/`. CATE does not replace RFC 2119. CATE is specification 0005. The Systems Lean product tree that already holds Lean 4, CompCert, Idris 2, and Rust as git submodules is `/home/hunter/Projects/ai/iso`. Do not copy those four trees into this repository's `ref/`. The unsigned commit exception in `0007_CI.md` is unique and is not claimed by this specifications repository.
 
 ## 10. Project skill `/surmount-specify`
 
