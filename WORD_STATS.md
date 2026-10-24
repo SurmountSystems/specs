@@ -12,11 +12,11 @@ The Lean program word_stats writes this file and fails when this file is stale.
 
 ## Headline
 
-Unique word count: 4154
+Unique word count: 4157
 Proven unique count: 268
 Percent of unique words that are proven: 6.45%
-Total occurrence count: 139252
-Proven occurrence count: 19529
+Total occurrence count: 139272
+Proven occurrence count: 19531
 Percent by prevalence: 14.02%
 
 CATE catalog token count (case sensitive): 271
@@ -333,6 +333,7 @@ backed 4
 background 9
 backlink 4
 backward 3
+badly 1
 bahamas 1
 bahrain 1
 bailiwick 1
@@ -483,7 +484,7 @@ bush 8
 bust 3
 busy 1
 but 16
-by 447
+by 448
 byte 114
 byteidentity 1
 byteidentityclaimedtrue 1
@@ -608,7 +609,7 @@ city 1
 civil 4
 civilization 3
 civilizations 1
-claim 315
+claim 316
 claimed 174
 claimedtrue 1
 claiming 48
@@ -1105,7 +1106,7 @@ durability 19
 durable 64
 during 16
 e 29
-each 74
+each 75
 earlier 7
 early 3
 earth 4
@@ -1329,7 +1330,7 @@ faithfulness 1
 fake 10
 fall 2
 fallback 4
-false 496
+false 497
 familiar 3
 family 2
 fargo 360 proven
@@ -1683,7 +1684,7 @@ hosted 7
 hostedlinuxlibc 10
 hosting 1
 hosts 4
-how 56
+how 57
 howard 8 proven
 href 13 proven
 html 86
@@ -1779,6 +1780,7 @@ including 89
 inclusion 3
 incompatible 2
 incomplete 15
+inconsistencies 1
 inconsistency 65
 inconsistencyreport 7
 inconsistent 23
@@ -1880,7 +1882,7 @@ invalidation 2
 invent 89
 invented 10
 inventing 3
-inventory 5
+inventory 7
 invents 1
 inverse 9
 inverses 2
@@ -2240,7 +2242,7 @@ mcbride 4 proven
 mccallum 1
 mclelland 62 proven
 mcp 1
-md 1985 proven
+md 1987 proven
 mdline 6
 mean 8
 meaning 197
@@ -2306,6 +2308,7 @@ mismatch 2
 mismatches 7
 missed 1
 missing 59
+misstate 1
 misuse 1
 mit 54
 mitgrant 1
@@ -2820,7 +2823,7 @@ producttreeunifies 6
 profanity 1
 profile 28
 profiles 5
-program 143
+program 144
 programming 8
 programs 16
 progress 9
@@ -2855,7 +2858,7 @@ protocols 3
 prototype 4
 provablyperfect 5
 prove 52
-proved 71
+proved 72
 proven 66
 provenaciddone 1
 provenance 14
@@ -2920,7 +2923,7 @@ range 9
 ranges 5
 rank 17
 ranked 13
-ranks 2
+ranks 3
 rarely 2
 rather 38
 rationale 4
@@ -3104,7 +3107,7 @@ require 37
 required 163 proven
 requirement 161
 requirements 76
-requires 120
+requires 121
 requiring 6
 research 112
 resemble 1
@@ -3706,7 +3709,7 @@ th 4 proven
 thailand 1
 than 99
 that 2650
-the 5040
+the 5041
 theater 1
 their 60
 them 80
@@ -3727,7 +3730,7 @@ things 1
 think 1
 third 13
 thirteen 1
-this 2387
+this 2388
 thisreposeparates 8
 thisrepounlicenseexceptnamedresidual 1
 those 625
@@ -4099,7 +4102,7 @@ were 30
 wesley 1
 west 1
 wez 1
-what 114
+what 115
 whatever 1
 when 396
 whenever 1
@@ -4149,7 +4152,7 @@ workstreams 1
 world 10
 worldwide 1
 worship 16
-would 15
+would 16
 wpp 4 proven
 wrap 19
 wrapped 8
