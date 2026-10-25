@@ -309,6 +309,13 @@
 						description = "Lean tests for Anunnaki Encoding spec encodings, assignment as specification 0014, and separate proofs (spec 0014)";
 					};
 
+					session_bus_tests = mkLeanBin {
+						pname = "session_bus_tests";
+						lakeTarget = "session_bus_tests";
+						binName = "session_bus_tests";
+						description = "Lean tests for Session Bus spec encodings, assignment as specification 0015, and separate proofs (spec 0015)";
+					};
+
 					# Writer and reader of .sstt files (spec 0011 format, Lake package).
 					sstt_tests = mkLeanBin {
 						pname = "sstt_tests";
@@ -391,7 +398,7 @@
 					lean4 = pkgs.lean4;
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests anunnaki_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report lean4;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests anunnaki_tests session_bus_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report lean4;
 					default = spec_check;
 				}
 			);
@@ -688,6 +695,19 @@
 								echo ok > "$out/result"
 							'';
 
+					session_bus_tests =
+						pkgs.runCommand "session_bus_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.session_bus_tests
+								];
+							}
+							''
+								session_bus_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
 					# .sstt writer and reader contracts, including --decode with
 					# and without REPO_ROOT; not a second markdown linter.
 					sstt_tests =
@@ -862,6 +882,7 @@
 						memex_tests
 						lean_machine_tests
 						anunnaki_tests
+						session_bus_tests
 						sstt_tests
 						sstt_write
 						repo_links_tests

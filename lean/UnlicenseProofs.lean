@@ -9,6 +9,7 @@
 
 import UnlicenseSpec
 import SpecRegistry
+import «0009_PDOSS»
 
 namespace UnlicenseProofs
 
@@ -154,22 +155,136 @@ theorem cc0_is_not_pinned_as_meeting_pdoss :
 theorem cc0_is_not_clause_12_pin : cc0IsClause12Pin = false :=
   rfl
 
-theorem mash_cc0_pinned_as_meeting_pdoss
-    (h : mashCc0PinnedAsMeetingPdoss) : False :=
-  nomatch h
-
 /-- Setting `cc0Pinned` true is Cons False. Not a legal evaluation of CC0. -/
 theorem mash_cc0_pinned_is_false : cc0Pinned = true → False := by
   intro h
   exact Bool.noConfusion h
 
-/-- Setting `cc0ClaimedMeetsPdoss` true is Cons False.
-    Not a legal evaluation of CC0. This does not prove that CC0 fails a legal
-    test and it does not prove that CC0 meets PDOSS. -/
+/-- True when `needle` occurs in `hay`. -/
+def mentionsPhrase (needle hay : String) : Bool :=
+  (hay.splitOn needle).length > 1
+
+/-- Clause 6.4 item 4. Sibling markdown line 651. Array index 650. -/
+def clause64Item4Cc0Line : MdLine :=
+  «0009_PDOSS».encodedLines[650]!
+
+/--
+  Clause 6.4 item 4 on one sibling line: companion Lean must not encode
+  CC0 as meeting the PDOSS test, and this document does not claim CC0
+  fails or meets PDOSS as a pinned instrument.
+-/
+def clause64Item4ReadsCc0NotClaimedToMeet (s : String) : Bool :=
+  mentionsPhrase "Companion Lean MUST NOT encode CC0 as meeting the PDOSS test." s &&
+    mentionsPhrase "This document does not claim CC0 fails or meets PDOSS as a pinned instrument." s
+
+/-- How that live sentence is read. `claimedMeets` is the claim the sentence denies. -/
+inductive Cc0ClaimedMeetsReading where
+  | notClaimedToMeet
+  | claimedMeets
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of Clause 6.4 item 4.
+  `notClaimedToMeet` only when sibling line 651 still carries that denial.
+  This reader does not return `claimedMeets`. Absent words yield `none`.
+-/
+def readLiveCc0ClaimedMeets (line : MdLine) : Option Cc0ClaimedMeetsReading :=
+  if line.number == 651 &&
+      clause64Item4ReadsCc0NotClaimedToMeet line.text then
+    some .notClaimedToMeet
+  else
+    none
+
+/-- The claim that CC0 is claimed to meet PDOSS. -/
+def cc0ClaimedMeetsPdossAsCurrentFact : Prop :=
+  readLiveCc0ClaimedMeets clause64Item4Cc0Line = some .claimedMeets
+
+def cc0ClaimedMeetsPdossAsCurrentFactIsFalse : Prop :=
+  cc0ClaimedMeetsPdossAsCurrentFact → False
+
+/-- True only when sibling line 651 is read as CC0 being claimed to meet PDOSS. -/
+def cc0CountedClaimedMeetsPdoss : Bool :=
+  readLiveCc0ClaimedMeets clause64Item4Cc0Line == some .claimedMeets
+
+set_option maxHeartbeats 800000
+
+/--
+  Live sibling line 651 of `0009_PDOSS` says companion Lean must not
+  encode CC0 as meeting the PDOSS test, and that this document does not
+  claim CC0 fails or meets PDOSS as a pinned instrument. Treating the
+  claim that CC0 meets PDOSS as the current fact yields False. The
+  `native_decide` step reads that sibling line. Removing that denial
+  makes the reading `none`, so this proof no longer closes.
+-/
 theorem mash_cc0_claimed_meets_pdoss_is_false :
-    cc0ClaimedMeetsPdoss = true → False := by
+    cc0ClaimedMeetsPdossAsCurrentFactIsFalse := by
   intro h
-  exact Bool.noConfusion h
+  unfold cc0ClaimedMeetsPdossAsCurrentFact at h
+  have live :
+      readLiveCc0ClaimedMeets clause64Item4Cc0Line =
+        some .notClaimedToMeet := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
+
+/--
+  Clause 6.4 item 4 denies pinning CC0 as an instrument.
+  The pin denial is the sentence that this document does not claim
+  CC0 fails or meets PDOSS as a pinned instrument.
+  This reader does not decide a meets result for CC0.
+-/
+def clause64Item4DeniesCc0Pin (s : String) : Bool :=
+  mentionsPhrase
+    "This document does not claim CC0 fails or meets PDOSS as a pinned instrument."
+    s
+
+/-- How the pin sentence is read. `pinnedAsMeeting` is the pin the sentence denies. -/
+inductive Cc0PinnedAsMeetingReading where
+  | pinDenied
+  | pinnedAsMeeting
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of the pin on Clause 6.4 item 4.
+  `pinDenied` only when sibling line 651 still carries that pin denial.
+  This reader does not return `pinnedAsMeeting`. Absent words yield `none`.
+  It does not read the meets denial that companion Lean must not encode CC0
+  as meeting the PDOSS test.
+-/
+def readLiveCc0PinnedAsMeeting (line : MdLine) : Option Cc0PinnedAsMeetingReading :=
+  if line.number == 651 && clause64Item4DeniesCc0Pin line.text then
+    some .pinDenied
+  else
+    none
+
+/-- The claim that CC0 is pinned as meeting PDOSS. Not a legal evaluation of CC0. -/
+def cc0PinnedAsMeetingPdossAsCurrentFact : Prop :=
+  readLiveCc0PinnedAsMeeting clause64Item4Cc0Line = some .pinnedAsMeeting
+
+def cc0PinnedAsMeetingPdossAsCurrentFactIsFalse : Prop :=
+  cc0PinnedAsMeetingPdossAsCurrentFact → False
+
+/--
+  Live sibling line 651 of `0009_PDOSS` says this document does not
+  claim CC0 fails or meets PDOSS as a pinned instrument. Treating the
+  claim that CC0 is pinned as meeting PDOSS as the current fact yields
+  False. The `native_decide` step reads that pin denial. Removing that
+  pin denial makes the reading `none`, so this proof no longer closes.
+  This is the pin. It is not the meets claim. It is not a legal
+  evaluation of CC0.
+-/
+theorem mash_cc0_pinned_as_meeting_pdoss :
+    cc0PinnedAsMeetingPdossAsCurrentFactIsFalse := by
+  intro h
+  unfold cc0PinnedAsMeetingPdossAsCurrentFact at h
+  have live :
+      readLiveCc0PinnedAsMeeting clause64Item4Cc0Line =
+        some .pinDenied := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
 
 theorem mash_mit_meets_pdoss (h : mitMeetsPdoss) : False :=
   nomatch h

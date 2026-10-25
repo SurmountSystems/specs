@@ -54,4 +54,13 @@ theorem contains_slake_or_systems_lean :
     encodedLines.any (fun l => mentions "Slake" l || mentions "Systems Lean" l) = true := by
   native_decide
 
+theorem contains_major_compilers :
+    encodedLines.any (fun l => mentions "major compilers" l) = true := by
+  native_decide
+
+theorem contains_four_compilers_do_not_satisfy_clause42_item6 :
+    encodedLines.any (fun l =>
+      mentions "`CompCertTSO`, gcc, LLVM, and `cc` do not satisfy that item" l) = true := by
+  native_decide
+
 end Proofs_0002

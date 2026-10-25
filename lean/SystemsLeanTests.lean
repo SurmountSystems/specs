@@ -20,29 +20,39 @@ def encoded0002Haystack : String :=
 def mashSelfHostFromCSatisfiesBootstrapFixture : Bool :=
   selfHostFromGeneratedCSatisfiesTypecheck
 
-/-- Elaboration of the mash theorem from Proofs. -/
-def mashSelfHostTheorem : mashSelfHostFromCSatisfiesBootstrapIsFalse :=
+/-- Elaboration of the mash theorem from Proofs. The type is the sibling line denial, not the boolean flag. -/
+def mashSelfHostTheorem : generatedCSatisfiesBootstrapTypecheckAsCurrentFactIsFalse :=
   mash_self_host_from_c_satisfies_bootstrap_is_false
 
 def mashCompCertVerifiedCompilationClaimedDoneTheorem :
-    mashCompCertVerifiedCompilationClaimedDoneIsFalse :=
+    historicalCompCertRequiredStepIsCurrentRuleIsFalse :=
   mash_compcert_verified_compilation_claimed_done_is_false
 
 def mashSlakeBootstrapTypecheckClaimedDoneTheorem :
-    mashSlakeBootstrapTypecheckClaimedDoneIsFalse :=
+    slakeBootstrapTypecheckFinishedAsCurrentFactIsFalse :=
   mash_slake_bootstrap_typecheck_claimed_done_is_false
 
+/-- Elaboration of the rank 7 mash. The type is the sibling line denial, not the boolean flag. -/
 def mashCompCertTsoSatisfiesClause42Item6Theorem :
-    mashCompCertTsoSatisfiesClause42Item6IsFalse :=
+    compCertTsoSatisfiesClause42Item6AsCurrentFactIsFalse :=
   mash_compcert_tso_satisfies_clause42_item6_is_false
+
+def mashReferenceTargetSatisfiesClause42Item6Theorem :
+    mashReferenceTargetSatisfiesClause42Item6IsFalse :=
+  mash_reference_target_satisfies_clause42_item6_is_false
 
 def compCertRefinesNotClaimedDoneTheorem :
     compCertRefinesClaimedDone = false :=
   compcert_refines_not_claimed_done
 
 def mashCompCertRefinesClaimedDoneTheorem :
-    mashCompCertRefinesClaimedDoneIsFalse :=
+    compCertRefinesFinishedAsCurrentFactIsFalse :=
   mash_compcert_refines_claimed_done_is_false
+
+/-- Elaboration of the rank 8 mash. The type is the sibling line denial, not the boolean flag. -/
+def mashSafeKernelImpliesSafeCompCertTheorem :
+    safeKernelImpliesSafeCompCertAsCurrentFactIsFalse :=
+  mash_safe_kernel_implies_safe_compcert_is_false
 
 structure Case where
   name : String
@@ -471,7 +481,7 @@ def runCases : List Case :=
       bootstrapSubsetOnly.ok,
     expectFalse "typecheck claim without bootstrap is not ok"
       typecheckWithoutBootstrap.ok,
-    expectFalse "missing CompCert step does not conform"
+    expectTrue "missing CompCert step still conforms"
       productMissingCompCert.conforms,
     expectFalse "missing Slake bootstrap typecheck does not conform"
       productMissingBootstrapTypecheck.conforms,
@@ -483,7 +493,7 @@ def runCases : List Case :=
       productWrongRefLayout.conforms,
     expectTrue "named residual still satisfies Clause 5 item 2 when CompCert is missing"
       productNamedResidualMissingCompCert.item2,
-    expectFalse "named residual does not excuse a missing CompCert step"
+    expectTrue "named residual with missing CompCert still conforms"
       productNamedResidualMissingCompCert.conforms,
     expectTrue "named residual still satisfies Clause 5 item 2 when bootstrap typecheck is missing"
       productNamedResidualMissingBootstrap.item2,
@@ -518,18 +528,32 @@ def runCases : List Case :=
       compCertWrongEmit.ok,
     expectFalse "live CompCert verified compilation is not claimed done"
       compCertVerifiedCompilationClaimedDone,
-    expectConsFalse "claiming CompCert verified compilation is done is false"
-      compCertVerifiedCompilationClaimedDone
-      mashCompCertVerifiedCompilationClaimedDone
-      mashCompCertVerifiedCompilationClaimedDoneIsFalse
+    expectConsFalse "treating the historical CompCert required step as the current rule is false"
+      historicalRequiredStepCountedAsCurrent
+      historicalCompCertRequiredStepIsCurrentRule
+      historicalCompCertRequiredStepIsCurrentRuleIsFalse
       rfl
       mashCompCertVerifiedCompilationClaimedDoneTheorem,
-    expectConsFalse "CompCertTSO does not satisfy Clause 4.2 item 6"
-      compCertTsoSatisfiesClause42Item6
-      mashCompCertTsoSatisfiesClause42Item6
-      mashCompCertTsoSatisfiesClause42Item6IsFalse
+    expectConsFalse "treating CompCertTSO satisfies Clause 4.2 item 6 as the current fact is false"
+      compCertTsoCountedSatisfiesClause42Item6
+      compCertTsoSatisfiesClause42Item6AsCurrentFact
+      compCertTsoSatisfiesClause42Item6AsCurrentFactIsFalse
       rfl
       mashCompCertTsoSatisfiesClause42Item6Theorem,
+    expectFalse "CompCertTSO as a reference target does not satisfy Clause 4.2 item 6"
+      compCertTsoAsReferenceTargetSatisfiesClause42Item6,
+    expectFalse "gcc as a reference target does not satisfy Clause 4.2 item 6"
+      gccAsReferenceTargetSatisfiesClause42Item6,
+    expectFalse "LLVM as a reference target does not satisfy Clause 4.2 item 6"
+      llvmAsReferenceTargetSatisfiesClause42Item6,
+    expectFalse "cc as a reference target does not satisfy Clause 4.2 item 6"
+      ccAsReferenceTargetSatisfiesClause42Item6,
+    expectConsFalse "a reference target does not satisfy Clause 4.2 item 6"
+      referenceTargetSatisfiesClause42Item6
+      mashReferenceTargetSatisfiesClause42Item6
+      mashReferenceTargetSatisfiesClause42Item6IsFalse
+      rfl
+      mashReferenceTargetSatisfiesClause42Item6Theorem,
     expectTrue "conforming bootstrap typecheck includes theorems"
       bootstrapTypecheckIncludesTheorems,
     expectTrue "done bootstrap fixture includes theorems"
@@ -538,16 +562,70 @@ def runCases : List Case :=
       bootstrapWithoutTheorems.ok,
     expectFalse "live Slake bootstrap typecheck is not claimed done"
       slakeBootstrapTypecheckClaimedDone,
-    expectConsFalse "claiming the Slake bootstrap typecheck is done is false"
-      slakeBootstrapTypecheckClaimedDone
-      mashSlakeBootstrapTypecheckClaimedDone
-      mashSlakeBootstrapTypecheckClaimedDoneIsFalse
+    expectConsFalse "claiming the Slake bootstrap typecheck is finished is false"
+      slakeBootstrapTypecheckCountedFinished
+      slakeBootstrapTypecheckFinishedAsCurrentFact
+      slakeBootstrapTypecheckFinishedAsCurrentFactIsFalse
       rfl
       mashSlakeBootstrapTypecheckClaimedDoneTheorem,
+    expectTrue "all Slake code must be typechecked"
+      allSlakeCodeMustBeTypechecked,
+    expectFalse "there is no exception for which Slake code is typechecked"
+      slakeCodeTypecheckHasException,
+    expectConsFalse "claiming FastC exempts Slake code from the typecheck is false"
+      fastCExemptsSlakeCode
+      mashFastCExemptsSlakeCode
+      mashFastCExemptsSlakeCodeIsFalse
+      rfl
+      claimingFastCExemptsSlakeCodeYieldsFalse,
+    expectConsFalse "claiming security priority exempts Slake code from the typecheck is false"
+      securityPriorityExemptsSlakeCode
+      mashSecurityPriorityExemptsSlakeCode
+      mashSecurityPriorityExemptsSlakeCodeIsFalse
+      rfl
+      claimingSecurityPriorityExemptsSlakeCodeYieldsFalse,
+    expectTrue "developers must run the typecheck"
+      developerMustRunTypecheck,
+    expectConsFalse "claiming a developer may skip the typecheck is false"
+      developerMaySkipTypecheck
+      mashDeveloperMaySkipTypecheck
+      mashDeveloperMaySkipTypecheckIsFalse
+      rfl
+      claimingDeveloperMaySkipTypecheckYieldsFalse,
+    expectTrue "agents must run the typecheck"
+      agentMustRunTypecheck,
+    expectConsFalse "claiming an agent may skip the typecheck is false"
+      agentMaySkipTypecheck
+      mashAgentMaySkipTypecheck
+      mashAgentMaySkipTypecheckIsFalse
+      rfl
+      claimingAgentMaySkipTypecheckYieldsFalse,
+    expectTrue "a user building finished code may skip running the typecheck"
+      userBuildingFinishedCodeMaySkipRunningTypecheck,
+    expectFalse "that skip does not exempt the Slake code"
+      userSkipExemptsSlakeCode,
+    expectConsFalse "treating the user skip as the typecheck being done is false"
+      userSkipMeansTypecheckDone
+      mashUserSkipMeansTypecheckDone
+      mashUserSkipMeansTypecheckDoneIsFalse
+      rfl
+      claimingUserSkipMeansTypecheckDoneYieldsFalse,
+    expectFalse "sharper tests for finished code, user, developer, and agent are not specified"
+      sharperFinishedCodeUserDeveloperAgentTestsSpecified,
+    expectFalse "FastC does not waive a missing bootstrap typecheck"
+      productFastCMissingBootstrap.conforms,
+    expectFalse "security priority does not waive a missing bootstrap typecheck"
+      productSecurityMissingBootstrap.conforms,
     expectFalse "self host from generated C does not satisfy bootstrap typecheck"
       selfHostFromGeneratedCSatisfiesTypecheck,
     expectFalse "mash SelfHost From generated C satisfies bootstrap"
       mashSelfHostFromCSatisfiesBootstrapFixture,
+    expectConsFalse "treating generated C as already satisfying the bootstrap typecheck is false"
+      generatedCCountedSatisfiesBootstrap
+      generatedCSatisfiesBootstrapTypecheckAsCurrentFact
+      generatedCSatisfiesBootstrapTypecheckAsCurrentFactIsFalse
+      rfl
+      mashSelfHostTheorem,
     expectFalse "wrong CompCert tool does not conform"
       productWrongCompCertTool.conforms,
     expectFalse "wrong CompCert emit does not conform"
@@ -583,12 +661,21 @@ def runCases : List Case :=
       (slakeBootstrapTypecheckClaimedDone != canonicalProduct.bootstrapTypecheck.ok),
     expectFalse "SafeKernel does not imply SafeCompCert"
       safeKernelImpliesSafeCompCert,
+    expectConsFalse "treating SafeKernel implies SafeCompCert as the current fact is false"
+      (readLiveSafeKernelVersusSafeCompCert
+          clause318SafeCompCertLine
+          clause45Item1SafeCompCertImpliesKernelLine ==
+        some SafeKernelVersusSafeCompCertReading.kernelImpliesCompCert)
+      safeKernelImpliesSafeCompCertAsCurrentFact
+      safeKernelImpliesSafeCompCertAsCurrentFactIsFalse
+      rfl
+      mashSafeKernelImpliesSafeCompCertTheorem,
     expectFalse "CompCertRefines is not claimed done"
       compCertRefinesClaimedDone,
-    expectConsFalse "claiming CompCertRefines is done is false"
-      compCertRefinesClaimedDone
-      mashCompCertRefinesClaimedDone
-      mashCompCertRefinesClaimedDoneIsFalse
+    expectConsFalse "treating CompCert refinement of a real emit as finished is false"
+      compCertRefinesCountedFinished
+      compCertRefinesFinishedAsCurrentFact
+      compCertRefinesFinishedAsCurrentFactIsFalse
       rfl
       mashCompCertRefinesClaimedDoneTheorem,
     expectFalse "UniqueBlock plus CopyHandle without protocol is not accepted"
@@ -1018,6 +1105,46 @@ def runCases : List Case :=
       (cacheCarriesSecretRejected false true),
     expectTrue "cache behavior that carries Secret is Reject when SafeCt is on"
       (cacheCarriesSecretRejected true true),
+    expectTrue "the FastSafeC balance rule is stated" fastSafeCBalanceRuleStated,
+    expectFalse "the FastSafeC balance proof has not been carried out"
+      fastSafeCBalanceProofCarriedOut,
+    expectFalse "the FastSafeC balance proof is not already finished"
+      fastSafeCBalanceAlreadyFinished,
+    expectFalse "the FastSafeC balance rule is not unnamed"
+      fastSafeCBalanceRuleUnspecified,
+    expectFalse "the FastSafeC balance rule is not an open question"
+      fastSafeCBalanceRuleOpenQuestion,
+    expectFalse "an unfinished FastSafeC proof does not erase the rule"
+      unfinishedFastSafeCProofMeansRuleMissing,
+    expectTrue "Safe judgments stay in the FastSafeC balance"
+      safeJudgmentsInFastSafeCBalance,
+    expectFalse "Safe judgments are not dropped from the FastSafeC balance"
+      dropSafeJudgmentsFromFastSafeCBalance,
+    expectTrue "FastC parallelism proofs stay in the FastSafeC balance"
+      fastCParallelismProofsInFastSafeCBalance,
+    expectFalse "FastC parallelism proofs are not dropped from the FastSafeC balance"
+      dropFastCParallelismProofsFromFastSafeCBalance,
+    expectTrue "atomics stay in the FastSafeC balance" atomicsInFastSafeCBalance,
+    expectFalse "atomics are not dropped from the FastSafeC balance"
+      dropAtomicsFromFastSafeCBalance,
+    expectTrue "threading stays in the FastSafeC balance" threadingInFastSafeCBalance,
+    expectFalse "threading is not dropped from the FastSafeC balance"
+      dropThreadingFromFastSafeCBalance,
+    expectTrue "proved freedom from locks stays in the FastSafeC balance"
+      provedFreedomFromLocksInFastSafeCBalance,
+    expectFalse "proved freedom from locks is not dropped from the FastSafeC balance"
+      dropProvedFreedomFromLocksFromFastSafeCBalance,
+    expectTrue "the Slake typecheck stays in the FastSafeC balance"
+      slakeTypecheckInFastSafeCBalance,
+    expectFalse "the Slake typecheck is not dropped from the FastSafeC balance"
+      dropSlakeTypecheckFromFastSafeCBalance,
+    expectTrue "byte identity of emit stays in the FastSafeC balance"
+      byteIdentityOfEmitInFastSafeCBalance,
+    expectFalse "byte identity of emit is not dropped from the FastSafeC balance"
+      dropByteIdentityOfEmitFromFastSafeCBalance,
+    expectFalse "optional ccomp does not mean forbidden" optionalCcompMeansForbidden,
+    expectFalse "silence does not select FastC, SafeC, or FastSafeC"
+      silenceSelectsFastCSafeCOrFastSafeC,
   ]
 
 def main (_args : List String) : IO UInt32 := do

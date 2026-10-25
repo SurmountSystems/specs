@@ -2,7 +2,7 @@
   Hermetic tests for the README proven logical inconsistency table.
   Red: missing table, stale table, a built proof absent from the catalog,
   or a catalog name that is not an inconsistency.
-  Green: the catalog length is 168 and a matching table is current.
+  Green: the catalog length is 225 and a matching table is current.
 -/
 
 import InconsistencyReport
@@ -51,7 +51,7 @@ def fixtureSrc : String :=
 
 def runCases : List Case :=
   [
-    expectEqNat "built inconsistency catalog count" catalog.length 168,
+    expectEqNat "built inconsistency catalog count" catalog.length 225,
     expectTrue "session bus mash_spec_and_proof_is_false is in the catalog"
       (hasClaim "lean/SessionBusProofs.lean" "mash_spec_and_proof_is_false"),
     expectTrue "session bus mash_conforming_session_bus_program_claimed_is_false is in the catalog"

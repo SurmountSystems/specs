@@ -33,7 +33,8 @@
   is owned by CATE as specification 0005 (`0005_CATE.md`). The file
   0009_VOCABULARY.md MUST NOT exist. Number 0011 is Surmount Systems
   Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean
-  Machine. Number 0014 is Anunnaki Encoding.
+  Machine. Number 0014 is Anunnaki Encoding. Number 0015 is the
+  session bus.
 -/
 
 import SpecRegistry
@@ -67,12 +68,18 @@ import LeanMachineSpec
 import LeanMachineProofs
 import AnunnakiSpec
 import AnunnakiProofs
+import SessionBusSpec
+import SessionBusProofs
 import «0010_Surmount_Systems»
 import «0009_PDOSS»
 import «0011_Surmount_Systems_Tech_Tree»
 import «0012_Majestic_Memex»
 import «0013_Lean_Machine»
 import «0014_Anunnaki_Encoding»
+import «0015_Session_Bus»
+import «0002_Systems_Lean»
+import «0007_CI»
+import SystemsLeanSpec
 
 set_option maxRecDepth 10000
 set_option maxHeartbeats 800000
@@ -103,6 +110,9 @@ def leanMachineSpecNumber : Nat := 13
 
 /-- Identity of numbered specification 0014. -/
 def anunnakiSpecNumber : Nat := 14
+
+/-- Identity of numbered specification 0015. -/
+def sessionBusSpecNumber : Nat := 15
 
 /-- Catalog ownership: CATE, specification 0005. Number 0009 is PDOSS. -/
 def vocabularySpecNumber : Nat := 5
@@ -208,6 +218,23 @@ theorem sibling_encoding_file_is_spec_0014 :
     «0014_Anunnaki_Encoding».siblingEncodingFileName =
       "0014_Anunnaki_Encoding.lean" :=
   rfl
+
+theorem session_bus_is_0015 : sessionBusSpecNumber = 15 := rfl
+
+theorem session_bus_agrees_registry :
+    sessionBusSpecNumber = SpecRegistry.sessionBusSpecNumber :=
+  rfl
+
+theorem session_bus_agrees_encoding :
+    sessionBusSpecNumber = SessionBusSpec.specNumber :=
+  rfl
+
+theorem sibling_encoding_file_is_spec_0015 :
+    «0015_Session_Bus».siblingEncodingFileName =
+      "0015_Session_Bus.lean" :=
+  rfl
+
+theorem session_bus_is_not_0014 : sessionBusSpecNumber ≠ 14 := by decide
 
 theorem vocabulary_is_0005 : vocabularySpecNumber = 5 := rfl
 
@@ -330,11 +357,108 @@ theorem theorems_cover_exactly_what_they_state :
   And.intro Ci.byte_identity_required
     (And.intro Ci.byte_identity_not_claimed_true Ci.emit_equals_elf_not_proved)
 
-theorem claiming_emit_equals_elf_is_inconsistent
-    (h : Ci.emitEqualsElfProved = true) : False := by
-  have hNo := Ci.emit_equals_elf_not_proved
-  rw [hNo] at h
-  exact Bool.noConfusion h
+/-- Clause 3.10 body. Sibling markdown line 115. Array index 114. -/
+abbrev ciClause310ByteIdentityLine : MdLine :=
+  «0007_CI».encodedLines[114]!
+
+/-- Clause 4.7 item 2. Sibling markdown line 177. Array index 176. -/
+abbrev ciClause47Item2ByteIdentityLine : MdLine :=
+  «0007_CI».encodedLines[176]!
+
+/-- Clause 6.3 body. Sibling markdown line 481. Array index 480. -/
+abbrev systemsClause63ByteIdentityLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[480]!
+
+/--
+  Clause 3.10 on one sibling line: exact byte match among emitted C,
+  headers, archives, shared objects, LLVM IR, ELF, and other intermediates
+  is required, is not claimed true, is pursued by delta reconciliation,
+  and a FastC mark does not waive the match.
+-/
+def ciClause310ReadsByteIdentityNotClaimedTrue (s : String) : Bool :=
+  SystemsLean.mentionsPhrase "Exact match of bytes (and of each file as a file) among emitted C, headers, archives, shared objects, LLVM IR, `ELF`, and other intermediates" s &&
+    SystemsLean.mentionsPhrase "Byte identity is a requirement on such a product and is not claimed true" s &&
+    SystemsLean.mentionsPhrase "This document does not claim that match already holds" s &&
+    SystemsLean.mentionsPhrase "Byte identity of emit remains required for a conforming product and is not claimed true" s &&
+    SystemsLean.mentionsPhrase "The match is pursued by delta reconciliation" s &&
+    SystemsLean.mentionsPhrase "A `FastC` mark does not waive the match" s
+
+/--
+  Clause 4.7 item 2 on one sibling line: the requirement is not claimed
+  true, this document does not claim that the match already holds, delta
+  reconciliation pursues the match, and a FastC mark does not waive it.
+-/
+def ciClause47Item2ReadsByteIdentityNotClaimedTrue (s : String) : Bool :=
+  SystemsLean.mentionsPhrase "That requirement is a requirement on the product and is not claimed true" s &&
+    SystemsLean.mentionsPhrase "It is not a claim that the match already holds" s &&
+    SystemsLean.mentionsPhrase "Byte identity of emit remains required for a conforming product and is not claimed true" s &&
+    SystemsLean.mentionsPhrase "The match is pursued by delta reconciliation" s &&
+    SystemsLean.mentionsPhrase "A `FastC` mark does not waive the match" s
+
+/--
+  Clause 6.3 on one sibling line: a FastC mark does not make byte identity
+  of emit true, and a FastSafeC mark does not waive byte identity of emit.
+-/
+def systemsClause63ReadsByteIdentityNotYetTrue (s : String) : Bool :=
+  SystemsLean.mentionsPhrase "does not make byte identity of emit true" s &&
+    SystemsLean.mentionsPhrase "A `FastSafeC` mark does not waive byte identity of emit" s
+
+/-- How the live byte identity sentences are read. `alreadyEqualsElf` is the claim those sentences deny. -/
+inductive ByteIdentityLiveReading where
+  | notClaimedTrue
+  | alreadyEqualsElf
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of Clause 3.10, Clause 4.7 item 2, and Clause 6.3.
+  `notClaimedTrue` only when those sibling lines still carry those words.
+  This reader does not return `alreadyEqualsElf`. Absent words yield `none`.
+-/
+def readLiveByteIdentity
+    (clause310 clause47 clause63 : MdLine) : Option ByteIdentityLiveReading :=
+  if clause310.number == 115 && clause47.number == 177 && clause63.number == 481 &&
+      ciClause310ReadsByteIdentityNotClaimedTrue clause310.text &&
+      ciClause47Item2ReadsByteIdentityNotClaimedTrue clause47.text &&
+      systemsClause63ReadsByteIdentityNotYetTrue clause63.text then
+    some .notClaimedTrue
+  else
+    none
+
+/-- The claim that emit already equals ELF, read off the sibling lines. -/
+def emitAlreadyEqualsElfAsProvedFact : Prop :=
+  readLiveByteIdentity ciClause310ByteIdentityLine ciClause47Item2ByteIdentityLine
+      systemsClause63ByteIdentityLine =
+    some .alreadyEqualsElf
+
+def emitAlreadyEqualsElfAsProvedFactIsFalse : Prop :=
+  emitAlreadyEqualsElfAsProvedFact → False
+
+/--
+  Live Clause 3.10 and Clause 4.7 item 2 say byte identity among emitted C,
+  headers, archives, shared objects, LLVM IR, ELF, and other intermediates
+  is required, is not claimed true, is pursued by delta reconciliation, and
+  a FastC mark does not waive the match. Live Clause 6.3 says a FastC mark
+  does not make byte identity of emit true and a FastSafeC mark does not
+  waive it. Treating emit already equals ELF as a proved fact yields False.
+  The `native_decide` step reads those sibling lines. Removing the
+  not claimed true wording, or the Clause 6.3 wording that a FastC mark
+  does not make byte identity of emit true, makes the reading `none`, so
+  this proof no longer closes.
+-/
+theorem claiming_emit_equals_elf_is_inconsistent :
+    emitAlreadyEqualsElfAsProvedFactIsFalse := by
+  intro h
+  unfold emitAlreadyEqualsElfAsProvedFact at h
+  have live :
+      readLiveByteIdentity
+        «0007_CI».encodedLines[114]!
+        «0007_CI».encodedLines[176]!
+        «0002_Systems_Lean».encodedLines[480]! =
+        some .notClaimedTrue := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
 
 theorem claiming_beastdb_ready_is_inconsistent
     (h : SpecRegistry.beastdbProgress = .claimsReadyForUse) : False :=
@@ -368,28 +492,32 @@ theorem number_fifteen_assigned_to_session_bus :
     numberFifteenAssignedToSessionBus = true :=
   rfl
 
-/-- A published numbered file for 0015 does not exist. The draft is missing. -/
-def numberFifteenPublishedFileExists : Bool := false
+/--
+  True because the sibling line encoding names `0015_Session_Bus.md`
+  and that encoding's specification number is 15, and because
+  `SpecRegistry.sessionBusFileName` names the same file. This is not
+  a constant false while that file is in the tree.
+-/
+def numberFifteenPublishedFileExists : Bool :=
+  «0015_Session_Bus».specFileName == "0015_Session_Bus.md" &&
+    «0015_Session_Bus».specNumber == 15 &&
+    SpecRegistry.sessionBusFileName == "0015_Session_Bus.md"
 
-def mashNumberFifteenPublishedFileExists : Prop :=
-  numberFifteenPublishedFileExists = true
-
-def mashNumberFifteenPublishedFileExistsIsFalse : Prop :=
-  mashNumberFifteenPublishedFileExists → False
-
-theorem number_fifteen_published_file_does_not_exist :
-    numberFifteenPublishedFileExists = false :=
+theorem number_fifteen_published_file_exists :
+    numberFifteenPublishedFileExists = true :=
   rfl
 
-theorem mash_number_fifteen_published_file_exists_is_false :
-    mashNumberFifteenPublishedFileExistsIsFalse := by
-  intro h
+/-- Claiming that published file is absent yields False. Not `rfl` of a false flag. -/
+theorem claiming_published_session_bus_file_absent_yields_false
+    (h : numberFifteenPublishedFileExists = false) : False := by
+  have hPresent : numberFifteenPublishedFileExists = true := rfl
+  rw [hPresent] at h
   exact Bool.noConfusion h
 
-/-- Assignment of number 0015 does not imply a published file. -/
-theorem number_fifteen_assignment_does_not_imply_published_file :
+/-- Assignment of number 0015 and the published file both hold. -/
+theorem number_fifteen_assignment_matches_published_file :
     numberFifteenAssignedToSessionBus = true ∧
-      numberFifteenPublishedFileExists = false :=
+      numberFifteenPublishedFileExists = true :=
   And.intro rfl rfl
 
 theorem anunnaki_is_not_0015 : anunnakiSpecNumber ≠ 15 := by decide
@@ -596,6 +724,10 @@ def companionMeaningModelsSplit : Bool :=
     !AnunnakiSpec.liveContainsProofsOfThoseEncodings &&
     AnunnakiSpec.markedAsSpecEncoding &&
     !AnunnakiSpec.markedAsProof &&
+    SessionBusSpec.liveContainsSpecEncodings &&
+    !SessionBusSpec.liveContainsProofsOfThoseEncodings &&
+    SessionBusSpec.markedAsSpecEncoding &&
+    !SessionBusSpec.markedAsProof &&
     !FormalVibeficationSpec.conformingThisRepo
       FormalVibeficationSpec.mashedFixture
 
@@ -615,6 +747,13 @@ theorem anunnaki_companion_split :
       AnunnakiSpec.liveContainsProofsOfThoseEncodings = false ∧
       AnunnakiSpec.markedAsSpecEncoding = true ∧
       AnunnakiSpec.markedAsProof = false :=
+  And.intro rfl (And.intro rfl (And.intro rfl rfl))
+
+theorem session_bus_companion_split :
+    SessionBusSpec.liveContainsSpecEncodings = true ∧
+      SessionBusSpec.liveContainsProofsOfThoseEncodings = false ∧
+      SessionBusSpec.markedAsSpecEncoding = true ∧
+      SessionBusSpec.markedAsProof = false :=
   And.intro rfl (And.intro rfl (And.intro rfl rfl))
 
 /--
@@ -698,11 +837,16 @@ def stackIntegrates : Bool :=
     SpecRegistry.allEntries.any (fun e => e.number == 11) &&
     SpecRegistry.publishedEntries.any (fun e => e.number == 12) &&
     SpecRegistry.publishedEntries.any (fun e => e.number == 14) &&
+    SpecRegistry.publishedEntries.any (fun e => e.number == 15) &&
     memexSpecNumber == SpecRegistry.memexSpecNumber &&
     MemexSpec.specNumber == SpecRegistry.memexSpecNumber &&
     SpecRegistry.anunnakiSpecNumber == 14 &&
     anunnakiSpecNumber == SpecRegistry.anunnakiSpecNumber &&
     AnunnakiSpec.specNumber == SpecRegistry.anunnakiSpecNumber &&
+    SpecRegistry.sessionBusSpecNumber == 15 &&
+    sessionBusSpecNumber == SpecRegistry.sessionBusSpecNumber &&
+    SessionBusSpec.specNumber == SpecRegistry.sessionBusSpecNumber &&
+    SessionBusSpec.sessionBusSpecNumber == SpecRegistry.sessionBusSpecNumber &&
     !VocabularySpec.numberNinePublished &&
     Cate.specNumber == SpecRegistry.cateSpecNumber &&
     Cate.ownsVocabularyCatalog &&
@@ -832,6 +976,28 @@ def stackIntegrates : Bool :=
     !AnunnakiSpec.liveContainsProofsOfThoseEncodings &&
     AnunnakiSpec.markedAsSpecEncoding &&
     !AnunnakiSpec.markedAsProof &&
+    «0015_Session_Bus».specFileName ==
+      "0015_Session_Bus.md" &&
+    «0015_Session_Bus».siblingEncodingFileName ==
+      "0015_Session_Bus.lean" &&
+    !«0015_Session_Bus».markedAsProof &&
+    SessionBusSpec.specNumber == 15 &&
+    !SessionBusSpec.approveDefault &&
+    !SessionBusSpec.denyDefault &&
+    SessionBusSpec.approveOffByDefault &&
+    SessionBusSpec.denyOffByDefault &&
+    !SessionBusSpec.networkListenerPresent &&
+    SessionBusSpec.socketIsSameUidOnly &&
+    SessionBusSpec.transcriptReturnsDeltasOnly &&
+    !SessionBusSpec.busKillsSessions &&
+    !SessionBusSpec.conformingSessionBusProgramClaimed &&
+    !SessionBusSpec.productsClaimedReadyForUse &&
+    !SessionBusSpec.productsClaimedNeverStarted &&
+    SessionBusSpec.liveContainsSpecEncodings &&
+    !SessionBusSpec.liveContainsProofsOfThoseEncodings &&
+    SessionBusSpec.markedAsSpecEncoding &&
+    !SessionBusSpec.markedAsProof &&
+    SessionBusSpec.requiredConformanceHolds &&
     !Ci.dumpTheoremsIntoNumberedMarkdown &&
     Sssss.leanMachineHasNumberedSpec &&
     Sssss.canonicalIntegration.conformingIntegration &&
@@ -843,7 +1009,7 @@ def stackIntegrates : Bool :=
     Sssss.productCanonicalIntegration.conforms &&
     !compositionIsProductReadiness &&
     numberFifteenAssignedToSessionBus &&
-    !numberFifteenPublishedFileExists &&
+    numberFifteenPublishedFileExists &&
     !(anunnakiSpecNumber == 15) &&
     !(surmountSpecNumber == 15)
 

@@ -8,6 +8,9 @@
 
 import CiSpec
 import SpecRegistry
+import MdLine
+import «0007_CI»
+import «0002_Systems_Lean»
 
 namespace Ci
 
@@ -166,10 +169,135 @@ theorem rust_fargo_process_unspecified :
     rustElevationProcessSpecifiedHere = false :=
   rfl
 
+/-- Clause 3.10 body. Sibling markdown line 115. Array index 114. -/
+abbrev clause310ByteIdentityLine : MdLine :=
+  «0007_CI».encodedLines[114]!
+
+/-- Clause 4.7 item 2. Sibling markdown line 177. Array index 176. -/
+abbrev clause47Item2ByteIdentityLine : MdLine :=
+  «0007_CI».encodedLines[176]!
+
+/-- Clause 6.3 body. Sibling markdown line 481. Array index 480. -/
+abbrev clause63ByteIdentityLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[480]!
+
+/-- True when `needle` occurs in `hay`. -/
+def mentionsPhrase (needle hay : String) : Bool :=
+  (hay.splitOn needle).length > 1
+
+/--
+  Clause 3.10 on one sibling line: exact byte match among emitted C,
+  headers, archives, shared objects, LLVM IR, ELF, and other intermediates
+  is required, is not claimed true, is pursued by delta reconciliation,
+  and a FastC mark does not waive the match.
+-/
+def clause310ReadsByteIdentityNotClaimedTrue (s : String) : Bool :=
+  mentionsPhrase "Exact match of bytes (and of each file as a file) among emitted C, headers, archives, shared objects, LLVM IR, `ELF`, and other intermediates" s &&
+    mentionsPhrase "Byte identity is a requirement on such a product and is not claimed true" s &&
+    mentionsPhrase "This document does not claim that match already holds" s &&
+    mentionsPhrase "Byte identity of emit remains required for a conforming product and is not claimed true" s &&
+    mentionsPhrase "The match is pursued by delta reconciliation" s &&
+    mentionsPhrase "A `FastC` mark does not waive the match" s
+
+/--
+  Clause 4.7 item 2 on one sibling line: the requirement is not claimed
+  true, this document does not claim that the match already holds, delta
+  reconciliation pursues the match, and a FastC mark does not waive it.
+-/
+def clause47Item2ReadsByteIdentityNotClaimedTrue (s : String) : Bool :=
+  mentionsPhrase "That requirement is a requirement on the product and is not claimed true" s &&
+    mentionsPhrase "It is not a claim that the match already holds" s &&
+    mentionsPhrase "Byte identity of emit remains required for a conforming product and is not claimed true" s &&
+    mentionsPhrase "The match is pursued by delta reconciliation" s &&
+    mentionsPhrase "A `FastC` mark does not waive the match" s
+
+/--
+  Clause 6.3 on one sibling line: a FastC mark does not make byte identity
+  of emit true, and a FastSafeC mark does not waive byte identity of emit.
+-/
+def clause63ReadsByteIdentityNotYetTrue (s : String) : Bool :=
+  mentionsPhrase "does not make byte identity of emit true" s &&
+    mentionsPhrase "A `FastSafeC` mark does not waive byte identity of emit" s
+
+/--
+  How the live byte identity sentences are read.
+  `alreadyTrue` is the claim those sentences deny.
+-/
+inductive ByteIdentityClaimReading where
+  | notClaimedTrue
+  | alreadyTrue
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of Clause 3.10, Clause 4.7 item 2, and Clause 6.3.
+  `notClaimedTrue` only when those sibling lines still carry those words.
+  This reader does not return `alreadyTrue`. Absent words yield `none`.
+-/
+def readLiveByteIdentityClaim
+    (clause310 clause47 clause63 : MdLine) : Option ByteIdentityClaimReading :=
+  if clause310.number == 115 && clause47.number == 177 && clause63.number == 481 &&
+      clause310ReadsByteIdentityNotClaimedTrue clause310.text &&
+      clause47Item2ReadsByteIdentityNotClaimedTrue clause47.text &&
+      clause63ReadsByteIdentityNotYetTrue clause63.text then
+    some .notClaimedTrue
+  else
+    none
+
+/-- The claim that byte identity is already true, read off the sibling lines. -/
+def byteIdentityAlreadyTrueAsCurrentFact : Prop :=
+  readLiveByteIdentityClaim clause310ByteIdentityLine clause47Item2ByteIdentityLine
+      clause63ByteIdentityLine =
+    some .alreadyTrue
+
+def byteIdentityAlreadyTrueAsCurrentFactIsFalse : Prop :=
+  byteIdentityAlreadyTrueAsCurrentFact → False
+
+/-- True only when those sibling lines are read as byte identity already true. -/
+def byteIdentityCountedAlreadyTrue : Bool :=
+  readLiveByteIdentityClaim clause310ByteIdentityLine clause47Item2ByteIdentityLine
+      clause63ByteIdentityLine ==
+    some .alreadyTrue
+
+set_option maxHeartbeats 800000
+set_option maxRecDepth 10000
+
+/--
+  Live Clause 3.10 and Clause 4.7 item 2 say byte identity among emitted C,
+  headers, archives, shared objects, LLVM IR, ELF, and other intermediates
+  is required, is not claimed true, is pursued by delta reconciliation, and
+  a FastC mark does not waive the match. Live Clause 6.3 says a FastC mark
+  does not make byte identity of emit true and a FastSafeC mark does not
+  waive it. Treating byte identity as already true yields False.
+  The `native_decide` step reads those sibling lines. Removing the wording
+  that byte identity is not claimed true, or the Clause 6.3 wording that a
+  FastC mark does not make byte identity of emit true, makes the reading
+  `none`, so this proof no longer closes.
+-/
 theorem mash_byte_identity_claimed_true_is_false :
-    mashByteIdentityClaimedTrueIsFalse := by
+    byteIdentityAlreadyTrueAsCurrentFactIsFalse := by
+  intro h
+  unfold byteIdentityAlreadyTrueAsCurrentFact at h
+  have live :
+      readLiveByteIdentityClaim
+        «0007_CI».encodedLines[114]!
+        «0007_CI».encodedLines[176]!
+        «0002_Systems_Lean».encodedLines[480]! =
+        some .notClaimedTrue := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
+
+/-- A FastC waiver of byte identity yields False. The flag is the existing claimed-true flag. -/
+def claimingFastCWaivesByteIdentityYieldsFalse :
+    mashFastCWaivesByteIdentityIsFalse := by
   intro h
   exact Bool.noConfusion h
+
+theorem fastc_mark_does_not_waive_byte_identity :
+    byteIdentity.requiredForSystemsLeanSlakeProduct = true ∧
+      byteIdentity.claimedTrue = false :=
+  And.intro rfl rfl
 
 theorem mash_unsigned_as_general_skip_is_false :
     mashUnsignedAsGeneralSkipIsFalse := by
@@ -339,6 +467,22 @@ theorem model_and_proofs_without_experiments_does_not_conform :
   rfl
 
 theorem complete_science_conforms : completeScienceConforms :=
+  rfl
+
+theorem reference_side_is_major_compilers :
+    referenceSideIsMajorCompilers = true :=
+  rfl
+
+theorem ci_five_named_compilers_are_in_the_set :
+    ciMajorCompilerInSet .ccomp = true ∧
+      ciMajorCompilerInSet .compCertTso = true ∧
+      ciMajorCompilerInSet .gcc = true ∧
+      ciMajorCompilerInSet .llvm = true ∧
+      ciMajorCompilerInSet .cc = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl⟩
+
+theorem ci_reference_target_does_not_satisfy_clause42_item6 :
+    ciReferenceTargetSatisfiesClause42Item6 = false :=
   rfl
 
 end Ci

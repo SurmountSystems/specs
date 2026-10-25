@@ -347,6 +347,14 @@ def runCases : List Case :=
       mashRsiIsTrainingRunIsFalse
       rfl
       mash_rsi_is_training_run_is_false,
+    expectTrue "Supercompiler improvement is the RSI loop with delta reconciliation"
+      supercompilerImprovementIsRsiLoopWithDeltaReconciliation,
+    expectConsFalse "Supercompiler improvement is not claimed finished"
+      supercompilerImprovementFinished
+      mashSupercompilerImprovementFinished
+      mashSupercompilerImprovementFinishedIsFalse
+      rfl
+      mash_supercompiler_improvement_finished_is_false,
     expectConsFalse "this document creating SSSP is not accepted"
       thisDocumentCreatesSssp
       mashThisDocumentCreatesSssp

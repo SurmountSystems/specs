@@ -64,4 +64,8 @@ theorem contains_recursive_self_improvement :
 theorem contains_rsi : mentions "RSI" = true := by
   native_decide
 
+theorem contains_delta_reconciliation_improvement :
+    mentions "delta reconciliation" = true := by
+  native_decide
+
 end Proofs_0006

@@ -124,6 +124,17 @@ def runCases : List Case :=
     expectTrue "byte identity is required for the product"
       byteIdentity.requiredForSystemsLeanSlakeProduct,
     expectFalse "byte identity is not claimed true" byteIdentity.claimedTrue,
+    expectTrue "the reference side is the major compilers"
+      referenceSideIsMajorCompilers,
+    expectTrue "ccomp is in the CI major compiler set"
+      (ciMajorCompilerInSet .ccomp),
+    expectTrue "CompCertTSO is in the CI major compiler set"
+      (ciMajorCompilerInSet .compCertTso),
+    expectTrue "gcc is in the CI major compiler set" (ciMajorCompilerInSet .gcc),
+    expectTrue "LLVM is in the CI major compiler set" (ciMajorCompilerInSet .llvm),
+    expectTrue "cc is in the CI major compiler set" (ciMajorCompilerInSet .cc),
+    expectFalse "a reference target does not satisfy Clause 4.2 item 6"
+      ciReferenceTargetSatisfiesClause42Item6,
     expectTrue "byte identity residual is honest" byteIdentity.honest,
     expectFalse "emit equal to ELF is not a proved identity"
       emitEqualsElfProved,
@@ -233,10 +244,10 @@ def runCases : List Case :=
     expectTrue "Unlicense remains the license"
       unlicenseRemainsTheLicense,
     expectTrue "CI is not specification 0009" (specNumber != Ci.pdossSpecNumber),
-    expectConsFalse "byte identity claimed true is not accepted"
-      byteIdentity.claimedTrue
-      mashByteIdentityClaimedTrue
-      mashByteIdentityClaimedTrueIsFalse
+    expectConsFalse "treating byte identity as already true is false"
+      byteIdentityCountedAlreadyTrue
+      byteIdentityAlreadyTrueAsCurrentFact
+      byteIdentityAlreadyTrueAsCurrentFactIsFalse
       rfl
       mash_byte_identity_claimed_true_is_false,
     expectConsFalse "unsigned as a general skip is not accepted"

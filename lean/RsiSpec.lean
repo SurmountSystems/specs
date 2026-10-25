@@ -483,6 +483,21 @@ def mashMeaningProofsAreSecondFormChecker : Prop :=
 def mashMeaningProofsAreSecondFormCheckerIsFalse : Prop :=
   mashMeaningProofsAreSecondFormChecker → False
 
+/--
+  Continued improvement of the Supercompiler is this specification's loop
+  together with delta reconciliation in 0004_SSSSS.md. That improvement
+  is not claimed finished.
+-/
+def supercompilerImprovementIsRsiLoopWithDeltaReconciliation : Bool := true
+
+def supercompilerImprovementFinished : Bool := false
+
+def mashSupercompilerImprovementFinished : Prop :=
+  supercompilerImprovementFinished = true
+
+def mashSupercompilerImprovementFinishedIsFalse : Prop :=
+  mashSupercompilerImprovementFinished → False
+
 /-!
   Clause 3.25 / 4.10: same English word, different trees.
   Vocabulary uses distinct types so a mash is a type error. These

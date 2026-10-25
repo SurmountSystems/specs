@@ -167,7 +167,7 @@ def runCases : List Case :=
     expectTrue "canonical claim for components that are safety critical is ok" safetyCanonical.ok,
     expectFalse "garbage collection on the wire for components that are safety critical is not ok"
       safetyGc.ok,
-    expectFalse "missing CompCert is not ok" safetyMissingCompCert.ok,
+    expectTrue "missing CompCert is still ok" safetyMissingCompCert.ok,
     expectFalse "missing Slake bootstrap is not ok" safetyMissingBootstrap.ok,
     expectFalse "subset only Slake typecheck is not ok"
       safetySubsetTypecheck.ok,
@@ -188,7 +188,7 @@ def runCases : List Case :=
       productUnmarkedNl.conforms,
     expectTrue "provisional natural language translation still conforms"
       productProvisionalNl.conforms,
-    expectFalse "missing CompCert does not conform"
+    expectTrue "missing CompCert still conforms"
       productMissingCompCert.conforms,
     expectFalse "residual substitute does not conform"
       productResidualSubstitutes.conforms,
@@ -261,7 +261,28 @@ def runCases : List Case :=
     expectTrue "complete science cycle conforms"
       (conformingScience completeScienceFixture),
     expectFalse "tests alone are not sufficient"
-      testsAloneAreSufficient
+      testsAloneAreSufficient,
+    expectFalse "there is not exactly one reference compiler"
+      exactlyOneReferenceCompiler,
+    expectTrue "ccomp is in the major compiler set"
+      (majorCompilerInSet .ccomp),
+    expectTrue "CompCertTSO is in the major compiler set"
+      (majorCompilerInSet .compCertTso),
+    expectTrue "gcc is in the major compiler set" (majorCompilerInSet .gcc),
+    expectTrue "LLVM is in the major compiler set" (majorCompilerInSet .llvm),
+    expectTrue "cc is in the major compiler set" (majorCompilerInSet .cc),
+    expectFalse "the major compiler set is not closed" majorCompilerSetClosed,
+    expectFalse "a quirk list is not specified" quirkListSpecified,
+    expectFalse "being a reference target does not satisfy Clause 4.2 item 6"
+      beingAReferenceTargetSatisfiesClause42Item6,
+    expectFalse "specification 0004 does not replace specification 0002"
+      spec0004ReplacesSpec0002,
+    expectFalse "specification 0006 does not replace specification 0004"
+      spec0006ReplacesSpec0004,
+    expectTrue "specifications 0002, 0004, 0006, and 0007 complement each other"
+      specsComplementEachOther,
+    expectFalse "security and performance are not the same priority"
+      securityAndPerformanceSamePriority
   ]
 
 def main (_args : List String) : IO UInt32 := do

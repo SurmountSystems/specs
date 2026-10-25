@@ -38,9 +38,9 @@ theorem mash_hidden_split_is_false :
         markedAsProof := markedAsProof } = false :=
   rfl
 
-theorem encoded_size : encodedLines.size = 371 := by native_decide
+theorem encoded_size : encodedLines.size = 406 := by native_decide
 
-theorem line_count : lineCount = 371 := by native_decide
+theorem line_count : lineCount = 406 := by native_decide
 
 theorem line_count_matches_array : lineCount = encodedLines.size := rfl
 
@@ -49,5 +49,16 @@ def mentions (needle : String) : Bool :=
   encodedLines.any fun l => !((l.text.splitOn needle).length == 1)
 
 theorem contains_sssss : mentions "SSSSS" = true := by native_decide
+
+theorem contains_major_compilers : mentions "major compilers" = true := by
+  native_decide
+
+theorem contains_not_one_reference_compiler :
+    mentions "not one reference compiler" = true := by
+  native_decide
+
+theorem contains_four_compilers_do_not_satisfy_clause42_item6 :
+    mentions "`CompCertTSO`, gcc, LLVM, and `cc` do not satisfy that item" = true := by
+  native_decide
 
 end Proofs_0004

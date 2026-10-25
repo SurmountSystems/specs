@@ -24,6 +24,7 @@ import VocabularySpec
 import SpecProofs
 import LeanMachineSpec
 import AnunnakiSpec
+import SessionBusSpec
 import SystemsLeanProofs
 
 open Surmount
@@ -272,6 +273,17 @@ def runCases : List Case :=
         !AnunnakiSpec.liveContainsProofsOfThoseEncodings &&
         AnunnakiSpec.markedAsSpecEncoding &&
         !AnunnakiSpec.markedAsProof),
+    expectFalse "Session Bus live mash of encodings and proofs does not remain"
+      SessionBusSpec.liveContainsProofsOfThoseEncodings,
+    expectTrue "Session Bus companion encodings are split"
+      (SessionBusSpec.liveContainsSpecEncodings &&
+        !SessionBusSpec.liveContainsProofsOfThoseEncodings &&
+        SessionBusSpec.markedAsSpecEncoding &&
+        !SessionBusSpec.markedAsProof),
+    expectFalse "a conforming session bus program is not claimed"
+      SessionBusSpec.conformingSessionBusProgramClaimed,
+    expectTrue "session bus required conformance holds"
+      SessionBusSpec.requiredConformanceHolds,
     expectFalse "mashed companion meaning fixture does not conform"
       (FormalVibeficationSpec.conformingThisRepo
         { moduleName := "MashedCompanionMeaning"
@@ -299,6 +311,22 @@ def runCases : List Case :=
       SpecRegistry.anunnakiSpecNumber 14,
     expectEqNat "Anunnaki Encoding module agrees with registry"
       Surmount.anunnakiSpecNumber SpecRegistry.anunnakiSpecNumber,
+    expectEqNat "Session Bus is specification 0015"
+      Surmount.sessionBusSpecNumber 15,
+    expectEqNat "registry Session Bus is specification 0015"
+      SpecRegistry.sessionBusSpecNumber 15,
+    expectEqNat "Session Bus module agrees with registry"
+      Surmount.sessionBusSpecNumber SpecRegistry.sessionBusSpecNumber,
+    expectTrue "session bus approve is off by default"
+      SessionBusSpec.approveOffByDefault,
+    expectTrue "session bus deny is off by default"
+      SessionBusSpec.denyOffByDefault,
+    expectFalse "session bus has no network listener"
+      SessionBusSpec.networkListenerPresent,
+    expectTrue "session bus socket is the same user id only"
+      SessionBusSpec.socketIsSameUidOnly,
+    expectTrue "session bus transcript returns deltas only"
+      SessionBusSpec.transcriptReturnsDeltasOnly,
     expectTrue "ENKI is the index" AnunnakiSpec.enkiIsIndex,
     expectTrue "Anunnaki is the bitstream" AnunnakiSpec.anunnakiIsBitstream,
     expectFalse "ENKI and Anunnaki are not one object"
@@ -350,10 +378,10 @@ def runCases : List Case :=
       compositionIsProductReadiness,
     expectTrue "the Operator assigned number 0015 to the session bus"
       numberFifteenAssignedToSessionBus,
-    expectFalse "a published file for number 0015 does not exist"
+    expectTrue "the published file for number 0015 exists"
       numberFifteenPublishedFileExists,
-    expectTrue "assignment of number 0015 does not imply a published file"
-      (numberFifteenAssignedToSessionBus && !numberFifteenPublishedFileExists),
+    expectTrue "assignment of number 0015 matches the published file"
+      (numberFifteenAssignedToSessionBus && numberFifteenPublishedFileExists),
     expectTrue "Anunnaki Encoding is not specification 0015"
       (Surmount.anunnakiSpecNumber != 15),
     expectTrue "Surmount Systems is not specification 0015"

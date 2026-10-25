@@ -55,6 +55,17 @@ theorem contains_continuous_integration :
     containsContinuousIntegration = true := by
   native_decide
 
+/-- Some encoded line names the major compilers on the reference side. -/
+def containsMajorCompilers : Bool :=
+  encodedLines.any fun l =>
+    match l.text.splitOn "major compilers" with
+    | _ :: _ :: _ => true
+    | _ => false
+
+theorem contains_major_compilers :
+    containsMajorCompilers = true := by
+  native_decide
+
 theorem first_line_is_continuous_integration_title :
     encodedLines[0]? =
       some

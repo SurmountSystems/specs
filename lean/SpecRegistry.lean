@@ -17,7 +17,8 @@
   Systems. Number 0011 is Surmount Systems Tech Tree. Number 0012 is
   Majestic Memex (`0012_Majestic_Memex.md`). Number 0013 is Lean
   Machine (`0013_Lean_Machine.md`). Number 0014 is Anunnaki
-  Encoding (`0014_Anunnaki_Encoding.md`).
+  Encoding (`0014_Anunnaki_Encoding.md`). Number 0015 is the
+  session bus (`0015_Session_Bus.md`). It is not Anunnaki Encoding.
   fargo and SSSP have no assigned numbers. Existing
   `ref/` pins remain; new pins are added when present.
 
@@ -57,6 +58,8 @@ def leanMachineSpecNumber : Nat := 13
 def leanMachineFileName : String := "0013_Lean_Machine.md"
 def anunnakiSpecNumber : Nat := 14
 def anunnakiFileName : String := "0014_Anunnaki_Encoding.md"
+def sessionBusSpecNumber : Nat := 15
+def sessionBusFileName : String := "0015_Session_Bus.md"
 def unlicenseSpecNumber : Nat := 9
 def pdossSpecNumber : Nat := 9
 def unlicenseFileName : String := "0009_PDOSS.md"
@@ -122,6 +125,10 @@ def publishedEntries : List RegistryEntry :=
     , { number := 14
         fileName := "0014_Anunnaki_Encoding.md"
         productName := "Anunnaki Encoding"
+        published := true }
+    , { number := 15
+        fileName := "0015_Session_Bus.md"
+        productName := "Session Bus"
         published := true } ]
 
 def plannedEntries : List RegistryEntry :=
@@ -154,6 +161,11 @@ def leanMachineAssignedNumber : Option Nat := some 13
 def anunnakiAssigned : Bool := true
 
 def anunnakiAssignedNumber : Option Nat := some 14
+
+/-- Session Bus is numbered specification 0015. -/
+def sessionBusAssigned : Bool := true
+
+def sessionBusAssignedNumber : Option Nat := some 15
 
 theorem spec_spec_is_0000 : specSpecNumber = 0 := rfl
 
@@ -311,6 +323,19 @@ theorem anunnaki_assigned : anunnakiAssigned = true := rfl
 theorem anunnaki_number_some_14 : anunnakiAssignedNumber = some 14 :=
   rfl
 
+theorem session_bus_is_0015 : sessionBusSpecNumber = 15 := rfl
+
+theorem session_bus_file :
+    sessionBusFileName = "0015_Session_Bus.md" :=
+  rfl
+
+theorem session_bus_is_not_0014 : sessionBusSpecNumber ≠ 14 := by decide
+
+theorem session_bus_assigned : sessionBusAssigned = true := rfl
+
+theorem session_bus_number_some_15 : sessionBusAssignedNumber = some 15 :=
+  rfl
+
 theorem ssss_is_not_spec_0002 : ssssSpecNumber ≠ 2 := by decide
 
 theorem ssss_is_not_spec_0003 : ssssSpecNumber ≠ 3 := by decide
@@ -327,13 +352,13 @@ theorem carbonado_not_assigned : carbonadoAssigned = false := rfl
 
 theorem carbonado_number_none : carbonadoAssignedNumber = none := rfl
 
-theorem published_count_fifteen : publishedEntries.length = 15 := rfl
+theorem published_count_sixteen : publishedEntries.length = 16 := rfl
 
 theorem planned_count_zero : plannedEntries.length = 0 := rfl
 
 theorem all_entry_numbers :
     allEntries.map (fun e => e.number) =
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] :=
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] :=
   rfl
 
 theorem number_8_published :
@@ -388,6 +413,18 @@ theorem number_14_is_not_planned :
     (plannedEntries.any (fun e => e.number == 14)) = false :=
   rfl
 
+theorem number_15_published :
+    (allEntries.any (fun e => e.number == 15)) = true :=
+  rfl
+
+theorem number_15_is_published_file :
+    (publishedEntries.any (fun e => e.number == 15)) = true :=
+  rfl
+
+theorem number_15_is_not_planned :
+    (plannedEntries.any (fun e => e.number == 15)) = false :=
+  rfl
+
 /-- Encode helper: tests that every published file is present use this list. -/
 def publishedBasenames : List String :=
   publishedEntries.map (fun e => e.fileName)
@@ -401,7 +438,8 @@ theorem published_filenames :
         "0011_Surmount_Systems_Tech_Tree.md",
         "0012_Majestic_Memex.md",
         "0013_Lean_Machine.md",
-        "0014_Anunnaki_Encoding.md"] :=
+        "0014_Anunnaki_Encoding.md",
+        "0015_Session_Bus.md"] :=
   rfl
 
 theorem published_basenames_are_entry_filenames :
@@ -562,6 +600,22 @@ theorem anunnaki_product_name :
     (publishedEntries.filter (fun e => e.number == 14)).map
         (fun e => e.productName) =
       ["Anunnaki Encoding"] :=
+  rfl
+
+theorem session_bus_entry_published :
+    (allEntries.filter (fun e => e.number == 15)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem session_bus_entry_filename :
+    (allEntries.filter (fun e => e.number == 15)).map (fun e => e.fileName) =
+      ["0015_Session_Bus.md"] :=
+  rfl
+
+theorem session_bus_product_name :
+    (publishedEntries.filter (fun e => e.number == 15)).map
+        (fun e => e.productName) =
+      ["Session Bus"] :=
   rfl
 
 theorem unlicense_entry_published :

@@ -160,8 +160,9 @@ def dumpTheoremsIntoNumberedMarkdown : Bool := false
 
 /-!
   Byte identity of emit versus ELF (and other intermediates) is required
-  for product conformance and is not claimed true. Do not encode emit = ELF
-  as a proved identity.
+  for product conformance and is not claimed true. A FastC mark does not
+  waive that match. Do not encode emit = ELF as a proved identity.
+  Do not encode a FastC mark as waiving the match.
 -/
 
 structure ByteIdentityRequirement where
@@ -202,6 +203,13 @@ def mashByteIdentityClaimedTrue : Prop :=
 
 def mashByteIdentityClaimedTrueIsFalse : Prop :=
   mashByteIdentityClaimedTrue → False
+
+/-- Clause 3.10 and Clause 4.7: a FastC mark does not waive byte identity. The waiver claim is the existing claimed-true flag set true. -/
+def mashFastCWaivesByteIdentity : Prop :=
+  byteIdentity.claimedTrue = true
+
+def mashFastCWaivesByteIdentityIsFalse : Prop :=
+  mashFastCWaivesByteIdentity → False
 
 /-- Clause 4.3 and Clause 6.2: treating the named exception as a general skip is a clash. -/
 def mashUnsignedAsGeneralSkip : Prop :=
@@ -407,5 +415,29 @@ def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
 
 def completeScienceConforms : Prop :=
   completeScienceCycleConforms = true
+
+/-!
+  The reference side of delta reconciliation is the major compilers.
+  The five compilers named in specification 0002 are in the set. Being
+  a reference target does not satisfy specification 0002 Clause 4.2 item 6.
+-/
+inductive CiMajorCompiler where
+  | ccomp
+  | compCertTso
+  | gcc
+  | llvm
+  | cc
+  deriving DecidableEq, Repr, BEq
+
+def ciMajorCompilerInSet : CiMajorCompiler → Bool
+  | .ccomp => true
+  | .compCertTso => true
+  | .gcc => true
+  | .llvm => true
+  | .cc => true
+
+def referenceSideIsMajorCompilers : Bool := true
+
+def ciReferenceTargetSatisfiesClause42Item6 : Bool := false
 
 end Ci

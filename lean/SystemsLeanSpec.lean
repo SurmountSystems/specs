@@ -13,6 +13,8 @@
 
 import SpecRegistry
 import FormalVibeficationSpec
+import MdLine
+import «0002_Systems_Lean»
 
 namespace SystemsLean
 
@@ -266,11 +268,15 @@ def specsRepoPinsCompCert : Bool := false
 def specsRepoPinsRust : Bool := false
 
 /-!
-  Clause 3.9 and 4.2 item 6: CompCert verified compilation is a required
-  core validation step. The tool is `ccomp` applied to the freestanding C
-  emit. Residual naming does not substitute. A hypothetical conforming
+  Clause 3.9 and 4.2 item 6: `ccomp` is one metric. It is optional. It
+  is not the only metric. When SafeC is not combined with FastC,
+  inclusion of `ccomp` is optional. FastSafeC is the overlap, and
+  `ccomp` is also optional there. A FastC mark that is not combined
+  with SafeC is performance priority and does not require `ccomp`.
+  Silence does not select FastC, SafeC, or FastSafeC. Residual naming
+  does not make verified compilation done. A hypothetical conforming
   fixture may set verified compilation true. The live product does not
-  claim that step is done.
+  claim that step is done. A FastC mark does not flip that flag.
 -/
 
 /-- CompCert command named in Clause 3.9 and Clause 4.2 item 6. -/
@@ -324,9 +330,110 @@ def mashCompCertVerifiedCompilationClaimedDone : Prop :=
 def mashCompCertVerifiedCompilationClaimedDoneIsFalse : Prop :=
   mashCompCertVerifiedCompilationClaimedDone → False
 
+/-- Sibling line 90, the Clause 3.9 body. -/
+def clause39CompCertLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[89]!
+
+/-- Sibling line 390, Clause 4.2 item 6. -/
+def clause42Item6CompCertLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[389]!
+
+/-- Sibling line 594, the unpublished 1.0.0 changelog sentence. -/
+def historicalCompCertRequiredStepLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[593]!
+
+/-- Clause 3.9 sentence text from the sibling line encoding. -/
+def clause39CompCertSentence : String :=
+  clause39CompCertLine.text
+
+/-- Clause 4.2 item 6 sentence text from the sibling line encoding. -/
+def clause42Item6CompCertSentence : String :=
+  clause42Item6CompCertLine.text
+
+/-- Historical changelog sentence text from the sibling line encoding. -/
+def historicalCompCertRequiredStepSentence : String :=
+  historicalCompCertRequiredStepLine.text
+
+/-- True when `needle` occurs in `hay`. -/
+def mentionsPhrase (needle hay : String) : Bool :=
+  (hay.splitOn needle).length > 1
+
 /--
-  Clause 4.2 item 6 is `ccomp` of the freestanding C emit.
-  CompCertTSO, gcc, LLVM, and cc do not satisfy that step.
+  Live Clause 3.9 reading: `ccomp` is one optional metric, not the only
+  metric, not claimed done, and an unmarked freestanding C emit is not
+  required to be compiled with `ccomp`.
+-/
+def clause39ReadsOptionalNotClaimedDone (s : String) : Bool :=
+  mentionsPhrase "`ccomp` is one metric" s &&
+    mentionsPhrase "It is optional" s &&
+    mentionsPhrase "It is not the only metric" s &&
+    mentionsPhrase "It is not claimed done" s &&
+    mentionsPhrase "An unmarked freestanding C emit is not required to be compiled with `ccomp`" s
+
+/--
+  Live Clause 4.2 item 6 reading: `ccomp` is one optional metric, not the
+  only metric, and an unmarked freestanding C emit is not required to be
+  compiled with `ccomp`.
+-/
+def clause42Item6ReadsOptionalMetric (s : String) : Bool :=
+  mentionsPhrase "CompCert (`ccomp`) is one metric" s &&
+    mentionsPhrase "It is optional" s &&
+    mentionsPhrase "It is not the only metric" s &&
+    mentionsPhrase "An unmarked freestanding C emit is not required to be compiled with `ccomp`" s
+
+/-- Historical changelog reading: CompCert of the freestanding C emit is a required core step. -/
+def historicalReadsRequiredCoreStep (s : String) : Bool :=
+  mentionsPhrase "This unpublished 1.0.0 also records:" s &&
+    mentionsPhrase "CompCert verified compilation of the freestanding C emit is a required core validation step" s
+
+/-- How a CompCert sentence is read. These two readings cannot both be the current rule. -/
+inductive CompCertMetricReading where
+  | requiredCoreValidationStep
+  | optionalMetricNotClaimedDone
+  deriving DecidableEq, Repr, BEq
+
+/-- Side B. The live clauses, or none when those words are absent. -/
+def readLiveCompCertRule (clause39 clause42 : MdLine) : Option CompCertMetricReading :=
+  if clause39.number == 90 && clause42.number == 390 &&
+      clause39ReadsOptionalNotClaimedDone clause39.text &&
+      clause42Item6ReadsOptionalMetric clause42.text then
+    some .optionalMetricNotClaimedDone
+  else
+    none
+
+/-- Side A. The historical changelog sentence, or none when those words are absent. -/
+def readHistoricalCompCertRule (line : MdLine) : Option CompCertMetricReading :=
+  if line.number == 594 && historicalReadsRequiredCoreStep line.text then
+    some .requiredCoreValidationStep
+  else
+    none
+
+/--
+  Treating side A as the current rule: the changelog sentence is the required
+  step, and the live Clause 3.9 and Clause 4.2 item 6 sentences are read as
+  that same required step.
+-/
+def historicalCompCertRequiredStepIsCurrentRule : Prop :=
+  readHistoricalCompCertRule historicalCompCertRequiredStepLine =
+      some .requiredCoreValidationStep ∧
+    readLiveCompCertRule clause39CompCertLine clause42Item6CompCertLine =
+      some .requiredCoreValidationStep
+
+def historicalCompCertRequiredStepIsCurrentRuleIsFalse : Prop :=
+  historicalCompCertRequiredStepIsCurrentRule → False
+
+/-- True only if the live clauses are counted as that historical required step. -/
+def historicalRequiredStepCountedAsCurrent : Bool :=
+  readHistoricalCompCertRule historicalCompCertRequiredStepLine ==
+      some .requiredCoreValidationStep &&
+    readLiveCompCertRule clause39CompCertLine clause42Item6CompCertLine ==
+      some .requiredCoreValidationStep
+
+/--
+  Clause 4.2 item 6 names `ccomp` for an unmarked freestanding C emit.
+  SafeC not combined with FastC may include `ccomp` and is not required
+  to. FastC not combined with SafeC does not require `ccomp`.
+  CompCertTSO, gcc, LLVM, and cc do not satisfy Clause 4.2 item 6.
 -/
 def compCertTsoSatisfiesClause42Item6 : Bool := false
 
@@ -336,11 +443,276 @@ def mashCompCertTsoSatisfiesClause42Item6 : Prop :=
 def mashCompCertTsoSatisfiesClause42Item6IsFalse : Prop :=
   mashCompCertTsoSatisfiesClause42Item6 → False
 
+/--
+  Being a reference target does not make CompCertTSO, gcc, LLVM, or cc
+  satisfy Clause 4.2 item 6. ccomp remains the tool that item names.
+  Supporting those compilers as reference targets does not change that.
+-/
+def compCertTsoAsReferenceTargetSatisfiesClause42Item6 : Bool := false
+
+def gccAsReferenceTargetSatisfiesClause42Item6 : Bool := false
+
+def llvmAsReferenceTargetSatisfiesClause42Item6 : Bool := false
+
+def ccAsReferenceTargetSatisfiesClause42Item6 : Bool := false
+
+def referenceTargetSatisfiesClause42Item6 : Bool :=
+  compCertTsoAsReferenceTargetSatisfiesClause42Item6 ||
+    gccAsReferenceTargetSatisfiesClause42Item6 ||
+    llvmAsReferenceTargetSatisfiesClause42Item6 ||
+    ccAsReferenceTargetSatisfiesClause42Item6
+
+def mashReferenceTargetSatisfiesClause42Item6 : Prop :=
+  referenceTargetSatisfiesClause42Item6 = true
+
+def mashReferenceTargetSatisfiesClause42Item6IsFalse : Prop :=
+  mashReferenceTargetSatisfiesClause42Item6 → False
+
+def fiveNamedCompilersAreReferenceTargets : Bool := true
+
+/-!
+  Clause 4.2 item 6. `ccomp` is one metric. It is optional. It is not
+  the only metric. Unmarked, SafeC, and FastSafeC may include `ccomp`
+  and are not required to include it. FastC not combined with SafeC
+  does not require `ccomp`. Optional does not mean forbidden. Silence
+  does not select FastC, SafeC, or FastSafeC. A FastC mark that is also
+  security priority is not well formed.
+-/
+
+structure FreestandingCEmit where
+  fastC : Bool
+  securityPriority : Bool
+  usesCcomp : Bool
+  safeC : Bool := false
+  fastSafeC : Bool := false
+  deriving DecidableEq, Repr, BEq
+
+/-- Inclusion of `ccomp`. Optional means allowed and not required. -/
+inductive CcompInclusion where
+  | required
+  | optional
+  | notRequired
+  | unspecified
+  deriving DecidableEq, Repr, BEq
+
+/-- Clause 4.2 item 6 and Clause 3.18.
+    FastSafeC and an unmarked emit are optional.
+    Ill formed FastC plus security priority does not pass without `ccomp`. -/
+def FreestandingCEmit.ccompInclusion (e : FreestandingCEmit) : CcompInclusion :=
+  if e.fastC && e.securityPriority && !e.safeC && !e.fastSafeC then .required
+  else if e.fastC && !e.safeC && !e.fastSafeC then .notRequired
+  else .optional
+
+/-- Passes when this emit may omit `ccomp` or may include it.
+    Ill formed FastC plus security priority does not pass without `ccomp`. -/
+def FreestandingCEmit.ccompOk (e : FreestandingCEmit) : Bool :=
+  match e.ccompInclusion with
+  | .required => e.usesCcomp
+  | .optional => true
+  | .notRequired => true
+  | .unspecified => false
+
+/-- A well formed FastC mark is performance priority, not security priority. -/
+def wellFormedFastC (e : FreestandingCEmit) : Bool :=
+  e.fastC && !e.securityPriority
+
+def unmarkedSkip : FreestandingCEmit :=
+  { fastC := false, securityPriority := false, usesCcomp := false }
+
+def securitySkip : FreestandingCEmit :=
+  { fastC := false, securityPriority := true, usesCcomp := false }
+
+def fastCEmit : FreestandingCEmit :=
+  { fastC := true, securityPriority := false, usesCcomp := false }
+
+/-- FastC together with security priority is not a well formed FastC mark. -/
+def fastCMarkedSecurity : FreestandingCEmit :=
+  { fastC := true, securityPriority := true, usesCcomp := false }
+
+/-- An unmarked freestanding emit may omit `ccomp`. The flag is true. -/
+def unmarkedFreestandingMaySkipCcomp : Bool :=
+  FreestandingCEmit.ccompOk unmarkedSkip
+
+/-- Unmarked freestanding emit that includes `ccomp`. Optional, so this passes. -/
+def unmarkedWithCcomp : FreestandingCEmit :=
+  { unmarkedSkip with usesCcomp := true }
+
+/-- The claim that an unmarked freestanding emit must include `ccomp`. The flag is false. -/
+def unmarkedMustIncludeCcomp : Bool :=
+  !FreestandingCEmit.ccompOk unmarkedSkip
+
+def mashUnmarkedMustIncludeCcomp : Prop :=
+  unmarkedMustIncludeCcomp = true
+
+def mashUnmarkedMustIncludeCcompIsFalse : Prop :=
+  mashUnmarkedMustIncludeCcomp → False
+
+/-- The claim that an unmarked freestanding emit cannot include `ccomp`. The flag is false. -/
+def unmarkedCannotIncludeCcomp : Bool :=
+  !FreestandingCEmit.ccompOk unmarkedWithCcomp
+
+def mashUnmarkedCannotIncludeCcomp : Prop :=
+  unmarkedCannotIncludeCcomp = true
+
+def mashUnmarkedCannotIncludeCcompIsFalse : Prop :=
+  mashUnmarkedCannotIncludeCcomp → False
+
+/-- SafeC not combined with FastC, without `ccomp`. Optional, so this passes. -/
+def safeCNotCombinedNoCcomp : FreestandingCEmit :=
+  { fastC := false, securityPriority := false, usesCcomp := false, safeC := true }
+
+/-- SafeC not combined with FastC, with `ccomp`. Optional, so this passes. -/
+def safeCNotCombinedWithCcomp : FreestandingCEmit :=
+  { fastC := false, securityPriority := false, usesCcomp := true, safeC := true }
+
+/-- The claim that SafeC not combined with FastC must include `ccomp`. The flag is false. -/
+def safecNotCombinedMustIncludeCcomp : Bool :=
+  !FreestandingCEmit.ccompOk safeCNotCombinedNoCcomp
+
+def mashSafecNotCombinedWithFastcMustIncludeCcomp : Prop :=
+  safecNotCombinedMustIncludeCcomp = true
+
+def mashSafecNotCombinedWithFastcMustIncludeCcompIsFalse : Prop :=
+  mashSafecNotCombinedWithFastcMustIncludeCcomp → False
+
+/-- The claim that SafeC not combined with FastC cannot include `ccomp`. The flag is false. -/
+def safecNotCombinedCannotIncludeCcomp : Bool :=
+  !FreestandingCEmit.ccompOk safeCNotCombinedWithCcomp
+
+def mashSafecNotCombinedWithFastcCannotIncludeCcomp : Prop :=
+  safecNotCombinedCannotIncludeCcomp = true
+
+def mashSafecNotCombinedWithFastcCannotIncludeCcompIsFalse : Prop :=
+  mashSafecNotCombinedWithFastcCannotIncludeCcomp → False
+
+/-- FastSafeC sample without `ccomp`. Optional, so this passes. -/
+def fastSafeCEmit : FreestandingCEmit :=
+  { fastC := true
+    securityPriority := false
+    usesCcomp := false
+    safeC := true
+    fastSafeC := true }
+
+/-- FastSafeC sample with `ccomp`. Optional, so this passes. -/
+def fastSafeCWithCcomp : FreestandingCEmit :=
+  { fastSafeCEmit with usesCcomp := true }
+
+/-- The claim that FastSafeC must include `ccomp`. The flag is false. -/
+def fastSafeCMustIncludeCcomp : Bool :=
+  !FreestandingCEmit.ccompOk fastSafeCEmit
+
+def mashFastSafeCMustIncludeCcomp : Prop :=
+  fastSafeCMustIncludeCcomp = true
+
+def mashFastSafeCMustIncludeCcompIsFalse : Prop :=
+  mashFastSafeCMustIncludeCcomp → False
+
+/-- The claim that FastSafeC cannot include `ccomp`. The flag is false. -/
+def fastSafeCCannotIncludeCcomp : Bool :=
+  !FreestandingCEmit.ccompOk fastSafeCWithCcomp
+
+def mashFastSafeCCannotIncludeCcomp : Prop :=
+  fastSafeCCannotIncludeCcomp = true
+
+def mashFastSafeCCannotIncludeCcompIsFalse : Prop :=
+  mashFastSafeCCannotIncludeCcomp → False
+
+/-- The claim that `ccomp` is the only metric. The flag is false. -/
+def ccompIsTheOnlyMetric : Bool := false
+
+def mashCcompIsTheOnlyMetric : Prop :=
+  ccompIsTheOnlyMetric = true
+
+def mashCcompIsTheOnlyMetricIsFalse : Prop :=
+  mashCcompIsTheOnlyMetric → False
+
+/-- Optional does not mean forbidden. Including `ccomp` still passes. -/
+def optionalCcompMeansForbidden : Bool :=
+  !FreestandingCEmit.ccompOk unmarkedWithCcomp ||
+    !FreestandingCEmit.ccompOk safeCNotCombinedWithCcomp ||
+    !FreestandingCEmit.ccompOk fastSafeCWithCcomp
+
+def mashOptionalCcompMeansForbidden : Prop :=
+  optionalCcompMeansForbidden = true
+
+def mashOptionalCcompMeansForbiddenIsFalse : Prop :=
+  mashOptionalCcompMeansForbidden → False
+
+/-- Silence does not select FastC, SafeC, or FastSafeC. -/
+def silenceSelectsFastCSafeCOrFastSafeC : Bool :=
+  unmarkedSkip.fastC || unmarkedSkip.safeC || unmarkedSkip.fastSafeC
+
+def mashSilenceSelectsFastCSafeCOrFastSafeC : Prop :=
+  silenceSelectsFastCSafeCOrFastSafeC = true
+
+def mashSilenceSelectsFastCSafeCOrFastSafeCIsFalse : Prop :=
+  mashSilenceSelectsFastCSafeCOrFastSafeC → False
+
+/-- FastSafeC inclusion is specified as optional. Not a requirement and not a ban. -/
+def fastSafeCCompileRuleSpecified : Bool :=
+  fastSafeCEmit.ccompInclusion == .optional
+
+/-- FastC does not require `ccomp`: the marked sample passes with `usesCcomp` false. -/
+def fastCRequiresCcomp : Bool :=
+  !FreestandingCEmit.ccompOk { fastCEmit with usesCcomp := false }
+
+inductive EmitPriority where
+  | security
+  | performance
+  deriving DecidableEq, Repr, BEq
+
+/-- FastC is performance priority. -/
+def fastCPriority : EmitPriority := .performance
+
+/-- Claiming the FastC mark is security priority. The flag is false. -/
+def fastCMarkIsSecurityPriority : Bool :=
+  decide (fastCPriority = .security)
+
+def mashFastCMarkIsSecurityPriority : Prop :=
+  fastCPriority = .security
+
+def mashFastCMarkIsSecurityPriorityIsFalse : Prop :=
+  mashFastCMarkIsSecurityPriority → False
+
+/-- A FastC mark does not make verified compilation, the Slake typecheck, or byte identity done. -/
+def fastCMarkMakesVerifiedCompilationDone : Bool := false
+
+/-- Clause 4.2 item 7: all Slake code is typechecked. There is no exception. -/
+def allSlakeCodeMustBeTypechecked : Bool := true
+
+/-- There is no exception for which Slake code is typechecked. -/
+def slakeCodeTypecheckHasException : Bool := false
+
+/-- Claiming FastC exempts Slake code from the typecheck. The flag is false. -/
+def fastCExemptsSlakeCode : Bool := false
+
+def mashFastCExemptsSlakeCode : Prop :=
+  fastCExemptsSlakeCode = true
+
+def mashFastCExemptsSlakeCodeIsFalse : Prop :=
+  mashFastCExemptsSlakeCode → False
+
+/-- Claiming security priority exempts Slake code from the typecheck. The flag is false. -/
+def securityPriorityExemptsSlakeCode : Bool := false
+
+def mashSecurityPriorityExemptsSlakeCode : Prop :=
+  securityPriorityExemptsSlakeCode = true
+
+def mashSecurityPriorityExemptsSlakeCodeIsFalse : Prop :=
+  mashSecurityPriorityExemptsSlakeCode → False
+
 /-!
   Clause 3.10 and 4.2 item 7: bootstrapping a Slake compiler that fully typechecks
   is a required core validation step. A subset typecheck is not
   enough. Emitting C without that typecheck is not enough. Residual naming
   does not substitute. Conforming bootstrap typecheck includes theorems.
+  All Slake code is typechecked, including theorems. FastC is not an
+  exception. Security priority is not an exception. There is no exception
+  for which Slake code is typechecked. Developers and agents must always
+  run that typecheck. A user who is building finished code may skip running
+  that step. The skip is about who runs the check. It does not exempt the
+  Slake code, and it does not make the bootstrap typecheck done. Sharper
+  tests for finished code, user, developer, and agent are not specified yet.
   A claim that the freestanding product hosts itself from generated C is
   a distinct claim and does not satisfy this step by itself.
 -/
@@ -381,6 +753,48 @@ def mashSlakeBootstrapTypecheckClaimedDone : Prop :=
 
 def mashSlakeBootstrapTypecheckClaimedDoneIsFalse : Prop :=
   mashSlakeBootstrapTypecheckClaimedDone → False
+
+/-- Developers must always run the typecheck. -/
+def developerMustRunTypecheck : Bool := true
+
+/-- Claiming a developer may skip the typecheck. The flag is false. -/
+def developerMaySkipTypecheck : Bool := false
+
+def mashDeveloperMaySkipTypecheck : Prop :=
+  developerMaySkipTypecheck = true
+
+def mashDeveloperMaySkipTypecheckIsFalse : Prop :=
+  mashDeveloperMaySkipTypecheck → False
+
+/-- Agents must always run the typecheck. -/
+def agentMustRunTypecheck : Bool := true
+
+/-- Claiming an agent may skip the typecheck. The flag is false. -/
+def agentMaySkipTypecheck : Bool := false
+
+def mashAgentMaySkipTypecheck : Prop :=
+  agentMaySkipTypecheck = true
+
+def mashAgentMaySkipTypecheckIsFalse : Prop :=
+  mashAgentMaySkipTypecheck → False
+
+/-- A user building finished code may skip running the typecheck. -/
+def userBuildingFinishedCodeMaySkipRunningTypecheck : Bool := true
+
+/-- That skip does not exempt the Slake code. -/
+def userSkipExemptsSlakeCode : Bool := false
+
+/-- Treating that permission as the typecheck being done. The flag is false. -/
+def userSkipMeansTypecheckDone : Bool := false
+
+def mashUserSkipMeansTypecheckDone : Prop :=
+  userSkipMeansTypecheckDone = true
+
+def mashUserSkipMeansTypecheckDoneIsFalse : Prop :=
+  mashUserSkipMeansTypecheckDone → False
+
+/-- Sharper tests for finished code, user, developer, and agent are not specified yet. -/
+def sharperFinishedCodeUserDeveloperAgentTestsSpecified : Bool := false
 
 /--
   Clause 4.2 item 7 last sentence: hosting from generated C does not
@@ -525,8 +939,12 @@ def beastdbCannotTarget : List NamedComponentClaim :=
 
 /-!
   Clause 5: one conformance predicate for a claimed Systems Lean / Slake
-  product. Optional LLVM IR is not a conjunct. CompCert verified
-  compilation and Slake bootstrap typecheck are conjuncts.
+  product. Optional LLVM IR is not a conjunct. `ccomp` is one
+  optional metric and is not the only metric. SafeC,
+  FastSafeC, and an unmarked emit may omit `ccomp`. A FastC mark that
+  is not security priority is performance priority and does not require
+  `ccomp`. The Slake bootstrap typecheck stays a conjunct. A FastC mark
+  does not make verified compilation done.
 -/
 
 structure ClaimedProduct where
@@ -540,6 +958,10 @@ structure ClaimedProduct where
   stackClaims : List NamedComponentClaim
   compCert : CompCertValidation
   bootstrapTypecheck : SlakeBootstrapTypecheck
+  /-- Clause 4.2 item 6. Performance priority mark. Default is unmarked. -/
+  fastCMark : Bool := false
+  /-- Security priority freestanding emit. Default is not that priority. -/
+  securityPriority : Bool := false
   deriving Repr
 
 /-- Clause 5 item 1: only three multiplicities, and use counts respect
@@ -564,9 +986,15 @@ def ClaimedProduct.item4 (p : ClaimedProduct) : Bool :=
 def ClaimedProduct.item5 (p : ClaimedProduct) : Bool :=
   allStackClaimsOk p.stackClaims
 
-/-- Clause 5 item 6 / Clause 4.2 item 6: CompCert verified compilation. -/
+/-- Clause 5 item 6 / Clause 4.2 item 6.
+    `ccomp` is one optional metric and is not the only metric.
+    Omitting it conforms. A claimed verified compilation must still be
+    `ccomp` of freestanding C. FastC claimed as security priority is
+    not a well formed mark. -/
 def ClaimedProduct.item6 (p : ClaimedProduct) : Bool :=
-  p.compCert.ok
+  if p.fastCMark && p.securityPriority then p.compCert.ok
+  else if p.compCert.verifiedCompilation then p.compCert.ok
+  else true
 
 /-- Clause 5 item 7 / Clause 4.2 item 7: bootstrapped Slake that fully typechecks. -/
 def ClaimedProduct.item7 (p : ClaimedProduct) : Bool :=
@@ -596,7 +1024,9 @@ def canonicalProduct : ClaimedProduct :=
     novelPaths := canonicalNovelPaths
     stackClaims := allNamedStackTargeting
     compCert := compCertPerformed
-    bootstrapTypecheck := bootstrapTypecheckDone }
+    bootstrapTypecheck := bootstrapTypecheckDone
+    fastCMark := false
+    securityPriority := false }
 
 def productGcSilent : ClaimedProduct :=
   { canonicalProduct with wire := gcWire, namedResidual := none }
@@ -638,6 +1068,37 @@ def productPrimaryLlvm : ClaimedProduct :=
 
 def productMissingCompCert : ClaimedProduct :=
   { canonicalProduct with compCert := compCertMissing }
+
+/-- Marked FastC, no ccomp. Performance priority. Still not a done claim. -/
+def productFastC : ClaimedProduct :=
+  { canonicalProduct with
+    fastCMark := true
+    securityPriority := false
+    compCert := compCertMissing }
+
+/-- FastC does not waive a missing bootstrap typecheck. -/
+def productFastCMissingBootstrap : ClaimedProduct :=
+  { productFastC with bootstrapTypecheck := bootstrapMissing }
+
+/-- Security priority does not waive a missing bootstrap typecheck. -/
+def productSecurityMissingBootstrap : ClaimedProduct :=
+  { canonicalProduct with
+    securityPriority := true
+    bootstrapTypecheck := bootstrapMissing }
+
+/-- Security priority not combined with FastC may omit ccomp. -/
+def productSecurityMissingCcomp : ClaimedProduct :=
+  { canonicalProduct with
+    fastCMark := false
+    securityPriority := true
+    compCert := compCertMissing }
+
+/-- FastC claimed as security priority does not skip ccomp. -/
+def productFastCClaimedSecurity : ClaimedProduct :=
+  { canonicalProduct with
+    fastCMark := true
+    securityPriority := true
+    compCert := compCertMissing }
 
 def productMissingBootstrapTypecheck : ClaimedProduct :=
   { canonicalProduct with bootstrapTypecheck := bootstrapMissing }
@@ -710,6 +1171,13 @@ def byteIdentityRequiredForConformingProduct : Bool := true
 
 /-- Clause 6.3: byte identity of emit is not claimed true of the live product. -/
 def byteIdentityOfEmitClaimedTrue : Bool := false
+
+/-- Clause 6.3: a FastC mark does not waive byte identity. The waiver claim is the existing flag set true. -/
+def mashFastCWaivesByteIdentity : Prop :=
+  byteIdentityOfEmitClaimedTrue = true
+
+def mashFastCWaivesByteIdentityIsFalse : Prop :=
+  mashFastCWaivesByteIdentity → False
 
 /-- Clause 6: Systems Lean and Slake work is ongoing and is not ready for use. -/
 def systemsLeanAndSlakeReadyForUse : Bool := false
@@ -821,6 +1289,232 @@ def mashSafeKernelImpliesSafeCompCert : Prop :=
 
 def mashSafeKernelImpliesSafeCompCertIsFalse : Prop :=
   mashSafeKernelImpliesSafeCompCert → False
+
+/-!
+  Clause 3.18. SafeC is the named Safe judgments composed.
+  FastSafeC is the overlap of SafeC and FastC. The FastSafeC balance
+  rule is that overlap together with the named metrics. The proof has
+  not been carried out. The rule is not an open question. Further level
+  names besides FastSafeC are not specified. FastC is performance priority,
+  not SafeCompCert. Block syntax for FastC is not specified.
+  FastSafeC block syntax is not invented here.
+-/
+
+structure SafeC where
+  safeMem : SafeMem
+  safeThr : SafeThr
+  safeLayout : SafeLayout
+  safeKernel : SafeKernel
+  safeCompCert : SafeCompCert
+  deriving DecidableEq, Repr
+
+def safeCSample : SafeC :=
+  { safeMem := .holds
+    safeThr := .holds
+    safeLayout := .holds
+    safeKernel := .holds
+    safeCompCert := .holds }
+
+inductive FastC where
+  | holds
+  deriving DecidableEq, Repr, BEq
+
+/-- FastC is not SafeCompCert. There is no map from the mark onto that judgment. -/
+def fastCToSafeCompCert : FastC → Option SafeCompCert
+  | .holds => none
+
+def fastCIsSafeCompCert : Bool := false
+
+def mashFastCIsSafeCompCert : Prop :=
+  fastCIsSafeCompCert = true
+
+def mashFastCIsSafeCompCertIsFalse : Prop :=
+  mashFastCIsSafeCompCert → False
+
+/-- A program may contain both judgments. No block syntax is invented. -/
+structure SafeCWithFastC where
+  safeC : SafeC
+  fastC : FastC
+  deriving DecidableEq, Repr
+
+def safeCWithFastCSample : SafeCWithFastC :=
+  { safeC := safeCSample
+    fastC := .holds }
+
+/-- FastSafeC is that overlap. It does not replace either judgment. -/
+structure FastSafeC where
+  safeC : SafeC
+  fastC : FastC
+  deriving DecidableEq, Repr
+
+def fastSafeCOverlap : FastSafeC :=
+  { safeC := safeCSample
+    fastC := .holds }
+
+/-- The claim that SafeC cannot combine with FastC. The witness shows it can. -/
+def safecCannotCombineWithFastC : Bool :=
+  decide (fastSafeCOverlap.safeC ≠ safeCSample)
+
+def mashSafecCannotCombineWithFastc : Prop :=
+  safecCannotCombineWithFastC = true
+
+def mashSafecCannotCombineWithFastcIsFalse : Prop :=
+  mashSafecCannotCombineWithFastc → False
+
+/-- The claim that FastSafeC is not the overlap. The flag is false. -/
+def fastSafeCIsNotOverlapOfSafeCAndFastC : Bool :=
+  decide (fastSafeCOverlap.safeC ≠ safeCSample ∨ fastSafeCOverlap.fastC ≠ FastC.holds)
+
+def mashFastsafecIsNotOverlapOfSafecAndFastc : Prop :=
+  fastSafeCIsNotOverlapOfSafeCAndFastC = true
+
+def mashFastsafecIsNotOverlapOfSafecAndFastcIsFalse : Prop :=
+  mashFastsafecIsNotOverlapOfSafecAndFastc → False
+
+/-- The best balance proof is not claimed finished. -/
+def fastSafeCBalanceAlreadyFinished : Bool := false
+
+def mashFastsafecBalanceAlreadyFinished : Prop :=
+  fastSafeCBalanceAlreadyFinished = true
+
+def mashFastsafecBalanceAlreadyFinishedIsFalse : Prop :=
+  mashFastsafecBalanceAlreadyFinished → False
+
+/-- The FastSafeC balance rule is stated. The proof has not been carried out. -/
+def fastSafeCBalanceRuleStated : Bool := true
+
+/-- The proof of that balance has not been carried out. -/
+def fastSafeCBalanceProofCarriedOut : Bool := false
+
+/-- Calling the balance rule unnamed. The flag is false. -/
+def fastSafeCBalanceRuleUnspecified : Bool := false
+
+/-- Calling the balance rule an open question. The flag is false. -/
+def fastSafeCBalanceRuleOpenQuestion : Bool := false
+
+/-- Either wording is false. The rule is stated and is not an open question. -/
+def fastSafeCBalanceRuleUnspecifiedOrOpenQuestion : Bool :=
+  fastSafeCBalanceRuleUnspecified || fastSafeCBalanceRuleOpenQuestion
+
+def mashFastSafeCBalanceRuleUnspecifiedOrOpenQuestion : Prop :=
+  fastSafeCBalanceRuleUnspecifiedOrOpenQuestion = true
+
+def mashFastSafeCBalanceRuleUnspecifiedOrOpenQuestionIsFalse : Prop :=
+  mashFastSafeCBalanceRuleUnspecifiedOrOpenQuestion → False
+
+/-- An unfinished proof does not erase the rule. The flag is false. -/
+def unfinishedFastSafeCProofMeansRuleMissing : Bool := false
+
+def mashUnfinishedFastSafeCProofMeansRuleMissing : Prop :=
+  unfinishedFastSafeCProofMeansRuleMissing = true
+
+def mashUnfinishedFastSafeCProofMeansRuleMissingIsFalse : Prop :=
+  mashUnfinishedFastSafeCProofMeansRuleMissing → False
+
+/-- Named metrics of the FastSafeC balance. Dropping one is false. -/
+def safeJudgmentsInFastSafeCBalance : Bool := true
+
+def fastCParallelismProofsInFastSafeCBalance : Bool := true
+
+def atomicsInFastSafeCBalance : Bool := true
+
+def threadingInFastSafeCBalance : Bool := true
+
+def provedFreedomFromLocksInFastSafeCBalance : Bool := true
+
+def slakeTypecheckInFastSafeCBalance : Bool := true
+
+def byteIdentityOfEmitInFastSafeCBalance : Bool := true
+
+def dropSafeJudgmentsFromFastSafeCBalance : Bool :=
+  !safeJudgmentsInFastSafeCBalance
+
+def dropFastCParallelismProofsFromFastSafeCBalance : Bool :=
+  !fastCParallelismProofsInFastSafeCBalance
+
+def dropAtomicsFromFastSafeCBalance : Bool :=
+  !atomicsInFastSafeCBalance
+
+def dropThreadingFromFastSafeCBalance : Bool :=
+  !threadingInFastSafeCBalance
+
+def dropProvedFreedomFromLocksFromFastSafeCBalance : Bool :=
+  !provedFreedomFromLocksInFastSafeCBalance
+
+def dropSlakeTypecheckFromFastSafeCBalance : Bool :=
+  !slakeTypecheckInFastSafeCBalance
+
+def dropByteIdentityOfEmitFromFastSafeCBalance : Bool :=
+  !byteIdentityOfEmitInFastSafeCBalance
+
+def mashDropSafeJudgmentsFromFastSafeCBalance : Prop :=
+  dropSafeJudgmentsFromFastSafeCBalance = true
+
+def mashDropSafeJudgmentsFromFastSafeCBalanceIsFalse : Prop :=
+  mashDropSafeJudgmentsFromFastSafeCBalance → False
+
+def mashDropFastCParallelismProofsFromFastSafeCBalance : Prop :=
+  dropFastCParallelismProofsFromFastSafeCBalance = true
+
+def mashDropFastCParallelismProofsFromFastSafeCBalanceIsFalse : Prop :=
+  mashDropFastCParallelismProofsFromFastSafeCBalance → False
+
+def mashDropAtomicsFromFastSafeCBalance : Prop :=
+  dropAtomicsFromFastSafeCBalance = true
+
+def mashDropAtomicsFromFastSafeCBalanceIsFalse : Prop :=
+  mashDropAtomicsFromFastSafeCBalance → False
+
+def mashDropThreadingFromFastSafeCBalance : Prop :=
+  dropThreadingFromFastSafeCBalance = true
+
+def mashDropThreadingFromFastSafeCBalanceIsFalse : Prop :=
+  mashDropThreadingFromFastSafeCBalance → False
+
+def mashDropProvedFreedomFromLocksFromFastSafeCBalance : Prop :=
+  dropProvedFreedomFromLocksFromFastSafeCBalance = true
+
+def mashDropProvedFreedomFromLocksFromFastSafeCBalanceIsFalse : Prop :=
+  mashDropProvedFreedomFromLocksFromFastSafeCBalance → False
+
+def mashDropSlakeTypecheckFromFastSafeCBalance : Prop :=
+  dropSlakeTypecheckFromFastSafeCBalance = true
+
+def mashDropSlakeTypecheckFromFastSafeCBalanceIsFalse : Prop :=
+  mashDropSlakeTypecheckFromFastSafeCBalance → False
+
+def mashDropByteIdentityOfEmitFromFastSafeCBalance : Prop :=
+  dropByteIdentityOfEmitFromFastSafeCBalance = true
+
+def mashDropByteIdentityOfEmitFromFastSafeCBalanceIsFalse : Prop :=
+  mashDropByteIdentityOfEmitFromFastSafeCBalance → False
+
+/-- FastSafeC does not replace SafeC. -/
+def fastSafeCReplacesSafeC : Bool := false
+
+def mashFastsafecReplacesSafec : Prop :=
+  fastSafeCReplacesSafeC = true
+
+def mashFastsafecReplacesSafecIsFalse : Prop :=
+  mashFastsafecReplacesSafec → False
+
+/-- FastSafeC does not replace FastC. -/
+def fastSafeCReplacesFastC : Bool := false
+
+def mashFastsafecReplacesFastc : Prop :=
+  fastSafeCReplacesFastC = true
+
+def mashFastsafecReplacesFastcIsFalse : Prop :=
+  mashFastsafecReplacesFastc → False
+
+/-- Further SafeC level names besides FastSafeC are not specified. -/
+def furtherSafeCLevelNamesSpecified : Bool := false
+
+/-- FastC block syntax was not found and is not specified. -/
+def fastCBlockSyntaxSpecified : Bool := false
+
+/-- FastC does not claim Rust semantics. The unsafe block is only an analogy. -/
+def fastCClaimsRustSemantics : Bool := false
 
 inductive RejectJudgment where
   | holds
@@ -1907,6 +2601,10 @@ def lockFreeSample : LockFreeOp :=
     matchesSequentialSpec := true
     leavesInconsistentState := false
     blocksOtherAllowedParty := false }
+
+/-- FastC points at the LockFree sample already named. It does not invent a memory model. -/
+def fastCUsesNamedLockFree : Bool :=
+  LockFreeOp.holds lockFreeSample
 
 def lockFreeMissingSpec : LockFreeOp :=
   { mode := .named

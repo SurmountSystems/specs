@@ -29,6 +29,17 @@ def expectConsFalse (name : String) (accepted : Bool)
     (_proof : accepted = true -> False) : Case :=
   expectFalse name accepted
 
+/-- The proof argument is the sibling line denial. Dropping that denial makes this elaboration fail to typecheck. -/
+def mashCc0ClaimedMeetsPdossTheorem :
+    UnlicenseProofs.cc0ClaimedMeetsPdossAsCurrentFactIsFalse :=
+  UnlicenseProofs.mash_cc0_claimed_meets_pdoss_is_false
+
+def expectSiblingLineDenial (name : String) (countedClaimed : Bool)
+    (clash : Prop) (isFalse : Prop)
+    (_same : isFalse = (clash -> False))
+    (_proof : isFalse) : Case :=
+  expectFalse name countedClaimed
+
 def expectEqNat (name : String) (got want : Nat) : Case :=
   if got == want then
     { name := name, ok := true }
@@ -142,9 +153,12 @@ def runCases : List Case :=
     expectConsFalse "setting cc0Pinned true is Cons False"
       cc0Pinned
       UnlicenseProofs.mash_cc0_pinned_is_false,
-    expectConsFalse "claiming CC0 meets PDOSS is Cons False"
-      cc0ClaimedMeetsPdoss
-      UnlicenseProofs.mash_cc0_claimed_meets_pdoss_is_false,
+    expectSiblingLineDenial "claiming CC0 meets PDOSS is Cons False"
+      UnlicenseProofs.cc0CountedClaimedMeetsPdoss
+      UnlicenseProofs.cc0ClaimedMeetsPdossAsCurrentFact
+      UnlicenseProofs.cc0ClaimedMeetsPdossAsCurrentFactIsFalse
+      rfl
+      mashCc0ClaimedMeetsPdossTheorem,
     expectFalse "Unlicense does not replace named residual licenses"
       unlicenseReplacesNamedResidualLicenses,
     expectFalse "claiming MIT meets PDOSS is false" (meetsPdoss .mitGrant),

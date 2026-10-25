@@ -381,9 +381,10 @@ def nlUnmarked : NaturalLanguageTranslation :=
 def naturalLanguageRequiredForConformance : Bool := false
 
 /-!
-  Clause 4.6: durable state in beastdb; Systems Lean core; inherit 0002
-  CompCert and bootstrap typecheck for components that are safety critical or freestanding.
-  Residual honesty does not substitute.
+  Clause 4.6: durable state in beastdb; Systems Lean core; inherit 0002.
+  `ccomp` is one metric. It is optional. It is not the only metric.
+  The bootstrap typecheck stays required for components that are safety
+  critical or freestanding. Residual honesty does not make `ccomp` done.
 -/
 
 def systemsLeanFileCorrect : String := "0002_Systems_Lean.md"
@@ -422,7 +423,7 @@ def SafetyCriticalClaim.ok (c : SafetyCriticalClaim) : Bool :=
     c.slake.conforming &&
     c.wire.ok &&
     c.bootstrap.ok &&
-    c.compCert.ok &&
+    (!c.compCert.verifiedCompilation || c.compCert.ok) &&
     !c.residualSubstitutesForValidation
 
 def safetyCanonical : SafetyCriticalClaim :=
@@ -687,5 +688,138 @@ def modelAndProofsWithoutExperimentsDoesNotConform : Prop :=
 
 def completeScienceConforms : Prop :=
   conformingScience completeScienceFixture = true
+
+/-!
+  Clause 4.8: delta reconciliation. The Supercompiler is a symbolic
+  set of rules. Lean proofs show those rules and their concepts stay
+  consistent. The same input goes to the Lean symbolic rules and to
+  the reference compiler. Byte identity of emit is pursued and is not
+  claimed to already hold. A neural step does not accept a rule
+  without a Lean consistency proof. An objective of both is allowed.
+  An objective of either security or performance is allowed. Security
+  alone is not the only permitted objective. Performance alone is not
+  the only permitted objective. Delta reconciliation is not one
+  reference compiler. The compilers named in specification 0002 are in
+  the set. The set is not closed. A quirk list is not specified yet.
+  The weight formula is not specified yet.
+-/
+
+/-- Clause 4.8: the Supercompiler is a symbolic set of rules. -/
+def supercompilerIsSymbolicRuleSet : Bool := true
+
+/-- Clause 4.8: Lean proofs show the rules and their concepts stay consistent. -/
+def leanProofsKeepRulesConsistent : Bool := true
+
+/-- Clause 4.8: the loop does not claim byte identity of emit already holds. -/
+def deltaLoopByteIdentityHolds : Bool := false
+
+def mashDeltaLoopByteIdentityHolds : Prop :=
+  deltaLoopByteIdentityHolds = true
+
+def mashDeltaLoopByteIdentityHoldsIsFalse : Prop :=
+  mashDeltaLoopByteIdentityHolds → False
+
+/-- Clause 4.8: the neural step does not accept a rule without a Lean consistency proof. -/
+def neuralAcceptsRuleWithoutLeanProof : Bool := false
+
+def mashNeuralAcceptsRuleWithoutLeanProof : Prop :=
+  neuralAcceptsRuleWithoutLeanProof = true
+
+def mashNeuralAcceptsRuleWithoutLeanProofIsFalse : Prop :=
+  mashNeuralAcceptsRuleWithoutLeanProof → False
+
+/-- Clause 4.8 objectives. Security, performance, and both are each allowed. -/
+inductive ReconciliationObjective where
+  | security
+  | performance
+  | both
+  deriving DecidableEq, Repr, BEq
+
+def objectiveAllowed : ReconciliationObjective → Bool
+  | .security => true
+  | .performance => true
+  | .both => true
+
+/-- An objective of either security or performance is allowed. -/
+def eitherObjectiveAllowed : Bool :=
+  objectiveAllowed .security && objectiveAllowed .performance
+
+/-- Security alone as the only permitted objective. That claim is not accepted. -/
+def securityAloneIsOnlyPermittedObjective : Bool := false
+
+def mashSecurityAloneMust : Prop :=
+  securityAloneIsOnlyPermittedObjective = true
+
+def mashSecurityAloneMustIsFalse : Prop :=
+  mashSecurityAloneMust → False
+
+/-- Performance alone as the only permitted objective. That claim is not accepted. -/
+def performanceAloneIsOnlyPermittedObjective : Bool := false
+
+def mashPerformanceAloneMust : Prop :=
+  performanceAloneIsOnlyPermittedObjective = true
+
+def mashPerformanceAloneMustIsFalse : Prop :=
+  mashPerformanceAloneMust → False
+
+/-!
+  Clause 4.8 major compilers. Not one reference compiler. The five
+  compilers named in specification 0002 are in the set. The set is not
+  closed. A quirk list is not specified yet. Being a reference target
+  does not satisfy specification 0002 Clause 4.2 item 6. Specifications
+  0002, 0004, 0006, and 0007 complement each other. None replaces another.
+  Security and performance are not the same priority.
+-/
+
+inductive MajorCompiler where
+  | ccomp
+  | compCertTso
+  | gcc
+  | llvm
+  | cc
+  deriving DecidableEq, Repr, BEq
+
+def majorCompilerInSet : MajorCompiler → Bool
+  | .ccomp => true
+  | .compCertTso => true
+  | .gcc => true
+  | .llvm => true
+  | .cc => true
+
+/-- Claiming there is exactly one reference compiler. That claim is false. -/
+def exactlyOneReferenceCompiler : Bool := false
+
+def mashExactlyOneReferenceCompiler : Prop :=
+  exactlyOneReferenceCompiler = true
+
+def mashExactlyOneReferenceCompilerIsFalse : Prop :=
+  mashExactlyOneReferenceCompiler → False
+
+def majorCompilerSetClosed : Bool := false
+
+def quirkListSpecified : Bool := false
+
+/-- Being a reference target does not by itself satisfy Clause 4.2 item 6. -/
+def beingAReferenceTargetSatisfiesClause42Item6 : Bool := false
+
+def spec0004ReplacesSpec0002 : Bool := false
+
+def mashSpec0004ReplacesSpec0002 : Prop :=
+  spec0004ReplacesSpec0002 = true
+
+def mashSpec0004ReplacesSpec0002IsFalse : Prop :=
+  mashSpec0004ReplacesSpec0002 → False
+
+def spec0006ReplacesSpec0004 : Bool := false
+
+def mashSpec0006ReplacesSpec0004 : Prop :=
+  spec0006ReplacesSpec0004 = true
+
+def mashSpec0006ReplacesSpec0004IsFalse : Prop :=
+  mashSpec0006ReplacesSpec0004 → False
+
+def specsComplementEachOther : Bool := true
+
+def securityAndPerformanceSamePriority : Bool := false
 
 end Sssss

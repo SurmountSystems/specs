@@ -92,7 +92,7 @@ name = "MdLine"
 [[lean_lib]]
 name = "SpecEncodings"
 srcDir = ".."
-roots = ["«0000_spec»", "«0001_DOGE»", "«0002_Systems_Lean»", "«0003_beastdb»", "«0004_SSSSS»", "«0005_CATE»", "«0006_RSI»", "«0007_CI»", "«0008_Formal_Vibefication»", "«0009_PDOSS»", "«0010_Surmount_Systems»", "«0011_Surmount_Systems_Tech_Tree»", "«0012_Majestic_Memex»", "«0013_Lean_Machine»", "«0014_Anunnaki_Encoding»", "lean.SpecEncodings"]
+roots = ["«0000_spec»", "«0001_DOGE»", "«0002_Systems_Lean»", "«0003_beastdb»", "«0004_SSSSS»", "«0005_CATE»", "«0006_RSI»", "«0007_CI»", "«0008_Formal_Vibefication»", "«0009_PDOSS»", "«0010_Surmount_Systems»", "«0011_Surmount_Systems_Tech_Tree»", "«0012_Majestic_Memex»", "«0013_Lean_Machine»", "«0014_Anunnaki_Encoding»", "«0015_Session_Bus»", "lean.SpecEncodings"]
 
 [[lean_lib]]
 name = "LineEncodings"
@@ -102,11 +102,11 @@ name = "WordStats"
 
 [[lean_lib]]
 name = "InconsistencyReport"
-roots = ["InconsistencyReport", "SessionBusSpec", "SessionBusProofs"]
+roots = ["InconsistencyReport"]
 
 [[lean_lib]]
 name = "SpecProofs"
-roots = ["Proofs_0000", "Proofs_0001", "Proofs_0002", "Proofs_0003", "Proofs_0004", "Proofs_0005", "Proofs_0006", "Proofs_0007", "Proofs_0008", "Proofs_0009", "Proofs_0010", "Proofs_0011", "Proofs_0012", "Proofs_0013", "Proofs_0014", "SpecProofs"]
+roots = ["Proofs_0000", "Proofs_0001", "Proofs_0002", "Proofs_0003", "Proofs_0004", "Proofs_0005", "Proofs_0006", "Proofs_0007", "Proofs_0008", "Proofs_0009", "Proofs_0010", "Proofs_0011", "Proofs_0012", "Proofs_0013", "Proofs_0014", "Proofs_0015", "SpecProofs"]
 
 [[lean_exe]]
 name = "spec_check"
@@ -195,6 +195,16 @@ root = "LeanMachineTests"
 [[lean_exe]]
 name = "anunnaki_tests"
 root = "AnunnakiTests"
+
+[[lean_lib]]
+name = "SessionBusSpec"
+
+[[lean_lib]]
+name = "SessionBusProofs"
+
+[[lean_exe]]
+name = "session_bus_tests"
+root = "SessionBusTests"
 
 [[lean_exe]]
 name = "sstt_tests"

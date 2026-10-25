@@ -608,4 +608,14 @@ theorem mash_meaning_proofs_are_second_form_checker_is_false :
   intro h
   exact Bool.noConfusion h
 
+theorem supercompiler_improvement_is_rsi_loop_with_delta_reconciliation :
+    supercompilerImprovementIsRsiLoopWithDeltaReconciliation = true :=
+  rfl
+
+/-- Claiming that continued improvement of the Supercompiler is finished yields False. -/
+theorem mash_supercompiler_improvement_finished_is_false :
+    mashSupercompilerImprovementFinishedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
 end Rsi

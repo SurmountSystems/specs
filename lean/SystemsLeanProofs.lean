@@ -8,6 +8,7 @@
 
 import SystemsLeanSpec
 import SpecRegistry
+import «0002_Systems_Lean»
 
 namespace SystemsLean
 
@@ -329,8 +330,9 @@ theorem llvm_ir_not_a_conformance_conjunct :
       productWithOptionalLlvm.conforms = canonicalProduct.conforms := by
   decide
 
-theorem clause5_missing_compcert_does_not_conform :
-    productMissingCompCert.conforms = false := by decide
+theorem clause5_missing_compcert_still_conforms :
+    productMissingCompCert.conforms = true ∧
+      compCertVerifiedCompilationClaimedDone = false := by decide
 
 theorem clause5_missing_bootstrap_typecheck_does_not_conform :
     productMissingBootstrapTypecheck.conforms = false := by decide
@@ -344,10 +346,11 @@ theorem clause5_typecheck_without_bootstrap_does_not_conform :
 theorem clause5_wrong_product_ref_layout_does_not_conform :
     productWrongRefLayout.conforms = false := by decide
 
-theorem clause5_named_residual_does_not_excuse_missing_compcert :
+theorem clause5_named_residual_does_not_make_compcert_done :
     productNamedResidualMissingCompCert.item2 = true ∧
-      productNamedResidualMissingCompCert.item6 = false ∧
-      productNamedResidualMissingCompCert.conforms = false := by
+      productNamedResidualMissingCompCert.item6 = true ∧
+      productNamedResidualMissingCompCert.conforms = true ∧
+      compCertVerifiedCompilationClaimedDone = false := by
   decide
 
 theorem clause5_named_residual_does_not_excuse_missing_bootstrap :
@@ -415,36 +418,425 @@ theorem bootstrap_without_theorems_not_ok :
 theorem slake_bootstrap_typecheck_not_claimed_done :
     slakeBootstrapTypecheckClaimedDone = false := rfl
 
+/--
+  The unpublished 1.0.0 changelog sentence says CompCert verified compilation
+  of the freestanding C emit is a required core validation step. Clause 3.9
+  and Clause 4.2 item 6 say `ccomp` is one optional metric, not the only
+  metric, not claimed done, and that an unmarked freestanding C emit is not
+  required to be compiled with `ccomp`. Treating the changelog sentence as
+  the current rule yields False because those live sentences deny it.
+  The `native_decide` steps reduce the sibling lines. Removing the Clause 3.9
+  optional and not claimed done wording makes the live reading `none`, so
+  this proof no longer closes.
+-/
 theorem mash_compcert_verified_compilation_claimed_done_is_false :
-    mashCompCertVerifiedCompilationClaimedDoneIsFalse := by
+    historicalCompCertRequiredStepIsCurrentRuleIsFalse := by
   intro h
-  exact Bool.noConfusion h
+  have sideA :
+      readHistoricalCompCertRule historicalCompCertRequiredStepLine =
+        some .requiredCoreValidationStep := by
+    native_decide
+  have sideB :
+      readLiveCompCertRule clause39CompCertLine clause42Item6CompCertLine =
+        some .optionalMetricNotClaimedDone := by
+    native_decide
+  have hA := h.1
+  have hB := h.2
+  rw [sideA] at hA
+  rw [sideB] at hB
+  injection hA with _eqA
+  injection hB with eqB
+  injection eqB
 
+/-- Clause 4.2 item 7. Sibling markdown line 391. Array index 390. -/
+def clause42Item7SlakeLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[390]!
+
+/-- Clause 6.3 body. Sibling markdown line 481. Array index 480. -/
+def clause63SlakeBootstrapLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[480]!
+
+/--
+  Clause 4.2 item 7 obligations on one sibling line: all Slake code,
+  including theorems, is typechecked; developers and agents always run
+  that step; a user who is building finished code may skip running it;
+  that skip does not make the bootstrap typecheck done.
+-/
+def clause42Item7ReadsSlakeBootstrapObligations (s : String) : Bool :=
+  mentionsPhrase "The typecheck MUST cover all Slake code, including theorems." s &&
+    mentionsPhrase "Developers and agents MUST always run that typecheck." s &&
+    mentionsPhrase "A user who is building finished code MAY skip running that step." s &&
+    mentionsPhrase "does not make the bootstrap typecheck done" s
+
+/--
+  Clause 6.3 on one sibling line: a bootstrapped Slake compiler that fully
+  typechecks is a required validation step, and it is not claimed done.
+  The Clause 4.2 item 7 obligations are repeated on this line.
+-/
+def clause63ReadsSlakeBootstrapNotClaimedDone (s : String) : Bool :=
+  mentionsPhrase "A bootstrapped Slake compiler that fully typechecks is a required validation step. It is not claimed done." s &&
+    clause42Item7ReadsSlakeBootstrapObligations s
+
+/-- How the live Slake bootstrap sentences are read. `finished` is the claim those sentences deny. -/
+inductive SlakeBootstrapLiveReading where
+  | notClaimedDone
+  | finished
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of Clause 4.2 item 7 together with Clause 6.3.
+  `notClaimedDone` only when both sibling lines still carry those words.
+  This reader does not return `finished`. Absent words yield `none`.
+-/
+def readLiveSlakeBootstrap (clause42 clause63 : MdLine) : Option SlakeBootstrapLiveReading :=
+  if clause42.number == 391 && clause63.number == 481 &&
+      clause42Item7ReadsSlakeBootstrapObligations clause42.text &&
+      clause63ReadsSlakeBootstrapNotClaimedDone clause63.text then
+    some .notClaimedDone
+  else
+    none
+
+/-- The claim that the Slake bootstrap typecheck is finished. -/
+def slakeBootstrapTypecheckFinishedAsCurrentFact : Prop :=
+  readLiveSlakeBootstrap clause42Item7SlakeLine clause63SlakeBootstrapLine =
+    some .finished
+
+def slakeBootstrapTypecheckFinishedAsCurrentFactIsFalse : Prop :=
+  slakeBootstrapTypecheckFinishedAsCurrentFact → False
+
+/-- True only when those sibling lines are read as the typecheck being finished. -/
+def slakeBootstrapTypecheckCountedFinished : Bool :=
+  readLiveSlakeBootstrap clause42Item7SlakeLine clause63SlakeBootstrapLine ==
+    some .finished
+
+/--
+  Live Clause 4.2 item 7 and Clause 6.3 say the bootstrap typecheck covers
+  all Slake code, including theorems, that developers and agents must run
+  that step, that a user building finished code may skip running it, and
+  that the step is not claimed done. Treating the Slake bootstrap typecheck
+  as finished yields False. The `native_decide` step reads those sibling
+  lines. Removing the Clause 6.3 sentence that the step is not claimed done
+  makes the reading `none`, so this proof no longer closes.
+-/
 theorem mash_slake_bootstrap_typecheck_claimed_done_is_false :
-    mashSlakeBootstrapTypecheckClaimedDoneIsFalse := by
+    slakeBootstrapTypecheckFinishedAsCurrentFactIsFalse := by
+  intro h
+  unfold slakeBootstrapTypecheckFinishedAsCurrentFact at h
+  have live :
+      readLiveSlakeBootstrap clause42Item7SlakeLine clause63SlakeBootstrapLine =
+        some .notClaimedDone := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
+
+/-- All Slake code is typechecked. There is no exception. -/
+theorem all_slake_code_must_be_typechecked :
+    allSlakeCodeMustBeTypechecked = true ∧
+      slakeCodeTypecheckHasException = false ∧
+      bootstrapTypecheckIncludesTheorems = true :=
+  ⟨rfl, rfl, rfl⟩
+
+/-- Claiming FastC exempts Slake code from the typecheck yields False. -/
+def claimingFastCExemptsSlakeCodeYieldsFalse :
+    mashFastCExemptsSlakeCodeIsFalse := by
   intro h
   exact Bool.noConfusion h
 
-theorem mash_compcert_tso_satisfies_clause42_item6_is_false :
-    mashCompCertTsoSatisfiesClause42Item6IsFalse := by
+theorem claiming_fastc_exempts_slake_code_yields_false :
+    fastCExemptsSlakeCode = false ∧
+      allSlakeCodeMustBeTypechecked = true :=
+  ⟨rfl, rfl⟩
+
+/-- Claiming security priority exempts Slake code from the typecheck yields False. -/
+def claimingSecurityPriorityExemptsSlakeCodeYieldsFalse :
+    mashSecurityPriorityExemptsSlakeCodeIsFalse := by
   intro h
   exact Bool.noConfusion h
+
+theorem claiming_security_priority_exempts_slake_code_yields_false :
+    securityPriorityExemptsSlakeCode = false ∧
+      allSlakeCodeMustBeTypechecked = true :=
+  ⟨rfl, rfl⟩
+
+/-- Claiming a developer may skip the typecheck yields False. -/
+def claimingDeveloperMaySkipTypecheckYieldsFalse :
+    mashDeveloperMaySkipTypecheckIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem claiming_developer_may_skip_typecheck_yields_false :
+    developerMaySkipTypecheck = false ∧
+      developerMustRunTypecheck = true :=
+  ⟨rfl, rfl⟩
+
+/-- Claiming an agent may skip the typecheck yields False. -/
+def claimingAgentMaySkipTypecheckYieldsFalse :
+    mashAgentMaySkipTypecheckIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem claiming_agent_may_skip_typecheck_yields_false :
+    agentMaySkipTypecheck = false ∧
+      agentMustRunTypecheck = true :=
+  ⟨rfl, rfl⟩
+
+/-- A user building finished code may skip running the typecheck.
+    That permission is not a claim that the typecheck is done. -/
+theorem user_building_finished_code_may_skip_running_typecheck :
+    userBuildingFinishedCodeMaySkipRunningTypecheck = true ∧
+      userSkipExemptsSlakeCode = false ∧
+      userSkipMeansTypecheckDone = false ∧
+      slakeBootstrapTypecheckClaimedDone = false ∧
+      allSlakeCodeMustBeTypechecked = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Treating that permission as the typecheck being done yields False. -/
+def claimingUserSkipMeansTypecheckDoneYieldsFalse :
+    mashUserSkipMeansTypecheckDoneIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem claiming_user_skip_means_typecheck_done_yields_false :
+    userSkipMeansTypecheckDone = false ∧
+      userBuildingFinishedCodeMaySkipRunningTypecheck = true ∧
+      slakeBootstrapTypecheckClaimedDone = false ∧
+      userSkipExemptsSlakeCode = false :=
+  ⟨rfl, rfl, rfl, rfl⟩
+
+theorem sharper_role_tests_not_specified :
+    sharperFinishedCodeUserDeveloperAgentTestsSpecified = false := rfl
+
+/--
+  Clause 4.2 item 6 on sibling line 390: being a reference target does
+  not mean that compiler satisfies the item, and CompCertTSO, gcc, LLVM,
+  and cc do not satisfy the item merely by being reference targets.
+  This reader is not the optional `ccomp` metric.
+-/
+def clause42Item6ReadsCompCertTsoDoesNotSatisfy (s : String) : Bool :=
+  mentionsPhrase "being a reference target does not mean that compiler satisfies Clause 4.2 item 6." s &&
+    mentionsPhrase "`CompCertTSO`, gcc, LLVM, and `cc` do not satisfy Clause 4.2 item 6 merely by being reference targets." s
+
+/-- How that live sentence is read. `satisfiesClause42Item6` is the claim the sentence denies. -/
+inductive CompCertTsoClause42Item6Reading where
+  | doesNotSatisfy
+  | satisfiesClause42Item6
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of Clause 4.2 item 6.
+  `doesNotSatisfy` only when sibling line 390 still carries that denial.
+  This reader does not return `satisfiesClause42Item6`.
+  Absent words yield `none`.
+-/
+def readLiveCompCertTsoClause42Item6 (clause42 : MdLine) : Option CompCertTsoClause42Item6Reading :=
+  if clause42.number == 390 &&
+      clause42Item6ReadsCompCertTsoDoesNotSatisfy clause42.text then
+    some .doesNotSatisfy
+  else
+    none
+
+/-- The claim that CompCertTSO satisfies Clause 4.2 item 6. -/
+def compCertTsoSatisfiesClause42Item6AsCurrentFact : Prop :=
+  readLiveCompCertTsoClause42Item6 clause42Item6CompCertLine =
+    some .satisfiesClause42Item6
+
+def compCertTsoSatisfiesClause42Item6AsCurrentFactIsFalse : Prop :=
+  compCertTsoSatisfiesClause42Item6AsCurrentFact → False
+
+/-- True only when sibling line 390 is read as CompCertTSO satisfying Clause 4.2 item 6. -/
+def compCertTsoCountedSatisfiesClause42Item6 : Bool :=
+  readLiveCompCertTsoClause42Item6 clause42Item6CompCertLine ==
+    some .satisfiesClause42Item6
+
+/--
+  Live sibling line 390 says being a reference target does not mean that
+  compiler satisfies Clause 4.2 item 6, and that CompCertTSO, gcc, LLVM,
+  and cc do not satisfy Clause 4.2 item 6 merely by being reference
+  targets. Treating the claim that CompCertTSO satisfies Clause 4.2
+  item 6 as the current fact yields False. The `native_decide` step
+  reads that sibling line. Removing the denial sentence makes the
+  reading `none`, so this proof no longer closes. This is not the
+  optional `ccomp` metric.
+-/
+theorem mash_compcert_tso_satisfies_clause42_item6_is_false :
+    compCertTsoSatisfiesClause42Item6AsCurrentFactIsFalse := by
+  intro h
+  unfold compCertTsoSatisfiesClause42Item6AsCurrentFact at h
+  have live :
+      readLiveCompCertTsoClause42Item6 clause42Item6CompCertLine =
+        some .doesNotSatisfy := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
+
+theorem compcert_tso_as_reference_target_does_not_satisfy_clause42_item6 :
+    compCertTsoAsReferenceTargetSatisfiesClause42Item6 = false :=
+  rfl
+
+theorem gcc_as_reference_target_does_not_satisfy_clause42_item6 :
+    gccAsReferenceTargetSatisfiesClause42Item6 = false :=
+  rfl
+
+theorem llvm_as_reference_target_does_not_satisfy_clause42_item6 :
+    llvmAsReferenceTargetSatisfiesClause42Item6 = false :=
+  rfl
+
+theorem cc_as_reference_target_does_not_satisfy_clause42_item6 :
+    ccAsReferenceTargetSatisfiesClause42Item6 = false :=
+  rfl
+
+/-- Claiming a reference target makes CompCertTSO, gcc, LLVM, or cc satisfy Clause 4.2 item 6 yields False. -/
+theorem mash_reference_target_satisfies_clause42_item6_is_false :
+    mashReferenceTargetSatisfiesClause42Item6IsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem five_named_compilers_are_reference_targets :
+    fiveNamedCompilersAreReferenceTargets = true :=
+  rfl
 
 theorem compcert_refines_not_claimed_done :
     compCertRefinesClaimedDone = false := rfl
 
+/-- Clause 3.17 body. Sibling markdown line 133. Array index 132. -/
+def clause317CompCertRefinesLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[132]!
+
+/--
+  Clause 3.17 on one sibling line: `CompCertRefines` means the generated
+  assembly is the CompCert refinement of that sequential unique C, the
+  refinement is not claimed done, and inhabiting the constructor `holds`
+  is not a claim that a real emit was refined.
+-/
+def clause317ReadsCompCertRefinesNotClaimedDone (s : String) : Bool :=
+  mentionsPhrase "`CompCertRefines` means the generated assembly is the CompCert refinement of that sequential unique C." s &&
+    mentionsPhrase "It ties Clause 3.9 to `CompCertFragment`." s &&
+    mentionsPhrase "It is not claimed done (Clause 6.3)." s &&
+    mentionsPhrase "Inhabiting the constructor `holds` is not a claim that a real emit was refined." s
+
+/-- How the live CompCertRefines sentence is read. `finished` is the claim that sentence denies. -/
+inductive CompCertRefinesLiveReading where
+  | notClaimedDone
+  | finished
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of Clause 3.17.
+  `notClaimedDone` only when that sibling line still carries those words.
+  This reader does not return `finished`. Absent words yield `none`.
+-/
+def readLiveCompCertRefines (clause317 : MdLine) : Option CompCertRefinesLiveReading :=
+  if clause317.number == 133 &&
+      clause317ReadsCompCertRefinesNotClaimedDone clause317.text then
+    some .notClaimedDone
+  else
+    none
+
+/-- The claim that CompCert refinement of a real emit is finished. -/
+def compCertRefinesFinishedAsCurrentFact : Prop :=
+  readLiveCompCertRefines clause317CompCertRefinesLine = some .finished
+
+def compCertRefinesFinishedAsCurrentFactIsFalse : Prop :=
+  compCertRefinesFinishedAsCurrentFact → False
+
+/-- True only when that sibling line is read as the refinement being finished. -/
+def compCertRefinesCountedFinished : Bool :=
+  readLiveCompCertRefines clause317CompCertRefinesLine == some .finished
+
+/--
+  Live Clause 3.17 says `CompCertRefines` means the generated assembly is
+  the CompCert refinement of that sequential unique C, that the refinement
+  is not claimed done, and that inhabiting the constructor `holds` is not
+  a claim that a real emit was refined. Treating CompCert refinement of a
+  real emit as finished yields False. The `native_decide` step reads that
+  sibling line. Removing the Clause 3.17 sentence that it is not claimed
+  done makes the reading `none`, so this proof no longer closes.
+  This is the refinement relation, not the optional `ccomp` metric.
+-/
 theorem mash_compcert_refines_claimed_done_is_false :
-    mashCompCertRefinesClaimedDoneIsFalse := by
+    compCertRefinesFinishedAsCurrentFactIsFalse := by
   intro h
-  exact Bool.noConfusion h
+  unfold compCertRefinesFinishedAsCurrentFact at h
+  have live :
+      readLiveCompCertRefines clause317CompCertRefinesLine =
+        some .notClaimedDone := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
 
 theorem self_host_from_generated_c_does_not_satisfy_typecheck :
     selfHostFromGeneratedCSatisfiesTypecheck = false := rfl
 
+/-- Clause 4.2 item 7. Sibling markdown line 391. Array index 390. -/
+def clause42Item7SelfHostLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[390]!
+
+/--
+  Clause 4.2 item 7 on one sibling line: a claim that the freestanding
+  product hosts itself from generated C is a distinct claim and does not
+  satisfy the bootstrap typecheck step by itself.
+-/
+def clause42Item7ReadsSelfHostDoesNotSatisfy (s : String) : Bool :=
+  mentionsPhrase "A claim that the freestanding product hosts itself from generated C is a distinct claim and does not satisfy this step by itself." s
+
+/-- How that live sentence is read. `satisfiesBootstrapTypecheck` is the claim the sentence denies. -/
+inductive SelfHostFromGeneratedCReading where
+  | doesNotSatisfy
+  | satisfiesBootstrapTypecheck
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of Clause 4.2 item 7.
+  `doesNotSatisfy` only when that sibling line still carries the denial
+  that hosting from generated C does not satisfy the bootstrap typecheck
+  step. This reader does not return `satisfiesBootstrapTypecheck`.
+  Absent words yield `none`.
+-/
+def readLiveSelfHostFromGeneratedC (clause42 : MdLine) : Option SelfHostFromGeneratedCReading :=
+  if clause42.number == 391 &&
+      clause42Item7ReadsSelfHostDoesNotSatisfy clause42.text then
+    some .doesNotSatisfy
+  else
+    none
+
+/-- The claim that generated C already satisfies the bootstrap typecheck. -/
+def generatedCSatisfiesBootstrapTypecheckAsCurrentFact : Prop :=
+  readLiveSelfHostFromGeneratedC clause42Item7SelfHostLine =
+    some .satisfiesBootstrapTypecheck
+
+def generatedCSatisfiesBootstrapTypecheckAsCurrentFactIsFalse : Prop :=
+  generatedCSatisfiesBootstrapTypecheckAsCurrentFact → False
+
+/-- True only when that sibling line is read as generated C satisfying the bootstrap typecheck. -/
+def generatedCCountedSatisfiesBootstrap : Bool :=
+  readLiveSelfHostFromGeneratedC clause42Item7SelfHostLine ==
+    some .satisfiesBootstrapTypecheck
+
+set_option maxHeartbeats 800000
+
+/--
+  Live Clause 4.2 item 7 says a claim that the freestanding product hosts
+  itself from generated C is a distinct claim and does not satisfy this
+  step by itself. That step is the Slake bootstrap typecheck. Treating
+  generated C as already satisfying the bootstrap typecheck yields False.
+  The `native_decide` step reads that sibling line. Removing the denial
+  that hosting from generated C does not satisfy this step makes the
+  reading `none`, so this proof no longer closes.
+-/
 theorem mash_self_host_from_c_satisfies_bootstrap_is_false :
-    mashSelfHostFromCSatisfiesBootstrapIsFalse := by
+    generatedCSatisfiesBootstrapTypecheckAsCurrentFactIsFalse := by
   intro h
-  exact Bool.noConfusion h
+  unfold generatedCSatisfiesBootstrapTypecheckAsCurrentFact at h
+  have live :
+      readLiveSelfHostFromGeneratedC clause42Item7SelfHostLine =
+        some .doesNotSatisfy := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
 
 theorem clause5_wrong_compcert_tool_does_not_conform :
     productWrongCompCertTool.conforms = false := by decide
@@ -476,6 +868,17 @@ theorem byte_identity_required_for_conforming_product :
 theorem byte_identity_of_emit_not_claimed_true :
     byteIdentityOfEmitClaimedTrue = false := rfl
 
+/-- A FastC waiver of byte identity yields False. The flag is the existing claimed-true flag. -/
+def claimingFastCWaivesByteIdentityYieldsFalse :
+    mashFastCWaivesByteIdentityIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem fastc_mark_does_not_waive_byte_identity :
+    byteIdentityRequiredForConformingProduct = true ∧
+      byteIdentityOfEmitClaimedTrue = false :=
+  ⟨rfl, rfl⟩
+
 theorem systems_lean_and_slake_not_ready_for_use :
     systemsLeanAndSlakeReadyForUse = false := rfl
 
@@ -503,10 +906,90 @@ theorem SafeCompCert_implies_SafeKernel (c : SafeCompCert) :
     safeCompCertImpliesSafeKernel c = SafeKernel.holds :=
   rfl
 
+/-- Clause 3.18 body. Sibling markdown line 137. Array index 136. -/
+def clause318SafeCompCertLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[136]!
+
+/-- Clause 4.5 item 1. Sibling markdown line 416. Array index 415. -/
+def clause45Item1SafeCompCertImpliesKernelLine : MdLine :=
+  «0002_Systems_Lean».encodedLines[415]!
+
+/--
+  Clause 3.18 on one sibling line: `SafeCompCert` implies `SafeKernel`,
+  the converse is False, and `SafeKernel` is not by itself `SafeCompCert`.
+-/
+def clause318ReadsConverseDenied (s : String) : Bool :=
+  mentionsPhrase "`SafeCompCert` implies `SafeKernel`." s &&
+    mentionsPhrase "The converse is False (Clause 4.5 and Clause 5)." s &&
+    mentionsPhrase "`SafeKernel` is not by itself `SafeCompCert`." s
+
+/--
+  Clause 4.5 item 1 on one sibling line: `SafeCompCert` of a program
+  must imply `SafeKernel` of that program.
+-/
+def clause45Item1ReadsForwardImplication (s : String) : Bool :=
+  mentionsPhrase "`SafeCompCert` of a program MUST imply `SafeKernel` of that program (Clause 3.18)." s
+
+/--
+  How those live sentences are read.
+  `kernelImpliesCompCert` is the converse those sentences deny.
+-/
+inductive SafeKernelVersusSafeCompCertReading where
+  | converseDenied
+  | kernelImpliesCompCert
+  deriving DecidableEq, Repr, BEq
+
+/--
+  One reading of Clause 3.18 together with Clause 4.5 item 1.
+  `converseDenied` only when sibling line 137 still carries the denial
+  that the converse is False and that `SafeKernel` is not by itself
+  `SafeCompCert`, and sibling line 416 still carries the forward
+  implication. This reader does not return `kernelImpliesCompCert`.
+  Absent words yield `none`.
+-/
+def readLiveSafeKernelVersusSafeCompCert
+    (clause318 clause45 : MdLine) : Option SafeKernelVersusSafeCompCertReading :=
+  if clause318.number == 137 && clause45.number == 416 &&
+      clause318ReadsConverseDenied clause318.text &&
+      clause45Item1ReadsForwardImplication clause45.text then
+    some .converseDenied
+  else
+    none
+
+/-- The claim that SafeKernel implies SafeCompCert. -/
+def safeKernelImpliesSafeCompCertAsCurrentFact : Prop :=
+  readLiveSafeKernelVersusSafeCompCert
+      clause318SafeCompCertLine clause45Item1SafeCompCertImpliesKernelLine =
+    some .kernelImpliesCompCert
+
+def safeKernelImpliesSafeCompCertAsCurrentFactIsFalse : Prop :=
+  safeKernelImpliesSafeCompCertAsCurrentFact → False
+
+/--
+  Live Clause 3.18 says `SafeCompCert` implies `SafeKernel`, the converse
+  is False, and `SafeKernel` is not by itself `SafeCompCert`. Live
+  Clause 4.5 item 1 says `SafeCompCert` of a program must imply
+  `SafeKernel` of that program. Treating SafeKernel implies SafeCompCert
+  as the current fact yields False. The `native_decide` step reads those
+  sibling lines. Removing the Clause 3.18 sentence that the converse is
+  False makes the reading `none`, so this proof no longer closes. This
+  is the SafeKernel versus SafeCompCert direction. It is not CompCert
+  verified compilation claimed done, and it is not CompCert refinement
+  claimed done.
+-/
 theorem mash_safe_kernel_implies_safe_compcert_is_false :
-    mashSafeKernelImpliesSafeCompCertIsFalse := by
+    safeKernelImpliesSafeCompCertAsCurrentFactIsFalse := by
   intro h
-  exact Bool.noConfusion h
+  unfold safeKernelImpliesSafeCompCertAsCurrentFact at h
+  have live :
+      readLiveSafeKernelVersusSafeCompCert
+          clause318SafeCompCertLine
+          clause45Item1SafeCompCertImpliesKernelLine =
+        some .converseDenied := by
+    native_decide
+  rw [live] at h
+  injection h with eq
+  injection eq
 
 theorem mash_unique_block_copy_handle_no_protocol_is_false :
     mashUniqueBlockCopyHandleNoProtocolIsFalse := by
@@ -1341,6 +1824,319 @@ theorem atomic_program_order_is_not_lkmm_proof :
       programOrderProvesMainlineLinux = false ∧
       linuxKernelMemoryModelRequired = true ∧
       runningKernelVerified = false := by
+  decide
+
+/-- An unmarked freestanding emit must include ccomp yields False. -/
+theorem mash_unmarked_freestanding_must_include_ccomp_is_false :
+    mashUnmarkedMustIncludeCcompIsFalse := by
+  intro h
+  unfold mashUnmarkedMustIncludeCcomp at h
+  have hflag : unmarkedMustIncludeCcomp = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- An unmarked freestanding emit cannot include ccomp yields False. -/
+theorem mash_unmarked_freestanding_cannot_include_ccomp_is_false :
+    mashUnmarkedCannotIncludeCcompIsFalse := by
+  intro h
+  unfold mashUnmarkedCannotIncludeCcomp at h
+  have hflag : unmarkedCannotIncludeCcomp = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- Security priority not combined with FastC does not require ccomp.
+    An unmarked emit may omit ccomp and may include it.
+    FastC claimed as security priority is not a well formed mark.
+    Silence is not a FastC, SafeC, or FastSafeC mark. -/
+theorem security_priority_not_combined_with_fastc_ccomp_is_optional :
+    FreestandingCEmit.ccompOk securitySkip = true ∧
+      FreestandingCEmit.ccompOk { securitySkip with usesCcomp := true } = true ∧
+      FreestandingCEmit.ccompInclusion securitySkip = CcompInclusion.optional ∧
+      productSecurityMissingCcomp.conforms = true ∧
+      productFastCClaimedSecurity.conforms = false ∧
+      productMissingCompCert.conforms = true ∧
+      unmarkedFreestandingMaySkipCcomp = true ∧
+      FreestandingCEmit.ccompOk unmarkedWithCcomp = true := by
+  decide
+
+/-- SafeC not combined with FastC must not be required to include ccomp. -/
+theorem mash_safec_not_combined_with_fastc_must_include_ccomp_is_false :
+    mashSafecNotCombinedWithFastcMustIncludeCcompIsFalse := by
+  intro h
+  unfold mashSafecNotCombinedWithFastcMustIncludeCcomp at h
+  have hflag : safecNotCombinedMustIncludeCcomp = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- SafeC not combined with FastC is allowed to include ccomp. -/
+theorem mash_safec_not_combined_with_fastc_cannot_include_ccomp_is_false :
+    mashSafecNotCombinedWithFastcCannotIncludeCcompIsFalse := by
+  intro h
+  unfold mashSafecNotCombinedWithFastcCannotIncludeCcomp at h
+  have hflag : safecNotCombinedCannotIncludeCcomp = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- FastSafeC must include ccomp yields False. -/
+theorem mash_fastsafec_must_include_ccomp_is_false :
+    mashFastSafeCMustIncludeCcompIsFalse := by
+  intro h
+  unfold mashFastSafeCMustIncludeCcomp at h
+  have hflag : fastSafeCMustIncludeCcomp = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- FastSafeC cannot include ccomp yields False. -/
+theorem mash_fastsafec_cannot_include_ccomp_is_false :
+    mashFastSafeCCannotIncludeCcompIsFalse := by
+  intro h
+  unfold mashFastSafeCCannotIncludeCcomp at h
+  have hflag : fastSafeCCannotIncludeCcomp = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- ccomp is the only metric yields False. -/
+theorem mash_ccomp_is_the_only_metric_is_false :
+    mashCcompIsTheOnlyMetricIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Optional does not mean forbidden. -/
+theorem mash_optional_ccomp_means_forbidden_is_false :
+    mashOptionalCcompMeansForbiddenIsFalse := by
+  intro h
+  unfold mashOptionalCcompMeansForbidden at h
+  have hflag : optionalCcompMeansForbidden = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- Silence does not select FastC, SafeC, or FastSafeC. -/
+theorem mash_silence_selects_fastc_safec_or_fastsafec_is_false :
+    mashSilenceSelectsFastCSafeCOrFastSafeCIsFalse := by
+  intro h
+  unfold mashSilenceSelectsFastCSafeCOrFastSafeC at h
+  have hflag : silenceSelectsFastCSafeCOrFastSafeC = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- SafeC can be combined with FastC. That combination is the overlap. -/
+theorem mash_safec_cannot_combine_with_fastc_is_false :
+    mashSafecCannotCombineWithFastcIsFalse := by
+  intro h
+  unfold mashSafecCannotCombineWithFastc at h
+  have hflag : safecCannotCombineWithFastC = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- FastSafeC is the overlap of SafeC and FastC. -/
+theorem mash_fastsafec_is_not_overlap_of_safec_and_fastc_is_false :
+    mashFastsafecIsNotOverlapOfSafecAndFastcIsFalse := by
+  intro h
+  unfold mashFastsafecIsNotOverlapOfSafecAndFastc at h
+  have hflag : fastSafeCIsNotOverlapOfSafeCAndFastC = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- The best balance proof is not claimed finished. -/
+theorem mash_fastsafec_balance_already_finished_is_false :
+    mashFastsafecBalanceAlreadyFinishedIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Calling the balance rule unnamed, or still an open question, yields False. -/
+theorem mash_fastsafec_balance_rule_unspecified_or_open_question_is_false :
+    mashFastSafeCBalanceRuleUnspecifiedOrOpenQuestionIsFalse := by
+  intro h
+  unfold mashFastSafeCBalanceRuleUnspecifiedOrOpenQuestion at h
+  have hflag : fastSafeCBalanceRuleUnspecifiedOrOpenQuestion = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- An unfinished proof does not mean the rule is missing. -/
+theorem mash_unfinished_fastsafec_proof_means_rule_missing_is_false :
+    mashUnfinishedFastSafeCProofMeansRuleMissingIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- The rule stays stated while the proof has not been carried out. -/
+theorem unfinished_fastsafec_proof_keeps_the_rule :
+    fastSafeCBalanceProofCarriedOut = false ∧
+      fastSafeCBalanceAlreadyFinished = false ∧
+      fastSafeCBalanceRuleStated = true ∧
+      fastSafeCBalanceRuleUnspecified = false ∧
+      fastSafeCBalanceRuleOpenQuestion = false ∧
+      safeJudgmentsInFastSafeCBalance = true ∧
+      fastCParallelismProofsInFastSafeCBalance = true ∧
+      atomicsInFastSafeCBalance = true ∧
+      threadingInFastSafeCBalance = true ∧
+      provedFreedomFromLocksInFastSafeCBalance = true ∧
+      slakeTypecheckInFastSafeCBalance = true ∧
+      byteIdentityOfEmitInFastSafeCBalance = true := by
+  decide
+
+/-- Dropping the Safe judgments from the balance yields False. -/
+theorem mash_drop_safe_judgments_from_fastsafec_balance_is_false :
+    mashDropSafeJudgmentsFromFastSafeCBalanceIsFalse := by
+  intro h
+  unfold mashDropSafeJudgmentsFromFastSafeCBalance at h
+  have hflag : dropSafeJudgmentsFromFastSafeCBalance = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- Dropping the FastC proofs of parallelism from the balance yields False. -/
+theorem mash_drop_fastc_parallelism_proofs_from_fastsafec_balance_is_false :
+    mashDropFastCParallelismProofsFromFastSafeCBalanceIsFalse := by
+  intro h
+  unfold mashDropFastCParallelismProofsFromFastSafeCBalance at h
+  have hflag : dropFastCParallelismProofsFromFastSafeCBalance = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- Dropping atomics from the balance yields False. -/
+theorem mash_drop_atomics_from_fastsafec_balance_is_false :
+    mashDropAtomicsFromFastSafeCBalanceIsFalse := by
+  intro h
+  unfold mashDropAtomicsFromFastSafeCBalance at h
+  have hflag : dropAtomicsFromFastSafeCBalance = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- Dropping threading from the balance yields False. -/
+theorem mash_drop_threading_from_fastsafec_balance_is_false :
+    mashDropThreadingFromFastSafeCBalanceIsFalse := by
+  intro h
+  unfold mashDropThreadingFromFastSafeCBalance at h
+  have hflag : dropThreadingFromFastSafeCBalance = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- Dropping proved freedom from locks from the balance yields False. -/
+theorem mash_drop_proved_freedom_from_locks_from_fastsafec_balance_is_false :
+    mashDropProvedFreedomFromLocksFromFastSafeCBalanceIsFalse := by
+  intro h
+  unfold mashDropProvedFreedomFromLocksFromFastSafeCBalance at h
+  have hflag : dropProvedFreedomFromLocksFromFastSafeCBalance = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- Dropping the Slake typecheck from the balance yields False. -/
+theorem mash_drop_slake_typecheck_from_fastsafec_balance_is_false :
+    mashDropSlakeTypecheckFromFastSafeCBalanceIsFalse := by
+  intro h
+  unfold mashDropSlakeTypecheckFromFastSafeCBalance at h
+  have hflag : dropSlakeTypecheckFromFastSafeCBalance = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- Dropping byte identity of emit from the balance yields False. -/
+theorem mash_drop_byte_identity_of_emit_from_fastsafec_balance_is_false :
+    mashDropByteIdentityOfEmitFromFastSafeCBalanceIsFalse := by
+  intro h
+  unfold mashDropByteIdentityOfEmitFromFastSafeCBalance at h
+  have hflag : dropByteIdentityOfEmitFromFastSafeCBalance = false := by decide
+  rw [hflag] at h
+  exact Bool.noConfusion h
+
+/-- FastSafeC does not replace SafeC. -/
+theorem mash_fastsafec_replaces_safec_is_false :
+    mashFastsafecReplacesSafecIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- FastSafeC does not replace FastC. -/
+theorem mash_fastsafec_replaces_fastc_is_false :
+    mashFastsafecReplacesFastcIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- FastC does not require ccomp. The marked emit passes with usesCcomp false. -/
+theorem fastC_does_not_require_ccomp :
+    fastCRequiresCcomp = false ∧
+      wellFormedFastC fastCEmit = true ∧
+      fastCEmit.usesCcomp = false ∧
+      FreestandingCEmit.ccompOk fastCEmit = true ∧
+      fastCPriority = EmitPriority.performance := by
+  decide
+
+/-- A FastC product conforms without ccomp, and that does not finish the done flag. -/
+theorem fastC_product_conforms_without_ccomp :
+    productFastC.conforms = true ∧
+      productFastC.compCert.ok = false ∧
+      productFastC.fastCMark = true ∧
+      compCertVerifiedCompilationClaimedDone = false ∧
+      fastCMarkMakesVerifiedCompilationDone = false := by
+  decide
+
+theorem fastC_mark_does_not_make_assurance_done :
+    fastCMarkMakesVerifiedCompilationDone = false ∧
+      compCertVerifiedCompilationClaimedDone = false ∧
+      slakeBootstrapTypecheckClaimedDone = false ∧
+      byteIdentityOfEmitClaimedTrue = false ∧
+      fastCExemptsSlakeCode = false ∧
+      securityPriorityExemptsSlakeCode = false :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- A FastC mark does not waive the bootstrap typecheck. -/
+theorem fastc_mark_does_not_waive_slake_typecheck :
+    productFastC.conforms = true ∧
+      productFastC.bootstrapTypecheck.ok = true ∧
+      productFastCMissingBootstrap.fastCMark = true ∧
+      productFastCMissingBootstrap.conforms = false ∧
+      fastCExemptsSlakeCode = false := by
+  decide
+
+/-- Security priority does not waive the bootstrap typecheck. -/
+theorem security_priority_does_not_waive_bootstrap_typecheck :
+    productSecurityMissingBootstrap.securityPriority = true ∧
+      productSecurityMissingBootstrap.compCert.ok = true ∧
+      productSecurityMissingBootstrap.conforms = false ∧
+      securityPriorityExemptsSlakeCode = false := by
+  decide
+
+/-- Claiming FastC is SafeCompCert yields False. -/
+def claimingFastCIsSafeCompCertYieldsFalse :
+    mashFastCIsSafeCompCertIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem claiming_fastc_is_safe_compcert_yields_false :
+    fastCIsSafeCompCert = false ∧
+      fastCToSafeCompCert FastC.holds = none :=
+  ⟨rfl, rfl⟩
+
+/-- Claiming a FastC mark is security priority yields False. -/
+def claimingFastCMarkIsSecurityPriorityYieldsFalse :
+    mashFastCMarkIsSecurityPriorityIsFalse := by
+  intro h
+  unfold mashFastCMarkIsSecurityPriority at h
+  have : fastCPriority = EmitPriority.performance := rfl
+  rw [this] at h
+  cases h
+
+theorem claiming_fastc_mark_is_security_priority_yields_false :
+    fastCMarkIsSecurityPriority = false ∧
+      wellFormedFastC fastCMarkedSecurity = false ∧
+      FreestandingCEmit.ccompOk fastCMarkedSecurity = false := by
+  decide
+
+/-- SafeC and FastC can both hold. No block syntax is required for that witness. -/
+theorem safeC_and_fastC_can_both_hold :
+    safeCWithFastCSample.safeC = safeCSample ∧
+      safeCWithFastCSample.fastC = FastC.holds ∧
+      safeCWithFastCSample.safeC.safeCompCert = SafeCompCert.holds ∧
+      safeCWithFastCSample.safeC.safeKernel = SafeKernel.holds := by
+  exact ⟨rfl, rfl, rfl, rfl⟩
+
+theorem fastC_block_syntax_and_further_levels_unspecified :
+    fastCBlockSyntaxSpecified = false ∧
+      furtherSafeCLevelNamesSpecified = false ∧
+      fastCClaimsRustSemantics = false :=
+  ⟨rfl, rfl, rfl⟩
+
+theorem fastC_points_at_existing_lockfree :
+    fastCUsesNamedLockFree = true ∧
+      lockFreeIsWaitFree = false ∧
+      lockFreeProofsClaimedDone = false := by
   decide
 
 end SystemsLean

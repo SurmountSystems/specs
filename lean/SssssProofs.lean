@@ -221,8 +221,8 @@ theorem safety_canonical_ok : safetyCanonical.ok = true := by decide
 
 theorem safety_gc_not_ok : safetyGc.ok = false := by decide
 
-theorem safety_missing_compcert_not_ok :
-    safetyMissingCompCert.ok = false := by
+theorem safety_missing_compcert_still_ok :
+    safetyMissingCompCert.ok = true := by
   decide
 
 theorem safety_missing_bootstrap_not_ok :
@@ -266,8 +266,8 @@ theorem unmarked_nl_does_not_conform :
 theorem provisional_nl_still_conforms :
     productProvisionalNl.conforms = true := by decide
 
-theorem missing_compcert_does_not_conform :
-    productMissingCompCert.conforms = false := by decide
+theorem missing_compcert_still_conforms :
+    productMissingCompCert.conforms = true := by decide
 
 theorem residual_substitute_does_not_conform :
     productResidualSubstitutes.conforms = false := by decide
@@ -374,5 +374,119 @@ theorem model_and_proofs_without_experiments_does_not_conform :
 
 theorem complete_science_conforms : completeScienceConforms :=
   rfl
+
+/-- Clause 4.8: the Supercompiler is a symbolic set of rules. -/
+theorem supercompiler_is_symbolic_rule_set :
+    supercompilerIsSymbolicRuleSet = true :=
+  rfl
+
+/-- Clause 4.8: Lean proofs keep the rules and their concepts consistent. -/
+theorem lean_proofs_keep_rules_consistent :
+    leanProofsKeepRulesConsistent = true :=
+  rfl
+
+/-- Clause 4.8: byte identity of emit is not claimed to already hold. -/
+theorem delta_loop_byte_identity_not_claimed :
+    deltaLoopByteIdentityHolds = false :=
+  rfl
+
+/-- Claiming the delta loop has already established byte identity yields False. -/
+theorem mash_delta_loop_byte_identity_holds_is_false :
+    mashDeltaLoopByteIdentityHoldsIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Clause 4.8: the neural step does not accept a rule without a Lean consistency proof. -/
+theorem neural_does_not_accept_rule_without_lean_proof :
+    neuralAcceptsRuleWithoutLeanProof = false :=
+  rfl
+
+/-- Claiming the neural step may accept a rule without a Lean consistency proof yields False. -/
+theorem mash_neural_accepts_rule_without_lean_proof_is_false :
+    mashNeuralAcceptsRuleWithoutLeanProofIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- An objective of both is allowed. -/
+theorem objective_both_allowed :
+    objectiveAllowed .both = true := by
+  decide
+
+/-- An objective of either security or performance is allowed. -/
+theorem objective_either_allowed :
+    eitherObjectiveAllowed = true := by
+  decide
+
+/-- Security alone as the only permitted objective is not accepted. -/
+theorem security_alone_is_not_only_permitted_objective :
+    securityAloneIsOnlyPermittedObjective = false :=
+  rfl
+
+/-- Claiming the objective must be security alone yields False. -/
+theorem mash_security_alone_must_is_false :
+    mashSecurityAloneMustIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Performance alone as the only permitted objective is not accepted. -/
+theorem performance_alone_is_not_only_permitted_objective :
+    performanceAloneIsOnlyPermittedObjective = false :=
+  rfl
+
+/-- Claiming the objective must be performance alone yields False. -/
+theorem mash_performance_alone_must_is_false :
+    mashPerformanceAloneMustIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem exactly_one_reference_compiler_is_not_the_claim :
+    exactlyOneReferenceCompiler = false :=
+  rfl
+
+/-- Claiming there is exactly one reference compiler yields False. -/
+theorem mash_exactly_one_reference_compiler_is_false :
+    mashExactlyOneReferenceCompilerIsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+theorem five_named_compilers_are_in_the_major_set :
+    majorCompilerInSet .ccomp = true ∧
+      majorCompilerInSet .compCertTso = true ∧
+      majorCompilerInSet .gcc = true ∧
+      majorCompilerInSet .llvm = true ∧
+      majorCompilerInSet .cc = true :=
+  ⟨rfl, rfl, rfl, rfl, rfl⟩
+
+theorem major_compiler_set_is_not_closed :
+    majorCompilerSetClosed = false :=
+  rfl
+
+theorem quirk_list_is_not_specified :
+    quirkListSpecified = false :=
+  rfl
+
+theorem being_a_reference_target_does_not_satisfy_clause42_item6 :
+    beingAReferenceTargetSatisfiesClause42Item6 = false :=
+  rfl
+
+theorem specs_complement_each_other :
+    specsComplementEachOther = true :=
+  rfl
+
+theorem security_and_performance_are_not_the_same_priority :
+    securityAndPerformanceSamePriority = false :=
+  rfl
+
+/-- Claiming specification 0004 replaces specification 0002 yields False. -/
+theorem mash_spec_0004_replaces_spec_0002_is_false :
+    mashSpec0004ReplacesSpec0002IsFalse := by
+  intro h
+  exact Bool.noConfusion h
+
+/-- Claiming specification 0006 replaces specification 0004 yields False. -/
+theorem mash_spec_0006_replaces_spec_0004_is_false :
+    mashSpec0006ReplacesSpec0004IsFalse := by
+  intro h
+  exact Bool.noConfusion h
 
 end Sssss
