@@ -304,7 +304,7 @@ def line0136 : MdLine := { number := 136, text := "### 1.0.0 - 20260730" }
 
 def line0137 : MdLine := { number := 137, text := "" }
 
-def line0138 : MdLine := { number := 138, text := "Defines the pure 3 bit RGB palette, the exact sRGB values, the mapping to ECMA-48 SGR parameters, the two quantization methods, design principles, and implementer conformance. Aligns document form with the Surmount spec spec (`0000_spec.md`): SemVer version line, RFC 2119 requirement keywords and citation, and local `ref/` paths for RFC 2119, ECMA-48, and ITU-T T.416 / ISO/IEC 8613-6 (`ref/itu_t416`)." }
+def line0138 : MdLine := { number := 138, text := "Defines the pure 3 bit RGB palette, the exact sRGB values, the mapping to ECMA-48 SGR parameters, the two quantization methods, design principles, and implementer conformance. Aligns document form with the Surmount spec spec ([0000_spec.md](0000_spec.md)): SemVer version line, RFC 2119 requirement keywords and citation, and local `ref/` paths for RFC 2119, ECMA-48, and ITU-T T.416 / ISO/IEC 8613-6 (`ref/itu_t416`)." }
 
 def line0139 : MdLine := { number := 139, text := "" }
 

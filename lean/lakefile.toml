@@ -246,6 +246,16 @@ root = "HierarchicalSubagentsTests"
 name = "schedula_tests"
 root = "SchedulaTests"
 
+[[lean_lib]]
+name = "SpecInteractions"
+
+[[lean_lib]]
+name = "SpecInteractionsProofs"
+
+[[lean_exe]]
+name = "spec_interactions_tests"
+root = "SpecInteractionsTests"
+
 [[lean_exe]]
 name = "sstt_tests"
 root = "SsttTests"

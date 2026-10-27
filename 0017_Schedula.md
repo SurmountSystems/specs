@@ -10,7 +10,7 @@ This document specifies Schedula, the Surmount Systems Scientific Scheduling Ser
 
 This specification is number 0017. The file name is `0017_Schedula.md`.
 
-Versioning of this document SHALL follow [0000_spec.md](0000_spec.md) and Semantic Versioning 2.0.0 (SemVer). The local path for SemVer is [ref/semver](ref/semver). First publication of this specification is version 0.1.0 dated 20261026. No earlier shipped version of this specification is claimed.
+Versioning of this document SHALL follow [0000_spec.md](0000_spec.md) and Semantic Versioning 2.0.0 (SemVer). The local path for SemVer is `ref/semver`. First publication of this specification is version 0.1.0 dated 20261026. No earlier shipped version of this specification is claimed.
 
 [0011_Surmount_Systems_Tech_Tree.md](0011_Surmount_Systems_Tech_Tree.md) remains the owner of the `.sstt` format. This document does not define a second magic or a second edge layout.
 
@@ -44,8 +44,8 @@ The numbered markdown is the contract humans read. The specification is also enc
 
 The following documents are indispensable for the application of this specification. For undated references, the latest edition applies.
 
-1. RFC 2119, Key words for use in RFCs to Indicate Requirement Levels, March 1997. Local path: [ref/rfc2119](ref/rfc2119).
-2. Semantic Versioning 2.0.0 (SemVer). Local path: [ref/semver](ref/semver).
+1. RFC 2119, Key words for use in RFCs to Indicate Requirement Levels, March 1997. Local path: `ref/rfc2119`.
+2. Semantic Versioning 2.0.0 (SemVer). Local path: `ref/semver`.
 3. Surmount specification [0005_CATE.md](0005_CATE.md).
 4. Surmount specification [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md).
 5. Surmount specification [0011_Surmount_Systems_Tech_Tree.md](0011_Surmount_Systems_Tech_Tree.md).
@@ -56,7 +56,7 @@ The following documents are indispensable for the application of this specificat
 
 1. The work graph means the directed graph Schedula uses for planning. It is built on the encoded graph of specification 0011. Clause 4.1 states its properties.
 2. A shared prerequisite means a node that two or more other nodes depend on.
-3. A directed acyclic graph means a directed graph with no directed cycle. In this specification the work graph is a directed acyclic graph. It is not a tree, because a tree has no shared prerequisite.
+3. A directed graph with no directed cycle means a directed graph that has no directed cycle. In this specification the work graph is a directed graph with no directed cycle. It is not a tree, because a tree has no shared prerequisite.
 4. An estimate means a predicted cost or a predicted benefit for a node, written as a closed interval of rational numbers. An estimate is not a measured actual.
 5. A ledger record means a stored row for a node that names tokens (input, output, and cached), money, the time a clock on the wall measures, the model, and the configuration.
 6. A model configuration means the named model and the named settings a job used, so two runs can be compared.
@@ -81,8 +81,8 @@ Schedula models work as a directed graph with no directed cycle, built on the en
 9. An enables edge SHALL go from the node that enables to the node that becomes possible. An enables edge SHALL NOT reverse a depends on edge between the same pair, because that pair would be a directed cycle.
 10. A competes with edge means the two nodes compete for the same resource. It SHALL be one directed edge, from the lower node identity to the higher node identity in the fixed order of Clause 4.2. It SHALL NOT be stored as two opposite edges, because two opposite edges are a directed cycle.
 11. If an edge set would contain a directed cycle, that graph does not conform.
-12. The work graph SHALL have at least one shared prerequisite. The graph has shared prerequisites and is a directed acyclic graph and not a tree.
-13. It is a directed acyclic graph because it is a graph with no directed cycle. It is not a tree because it has shared prerequisites, and a tree has no shared prerequisite.
+12. The work graph SHALL have at least one shared prerequisite. The graph has shared prerequisites and is a directed graph with no directed cycle, and it is not a tree.
+13. It is a directed graph with no directed cycle because it is a graph with no directed cycle. It is not a tree because it has shared prerequisites, and a tree has no shared prerequisite.
 14. Node identity SHALL be the position in the fixed order of Clause 4.2. A lower position is the lower identity.
 
 ### 4.2 Ranking by eigenvector
@@ -213,17 +213,17 @@ Schedula runs as a service on `surmount-1` that stores nodes, status, and the le
 
 ### 4.11 Honesty
 
-COCOMO stays fun and is not a real cost or schedule, as [0005_CATE.md](0005_CATE.md) Clause 4.11 item 2 says. That item says COCOMO is fun and is not a real cost or schedule. Schedula's own estimates are labeled as estimates with intervals. A conforming Schedula is not claimed.
+COCOMO stays fun and is not a real cost or schedule, as [0005_CATE.md](0005_CATE.md) Clause 4.11 item 2 says. That item says COCOMO is fun and is not a real cost or schedule. The estimates Schedula records are labeled as estimates with intervals. A conforming Schedula is not claimed.
 
 1. Authors SHALL NOT treat COCOMO as a real cost or schedule.
-2. Schedula's own estimates SHALL be labeled as estimates with intervals.
+2. The estimates Schedula records SHALL be labeled as estimates with intervals.
 3. A conforming Schedula is not claimed.
 
 ## 5. Required Conformance
 
 Required conformance to this specification holds if and only if every item in this list holds. The list has 11 items, one for each of Clause 4.1 through Clause 4.11.
 
-1. The work graph is a graph with no directed cycle in the words of specification 0011 Clause 4.4, it is built on that encoded graph, it uses the planning properties and the edge kinds in Clause 4.1, it has shared prerequisites, and it is a directed acyclic graph and not a tree (Clause 4.1).
+1. The work graph is a graph with no directed cycle in the words of specification 0011 Clause 4.4, it is built on that encoded graph, it uses the planning properties and the edge kinds in Clause 4.1, it has shared prerequisites, and it is a directed graph with no directed cycle and not a tree (Clause 4.1).
 2. The ranking is defined as the principal eigenvector of the damped matrix B in Clause 4.2, with alpha equal to one fifth and with the Perron-Frobenius conditions stated in that clause, and existence over the reals is not claimed (Clause 4.2).
 3. The midpoint score rule in Clause 4.3 is defined before any data is seen and MUST NOT be changed after the data is seen, and the ordering is total and stable (Clause 4.3).
 4. The seven dimensions in Clause 4.4 are shown in every report, and version 0.1.0 sets each dimension's share of an edge weight to one seventh (Clause 4.4).

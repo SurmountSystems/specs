@@ -6,7 +6,7 @@
 
 ## 1. Scope
 
-This document specifies beastdb, the durable ordered store required by Surmount high assurance components. The Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`. Recursive Self Improvement is specified in `0006_RSI.md`. Interoperability through fargo is specified later. fargo has no assigned specification number. That specification has not been published and this document does not assign it a shipped version.
+This document specifies beastdb, the durable ordered store required by Surmount high assurance components. The Smart Symbolic Supercompiler is specified in [0004_SSSSS.md](0004_SSSSS.md). Recursive Self Improvement is specified in [0006_RSI.md](0006_RSI.md). Interoperability through fargo is specified later. fargo has no assigned specification number. That specification has not been published and this document does not assign it a shipped version.
 
 The product name is always the lowercase form beastdb.
 
@@ -22,15 +22,15 @@ This document does not claim that a conforming implementation exists.
 
 ### 1.2 Spec and proof (informative)
 
-This subsection is informative. It records how this specification relates to machine checked proofs. It is not a form rule under `0000_spec.md`.
+This subsection is informative. It records how this specification relates to machine checked proofs. It is not a form rule under [0000_spec.md](0000_spec.md).
 
-In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in `0008_Formal_Vibefication.md`, requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification.
+In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md), requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification.
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
 2. Companion Lean modules under `lean/` (the beastdb meaning model, distinct from the `spec_check` form checker) encode selected claims such as the lowercase product name, the freestanding library name libbeastdb, Systems Lean and Slake bootstrap typecheck, proven ACID and tries that do not use locks as required, mandatory schema with two modes, interoperability through fargo rather than a traditional foreign function interface, the scope of a store that is local first with network features out of scope, and this document's identity as specification 0003.
 3. A Lean registry under `lean/` encodes published and planned specification numbers, file names, and product names, and the form checker scans numbered markdown so wrong numbers, file name mismatches, and wrong capitalization of beastdb fail `nix flake check`.
 4. Those modules prove facts about the model. They do not replace this document. This document does not replace those modules.
-5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Meaning proofs MUST NOT be treated as a second markdown form checker.
+5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, and related rules in [0000_spec.md](0000_spec.md)) remains the job of Lean `spec_check`. Meaning proofs MUST NOT be treated as a second markdown form checker.
 
 ### 1.3 Product name
 
@@ -51,16 +51,16 @@ In languages with dependent types, a specification (what must be true) and a pro
 
 The following documents are indispensable for the application of this specification. For undated references, the latest edition applies.
 
-This specifications repository's `ref/` holds 0000 Clause 12 citation pins of this repository (RFC 2119, SemVer, and the Form 2 artifacts used by other numbered specifications). Lean 4, Idris 2, CompCert, and Rust are not pinned under this specifications repository's `ref/`. Their Form 1 pins live in the Systems Lean product tree as required by [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 4.3. This document does not add Form 1 git submodules to this repository.
+This specifications repository's `ref/` holds [0000](0000_spec.md) Clause 12 citation pins of this repository (RFC 2119, SemVer, and the Form 2 artifacts used by other numbered specifications). Lean 4, Idris 2, CompCert, and Rust are not pinned under this specifications repository's `ref/`. Their Form 1 pins live in the Systems Lean product tree as required by [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 4.3. This document does not add Form 1 git submodules to this repository.
 
-LMDB, LevelDB, RocksDB, SQLite, and heed are named only as informative prior art in Clause 2.3. They are not 0000 Clause 12 pins of this specifications repository. They are not present under this repository's `ref/`. This document does not add git submodules for them.
+LMDB, LevelDB, RocksDB, SQLite, and heed are named only as informative prior art in Clause 2.3. They are not [0000](0000_spec.md) Clause 12 pins of this specifications repository. They are not present under this repository's `ref/`. This document does not add git submodules for them.
 
-### 2.1 Pins in this specifications repository (0000 Clause 12)
+### 2.1 Pins in this specifications repository ([0000](0000_spec.md) Clause 12)
 
 1. RFC 2119, Key words for use in RFCs to Indicate Requirement Levels, March 1997. Local path: `ref/rfc2119`.
-2. Surmount specification `0000_spec.md` (the form rules that govern this document).
+2. Surmount specification [0000_spec.md](0000_spec.md) (the form rules that govern this document).
 3. Semantic Versioning 2.0.0 (SemVer). Local path: `ref/semver`.
-4. Surmount specification `0002_Systems_Lean.md` (Systems Lean, Slake, the freestanding product wire, CompCert verified compilation, and bootstrap typecheck).
+4. Surmount specification [0002_Systems_Lean.md](0002_Systems_Lean.md) (Systems Lean, Slake, the freestanding product wire, CompCert verified compilation, and bootstrap typecheck).
 
 ### 2.2 Pins in the Systems Lean product tree
 
@@ -70,7 +70,7 @@ A beastdb product tree, when one exists, is likewise not this specifications rep
 
 ### 2.3 Prior art (informative)
 
-This subsection is informative. It names stores a reader may already know. It does not cite them as external specifications under `0000_spec.md` Clause 12.
+This subsection is informative. It names stores a reader may already know. It does not cite them as external specifications under [0000_spec.md](0000_spec.md) Clause 12.
 
 1. LMDB, LevelDB, RocksDB, SQLite, and heed are prior art for durable ordered maps, embedded engines, and related binding layers.
 2. Those names are not present under this specifications repository's `ref/`.
@@ -140,7 +140,7 @@ A dense identifier for a word in the store. It is not a Unicode code point used 
 
 ### 3.16 Rosetta
 
-A mapping between LanguageID and WordID values across languages, persisted so the Smart Symbolic Supercompiler specified in `0004_SSSSS.md` can use dense symbols.
+A mapping between LanguageID and WordID values across languages, persisted so the Smart Symbolic Supercompiler specified in [0004_SSSSS.md](0004_SSSSS.md) can use dense symbols.
 
 ### 3.17 Requirement keywords
 
@@ -183,7 +183,7 @@ A language native binding layer that calls into libbeastdb (or a shim) through t
 2. A conforming implementation MUST use single instruction, multiple data (SIMD) facilities for scans and bulk operations where those facilities improve those operations. The instruction set family is defined by the implementation.
 3. A conforming implementation MUST offer zerocopy views of mapped data for reads. A bounce buffer MUST NOT be required for a read that can be served by a mapped view.
 4. A conforming implementation MUST persist dense LanguageID and WordID values (Clauses 3.14 and 3.15).
-5. A Rosetta mapping (Clause 3.16) for the Smart Symbolic Supercompiler specified in `0004_SSSSS.md` MUST be representable in the store.
+5. A Rosetta mapping (Clause 3.16) for the Smart Symbolic Supercompiler specified in [0004_SSSSS.md](0004_SSSSS.md) MUST be representable in the store.
 6. Items 1 through 5 are requirements. This document does not claim mmap, SIMD, zerocopy, LanguageID, WordID, or Rosetta are implemented.
 
 ### 4.4 Mandatory schema
@@ -206,7 +206,7 @@ A language native binding layer that calls into libbeastdb (or a shim) through t
 
 ### 4.6 Stack role
 
-1. beastdb is the REQUIRED durable store for the Smart Symbolic Supercompiler specified in `0004_SSSSS.md`.
+1. beastdb is the REQUIRED durable store for the Smart Symbolic Supercompiler specified in [0004_SSSSS.md](0004_SSSSS.md).
 2. All high assurance persistent storage that claims conformance to this stack role MUST target libbeastdb.
 3. Systems Lean remains the REQUIRED implementation language for the core of beastdb, as stated in [0002_Systems_Lean.md](0002_Systems_Lean.md) Clause 4.4.
 
@@ -217,7 +217,7 @@ A language native binding layer that calls into libbeastdb (or a shim) through t
 3. Replication is out of scope for this specification.
 4. High availability as a distributed property is out of scope for this specification.
 5. Distribution of the store across machines is out of scope for this specification.
-6. Those network topics belong to the Carbonado Network Protocol. That protocol has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. This document does not assign 0006. This document MUST NOT be read as specifying peering, replication, high availability, or distribution.
+6. Those network topics belong to the Carbonado Network Protocol. That protocol has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned [0006](0006_RSI.md) as a possible later number. This document does not assign [0006](0006_RSI.md). This document MUST NOT be read as specifying peering, replication, high availability, or distribution.
 
 ## 5. Conformance
 
@@ -242,17 +242,17 @@ This section is normative for residual honesty of this document. It does not add
 
 ### 6.1 Related specifications and unassigned numbers
 
-1. The Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`. That specification does not claim a conforming SSSSS implementation exists.
-2. fargo has no assigned specification number. A previous plan that assigned number 0005 to fargo is withdrawn. Number 0005 is Concise American Technical English (`0005_CATE.md`). Number 0006 is Recursive Self Improvement (`0006_RSI.md`). This document does not invent a new number for fargo. Clause 4.5 names fargo as the interoperability path; that is a requirement on a future product, not a claim that fargo is specified or implemented.
-3. The Carbonado Network Protocol has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned 0006 as a possible later number. That mention is not an assignment. This document does not create a file for it.
+1. The Smart Symbolic Supercompiler is specified in [0004_SSSSS.md](0004_SSSSS.md). That specification does not claim a conforming SSSSS implementation exists.
+2. fargo has no assigned specification number. A previous plan that assigned number 0005 to fargo is withdrawn. Number 0005 is Concise American Technical English ([0005_CATE.md](0005_CATE.md)). Number 0006 is Recursive Self Improvement ([0006_RSI.md](0006_RSI.md)). This document does not invent a new number for fargo. Clause 4.5 names fargo as the interoperability path; that is a requirement on a future product, not a claim that fargo is specified or implemented.
+3. The Carbonado Network Protocol has no numbered specification file in this repository. It has no assigned specification number. Discussion has mentioned [0006](0006_RSI.md) as a possible later number. That mention is not an assignment. This document does not create a file for it.
 
 ### 6.2 Unpinned prior art
 
-1. LMDB, LevelDB, RocksDB, SQLite, and heed are informative prior art (Clause 2.3). They are not 0000 Clause 12 pins. They are not under this specifications repository's `ref/`. This document does not add git submodules for them.
+1. LMDB, LevelDB, RocksDB, SQLite, and heed are informative prior art (Clause 2.3). They are not [0000](0000_spec.md) Clause 12 pins. They are not under this specifications repository's `ref/`. This document does not add git submodules for them.
 
 ### 6.3 Product tree pins versus this repository's `ref/`
 
-1. `0000_spec.md` Clause 12 binds external specifications this specifications repository cites to `ref/` in this repository.
+1. [0000_spec.md](0000_spec.md) Clause 12 binds external specifications this specifications repository cites to `ref/` in this repository.
 2. Lean 4, Idris 2, CompCert, and Rust are cited by [0002_Systems_Lean.md](0002_Systems_Lean.md) as Form 1 pins of the Systems Lean product tree, not of this specifications repository's `ref/`. This document does not move those pins here.
 3. There is no beastdb product tree pin in this repository. beastdb work is ongoing and is not ready for use. This document MUST NOT be read as claiming that beastdb never started or does not exist.
 
@@ -260,7 +260,7 @@ This section is normative for residual honesty of this document. It does not add
 
 This document specifies beastdb. The product is real, incomplete, and not ready for use. The work is ongoing. It MUST NOT be read as claiming that beastdb never started or does not exist. The following are requirements in Clause 4, not done work:
 
-1. Proven ACID transactions (Clause 3.6 and Clause 4.2 item 1) remain a requirement. This document does not claim those proofs exist. Treating marketing ACID as proven ACID is Cons False in the beastdb proofs module. Specification 0003 remains the owner of beastdb ACID. This document does not move ACID into specification 0002.
+1. Proven ACID transactions (Clause 3.6 and Clause 4.2 item 1) remain a requirement. This document does not claim those proofs exist. Treating marketing ACID as proven ACID is Cons False in the beastdb proofs module. Specification 0003 remains the owner of beastdb ACID. This document does not move ACID into specification [0002](0002_Systems_Lean.md).
 2. Tries that do not use locks (Clause 3.7 and Clause 4.2 item 2) remain a requirement. This document does not claim such tries are implemented. Treating a trie whose progress waits on a mutual exclusion lock as conforming is Cons False in the beastdb proofs module.
 3. `SWMR` (Clause 3.8) remains the required default concurrency. This document does not claim `SWMR` is implemented.
 4. Optional access by more than one writer on disjoint leaves remains allowed and not required (Clause 4.2 item 4). This document does not specify that capability as done work.
@@ -269,7 +269,7 @@ This document specifies beastdb. The product is real, incomplete, and not ready 
 7. SIMD scans and bulk operations remain a requirement (Clause 4.3 item 2). This document does not claim those operations are implemented.
 8. Zerocopy reads remain a requirement (Clause 4.3 item 3). This document does not claim zerocopy is implemented.
 9. Dense `LanguageID` and `WordID` remain a requirement (Clause 4.3 item 4). This document does not claim those identifiers are persisted.
-10. A representable Rosetta mapping for the Smart Symbolic Supercompiler specified in `0004_SSSSS.md` remains a requirement (Clause 4.3 item 5). This document does not claim that mapping is implemented.
+10. A representable Rosetta mapping for the Smart Symbolic Supercompiler specified in [0004_SSSSS.md](0004_SSSSS.md) remains a requirement (Clause 4.3 item 5). This document does not claim that mapping is implemented.
 11. Mandatory schema with predefined and inferred modes remains a requirement (Clause 4.4). This document does not claim schema proofs exist. Treating inferred schema as a license to remain without a schema is Cons False in the beastdb proofs module.
 12. Proven migrations remain a requirement (Clause 4.4 item 4). This document does not claim those proofs exist.
 13. Access by ordered keys and values, time series access, and vector access remain requirements (Clause 4.5 items 1 through 3). This document does not claim those access patterns are implemented.
@@ -277,7 +277,7 @@ This document specifies beastdb. The product is real, incomplete, and not ready 
 15. A freestanding `libbeastdb` built by a bootstrapped Slake that fully typechecks and compiled with CompCert remains a requirement (Clause 4.1). This document does not claim that library exists as a shipped product.
 16. beastdb is a real product, incomplete, and not ready for use. Claiming that beastdb never started is Cons False in the beastdb proofs module. Claiming that beastdb is ready for use is Cons False in that same module.
 17. Encodings of leftover not done flags and Cons fixtures belong in `lean/BeastDbSpec.lean` and proofs belong in `lean/BeastDbProofs.lean`. A mash of those modules is nonconforming. Companion proofs that those fixtures are False are not a claim that beastdb is ready for use. A theorem closed with `sorry` MUST NOT be counted as success.
-18. The 0002 and 0003 boundary stays on specification 0002. This document MUST NOT copy the durability call list as beastdb ACID, Cons on beastdb `Props` that do not attach, or `TSX` as beastdb ACID fixtures into `lean/BeastDbSpec.lean`. Specification 0003 still owns beastdb ACID as product meaning.
+18. The [0002](0002_Systems_Lean.md) and 0003 boundary stays on specification [0002](0002_Systems_Lean.md). This document MUST NOT copy the durability call list as beastdb ACID, Cons on beastdb `Props` that do not attach, or `TSX` as beastdb ACID fixtures into `lean/BeastDbSpec.lean`. Specification 0003 still owns beastdb ACID as product meaning.
 
 ### 6.5 Out of scope items this document names
 
@@ -293,13 +293,13 @@ This document specifies beastdb. The product is real, incomplete, and not ready 
 
 Current version line is 0.1.0 by operator order. Changelog history records that a 1.0.0 line existed.
 
-This 0.1.0 entry also records leftover depth on proven ACID, tries that do not use locks, `mmap`, mandatory schema, and fargo as the interoperability path. fargo has no assigned specification number. Clause 6.4 items 1 through 18 name those requirements as not done work, name Cons False for clashes this specification already states, keep the 0002 and 0003 boundary on specification 0002, and record that beastdb is real, incomplete, and not ready for use. Version remains 0.1.0. These sentences do not publish a new SemVer.
+This 0.1.0 entry also records leftover depth on proven ACID, tries that do not use locks, `mmap`, mandatory schema, and fargo as the interoperability path. fargo has no assigned specification number. Clause 6.4 items 1 through 18 name those requirements as not done work, name Cons False for clashes this specification already states, keep the [0002](0002_Systems_Lean.md) and 0003 boundary on specification [0002](0002_Systems_Lean.md), and record that beastdb is real, incomplete, and not ready for use. Version remains 0.1.0. These sentences do not publish a new SemVer.
 
 ### 1.0.0 - 20260824
 
-First publication of this specification text. Defines beastdb as specification 0003 with file name `0003_beastdb.md` and lowercase product name beastdb; names libbeastdb as the freestanding product library; requires Systems Lean, a bootstrapped Slake that fully typechecks, and CompCert verified compilation as in `0002_Systems_Lean.md`; requires proven ACID, tries that do not use locks, SWMR, optional access by more than one writer on disjoint leaves, and fencing by generation; requires mmap, SIMD, zerocopy, LanguageID, WordID, and a representable Rosetta mapping; requires mandatory schema with predefined and inferred modes and proven migrations; requires access by ordered keys and values, time series access, and vector access with interoperability through fargo rather than a traditional foreign function interface; requires libbeastdb as the durable store target for later high assurance components including the Smart Symbolic Supercompiler; and limits this specification to a store that is local first.
+First publication of this specification text. Defines beastdb as specification 0003 with file name `0003_beastdb.md` and lowercase product name beastdb; names libbeastdb as the freestanding product library; requires Systems Lean, a bootstrapped Slake that fully typechecks, and CompCert verified compilation as in [0002_Systems_Lean.md](0002_Systems_Lean.md); requires proven ACID, tries that do not use locks, SWMR, optional access by more than one writer on disjoint leaves, and fencing by generation; requires mmap, SIMD, zerocopy, LanguageID, WordID, and a representable Rosetta mapping; requires mandatory schema with predefined and inferred modes and proven migrations; requires access by ordered keys and values, time series access, and vector access with interoperability through fargo rather than a traditional foreign function interface; requires libbeastdb as the durable store target for later high assurance components including the Smart Symbolic Supercompiler; and limits this specification to a store that is local first.
 
-This unpublished 1.0.0 also records: this document does not claim a conforming implementation exists; LMDB, LevelDB, RocksDB, SQLite, and heed are informative prior art and not Clause 12 pins of this repository; the Smart Symbolic Supercompiler is specified in `0004_SSSSS.md`; Recursive Self Improvement is specified in `0006_RSI.md`; fargo has no assigned specification number; the Carbonado Network Protocol has no assigned number.
+This unpublished 1.0.0 also records: this document does not claim a conforming implementation exists; LMDB, LevelDB, RocksDB, SQLite, and heed are informative prior art and not Clause 12 pins of this repository; the Smart Symbolic Supercompiler is specified in [0004_SSSSS.md](0004_SSSSS.md); Recursive Self Improvement is specified in [0006_RSI.md](0006_RSI.md); fargo has no assigned specification number; the Carbonado Network Protocol has no assigned number.
 
 This unpublished 1.0.0 also records that hyphenated modifiers in prose were rephrased into ordinary English. Deleting the hyphen and leaving the same two words is not enough.
 

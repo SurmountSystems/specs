@@ -27,7 +27,7 @@ A conforming hierarchical subagent program is not claimed. This document does no
 7. Public Domain Open Source Software is specified in [0009_PDOSS.md](0009_PDOSS.md). That document is specification 0009. That document is not this specification. Unlicense remains the license.
 8. The session bus is specified in [0015_Session_Bus.md](0015_Session_Bus.md). That document is specification 0015. Number 0016 is not the session bus.
 9. fargo has no assigned specification number. The Carbonado Network Protocol has no assigned specification number. This document does not assign 0016 to fargo or to Carbonado.
-10. This document does not steal specification numbers 0005 through 0015.
+10. This document does not steal specification numbers [0005](0005_CATE.md) through [0015](0015_Session_Bus.md).
 
 ### 1.2 Spec and proof (informative)
 
@@ -193,7 +193,7 @@ This subsection is informative. It records sampling windows from the product not
 Required conformance to this specification holds if and only if every item in this list holds.
 
 1. This specification is number 0016 and the file name is `0016_Hierarchical_Subagents.md` (Clause 1).
-2. The layers are `L0`, `L1`, `L2`, and `L3`, with no `L4`. The call name `grok-oss gui` is informative. Specification 0015 does not define those layer names (Clause 4.1).
+2. The layers are `L0`, `L1`, `L2`, and `L3`, with no `L4`. The call name `grok-oss gui` is informative. Specification [0015](0015_Session_Bus.md) does not define those layer names (Clause 4.1).
 3. The naming bans and the report name in Clause 4.2 hold.
 4. Work that needs tools, as Clause 4.3 describes, runs three layers deep, including implement loops (Clause 4.3).
 5. `L1` keeps the duties in Clause 4.4, does not edit product code or docs, and the fast path is the three acts in that clause and is absent from the task description given to an `L2` (Clause 4.4).
@@ -222,7 +222,7 @@ This section is normative for residual honesty of this document. Silence about a
 
 1. fargo has no numbered specification and no assigned number. This document does not create a numbered file for fargo.
 2. The Carbonado Network Protocol has no numbered specification and no assigned number. This document does not create a Carbonado file.
-3. Number 0016 is Hierarchical Subagents. This document does not steal numbers 0005 through 0015. It does not assign 0016 to fargo or to Carbonado.
+3. Number 0016 is Hierarchical Subagents. This document does not steal numbers [0005](0005_CATE.md) through [0015](0015_Session_Bus.md). It does not assign 0016 to fargo or to Carbonado.
 4. The stack list in `AGENTS.md` and the registry in `lean/SpecRegistry.lean` name this file as specification 0016. That naming is not a second specification. This document does not edit that list. Lake and flake wiring for a tests executable is not claimed.
 5. This document does not invent a specification number after 0016.
 
@@ -264,4 +264,4 @@ No prior public release of this specification exists.
 
 ## 8. Copyright
 
-This work is released into the public domain under the Unlicense as specified in `0009_PDOSS.md`. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository.
+This work is released into the public domain under the Unlicense as specified in [0009_PDOSS.md](0009_PDOSS.md). Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository.

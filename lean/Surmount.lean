@@ -75,6 +75,7 @@ import SessionBusSpec
 import SessionBusProofs
 import HierarchicalSubagentsSpec
 import HierarchicalSubagentsProofs
+import SpecInteractionsProofs
 import SchedulaSpec
 import «0010_Surmount_Systems»
 import «0009_PDOSS»
@@ -627,13 +628,6 @@ def numberSeventeenPublishedFileExists : Bool :=
 theorem number_seventeen_published_file_exists :
     numberSeventeenPublishedFileExists = true :=
   rfl
-
-/-- Claiming that published file is absent yields False. Not `rfl` of a false flag. -/
-theorem claiming_published_schedula_file_absent_yields_false
-    (h : numberSeventeenPublishedFileExists = false) : False := by
-  have hPresent : numberSeventeenPublishedFileExists = true := rfl
-  rw [hPresent] at h
-  exact Bool.noConfusion h
 
 /-- Assignment of number 0017 and the published file both hold. -/
 theorem number_seventeen_assignment_matches_published_file :

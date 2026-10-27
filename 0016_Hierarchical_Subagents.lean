@@ -62,7 +62,7 @@ def encodedLines : Array MdLine := #[
   { number := 27, text := "7. Public Domain Open Source Software is specified in [0009_PDOSS.md](0009_PDOSS.md). That document is specification 0009. That document is not this specification. Unlicense remains the license." },
   { number := 28, text := "8. The session bus is specified in [0015_Session_Bus.md](0015_Session_Bus.md). That document is specification 0015. Number 0016 is not the session bus." },
   { number := 29, text := "9. fargo has no assigned specification number. The Carbonado Network Protocol has no assigned specification number. This document does not assign 0016 to fargo or to Carbonado." },
-  { number := 30, text := "10. This document does not steal specification numbers 0005 through 0015." },
+  { number := 30, text := "10. This document does not steal specification numbers [0005](0005_CATE.md) through [0015](0015_Session_Bus.md)." },
   { number := 31, text := "" },
   { number := 32, text := "### 1.2 Spec and proof (informative)" },
   { number := 33, text := "" },
@@ -228,7 +228,7 @@ def encodedLines : Array MdLine := #[
   { number := 193, text := "Required conformance to this specification holds if and only if every item in this list holds." },
   { number := 194, text := "" },
   { number := 195, text := "1. This specification is number 0016 and the file name is `0016_Hierarchical_Subagents.md` (Clause 1)." },
-  { number := 196, text := "2. The layers are `L0`, `L1`, `L2`, and `L3`, with no `L4`. The call name `grok-oss gui` is informative. Specification 0015 does not define those layer names (Clause 4.1)." },
+  { number := 196, text := "2. The layers are `L0`, `L1`, `L2`, and `L3`, with no `L4`. The call name `grok-oss gui` is informative. Specification [0015](0015_Session_Bus.md) does not define those layer names (Clause 4.1)." },
   { number := 197, text := "3. The naming bans and the report name in Clause 4.2 hold." },
   { number := 198, text := "4. Work that needs tools, as Clause 4.3 describes, runs three layers deep, including implement loops (Clause 4.3)." },
   { number := 199, text := "5. `L1` keeps the duties in Clause 4.4, does not edit product code or docs, and the fast path is the three acts in that clause and is absent from the task description given to an `L2` (Clause 4.4)." },
@@ -257,7 +257,7 @@ def encodedLines : Array MdLine := #[
   { number := 222, text := "" },
   { number := 223, text := "1. fargo has no numbered specification and no assigned number. This document does not create a numbered file for fargo." },
   { number := 224, text := "2. The Carbonado Network Protocol has no numbered specification and no assigned number. This document does not create a Carbonado file." },
-  { number := 225, text := "3. Number 0016 is Hierarchical Subagents. This document does not steal numbers 0005 through 0015. It does not assign 0016 to fargo or to Carbonado." },
+  { number := 225, text := "3. Number 0016 is Hierarchical Subagents. This document does not steal numbers [0005](0005_CATE.md) through [0015](0015_Session_Bus.md). It does not assign 0016 to fargo or to Carbonado." },
   { number := 226, text := "4. The stack list in `AGENTS.md` and the registry in `lean/SpecRegistry.lean` name this file as specification 0016. That naming is not a second specification. This document does not edit that list. Lake and flake wiring for a tests executable is not claimed." },
   { number := 227, text := "5. This document does not invent a specification number after 0016." },
   { number := 228, text := "" },
@@ -299,7 +299,7 @@ def encodedLines : Array MdLine := #[
   { number := 264, text := "" },
   { number := 265, text := "## 8. Copyright" },
   { number := 266, text := "" },
-  { number := 267, text := "This work is released into the public domain under the Unlicense as specified in `0009_PDOSS.md`. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository." }
+  { number := 267, text := "This work is released into the public domain under the Unlicense as specified in [0009_PDOSS.md](0009_PDOSS.md). Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository." },
 ]
 
 def lineCount : Nat := encodedLines.size

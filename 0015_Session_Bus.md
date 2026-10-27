@@ -23,27 +23,27 @@ A conforming session bus program is not claimed. `grok-oss`, beastdb, SSSSS, Sla
 1. This document is normative for the identity of the session bus as specification 0015, the local socket, the bus client, the named methods, the safety rules in Clause 4.4, the token budget in Clause 4.5, the success criteria in Clause 4.6, and the out of scope items in Clause 4.7.
 2. Versioning of this document SHALL follow [0000_spec.md](0000_spec.md) (the Surmount spec spec) and Semantic Versioning 2.0.0 (SemVer). Local path for SemVer: `ref/semver`.
 3. This specification is number 0015. The file name is `0015_Session_Bus.md`. First publication of this specification as a numbered document is version 0.1.0 dated 20261024. No earlier shipped version of this specification is claimed.
-4. Concise American Technical English (CATE) is specified in `0005_CATE.md`. CATE is specification 0005. CATE is not this specification.
-5. Formal Vibefication is specified in `0008_Formal_Vibefication.md`. That document is specification 0008. That document is not this specification.
-6. Public Domain Open Source Software is specified in `0009_PDOSS.md`. That document is specification 0009. That document is not this specification. Unlicense remains the license.
-7. Anunnaki Encoding is specified in `0014_Anunnaki_Encoding.md`. That document is specification 0014. Number 0015 is not Anunnaki Encoding. This document MUST NOT be replaced by an Anunnaki Encoding file at number 0015. That Anunnaki file MUST NOT exist.
+4. Concise American Technical English (CATE) is specified in [0005_CATE.md](0005_CATE.md). CATE is specification 0005. CATE is not this specification.
+5. Formal Vibefication is specified in [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md). That document is specification 0008. That document is not this specification.
+6. Public Domain Open Source Software is specified in [0009_PDOSS.md](0009_PDOSS.md). That document is specification 0009. That document is not this specification. Unlicense remains the license.
+7. Anunnaki Encoding is specified in [0014_Anunnaki_Encoding.md](0014_Anunnaki_Encoding.md). That document is specification 0014. Number 0015 is not Anunnaki Encoding. This document MUST NOT be replaced by an Anunnaki Encoding file at number 0015. That Anunnaki file MUST NOT exist.
 8. fargo has no assigned specification number. The Carbonado Network Protocol has no assigned specification number. This document does not assign 0015 to fargo or to Carbonado.
 
 ### 1.2 Spec and proof (informative)
 
-This subsection is informative. It records how this specification relates to machine checked proofs. It is not a form rule under `0000_spec.md`.
+This subsection is informative. It records how this specification relates to machine checked proofs. It is not a form rule under [0000_spec.md](0000_spec.md).
 
-In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in `0008_Formal_Vibefication.md`, requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification.
+In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md), requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification.
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
 2. Companion Lean modules under `lean/SessionBusSpec.lean` encode selected claims such as this document's identity as specification 0015 with file name `0015_Session_Bus.md`, approve and deny off by default, no network listener, a socket that allows the same user id only, a transcript that returns deltas only, no claim that a conforming session bus program exists, and that a mash of spec encodings plus proofs in one module does not conform.
 3. Proofs of those encodings live in `lean/SessionBusProofs.lean`.
 4. The sibling line encoding of this markdown is `0015_Session_Bus.lean`. Proofs of that line encoding live in `lean/Proofs_0015.lean`.
-5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, leftover unstack phrases, Residual heading, and related rules in `0000_spec.md`) remains the job of Lean `spec_check`. Spec encodings of meaning MUST NOT be treated as a second markdown form checker. `spec_check` is form, not meaning.
+5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, leftover unstack phrases, Residual heading, and related rules in [0000_spec.md](0000_spec.md)) remains the job of Lean `spec_check`. Spec encodings of meaning MUST NOT be treated as a second markdown form checker. `spec_check` is form, not meaning.
 
 ### 1.3 Documents this specification does not replace
 
-1. Form rules remain [0000_spec.md](0000_spec.md). That document points at `0005_CATE.md` for CATE. Clause 11.4 of that document requires markdown path links in this repository to resolve.
+1. Form rules remain [0000_spec.md](0000_spec.md). That document points at [0005_CATE.md](0005_CATE.md) for CATE. Clause 11.4 of that document requires markdown path links in this repository to resolve.
 2. Systems Lean remains [0002_Systems_Lean.md](0002_Systems_Lean.md).
 3. beastdb remains [0003_beastdb.md](0003_beastdb.md).
 4. SSSSS remains [0004_SSSSS.md](0004_SSSSS.md).
@@ -58,8 +58,8 @@ The following documents are indispensable for the application of this specificat
 
 1. RFC 2119, Key words for use in RFCs to Indicate Requirement Levels, March 1997. Local path: `ref/rfc2119`.
 2. Semantic Versioning 2.0.0 (SemVer). Local path: `ref/semver`.
-3. Surmount specification `0000_spec.md`.
-4. Surmount specification `0008_Formal_Vibefication.md`.
+3. Surmount specification [0000_spec.md](0000_spec.md).
+4. Surmount specification [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md).
 
 ## 3. Terms
 
@@ -192,8 +192,8 @@ This section is normative for residual honesty of this document. Silence about a
 7. The draft names Rust tests in `xai-grok-shell`. Those tests are not in this repository.
 8. `grok-oss`, `ACP`, `MCP`, and `TOON` are named. This repository does not pin those texts under `ref/`.
 9. `lean/Surmount.lean` stores `numberFifteenPublishedFileExists` as true because `0015_Session_Bus.md` is published. Theorem `claiming_published_session_bus_file_absent_yields_false` proves that claiming the published file is absent yields False. The publication record for this file is also `lean/SpecRegistry.lean`.
-10. `0002_Systems_Lean.md`, `0010_Surmount_Systems.md`, and `0014_Anunnaki_Encoding.md` still contain sentences that say this numbered file is absent because the draft was missing. This document does not rewrite those files. Their sibling line encodings would have to change with them.
-11. `0005_CATE.md` Clause 3.5 still names fourteen comment paths and does not name `lean/SessionBusSpec.lean`. `lean/LineEncodings.lean` adds that path to the comment scan. This document does not rewrite `0005_CATE.md`.
+10. [0002_Systems_Lean.md](0002_Systems_Lean.md), [0010_Surmount_Systems.md](0010_Surmount_Systems.md), and [0014_Anunnaki_Encoding.md](0014_Anunnaki_Encoding.md) still contain sentences that say this numbered file is absent because the draft was missing. This document does not rewrite those files. Their sibling line encodings would have to change with them.
+11. [0005_CATE.md](0005_CATE.md) Clause 3.5 still names fourteen comment paths and does not name `lean/SessionBusSpec.lean`. `lean/LineEncodings.lean` adds that path to the comment scan. This document does not rewrite [0005_CATE.md](0005_CATE.md).
 
 ### 6.3 Product claims that are not ready for use
 
@@ -211,7 +211,7 @@ No prior public release of this specification exists.
 
 ## 8. Copyright
 
-This work is released into the public domain under the Unlicense as specified in `0009_PDOSS.md`. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository.
+This work is released into the public domain under the Unlicense as specified in [0009_PDOSS.md](0009_PDOSS.md). Anyone is free to copy, modify, publish, use, compile, sell, or distribute this specification, either in source code form or as a compiled binary, for any purpose, commercial or noncommercial, and by any means. See `UNLICENSE.md` in this repository.
 
 ## 9. Acknowledgments
 
