@@ -13,6 +13,8 @@
 import Ci
 import CiProofs
 import SpecRegistry
+import «0007_CI»
+import «0002_Systems_Lean»
 
 open Ci
 open SpecRegistry
@@ -57,6 +59,31 @@ def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
     (isFalse : Prop) (_same : isFalse = (clash -> False))
     (_proof : isFalse) : Case :=
   expectFalse name accepted
+
+/-
+  Positive lock, not a catalog row.
+  Index 114 and index 176 are lines of 0007_CI.
+  Index 480 is a line of 0002_Systems_Lean.
+  The reading is notClaimedTrue only while those lines still say the
+  byte identity match is required and is not claimed true.
+-/
+def liveByteIdentityPositiveLockHolds
+    (_lock : readLiveByteIdentityClaim
+        «0007_CI».encodedLines[114]!
+        «0007_CI».encodedLines[176]!
+        «0002_Systems_Lean».encodedLines[480]! =
+      some ByteIdentityClaimReading.notClaimedTrue) : Bool :=
+  let line114 := «0007_CI».encodedLines[114]!
+  let line176 := «0007_CI».encodedLines[176]!
+  let line480 := «0002_Systems_Lean».encodedLines[480]!
+  line114.number == 115 &&
+    line176.number == 177 &&
+    line480.number == 481 &&
+    readLiveByteIdentityClaim line114 line176 line480 ==
+      some ByteIdentityClaimReading.notClaimedTrue &&
+    clause310ReadsByteIdentityNotClaimedTrue line114.text &&
+    clause47Item2ReadsByteIdentityNotClaimedTrue line176.text &&
+    clause63ReadsByteIdentityNotYetTrue line480.text
 
 def runCases : List Case :=
   [
@@ -244,12 +271,10 @@ def runCases : List Case :=
     expectTrue "Unlicense remains the license"
       unlicenseRemainsTheLicense,
     expectTrue "CI is not specification 0009" (specNumber != Ci.pdossSpecNumber),
-    expectConsFalse "treating byte identity as already true is false"
-      byteIdentityCountedAlreadyTrue
-      byteIdentityAlreadyTrueAsCurrentFact
-      byteIdentityAlreadyTrueAsCurrentFactIsFalse
-      rfl
-      mash_byte_identity_claimed_true_is_false,
+    expectTrue
+      "sibling indexes 114, 176, and 480 read the byte identity match as required and not claimed true"
+      (liveByteIdentityPositiveLockHolds
+        read_live_byte_identity_claim_is_not_claimed_true),
     expectConsFalse "unsigned as a general skip is not accepted"
       (DualTreeException.applies generalSkip)
       mashUnsignedAsGeneralSkip

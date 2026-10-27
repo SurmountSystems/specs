@@ -76,9 +76,10 @@
 			# Pure Nix project-wide whitespace gate (trailing WS; tab leading indent).
 			# Empty list = ok. Non-empty = "path:line: message" diagnostics.
 			# Same filtered tree as the remote checks, so the gate does not read Lake caches.
+			# cleanSourceWith returns a set. outPath is a path. fileFilter rejects a string from toString.
 			whitespaceViolations = import ./nix/whitespace.nix {
 				lib = nixpkgs.lib;
-			} (toString repoSrc);
+			} repoSrc.outPath;
 		in
 		{
 			# Debug: nix eval path:$PWD#lib.whitespaceViolations
@@ -316,6 +317,20 @@
 						description = "Lean tests for Session Bus spec encodings, assignment as specification 0015, and separate proofs (spec 0015)";
 					};
 
+					hierarchical_subagents_tests = mkLeanBin {
+						pname = "hierarchical_subagents_tests";
+						lakeTarget = "hierarchical_subagents_tests";
+						binName = "hierarchical_subagents_tests";
+						description = "Lean tests for Hierarchical Subagents spec encodings, assignment as specification 0016, and separate proofs (spec 0016)";
+					};
+
+					schedula_tests = mkLeanBin {
+						pname = "schedula_tests";
+						lakeTarget = "schedula_tests";
+						binName = "schedula_tests";
+						description = "Lean tests for Schedula spec encodings, assignment as specification 0017, and separate proofs (spec 0017). A conforming Schedula is not claimed. The gate is not claimed passed.";
+					};
+
 					# Writer and reader of .sstt files (spec 0011 format, Lake package).
 					sstt_tests = mkLeanBin {
 						pname = "sstt_tests";
@@ -395,10 +410,94 @@
 						description = "Lean checker that README.md contains a current table of proven logical inconsistencies in Lean meaning models";
 					};
 
+					inventory_rank_tests = mkLeanBin {
+						pname = "inventory_rank_tests";
+						lakeTarget = "inventory_rank_tests";
+						binName = "inventory_rank_tests";
+						description = "Lean unit tests for the inventory rank table, the highest shrink row, and the living catalog length";
+					};
+
+					inventory_rank = mkLeanBin {
+						pname = "inventory_rank";
+						lakeTarget = "inventory_rank";
+						binName = "inventory_rank";
+						description = "Lean checker that prints the highest shrink row and the living catalog length and exits nonzero when INVENTORY.md or RESIDUAL.md is present under REPO_ROOT";
+					};
+
+					# ResidualClaimsTests has no program entry. Elaborating the library is the test.
+					residual_claims_tests = leanLinkPkgs.stdenv.mkDerivation {
+						pname = "residual_claims_tests";
+						version = "1.0.0";
+						src = leanSrc;
+						nativeBuildInputs = [
+							pkgs.lean4
+						];
+						buildInputs = leanBuildInputs;
+						dontStrip = true;
+						buildPhase = ''
+							runHook preBuild
+							export HOME="$TMPDIR"
+							export LEAN_CC="$CC"
+							chmod -R u+w .
+							cd lean
+							rm -rf .lake
+							lake build ResidualClaimsTests
+							printf '%s\n' '#!/bin/sh' 'echo residual_claims_tests: library elaborated' 'exit 0' > "$NIX_BUILD_TOP/residual_claims_tests"
+							chmod 755 "$NIX_BUILD_TOP/residual_claims_tests"
+							runHook postBuild
+						'';
+						installPhase = ''
+							runHook preInstall
+							mkdir -p $out/bin
+							install -m755 "$NIX_BUILD_TOP/residual_claims_tests" $out/bin/residual_claims_tests
+							runHook postInstall
+						'';
+						meta = with pkgs.lib; {
+							description = "Lean elaboration of residual claim restatements. The test module has no program entry. The package build fails when a restatement does not elaborate.";
+							license = licenses.unlicense;
+							mainProgram = "residual_claims_tests";
+						};
+					};
+
+					# SimdEvidenceTests has no program entry. Elaborating the library is the test.
+					simd_evidence_tests = leanLinkPkgs.stdenv.mkDerivation {
+						pname = "simd_evidence_tests";
+						version = "1.0.0";
+						src = leanSrc;
+						nativeBuildInputs = [
+							pkgs.lean4
+						];
+						buildInputs = leanBuildInputs;
+						dontStrip = true;
+						buildPhase = ''
+							runHook preBuild
+							export HOME="$TMPDIR"
+							export LEAN_CC="$CC"
+							chmod -R u+w .
+							cd lean
+							rm -rf .lake
+							lake build SimdEvidenceTests
+							printf '%s\n' '#!/bin/sh' 'echo simd_evidence_tests: library elaborated' 'exit 0' > "$NIX_BUILD_TOP/simd_evidence_tests"
+							chmod 755 "$NIX_BUILD_TOP/simd_evidence_tests"
+							runHook postBuild
+						'';
+						installPhase = ''
+							runHook preInstall
+							mkdir -p $out/bin
+							install -m755 "$NIX_BUILD_TOP/simd_evidence_tests" $out/bin/simd_evidence_tests
+							runHook postInstall
+						'';
+						meta = with pkgs.lib; {
+							description = "Lean elaboration of evidence based supercompiler locks. The test module has no program entry. The package build fails when a lock does not elaborate.";
+							license = licenses.unlicense;
+							mainProgram = "simd_evidence_tests";
+						};
+					};
+
 					lean4 = pkgs.lean4;
 				in
 				{
-					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests anunnaki_tests session_bus_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report lean4;
+					inherit spec_check spec_check_tests systems_lean_tests beastdb_tests sssss_tests cate_tests rsi_tests ci_tests vocab_aspell_tests surmount_tests formal_vibefication_tests unlicense_tests tech_tree_tests memex_tests lean_machine_tests anunnaki_tests session_bus_tests hierarchical_subagents_tests schedula_tests sstt_tests sstt_write repo_links_tests repo_links_check line_encodings_tests line_encodings_check word_stats_tests word_stats inconsistency_report_tests inconsistency_report inventory_rank_tests inventory_rank residual_claims_tests simd_evidence_tests lean4;
 					default = spec_check;
 				}
 			);
@@ -708,6 +807,32 @@
 								echo ok > "$out/result"
 							'';
 
+					hierarchical_subagents_tests =
+						pkgs.runCommand "hierarchical_subagents_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.hierarchical_subagents_tests
+								];
+							}
+							''
+								hierarchical_subagents_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					schedula_tests =
+						pkgs.runCommand "schedula_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.schedula_tests
+								];
+							}
+							''
+								schedula_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
 					# .sstt writer and reader contracts, including --decode with
 					# and without REPO_ROOT; not a second markdown linter.
 					sstt_tests =
@@ -861,6 +986,61 @@
 								mkdir -p "$out"
 								echo ok > "$out/result"
 							'';
+
+					inventory_rank_tests =
+						pkgs.runCommand "inventory_rank_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.inventory_rank_tests
+								];
+							}
+							''
+								inventory_rank_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					# Highest shrink row and living catalog length. REPO_ROOT set, same shape as inconsistency_report.
+					inventory_rank =
+						pkgs.runCommand "inventory_rank"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.inventory_rank
+								];
+							}
+							''
+								export REPO_ROOT=${repoSrc}
+								cd "$REPO_ROOT"
+								inventory_rank
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					residual_claims_tests =
+						pkgs.runCommand "residual_claims_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.residual_claims_tests
+								];
+							}
+							''
+								residual_claims_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
+
+					simd_evidence_tests =
+						pkgs.runCommand "simd_evidence_tests"
+							{
+								nativeBuildInputs = [
+									self.packages.${system}.simd_evidence_tests
+								];
+							}
+							''
+								simd_evidence_tests
+								mkdir -p "$out"
+								echo ok > "$out/result"
+							'';
 				in
 				{
 					inherit
@@ -883,6 +1063,8 @@
 						lean_machine_tests
 						anunnaki_tests
 						session_bus_tests
+						hierarchical_subagents_tests
+						schedula_tests
 						sstt_tests
 						sstt_write
 						repo_links_tests
@@ -893,6 +1075,10 @@
 						word_stats
 						inconsistency_report_tests
 						inconsistency_report
+						inventory_rank_tests
+						inventory_rank
+						residual_claims_tests
+						simd_evidence_tests
 						;
 				}
 			);

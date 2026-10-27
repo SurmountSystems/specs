@@ -38,9 +38,33 @@ theorem mash_hidden_split_is_false :
         markedAsProof := markedAsProof } = false :=
   rfl
 
-theorem encoded_size : encodedLines.size = 620 := by native_decide
+theorem encoded_size : encodedLines.size = 634 := by native_decide
 
-theorem line_count : lineCount = 620 := by native_decide
+theorem line_count : lineCount = 634 := by native_decide
+
+/-- Physical lines added for the evidence based supercompiler. One string per line. -/
+def evidencePhysicalLines : List (Nat × String) :=
+  [ (555, "\tThe supercompiler is evidence based and adapts to the machine it runs on.")
+  , (556, "\tAn assumption is not kept before an experiment.")
+  , (557, "\tThe order is build a model, test every model against evidence, then improve.")
+  , (558, "\tRanking is local from the known hardware specification of that machine.")
+  , (559, "\tThere is no separate numeric weight formula.")
+  , (560, "\tA sample speedup remains evidence and is not the Systems Lean equivalence proof.")
+  , (561, "\tFMA single rounding stays the reference.")
+  , (562, "\tProved rules may be contributed to a peer to peer gossip network, timestamped on the Bitcoin timechain in a way similar to OpenTimeStamps and not OpenTimeStamps, and to a peer to peer git network of the Radicle kind that is not claimed to be Radicle.")
+  , (563, "\tNo client is claimed running.")
+  , (564, "\tThe exact timestamp format and the exact gossip protocol stay open.")
+  , (565, "\tThe decompiler stays unnamed.")
+  , (566, "\tThe opcode catalog stays not claimed done.")
+  , (591, "91. The exact timestamp format stays open.")
+  , (592, "92. The exact gossip protocol stays open.")
+  ]
+
+theorem evidence_physical_lines_match_encoding :
+    evidencePhysicalLines.all (fun p =>
+      (encodedLines[p.fst - 1]!).number == p.fst &&
+        (encodedLines[p.fst - 1]!).text == p.snd) = true := by
+  native_decide
 
 theorem first_line :
     (encodedLines[0]!).text = "# Systems Lean" := by native_decide

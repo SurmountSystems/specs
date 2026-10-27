@@ -338,9 +338,9 @@ def clause39CompCertLine : MdLine :=
 def clause42Item6CompCertLine : MdLine :=
   «0002_Systems_Lean».encodedLines[389]!
 
-/-- Sibling line 594, the unpublished 1.0.0 changelog sentence. -/
+/-- Sibling line 608, the unpublished 1.0.0 changelog sentence. -/
 def historicalCompCertRequiredStepLine : MdLine :=
-  «0002_Systems_Lean».encodedLines[593]!
+  «0002_Systems_Lean».encodedLines[607]!
 
 /-- Clause 3.9 sentence text from the sibling line encoding. -/
 def clause39CompCertSentence : String :=
@@ -359,27 +359,52 @@ def mentionsPhrase (needle hay : String) : Bool :=
   (hay.splitOn needle).length > 1
 
 /--
-  Live Clause 3.9 reading: `ccomp` is one optional metric, not the only
-  metric, not claimed done, and an unmarked freestanding C emit is not
-  required to be compiled with `ccomp`.
+  Live Clause 3.9 reading on sibling line 90. `ccomp` is one optional
+  metric, not the only metric, and not claimed done. SafeC that is not
+  combined with FastC may include `ccomp` and is not required to.
+  FastSafeC may include `ccomp` and is not required to. FastC that is
+  not combined with SafeC is performance priority and is not security
+  priority. Optional does not mean forbidden. Silence does not select
+  the marks. An unmarked freestanding C emit is not required to be
+  compiled with `ccomp`. Removing any of those sentences yields false.
 -/
 def clause39ReadsOptionalNotClaimedDone (s : String) : Bool :=
   mentionsPhrase "`ccomp` is one metric" s &&
     mentionsPhrase "It is optional" s &&
     mentionsPhrase "It is not the only metric" s &&
     mentionsPhrase "It is not claimed done" s &&
+    mentionsPhrase "When `SafeC` is not combined with `FastC`, that inclusion is optional" s &&
+    mentionsPhrase "`SafeC` can include `ccomp`, and `SafeC` is not required to include `ccomp`" s &&
+    mentionsPhrase "`FastSafeC` can include `ccomp`, and `FastSafeC` is not required to include `ccomp`" s &&
+    mentionsPhrase "A freestanding C emit marked `FastC` that is not combined with `SafeC` is performance priority and is not security priority" s &&
+    mentionsPhrase "Optional does not mean forbidden: a program may still be compiled with `ccomp`" s &&
+    mentionsPhrase "Silence does not select `FastC`, `SafeC`, or `FastSafeC`" s &&
     mentionsPhrase "An unmarked freestanding C emit is not required to be compiled with `ccomp`" s
 
 /--
-  Live Clause 4.2 item 6 reading: `ccomp` is one optional metric, not the
-  only metric, and an unmarked freestanding C emit is not required to be
-  compiled with `ccomp`.
+  Live Clause 4.2 item 6 reading on sibling line 390. `ccomp` is one
+  optional metric and not the only metric. SafeC that is not combined
+  with FastC may include `ccomp` and is not required to. FastSafeC may
+  include `ccomp` and is not required to. FastC that is not combined
+  with SafeC is performance priority. Optional does not mean forbidden.
+  Silence does not select the marks. An unmarked freestanding C emit is
+  not required to be compiled with `ccomp`. CompCertTSO, gcc, LLVM, and
+  cc do not satisfy this item merely by being reference targets.
+  Removing any of those sentences yields false.
 -/
 def clause42Item6ReadsOptionalMetric (s : String) : Bool :=
   mentionsPhrase "CompCert (`ccomp`) is one metric" s &&
     mentionsPhrase "It is optional" s &&
     mentionsPhrase "It is not the only metric" s &&
-    mentionsPhrase "An unmarked freestanding C emit is not required to be compiled with `ccomp`" s
+    mentionsPhrase "When `SafeC` is not combined with `FastC`, that inclusion is optional" s &&
+    mentionsPhrase "`SafeC` can include `ccomp`, and `SafeC` is not required to include `ccomp`" s &&
+    mentionsPhrase "`FastSafeC` can include `ccomp`, and `FastSafeC` is not required to include `ccomp`" s &&
+    mentionsPhrase "A freestanding C emit marked `FastC` that is not combined with `SafeC` is performance priority" s &&
+    mentionsPhrase "Optional does not mean forbidden: a program may still be compiled with `ccomp`" s &&
+    mentionsPhrase "Silence does not select `FastC`, `SafeC`, or `FastSafeC`" s &&
+    mentionsPhrase "An unmarked freestanding C emit is not required to be compiled with `ccomp`" s &&
+    mentionsPhrase "being a reference target does not mean that compiler satisfies Clause 4.2 item 6" s &&
+    mentionsPhrase "`CompCertTSO`, gcc, LLVM, and `cc` do not satisfy Clause 4.2 item 6 merely by being reference targets" s
 
 /-- Historical changelog reading: CompCert of the freestanding C emit is a required core step. -/
 def historicalReadsRequiredCoreStep (s : String) : Bool :=
@@ -403,7 +428,7 @@ def readLiveCompCertRule (clause39 clause42 : MdLine) : Option CompCertMetricRea
 
 /-- Side A. The historical changelog sentence, or none when those words are absent. -/
 def readHistoricalCompCertRule (line : MdLine) : Option CompCertMetricReading :=
-  if line.number == 594 && historicalReadsRequiredCoreStep line.text then
+  if line.number == 608 && historicalReadsRequiredCoreStep line.text then
     some .requiredCoreValidationStep
   else
     none

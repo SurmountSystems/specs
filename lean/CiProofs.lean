@@ -213,11 +213,16 @@ def clause47Item2ReadsByteIdentityNotClaimedTrue (s : String) : Bool :=
 
 /--
   Clause 6.3 on one sibling line: a FastC mark does not make byte identity
-  of emit true, and a FastSafeC mark does not waive byte identity of emit.
+  of emit true, a FastSafeC mark does not waive byte identity of emit,
+  byte identity of emit is required for a conforming product and is not
+  claimed true, and a FastC mark does not waive the match.
 -/
 def clause63ReadsByteIdentityNotYetTrue (s : String) : Bool :=
   mentionsPhrase "does not make byte identity of emit true" s &&
-    mentionsPhrase "A `FastSafeC` mark does not waive byte identity of emit" s
+    mentionsPhrase "A `FastSafeC` mark does not waive byte identity of emit" s &&
+    mentionsPhrase "Byte identity of emit is required for a conforming product and is not claimed true" s &&
+    mentionsPhrase "Byte identity of emit remains required for a conforming product and is not claimed true" s &&
+    mentionsPhrase "A `FastC` mark does not waive the match" s
 
 /--
   How the live byte identity sentences are read.
@@ -262,31 +267,21 @@ set_option maxHeartbeats 800000
 set_option maxRecDepth 10000
 
 /--
-  Live Clause 3.10 and Clause 4.7 item 2 say byte identity among emitted C,
-  headers, archives, shared objects, LLVM IR, ELF, and other intermediates
-  is required, is not claimed true, is pursued by delta reconciliation, and
-  a FastC mark does not waive the match. Live Clause 6.3 says a FastC mark
-  does not make byte identity of emit true and a FastSafeC mark does not
-  waive it. Treating byte identity as already true yields False.
-  The `native_decide` step reads those sibling lines. Removing the wording
-  that byte identity is not claimed true, or the Clause 6.3 wording that a
-  FastC mark does not make byte identity of emit true, makes the reading
-  `none`, so this proof no longer closes.
+  Clause 3.10, Clause 4.7 item 2, and Clause 6.3 are the live byte
+  identity rule. The match among emitted C, headers, archives, shared
+  objects, LLVM IR, ELF, and other intermediates is required and is not
+  claimed true. A FastC mark does not waive the match and does not make
+  byte identity of emit true. A FastSafeC mark does not waive byte
+  identity of emit. `native_decide` reads those sibling lines. Removing
+  the wording that the match is required and is not claimed true, or the
+  Clause 6.3 wording that a FastC mark does not make byte identity of
+  emit true, makes this proof fail. This lock is not a catalog row.
 -/
-theorem mash_byte_identity_claimed_true_is_false :
-    byteIdentityAlreadyTrueAsCurrentFactIsFalse := by
-  intro h
-  unfold byteIdentityAlreadyTrueAsCurrentFact at h
-  have live :
-      readLiveByteIdentityClaim
-        «0007_CI».encodedLines[114]!
-        «0007_CI».encodedLines[176]!
-        «0002_Systems_Lean».encodedLines[480]! =
-        some .notClaimedTrue := by
-    native_decide
-  rw [live] at h
-  injection h with eq
-  injection eq
+theorem read_live_byte_identity_claim_is_not_claimed_true :
+    readLiveByteIdentityClaim clause310ByteIdentityLine clause47Item2ByteIdentityLine
+        clause63ByteIdentityLine =
+      some .notClaimedTrue := by
+  native_decide
 
 /-- A FastC waiver of byte identity yields False. The flag is the existing claimed-true flag. -/
 def claimingFastCWaivesByteIdentityYieldsFalse :

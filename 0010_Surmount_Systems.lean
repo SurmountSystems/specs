@@ -271,7 +271,7 @@ def encodedLines : Array MdLine := #[
   { number := 234, text := "" },
   { number := 235, text := "## 6. Residual" },
   { number := 236, text := "" },
-  { number := 237, text := "This section is normative for residual honesty of this document. Silence about an unpublished specification, an unassigned number, an unimplemented requirement, or an out of scope item named in this document is nonconforming for this specification as a document. A parenthetical planned file name in Scope is not the residual record. The repository root `RESIDUAL.md` restates residual for the numbered specification program; this clause is the residual record for this specification." },
+  { number := 237, text := "This section is normative for residual honesty of this document. Silence about an unpublished specification, an unassigned number, an unimplemented requirement, or an out of scope item named in this document is nonconforming for this specification as a document. A parenthetical planned file name in Scope is not the residual record. Checkable residual claims live in `lean/ResidualClaims.lean`, and this specification still carries its own residual clause." },
   { number := 238, text := "" },
   { number := 239, text := "### 6.1 Unpublished specifications and unassigned numbers" },
   { number := 240, text := "" },

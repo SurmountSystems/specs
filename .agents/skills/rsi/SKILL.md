@@ -40,7 +40,7 @@ Independent work streams with disjoint writes run as parallel L2 coordinators (`
 4. Pick the best available tool that can state the theorem or the contract (Clause 4.2). Language purity is not the reason. See `references/tool-template.md`. The isomorphism of numbered markdown lines and sibling `NNNN_descriptive_name.lean` encodings is `line_encodings_check`. Those encodings are explicit `MdLine` or `String` literals, one per physical markdown line. `include_str` is not a line encoding.
 5. When the durable tool is Lean, follow `.agents/skills/lean4/SKILL.md`.
 6. Observe a failing test in the product tree for the named contract before the product edit that is meant to make that same test pass (Clause 4.3). Tests are contracts. Reconcile a contract change with `0006_RSI.md` or the named specification in the same effort. Do not reshape a test to finish green without a contract change.
-7. Write remaining work in full on disk in complete American English (Clause 4.5). Chat is not the residual record.
+7. Write remaining work in full on disk in complete American English (Clause 4.5). Chat is not the residual record. Do not recreate `INVENTORY.md` or `RESIDUAL.md`; run the `inventory_rank` package on surmount-1. Keep each numbered specification's own residual clause.
 8. Run independent streams in parallel. Do not serialize two jobs that do not share a write set.
 9. Truthful: do not invent a conforming product. Residual in full: unpublished specifications, unassigned numbers, unpinned prior art, unimplemented requirements, and out of scope items this work names.
 10. Useful: name the real thing. CATE. Leftover unstack is nonconforming (do not delete the hyphen and leave the same two words).
@@ -66,7 +66,7 @@ Merge upsert `feat:` / `bug:` only. Never wipe the board. Never `git add`. Never
 
 1. A durable tool exists that a later session can run (Lean checker, Nix check, or project skill).
 2. A failing test for the named contract was observed before the product edit, and the same test passes, unless the operator said skip or the work is pure docs.
-3. Residual is written in full on disk.
+3. Each numbered specification keeps its own residual clause.
 4. Names and UX parse as ordinary English.
 5. `just check-remote` on surmount-1 passed when this repository's checks apply.
 

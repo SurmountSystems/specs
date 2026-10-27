@@ -4,12 +4,23 @@
   The catalog is every theorem, in a module this package elaborates,
   whose type is False, a chain of assumptions ending in False, or an
   alias whose name ends in IsFalse or IsInconsistent. A Bool flag equal
-  to false is not an inconsistency. A proof whose body is only
-  Bool.noConfusion, or only nomatch, on a hypothesis that a boolean
-  defined as false equals true, is not a checker row. A proof that
-  reads specification text, decides meetsPdoss, or otherwise derives
-  False from something other than that flag, stays. Reasoning lives
-  in RESIDUAL.md.
+  to false is not an inconsistency. A proof is flag only when every
+  step is intro, unfold, rw, simp, or a rewrite that shows a Bool
+  flag equals false, and the close is Bool.noConfusion or nomatch on
+  a hypothesis that this flag equals true. That row is not a checker
+  row. A proof that reads sibling lines, decides meetsPdoss, uses
+  cases or injection, or otherwise derives False from something other
+  than that flag, stays. Checkable residual claims live in lean/ResidualClaims.lean.
+
+  Three marks. Not an inconsistency is a positive lock, or a Bool flag
+  defined as false, and it stays out of the catalog. Assumed inconsistent
+  means the proof compiles to False and does not show a clash by reading
+  a live specification sentence. Those rows stay in the catalog and are
+  not the shrink list. Confident inconsistent means the proof reads live
+  sibling lines, or the proof already names that live clash. That is the
+  list we try to shrink. Confident plus assumed equals the scanned catalog.
+  The two byte identity False wrappers are positive locks now. They are
+  not catalog rows and they are not assumed.
 
   Numbered markdown remains the contract humans read. This module
   is a checker. It is not a second markdown form suite.
@@ -31,7 +42,7 @@ def endMarker : String := "<!-- /inconsistency-report -->"
 
 def readmeFileName : String := "README.md"
 
-def residualFileName : String := "RESIDUAL.md"
+def residualFileName : String := "lean/ResidualClaims.lean"
 
 /-- Kind of a listed claim. Intentional nonconformance is not a stack bug. -/
 inductive ClaimKind where
@@ -97,6 +108,14 @@ def emitClaim (file claim : String) : String :=
   "  { file := \"" ++ file ++ "\", claim := \"" ++ claim ++
     "\", kind := ClaimKind.intentionalNonconformance }"
 
+def renderClaimList (name : String) (rows : List (String × String)) : String :=
+  if rows.isEmpty then
+    "def " ++ name ++ " : List ProvenClaim := []\n"
+  else
+    "def " ++ name ++ " : List ProvenClaim := [\n" ++
+      String.intercalate ",\n" (rows.map fun (f, c) => emitClaim f c) ++
+      "\n]\n"
+
 /-- Elaborator auxiliaries such as `_proof_2` are not catalog rows. -/
 def isAuxiliaryName (n : Name) : Bool :=
   let s := lastNameStr n
@@ -106,6 +125,7 @@ def isAuxiliaryName (n : Name) : Bool :=
 inductive FlagDef where
   | boolFalse
   | boolAlias (target : String)
+  | boolComputed
   | eqTrue (lhs : String)
   | impliesFalse (hyp : String)
   deriving BEq
@@ -142,22 +162,6 @@ def withoutSuffix (s suf : String) : String :=
     String.ofList (sc.take (sc.length - pc.length))
   else
     s
-
-/-- Body is only `intro` plus `exact Bool.noConfusion`, or only that exact. -/
-def isOnlyNoConfusionBody (body : String) : Bool :=
-  match wordsOf body with
-  | ["by", "intro", x, "exact", "Bool.noConfusion", y] => isBareIdent x && isBareIdent y
-  | ["by", "exact", "Bool.noConfusion", y] => isBareIdent y
-  | ["exact", "Bool.noConfusion", y] => isBareIdent y
-  | _ => false
-
-/-- Body is only `nomatch`, with an optional intro. -/
-def isOnlyNomatchBody (body : String) : Bool :=
-  match wordsOf body with
-  | ["nomatch", y] => isBareIdent y
-  | ["by", "nomatch", y] => isBareIdent y
-  | ["by", "intro", x, "nomatch", y] => isBareIdent x && isBareIdent y
-  | _ => false
 
 def lhsOfEqTrue (t : String) : Option String :=
   match (collapseWs t).splitOn " = " with
@@ -337,6 +341,7 @@ def flagFact (name sig body : String) : Option (String × FlagDef) :=
   let isBool := (s.splitOn ": Bool").length > 1
   if b == "false" && isBool then some (name, FlagDef.boolFalse)
   else if isBool && isBareIdent b then some (name, FlagDef.boolAlias b)
+  else if isBool then some (name, FlagDef.boolComputed)
   else match lhsOfEqTrue b with
     | some lhs => some (name, FlagDef.eqTrue lhs)
     | none =>
@@ -377,14 +382,222 @@ def flagDefsGo : List String → DefPhase → List (String × FlagDef) → List 
 def parseFlagDefs (text : String) : List (String × FlagDef) :=
   flagDefsGo (text.splitOn "\n") .seek []
 
-/-- Both shapes drop only when the hypothesis is a boolean defined as false set equal to true. -/
-def isFlagOnlyThm (mods : List (List (String × FlagDef))) (sig body : String) : Bool :=
-  if isOnlyNoConfusionBody body || isOnlyNomatchBody body then
-    match binderType sig with
-    | some ty => resolvesFalseBoolEqTrueMod mods ty 12
-    | none => false
+/-- Words of a flag only proof. `native_decide`, `cases`, and `injection` are not steps. -/
+def isStepKeyword (w : String) : Bool :=
+  w == "intro" || w == "unfold" || w == "rw" || w == "simp" ||
+    w == "exact" || w == "nomatch" || w == "have"
+
+def wordBlocksFlagOnly (w : String) : Bool :=
+  w == "native_decide" || w == "cases" || w == "rcases" || w == "injection"
+
+def isStepIdent (w : String) : Bool :=
+  w != "" && !isStepKeyword w && w.all fun c =>
+    c.isAlphanum || c == '_' || c == '\'' || c == '.'
+
+def sigCore (sig : String) : String :=
+  match (collapseWs (stripComments sig)).splitOn ":=" with
+  | head :: _ => collapseWs head
+  | [] => collapseWs (stripComments sig)
+
+def conclusionOf (sig : String) : String :=
+  let parts := (sigCore sig).splitOn " : "
+  withoutSuffix (collapseWs (parts.reverse.headD "")) ")"
+
+/-- Last `(name : type)` binder, used when the conclusion is False. -/
+def lastBinder (sig : String) : Option (String × String) :=
+  let s := withoutSuffix (withoutSuffix (sigCore sig) " : False") ")"
+  let last := (s.splitOn "(").reverse.headD ""
+  match last.splitOn " : " with
+  | name :: ty :: rest =>
+    let n := collapseWs name
+    let t := collapseWs (String.intercalate " : " (ty :: rest))
+    if isBareIdent n && t != "" then some (n, t) else none
+  | _ => none
+
+/-- Type of the hypothesis introduced by `intro`, when the conclusion unfolds. -/
+def antecedentOf (mods : List (List (String × FlagDef))) (sig : String) : Option String :=
+  let conc := conclusionOf sig
+  if conc == "False" then
+    (lastBinder sig).map fun p => p.2
   else
+    match hypOfImpliesFalse conc with
+    | some h => some h
+    | none =>
+      match lookupFlagMod mods conc with
+      | some (.impliesFalse h) => some h
+      | some (.eqTrue lhs) => some (lhs ++ " = true")
+      | _ =>
+        match lhsOfEqTrue conc with
+        | some _ => some conc
+        | none => none
+
+def isRecordedBool (mods : List (List (String × FlagDef))) (n : String) : Bool :=
+  match lookupFlagMod mods n with
+  | some .boolFalse => true
+  | some (.boolAlias _) => true
+  | some .boolComputed => true
+  | _ => false
+
+structure FlagParse where
+  hyps : List (String × String)
+  falses : List (String × String)
+
+def lookupHyp (ps : FlagParse) (n : String) : Option String :=
+  ps.hyps.findSome? fun p => if p.1 == n then some p.2 else none
+
+def setHyp (ps : FlagParse) (n ty : String) : FlagParse :=
+  { ps with hyps := (n, ty) :: ps.hyps.filter fun p => p.1 != n }
+
+/-- Unfold one name in a tracked hypothesis. Unknown unfolds are not flag steps. -/
+def unfoldType (mods : List (List (String × FlagDef))) (name ty : String) : Option String :=
+  if ty == name then
+    match lookupFlagMod mods name with
+    | some (.eqTrue lhs) => some (lhs ++ " = true")
+    | some (.impliesFalse h) => some h
+    | some .boolFalse => some "false"
+    | some (.boolAlias t) => some t
+    | _ => none
+  else if ty == name ++ " = true" then
+    match lookupFlagMod mods name with
+    | some .boolFalse => some "false = true"
+    | some (.boolAlias t) => some (t ++ " = true")
+    | some .boolComputed => some ty
+    | _ => none
+  else
+    none
+
+def unbracket (w : String) : Option String :=
+  match w.toList with
+  | '[' :: rest =>
+    match rest.reverse with
+    | ']' :: mid =>
+      let inner := String.ofList mid.reverse
+      if isBareIdent inner then some inner else none
+    | _ => none
+  | _ => none
+
+/-- `rw [fact]` rewrites `fact : flag = false` into a hypothesis `flag = true`. -/
+def applyFlagRw (mods : List (List (String × FlagDef))) (ps : FlagParse)
+    (fact hyp : String) : Option FlagParse :=
+  match ps.falses.findSome? fun p => if p.1 == fact then some p.2 else none with
+  | none => none
+  | some flag =>
+    match lookupHyp ps hyp with
+    | none => none
+    | some ty =>
+      let hits :=
+        ty == flag ++ " = true" ||
+          match lookupFlagMod mods ty with
+          | some (.eqTrue lhs) => lhs == flag
+          | _ => false
+      if hits then some (setHyp ps hyp "false = true") else none
+
+def closeOk (mods : List (List (String × FlagDef))) (ps : FlagParse) (hyp : String) : Bool :=
+  match lookupHyp ps hyp with
+  | none => false
+  | some ty => ty == "false = true" || resolvesFalseBoolEqTrueMod mods ty 12
+
+def dropLeadBy : List String → List String
+  | "by" :: rest => rest
+  | xs => xs
+
+/-- Structural on fuel. `skip` drops arguments of one `simp`. -/
+def parseFlagBody (mods : List (List (String × FlagDef))) (ant : Option String)
+    (ps : FlagParse) (skip : Bool) (words : List String) : List Unit → Bool
+  | [] => false
+  | _ :: fuel =>
+    match words with
+    | [] => false
+    | w :: rest =>
+      if skip && !isStepKeyword w then
+        parseFlagBody mods ant ps true rest fuel
+      else
+        match w with
+        | "simp" => parseFlagBody mods ant ps true rest fuel
+        | "exact" =>
+          match rest with
+          | "Bool.noConfusion" :: hyp :: rest2 =>
+            rest2.isEmpty && isBareIdent hyp && closeOk mods ps hyp
+          | _ => false
+        | "nomatch" =>
+          match rest with
+          | hyp :: rest2 =>
+            rest2.isEmpty && isBareIdent hyp && closeOk mods ps hyp
+          | _ => false
+        | "intro" =>
+          match rest with
+          | name :: rest1 =>
+            let boundary :=
+              match rest1 with
+              | [] => true
+              | next :: _ => isStepKeyword next
+            if isBareIdent name && boundary then
+              match ant with
+              | none => false
+              | some ty => parseFlagBody mods ant (setHyp ps name ty) false rest1 fuel
+            else
+              false
+          | [] => false
+        | "unfold" =>
+          match rest with
+          | name :: "at" :: hyp :: rest1 =>
+            if !isStepIdent name || !isBareIdent hyp then false
+            else
+              match lookupHyp ps hyp with
+              | none => false
+              | some ty =>
+                match unfoldType mods name ty with
+                | none => false
+                | some ty2 => parseFlagBody mods ant (setHyp ps hyp ty2) false rest1 fuel
+          | _ => false
+        | "rw" =>
+          match rest with
+          | tok :: rest1 =>
+            match unbracket tok with
+            | some fact =>
+              match rest1 with
+              | "at" :: hyp :: rest2 =>
+                match applyFlagRw mods ps fact hyp with
+                | none => false
+                | some ps2 => parseFlagBody mods ant ps2 false rest2 fuel
+              | _ => false
+            | none =>
+              match rest with
+              | "[" :: fact :: "]" :: "at" :: hyp :: rest2 =>
+                if !isBareIdent fact || !isBareIdent hyp then false
+                else
+                  match applyFlagRw mods ps fact hyp with
+                  | none => false
+                  | some ps2 => parseFlagBody mods ant ps2 false rest2 fuel
+              | _ => false
+          | [] => false
+        | "have" =>
+          match rest with
+          | name :: ":" :: flag :: "=" :: "false" :: ":=" :: "by" :: "decide" :: rest2 =>
+            if isBareIdent name && isBareIdent flag && isRecordedBool mods flag then
+              let ps2 : FlagParse := { ps with falses := (name, flag) :: ps.falses }
+              parseFlagBody mods ant ps2 false rest2 fuel
+            else
+              false
+          | _ => false
+        | _ => false
+
+/-- Flag only when the steps stay in the allowed set and the close is on a false Bool flag. -/
+def isFlagOnlyProofBody (mods : List (List (String × FlagDef))) (sig body : String) : Bool :=
+  let ws := dropLeadBy (wordsOf body)
+  if ws.any wordBlocksFlagOnly then
     false
+  else
+    let seeded :=
+      match lastBinder sig with
+      | some b => [b]
+      | none => []
+    let ps : FlagParse := { hyps := seeded, falses := [] }
+    parseFlagBody mods (antecedentOf mods sig) ps false ws (fuelList (ws.length + 1))
+
+/-- Drops a flag only proof. Sibling lines and meetsPdoss stay in the catalog. -/
+def isFlagOnlyThm (mods : List (List (String × FlagDef))) (sig body : String) : Bool :=
+  isFlagOnlyProofBody mods sig body
 
 def fileBase (path : String) : String :=
   match path.splitOn "/" with
@@ -483,7 +696,7 @@ def factModsForKey (idx : List ModFlag) (key : String) : List (List (String × F
   let bound := (idx.length + 1) * (idx.length + 1) + 8
   orderedFactMods idx [key] [] [] 40 (fuelList bound)
 
-/-- Source body is only `Bool.noConfusion` or only nomatch, on a false bool flag. -/
+/-- Source body is a flag only proof: allowed steps, closed on a false Bool flag. -/
 def claimIsFlagOnly (idx : List ModFlag) (texts : List (String × String)) (file claim : String) : Bool :=
   match findText texts file with
   | none => false
@@ -492,6 +705,82 @@ def claimIsFlagOnly (idx : List ModFlag) (texts : List (String × String)) (file
     match (theoremsIn text).find? (fun t => t.name == claim) with
     | none => false
     | some thm => isFlagOnlyThm mods thm.sig thm.body
+
+def isBlankLine (line : String) : Bool :=
+  collapseWs line == ""
+
+def hasDocOpen (line : String) : Bool :=
+  (line.splitOn "/--").length > 1
+
+def isDocCloseLine (line : String) : Bool :=
+  collapseWs line == "-/"
+
+/-- Lines before the theorem, nearest first. Stops at the opening doc marker. -/
+def docAboveGo : List String → List String → Bool → List String
+  | [], acc, _ => acc
+  | line :: rest, acc, started =>
+    if !started && isBlankLine line then
+      docAboveGo rest acc false
+    else if hasDocOpen line && (started || line.startsWith "/--") then
+      line :: acc
+    else if !started && isDocCloseLine line then
+      docAboveGo rest (line :: acc) true
+    else if started then
+      if columnZeroDecl line && !hasDocOpen line then
+        acc
+      else
+        docAboveGo rest (line :: acc) true
+    else
+      acc
+
+def docAbove (lines : List String) (idx : Nat) : String :=
+  String.intercalate "\n" (docAboveGo ((lines.take idx).reverse) [] false)
+
+def findThmLine : List String → Nat → String → Option Nat
+  | [], _, _ => none
+  | line :: rest, i, name =>
+    match theoremNameOf line with
+    | some n =>
+      if n == name && !(line.startsWith " ") && !(line.startsWith "\t") then
+        some i
+      else
+        findThmLine rest (i + 1) name
+    | none => findThmLine rest (i + 1) name
+
+/-- Doc comment, signature, and body. None when the theorem text is missing. -/
+def claimProofText (texts : List (String × String)) (file claim : String) : Option String :=
+  findText texts file |>.bind fun text =>
+    let lines := text.splitOn "\n"
+    match findThmLine lines 0 claim with
+    | none => none
+    | some idx =>
+      match (theoremsIn text).find? (fun t => t.name == claim) with
+      | none => none
+      | some thm =>
+        some (docAbove lines idx ++ "\n" ++ thm.sig ++ "\n" ++ thm.body)
+
+/-- A live read is `readLive`, `encodedLines`, or the words sibling line. -/
+def mentionsLiveSibling (s : String) : Bool :=
+  (s.splitOn "readLive").length > 1 ||
+    (s.splitOn "encodedLines").length > 1 ||
+    (s.splitOn "sibling line").length > 1
+
+/-- Retired False wrappers. Confident if they ever return as catalog rows. -/
+def namedConfidentWrapper (claim : String) : Bool :=
+  claim == "claiming_emit_equals_elf_is_inconsistent" ||
+    claim == "mash_byte_identity_claimed_true_is_false"
+
+def claimSourceFound (texts : List (String × String)) (file claim : String) : Bool :=
+  (claimProofText texts file claim).isSome
+
+/-- Confident only when the proof text reads live sibling lines or names that clash. -/
+def claimIsConfident (texts : List (String × String)) (file claim : String) : Bool :=
+  if namedConfidentWrapper claim then
+    true
+  else
+    match claimProofText texts file claim with
+    | none => false
+    | some s => mentionsLiveSibling s
 
 def collectBuilt (env : Environment) : List (String × String) :=
   let step (acc : List (String × String)) (p : Name × ConstantInfo) : List (String × String) :=
@@ -520,14 +809,25 @@ elab "install_inconsistency_catalog" : command => do
     throwError "inconsistency catalog: no Lean sources loaded"
   let idx := indexFlags texts
   let rows := (collectBuilt env).filter fun p => !claimIsFlagOnly idx texts p.1 p.2
-  if rows.length != 225 then
+  let unknown := rows.filter fun p => !claimSourceFound texts p.1 p.2
+  if !unknown.isEmpty then
+    let listing := String.intercalate "\n" (unknown.map fun (f, c) => s!"{f} {c}")
+    throwError s!"could not classify from proof text\n{listing}"
+  let confidentPairs := rows.filter fun p => claimIsConfident texts p.1 p.2
+  let assumedPairs := rows.filter fun p => !claimIsConfident texts p.1 p.2
+  if rows.length != 76 || confidentPairs.length != 6 || assumedPairs.length != 70 ||
+      confidentPairs.length + assumedPairs.length != rows.length then
     let listing := String.intercalate "\n" (rows.map fun (f, c) => s!"{f} {c}")
-    throwError s!"built inconsistency scan found {rows.length}, want 225, sources {texts.length}\n{listing}"
-  let body := String.intercalate ",\n" (rows.map fun (f, c) => emitClaim f c)
-  let cmd := "def scannedClaims : List ProvenClaim := [\n" ++ body ++ "\n]\n"
-  match runParserCategory env `command cmd "<inconsistency-catalog>" with
-  | .ok stx => elabCommand stx
-  | .error e => throwError e
+    let confListing := String.intercalate "\n" (confidentPairs.map fun (f, c) => s!"{f} {c}")
+    throwError s!"built inconsistency scan found {rows.length}, want 76, confident {confidentPairs.length}, want confident 6, assumed {assumedPairs.length}, want assumed 70, sources {texts.length}\n{listing}\nconfident rows\n{confListing}"
+  let elabOne (cmd : String) : CommandElabM Unit := do
+    let env ← getEnv
+    match runParserCategory env `command cmd "<inconsistency-catalog>" with
+    | .ok stx => elabCommand stx
+    | .error e => throwError e
+  elabOne (renderClaimList "scannedClaims" rows)
+  elabOne (renderClaimList "confidentClaims" confidentPairs)
+  elabOne (renderClaimList "assumedClaims" assumedPairs)
 
 install_inconsistency_catalog
 
@@ -537,7 +837,60 @@ def catalog : List ProvenClaim := scannedClaims
 /-- Same list. The old hand lock of length 7 is not the bar. -/
 def provenClaims : List ProvenClaim := catalog
 
-theorem catalog_count : catalog.length = 225 := by
+theorem catalog_count : catalog.length = 76 := by
+  native_decide
+
+theorem confident_count : confidentClaims.length = 6 := by
+  native_decide
+
+theorem assumed_count : assumedClaims.length = 70 := by
+  native_decide
+
+theorem confident_plus_assumed_eq_catalog :
+    confidentClaims.length + assumedClaims.length = catalog.length := by
+  native_decide
+
+theorem emit_wrapper_not_in_catalog :
+    catalog.any (fun c => c.claim == "claiming_emit_equals_elf_is_inconsistent") = false := by
+  native_decide
+
+theorem byte_identity_wrapper_not_in_catalog :
+    catalog.any (fun c => c.claim == "mash_byte_identity_claimed_true_is_false") = false := by
+  native_decide
+
+theorem compcert_refines_is_confident :
+    confidentClaims.any (fun c =>
+      c.claim == "mash_compcert_refines_claimed_done_is_false") = true := by
+  native_decide
+
+theorem self_host_is_confident :
+    confidentClaims.any (fun c =>
+      c.claim == "mash_self_host_from_c_satisfies_bootstrap_is_false") = true := by
+  native_decide
+
+theorem compcert_tso_is_confident :
+    confidentClaims.any (fun c =>
+      c.claim == "mash_compcert_tso_satisfies_clause42_item6_is_false") = true := by
+  native_decide
+
+theorem safe_kernel_is_confident :
+    confidentClaims.any (fun c =>
+      c.claim == "mash_safe_kernel_implies_safe_compcert_is_false") = true := by
+  native_decide
+
+theorem cc0_claimed_meets_is_confident :
+    confidentClaims.any (fun c =>
+      c.claim == "mash_cc0_claimed_meets_pdoss_is_false") = true := by
+  native_decide
+
+theorem cc0_pin_is_confident :
+    confidentClaims.any (fun c =>
+      c.claim == "mash_cc0_pinned_as_meeting_pdoss") = true := by
+  native_decide
+
+theorem reference_target_is_assumed :
+    assumedClaims.any (fun c =>
+      c.claim == "mash_reference_target_satisfies_clause42_item6_is_false") = true := by
   native_decide
 
 def hasClaim (file claim : String) : Bool :=
@@ -547,9 +900,9 @@ theorem session_bus_spec_and_proof_in_catalog :
     hasClaim "lean/SessionBusProofs.lean" "mash_spec_and_proof_is_false" = true := by
   native_decide
 
-theorem session_bus_program_claimed_in_catalog :
+theorem session_bus_program_claimed_not_in_catalog :
     hasClaim "lean/SessionBusProofs.lean"
-      "mash_conforming_session_bus_program_claimed_is_false" = true := by
+      "mash_conforming_session_bus_program_claimed_is_false" = false := by
   native_decide
 
 def claimInCatalog (claim : String) : Bool :=
@@ -563,36 +916,36 @@ theorem vga_bool_flag_not_in_catalog :
     claimInCatalog "mash_vga256_as_doge_palette_is_false" = false := by
   native_decide
 
-theorem sssss_delta_loop_byte_identity_in_catalog :
-    hasClaim "lean/SssssProofs.lean" "mash_delta_loop_byte_identity_holds_is_false" = true := by
+theorem sssss_delta_loop_byte_identity_not_in_catalog :
+    hasClaim "lean/SssssProofs.lean" "mash_delta_loop_byte_identity_holds_is_false" = false := by
   native_decide
 
-theorem sssss_neural_accepts_rule_without_lean_proof_in_catalog :
+theorem sssss_neural_accepts_rule_without_lean_proof_not_in_catalog :
     hasClaim "lean/SssssProofs.lean"
-      "mash_neural_accepts_rule_without_lean_proof_is_false" = true := by
+      "mash_neural_accepts_rule_without_lean_proof_is_false" = false := by
   native_decide
 
-theorem sssss_security_alone_must_in_catalog :
-    hasClaim "lean/SssssProofs.lean" "mash_security_alone_must_is_false" = true := by
+theorem sssss_security_alone_must_not_in_catalog :
+    hasClaim "lean/SssssProofs.lean" "mash_security_alone_must_is_false" = false := by
   native_decide
 
-theorem sssss_performance_alone_must_in_catalog :
-    hasClaim "lean/SssssProofs.lean" "mash_performance_alone_must_is_false" = true := by
+theorem sssss_performance_alone_must_not_in_catalog :
+    hasClaim "lean/SssssProofs.lean" "mash_performance_alone_must_is_false" = false := by
   native_decide
 
-theorem sssss_exactly_one_reference_compiler_in_catalog :
+theorem sssss_exactly_one_reference_compiler_not_in_catalog :
     hasClaim "lean/SssssProofs.lean"
-      "mash_exactly_one_reference_compiler_is_false" = true := by
+      "mash_exactly_one_reference_compiler_is_false" = false := by
   native_decide
 
-theorem sssss_spec_0004_replaces_0002_in_catalog :
+theorem sssss_spec_0004_replaces_0002_not_in_catalog :
     hasClaim "lean/SssssProofs.lean"
-      "mash_spec_0004_replaces_spec_0002_is_false" = true := by
+      "mash_spec_0004_replaces_spec_0002_is_false" = false := by
   native_decide
 
-theorem sssss_spec_0006_replaces_0004_in_catalog :
+theorem sssss_spec_0006_replaces_0004_not_in_catalog :
     hasClaim "lean/SssssProofs.lean"
-      "mash_spec_0006_replaces_spec_0004_is_false" = true := by
+      "mash_spec_0006_replaces_spec_0004_is_false" = false := by
   native_decide
 
 theorem systems_lean_reference_target_clause42_in_catalog :
@@ -600,9 +953,9 @@ theorem systems_lean_reference_target_clause42_in_catalog :
       "mash_reference_target_satisfies_clause42_item6_is_false" = true := by
   native_decide
 
-theorem rsi_supercompiler_improvement_finished_in_catalog :
+theorem rsi_supercompiler_improvement_finished_not_in_catalog :
     hasClaim "lean/RsiProofs.lean"
-      "mash_supercompiler_improvement_finished_is_false" = true := by
+      "mash_supercompiler_improvement_finished_is_false" = false := by
   native_decide
 
 structure CatalogAudit where

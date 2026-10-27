@@ -38,7 +38,7 @@ def usage : String :=
   "  planned file tokens in numbered specs other than 0000 require a Residual heading.\n" ++
   "  numbered specs that name Keagan or proofofkeags must also contain proofofkeags.com.\n" ++
   "  residual must not say a named product never started.\n" ++
-  "  extra honesty markdown: AGENTS.md, README.md, RESIDUAL.md, VOCABULARY.md.\n" ++
+  "  extra honesty markdown: AGENTS.md, README.md, VOCABULARY.md.\n" ++
   "\n" ++
   "With no paths, discovers numbered specifications at the root only (same naming scheme).\n" ++
   "UNLICENSE.md / LICENSE* get ASCII and whitespace only when passed explicitly\n" ++
@@ -103,8 +103,9 @@ def main (args : List String) : IO UInt32 := do
     failCount := failCount + 1
 
   -- Residual honesty: never-real product claims. Always scan every root
-  -- numbered specification plus extraHonestyMarkdownFileNames. Do not
-  -- shorten that extra list relative to WordStats extra markdown.
+  -- numbered specification plus extraHonestyMarkdownFileNames. That list
+  -- is the same list WordStats reads. A missing file on that list fails.
+  -- Absence of a retired root tracker does not fail this scan.
   let numberedHonesty ← collectRootNumberedSpecs repo
   for p in numberedHonesty do
     let name := baseName p.toString

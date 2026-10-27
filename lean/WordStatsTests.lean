@@ -55,8 +55,9 @@ def runCases : List Case :=
   [
     expectEqString "report file is WORD_STATS.md"
       reportFileName "WORD_STATS.md",
-    expectEqNat "extra markdown files are four"
-      extraMarkdownFileNames.length 4,
+    expectEqString "extra markdown files are AGENTS.md, README.md, and VOCABULARY.md"
+      (String.intercalate ", " extraMarkdownFileNames)
+      "AGENTS.md, README.md, VOCABULARY.md",
     expectTrue "extra markdown list matches honesty scan list"
       (extraMarkdownFileNames == SpecRegistry.extraHonestyMarkdownFileNames),
     expectEqNat "RFC 2119 letter token count"

@@ -1,9 +1,11 @@
 # Pure Nix checker: project-owned trailing whitespace and tab-only leading indent.
 #
 # Call as: import ./nix/whitespace.nix { inherit lib; } root
-# root is a path, or a string store path from toString of cleanSourceWith.
-# A string store path is walked with builtins.readDir. lib.fileset.fileFilter
-# rejects that string and rejects a set, so fileFilter is not used for it.
+# root may be a Nix path, an absolute path string, or a set whose outPath
+# is a Nix path or an absolute path string. cleanSourceWith returns a set.
+# Its outPath may be a path, or an absolute path string. /. + that string
+# makes a Nix path. A store path string drops its context first.
+# Do not pass toString of that set. fileFilter rejects a string.
 # Returns: list of "path:line: message" strings (empty = ok).
 #
 # Not Lean. Not bash. Evaluation is the check (see flake checks.whitespace).
@@ -16,18 +18,50 @@ root:
 let
 	inherit (builtins)
 		readFile
-		readDir
 		split
 		stringLength
 		substring
 		filter
 		isString
+		isPath
 		pathExists
-		attrNames
+		typeOf
 		;
 	inherit (lib) fileset;
 
-	rootStr = toString root;
+	# fileFilter requires a Nix path. cleanSourceWith returns a set.
+	# outPath may be a path, or an absolute path string.
+	# /. + s is path concatenation. It turns that string into a Nix path.
+	# Nix refuses /. + on a string that refers to a store path, so that case
+	# drops the string context first (builtins.unsafeDiscardStringContext).
+	# Do not use toString on the set. Do not use builtins.toPath.
+	# A relative string is not coerced.
+	badRootMsg = "whitespace.nix: root must be a Nix path, an absolute path string, or a set whose outPath is a Nix path or an absolute path string. Pass cleanSourceWith outPath. Do not pass toString of that set into fileFilter.";
+
+	absStringToPath =
+		s:
+		if isString s && lib.hasPrefix "/" s then
+			if builtins.hasContext s then
+				/. + builtins.unsafeDiscardStringContext s
+			else
+				/. + s
+		else
+			throw badRootMsg;
+
+	rootPath =
+		if isPath root then
+			root
+		else if isString root then
+			absStringToPath root
+		else if typeOf root == "set" && root ? outPath && isPath root.outPath then
+			root.outPath
+		else if typeOf root == "set" && root ? outPath then
+			absStringToPath root.outPath
+		else
+			throw badRootMsg;
+
+	# toString of the Nix path is the diagnostic prefix. Do not toString a set.
+	rootStr = toString rootPath;
 	rootPrefix =
 		if lib.hasSuffix "/" rootStr then
 			rootStr
@@ -102,40 +136,7 @@ let
 	skipsLeadingSpaceRule =
 		rel: lib.hasSuffix ".lean" rel || lib.hasSuffix ".yml" rel || lib.hasSuffix ".yaml" rel;
 
-	# Directory base names that are build products. A string store root is
-	# already filtered, and these names are still not descended into.
-	skipDirName =
-		name:
-		name == ".git"
-		|| name == ".direnv"
-		|| name == ".lake"
-		|| name == "result"
-		|| lib.hasPrefix "result-" name;
-
-	# lib.fileset.fileFilter rejects a store path string. Walk that root here.
-	readDirFiles =
-		dir:
-		let
-			listing = readDir dir;
-		in
-		lib.concatMap (
-			name:
-			let
-				typ = listing.${name};
-				child = dir + "/" + name;
-			in
-			if typ == "directory" then
-				if skipDirName name || isSkipped (relOf child) then
-					[ ]
-				else
-					readDirFiles child
-			else if typ == "regular" then
-				[ child ]
-			else
-				[ ]
-		) (attrNames listing);
-
-	# Prefer fileset when root is a path: only text-ish candidates enter the set (PDFs never matched).
+	# Only a path reaches fileFilter. PDFs never match this predicate.
 	ownedFileset =
 		fileset.fileFilter (
 			file:
@@ -157,7 +158,7 @@ let
 			|| n == "aspell_words.txt"
 			|| n == "lean-toolchain"
 			|| lib.hasSuffix ".SOURCE" n
-		) root;
+		) rootPath;
 
 	candidateFileset = ownedFileset;
 
@@ -166,8 +167,8 @@ let
 		let
 			maybe =
 				p:
-				if pathExists (root + p) then
-					[ (root + p) ]
+				if pathExists (rootPath + p) then
+					[ (rootPath + p) ]
 				else
 					[ ];
 		in
@@ -185,12 +186,8 @@ let
 
 	selectedFileset = fileset.difference candidateFileset excludeTrees;
 
-	# A path root still uses fileset. A string root never reaches fileFilter.
-	allPaths =
-		if isString root then
-			readDirFiles root
-		else
-			fileset.toList selectedFileset;
+	# rootPath is a path, so fileFilter already accepted it. A string never reaches here.
+	allPaths = fileset.toList selectedFileset;
 
 	pathsToCheck = filter (
 		path:

@@ -21,6 +21,8 @@ import Proofs_0012
 import Proofs_0013
 import Proofs_0014
 import Proofs_0015
+import Proofs_0016
+import Proofs_0017
 import «0000_spec»
 import «0001_DOGE»
 import «0002_Systems_Lean»
@@ -37,6 +39,8 @@ import «0012_Majestic_Memex»
 import «0013_Lean_Machine»
 import «0014_Anunnaki_Encoding»
 import «0015_Session_Bus»
+import «0016_Hierarchical_Subagents»
+import «0017_Schedula»
 
 namespace SpecProofs
 
@@ -57,7 +61,9 @@ theorem encodings_are_not_proofs :
       «0012_Majestic_Memex».markedAsProof = false ∧
       «0013_Lean_Machine».markedAsProof = false ∧
       «0014_Anunnaki_Encoding».markedAsProof = false ∧
-      «0015_Session_Bus».markedAsProof = false :=
+      «0015_Session_Bus».markedAsProof = false ∧
+      «0016_Hierarchical_Subagents».markedAsProof = false ∧
+      «0017_Schedula».markedAsProof = false :=
   And.intro Proofs_0000.encoding_is_not_proof.2
     (And.intro Proofs_0001.encoding_is_not_proof.2
       (And.intro Proofs_0002.encoding_is_not_proof.2
@@ -73,7 +79,9 @@ theorem encodings_are_not_proofs :
                           (And.intro Proofs_0012.encoding_is_not_proof.2
                             (And.intro Proofs_0013.encoding_is_not_proof.2
                               (And.intro Proofs_0014.encoding_is_not_proof.2
-                                Proofs_0015.encoding_is_not_proof.2))))))))))))))
+                                (And.intro Proofs_0015.encoding_is_not_proof.2
+                                  (And.intro Proofs_0016.encoding_is_not_proof.2
+                                    Proofs_0017.encoding_is_not_proof.2))))))))))))))))
 
 def encodingsNotMashed : Bool :=
   !«0000_spec».markedAsProof &&
@@ -107,11 +115,15 @@ def encodingsNotMashed : Bool :=
     !«0014_Anunnaki_Encoding».markedAsProof &&
     «0014_Anunnaki_Encoding».markedAsSpecEncoding &&
     !«0015_Session_Bus».markedAsProof &&
-    «0015_Session_Bus».markedAsSpecEncoding
+    «0015_Session_Bus».markedAsSpecEncoding &&
+    !«0016_Hierarchical_Subagents».markedAsProof &&
+    «0016_Hierarchical_Subagents».markedAsSpecEncoding &&
+    !«0017_Schedula».markedAsProof &&
+    «0017_Schedula».markedAsSpecEncoding
 
 theorem encodings_not_mashed : encodingsNotMashed = true := rfl
 
-theorem sixteen_published_encodings :
+theorem seventeen_published_encodings :
     «0000_spec».specNumber = 0 ∧
       «0001_DOGE».specNumber = 1 ∧
       «0002_Systems_Lean».specNumber = 2 ∧
@@ -127,7 +139,8 @@ theorem sixteen_published_encodings :
       «0012_Majestic_Memex».specNumber = 12 ∧
       «0013_Lean_Machine».specNumber = 13 ∧
       «0014_Anunnaki_Encoding».specNumber = 14 ∧
-      «0015_Session_Bus».specNumber = 15 :=
+      «0015_Session_Bus».specNumber = 15 ∧
+      «0016_Hierarchical_Subagents».specNumber = 16 :=
   And.intro Proofs_0000.spec_number
     (And.intro Proofs_0001.spec_number
       (And.intro Proofs_0002.spec_number
@@ -143,6 +156,46 @@ theorem sixteen_published_encodings :
                           (And.intro Proofs_0012.spec_number
                             (And.intro Proofs_0013.spec_number
                               (And.intro Proofs_0014.spec_number
-                                Proofs_0015.spec_number))))))))))))))
+                                (And.intro Proofs_0015.spec_number
+                                  Proofs_0016.spec_number)))))))))))))))
+
+/-- Eighteen published sibling encodings, specifications 0000 through 0017. -/
+theorem eighteen_published_encodings :
+    «0000_spec».specNumber = 0 ∧
+      «0001_DOGE».specNumber = 1 ∧
+      «0002_Systems_Lean».specNumber = 2 ∧
+      «0003_beastdb».specNumber = 3 ∧
+      «0004_SSSSS».specNumber = 4 ∧
+      «0005_CATE».specNumber = 5 ∧
+      «0006_RSI».specNumber = 6 ∧
+      «0007_CI».specNumber = 7 ∧
+      «0008_Formal_Vibefication».specNumber = 8 ∧
+      «0009_PDOSS».specNumber = 9 ∧
+      «0010_Surmount_Systems».specNumber = 10 ∧
+      «0011_Surmount_Systems_Tech_Tree».specNumber = 11 ∧
+      «0012_Majestic_Memex».specNumber = 12 ∧
+      «0013_Lean_Machine».specNumber = 13 ∧
+      «0014_Anunnaki_Encoding».specNumber = 14 ∧
+      «0015_Session_Bus».specNumber = 15 ∧
+      «0016_Hierarchical_Subagents».specNumber = 16 ∧
+      «0017_Schedula».specNumber = 17 :=
+  And.intro Proofs_0000.spec_number
+    (And.intro Proofs_0001.spec_number
+      (And.intro Proofs_0002.spec_number
+        (And.intro Proofs_0003.spec_number
+          (And.intro Proofs_0004.spec_number
+            (And.intro Proofs_0005.spec_number
+              (And.intro Proofs_0006.spec_number
+                (And.intro Proofs_0007.spec_number
+                  (And.intro Proofs_0008.spec_number
+                    (And.intro Proofs_0009.spec_number
+                      (And.intro Proofs_0010.spec_number
+                        (And.intro Proofs_0011.spec_number
+                          (And.intro Proofs_0012.spec_number
+                            (And.intro Proofs_0013.spec_number
+                              (And.intro Proofs_0014.spec_number
+                                (And.intro Proofs_0015.spec_number
+                                  (And.intro Proofs_0016.spec_number
+                                    Proofs_0017.spec_number))))))))))))))))
 
 end SpecProofs

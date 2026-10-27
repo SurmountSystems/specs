@@ -2,7 +2,7 @@
   Hermetic tests for the README proven logical inconsistency table.
   Red: missing table, stale table, a built proof absent from the catalog,
   or a catalog name that is not an inconsistency.
-  Green: the catalog length is 225 and a matching table is current.
+  Green: the catalog length is 76, confident 6, assumed 70, and a matching table is current.
 -/
 
 import InconsistencyReport
@@ -51,10 +51,23 @@ def fixtureSrc : String :=
 
 def runCases : List Case :=
   [
-    expectEqNat "built inconsistency catalog count" catalog.length 225,
+    expectEqNat "built inconsistency catalog count" catalog.length 76,
+    expectEqNat "confident inconsistency count" confidentClaims.length 6,
+    expectEqNat "assumed inconsistency count" assumedClaims.length 70,
+    expectEqNat "confident plus assumed is the scanned total"
+      (confidentClaims.length + assumedClaims.length) 76,
+    expectFalse "emit equals elf wrapper is not a catalog row"
+      (claimInCatalog "claiming_emit_equals_elf_is_inconsistent"),
+    expectFalse "byte identity claimed true wrapper is not a catalog row"
+      (claimInCatalog "mash_byte_identity_claimed_true_is_false"),
+    expectTrue "compcert refines denial is confident"
+      (confidentClaims.any fun c => c.claim == "mash_compcert_refines_claimed_done_is_false"),
+    expectTrue "reference target clash is assumed"
+      (assumedClaims.any fun c =>
+        c.claim == "mash_reference_target_satisfies_clause42_item6_is_false"),
     expectTrue "session bus mash_spec_and_proof_is_false is in the catalog"
       (hasClaim "lean/SessionBusProofs.lean" "mash_spec_and_proof_is_false"),
-    expectTrue "session bus mash_conforming_session_bus_program_claimed_is_false is in the catalog"
+    expectFalse "session bus mash_conforming_session_bus_program_claimed_is_false is not in the catalog"
       (hasClaim "lean/SessionBusProofs.lean"
         "mash_conforming_session_bus_program_claimed_is_false"),
     expectFalse "mash_hides_split is not an inconsistency"
@@ -73,8 +86,8 @@ def runCases : List Case :=
       (readmeTableCurrent fixtureStale),
     expectTrue "README current table matches the catalog"
       (readmeTableCurrent fixtureCurrent),
-    expectTrue "generated table names the session bus proof"
-      (Nat.blt 1 (generatedTable.splitOn "mash_conforming_session_bus_program_claimed_is_false").length),
+    expectTrue "generated table names mash_mit_meets_pdoss"
+      (Nat.blt 1 (generatedTable.splitOn "mash_mit_meets_pdoss").length),
     expectTrue "catalog is not empty" existsAny
   ]
 

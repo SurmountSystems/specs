@@ -28,6 +28,8 @@ import «0012_Majestic_Memex»
 import «0013_Lean_Machine»
 import «0014_Anunnaki_Encoding»
 import «0015_Session_Bus»
+import «0016_Hierarchical_Subagents»
+import «0017_Schedula»
 
 open LineEncodings
 
@@ -141,7 +143,21 @@ def compiledEncodings : Array EncodedSpec :=
       «0015_Session_Bus».proofModuleName
       «0015_Session_Bus».markedAsSpecEncoding
       «0015_Session_Bus».markedAsProof
-      «0015_Session_Bus».encodedLines
+      «0015_Session_Bus».encodedLines,
+    ofSpec «0016_Hierarchical_Subagents».specNumber
+      «0016_Hierarchical_Subagents».specFileName
+      «0016_Hierarchical_Subagents».siblingEncodingFileName
+      «0016_Hierarchical_Subagents».proofModuleName
+      «0016_Hierarchical_Subagents».markedAsSpecEncoding
+      «0016_Hierarchical_Subagents».markedAsProof
+      «0016_Hierarchical_Subagents».encodedLines,
+    ofSpec «0017_Schedula».specNumber
+      «0017_Schedula».specFileName
+      «0017_Schedula».siblingEncodingFileName
+      «0017_Schedula».proofModuleName
+      «0017_Schedula».markedAsSpecEncoding
+      «0017_Schedula».markedAsProof
+      «0017_Schedula».encodedLines
   ]
 
 def main (args : List String) : IO UInt32 := do

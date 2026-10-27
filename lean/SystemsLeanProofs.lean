@@ -419,34 +419,28 @@ theorem slake_bootstrap_typecheck_not_claimed_done :
     slakeBootstrapTypecheckClaimedDone = false := rfl
 
 /--
-  The unpublished 1.0.0 changelog sentence says CompCert verified compilation
-  of the freestanding C emit is a required core validation step. Clause 3.9
-  and Clause 4.2 item 6 say `ccomp` is one optional metric, not the only
-  metric, not claimed done, and that an unmarked freestanding C emit is not
-  required to be compiled with `ccomp`. Treating the changelog sentence as
-  the current rule yields False because those live sentences deny it.
-  The `native_decide` steps reduce the sibling lines. Removing the Clause 3.9
-  optional and not claimed done wording makes the live reading `none`, so
-  this proof no longer closes.
+  Clause 3.9 and Clause 4.2 item 6 are the current CompCert rule.
+  `native_decide` reads those sibling lines. Deleting a live optional
+  metric sentence makes this proof fail.
 -/
-theorem mash_compcert_verified_compilation_claimed_done_is_false :
-    historicalCompCertRequiredStepIsCurrentRuleIsFalse := by
-  intro h
-  have sideA :
-      readHistoricalCompCertRule historicalCompCertRequiredStepLine =
-        some .requiredCoreValidationStep := by
-    native_decide
-  have sideB :
-      readLiveCompCertRule clause39CompCertLine clause42Item6CompCertLine =
-        some .optionalMetricNotClaimedDone := by
-    native_decide
-  have hA := h.1
-  have hB := h.2
-  rw [sideA] at hA
-  rw [sideB] at hB
-  injection hA with _eqA
-  injection hB with eqB
-  injection eqB
+theorem read_live_compcert_rule_is_optional_metric_not_claimed_done :
+    readLiveCompCertRule clause39CompCertLine clause42Item6CompCertLine =
+      some .optionalMetricNotClaimedDone := by
+  native_decide
+
+/--
+  The unpublished 1.0.0 changelog no longer contains the withdrawn
+  required core step sentence. Restoring that sentence makes this proof fail.
+-/
+theorem historical_changelog_line_does_not_read_required_core_step :
+    historicalReadsRequiredCoreStep historicalCompCertRequiredStepLine.text = false := by
+  native_decide
+
+/-- The required core step reading is not the live optional metric reading. -/
+theorem required_core_validation_step_is_not_optional_metric :
+    CompCertMetricReading.requiredCoreValidationStep ≠
+      CompCertMetricReading.optionalMetricNotClaimedDone := by
+  native_decide
 
 /-- Clause 4.2 item 7. Sibling markdown line 391. Array index 390. -/
 def clause42Item7SlakeLine : MdLine :=
@@ -510,25 +504,20 @@ def slakeBootstrapTypecheckCountedFinished : Bool :=
     some .finished
 
 /--
-  Live Clause 4.2 item 7 and Clause 6.3 say the bootstrap typecheck covers
-  all Slake code, including theorems, that developers and agents must run
-  that step, that a user building finished code may skip running it, and
-  that the step is not claimed done. Treating the Slake bootstrap typecheck
-  as finished yields False. The `native_decide` step reads those sibling
-  lines. Removing the Clause 6.3 sentence that the step is not claimed done
-  makes the reading `none`, so this proof no longer closes.
+  Clause 4.2 item 7 and Clause 6.3 are the live Slake bootstrap rule.
+  The typecheck covers all Slake code, including theorems. Developers
+  and agents must run that step. A user who is building finished code
+  may skip running it. That skip does not make the bootstrap typecheck
+  done. The step is a required validation step and is not claimed done.
+  `native_decide` reads those sibling lines. Removing the Clause 4.2
+  item 7 obligations or the Clause 6.3 sentence "A bootstrapped Slake
+  compiler that fully typechecks is a required validation step. It is
+  not claimed done." makes this proof fail.
 -/
-theorem mash_slake_bootstrap_typecheck_claimed_done_is_false :
-    slakeBootstrapTypecheckFinishedAsCurrentFactIsFalse := by
-  intro h
-  unfold slakeBootstrapTypecheckFinishedAsCurrentFact at h
-  have live :
-      readLiveSlakeBootstrap clause42Item7SlakeLine clause63SlakeBootstrapLine =
-        some .notClaimedDone := by
-    native_decide
-  rw [live] at h
-  injection h with eq
-  injection eq
+theorem read_live_slake_bootstrap_is_not_claimed_done :
+    readLiveSlakeBootstrap clause42Item7SlakeLine clause63SlakeBootstrapLine =
+      some .notClaimedDone := by
+  native_decide
 
 /-- All Slake code is typechecked. There is no exception. -/
 theorem all_slake_code_must_be_typechecked :

@@ -33,7 +33,7 @@ theorem report_file_is_word_stats_md : reportFileName = "WORD_STATS.md" :=
 def extraMarkdownFileNames : List String :=
   SpecRegistry.extraHonestyMarkdownFileNames
 
-theorem extra_files_are_four : extraMarkdownFileNames.length = 4 :=
+theorem extra_files_are_three : extraMarkdownFileNames.length = 3 :=
   rfl
 
 /--
@@ -261,7 +261,7 @@ def renderReport (s : Stats) : String :=
       "",
       "This tracking is not a proof that every English sentence is CATE. The leftover unstack floor in 0005_CATE.md remains a separate check.",
       "",
-      "Scope is root numbered NNNN markdown files, README.md, AGENTS.md, RESIDUAL.md, and VOCABULARY.md. This file is not in the scan. Vendor trees under ref, the Lean 4 skill pack, Lake build output, Nix result links, and git metadata are not in the scan. Lean comments are not in the scan.",
+      "Scope is root numbered NNNN markdown files, README.md, AGENTS.md, and VOCABULARY.md. This file is not in the scan. Vendor trees under ref, the Lean 4 skill pack, Lake build output, Nix result links, and git metadata are not in the scan. Lean comments are not in the scan.",
       "",
       "The Lean program word_stats writes this file and fails when this file is stale.",
       "",

@@ -19,7 +19,9 @@
   `lean/UnlicenseSpec.lean`, `lean/CateSpec.lean`, `lean/RsiSpec.lean`,
   `lean/CiSpec.lean`, `lean/BeastDbSpec.lean`, `lean/SssssSpec.lean`,
   `lean/SystemsLeanSpec.lean`, `lean/LeanMachineSpec.lean`,
-  `lean/AnunnakiSpec.lean`, and `lean/SessionBusSpec.lean`
+  `lean/AnunnakiSpec.lean`, `lean/SessionBusSpec.lean`,
+  `lean/HierarchicalSubagentsSpec.lean`, and
+  `lean/SchedulaSpec.lean`
   SHALL NOT contain those leftover phrases. That scan uses
   `Cate.leftoverUnstackPhrases` and `SpecCheck.checkLeftoverUnstack`.
   It is a floor, not a complete English checker. The same comment
@@ -349,7 +351,9 @@ def meaningSpecEncodingRelPaths : Array String :=
     "lean/CateSpec.lean", "lean/RsiSpec.lean", "lean/CiSpec.lean",
     "lean/BeastDbSpec.lean", "lean/SssssSpec.lean", "lean/SystemsLeanSpec.lean",
     "lean/LeanMachineSpec.lean", "lean/AnunnakiSpec.lean",
-    "lean/SessionBusSpec.lean"]
+    "lean/SessionBusSpec.lean",
+    "lean/HierarchicalSubagentsSpec.lean",
+    "lean/SchedulaSpec.lean"]
 
 def leftoverUnstackPhrasesAreCate : Bool :=
   SpecCheck.leftoverUnstackPhrases == Cate.leftoverUnstackPhrases

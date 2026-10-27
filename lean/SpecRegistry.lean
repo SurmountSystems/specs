@@ -19,6 +19,10 @@
   Machine (`0013_Lean_Machine.md`). Number 0014 is Anunnaki
   Encoding (`0014_Anunnaki_Encoding.md`). Number 0015 is the
   session bus (`0015_Session_Bus.md`). It is not Anunnaki Encoding.
+  Number 0016 is Hierarchical Subagents
+  (`0016_Hierarchical_Subagents.md`). It is not the session bus.
+  Number 0017 is Schedula (`0017_Schedula.md`). It is not
+  Hierarchical Subagents. A conforming Schedula is not claimed.
   fargo and SSSP have no assigned numbers. Existing
   `ref/` pins remain; new pins are added when present.
 
@@ -60,6 +64,10 @@ def anunnakiSpecNumber : Nat := 14
 def anunnakiFileName : String := "0014_Anunnaki_Encoding.md"
 def sessionBusSpecNumber : Nat := 15
 def sessionBusFileName : String := "0015_Session_Bus.md"
+def hierarchicalSubagentsSpecNumber : Nat := 16
+def hierarchicalSubagentsFileName : String := "0016_Hierarchical_Subagents.md"
+def schedulaSpecNumber : Nat := 17
+def schedulaFileName : String := "0017_Schedula.md"
 def unlicenseSpecNumber : Nat := 9
 def pdossSpecNumber : Nat := 9
 def unlicenseFileName : String := "0009_PDOSS.md"
@@ -129,6 +137,14 @@ def publishedEntries : List RegistryEntry :=
     , { number := 15
         fileName := "0015_Session_Bus.md"
         productName := "Session Bus"
+        published := true }
+    , { number := 16
+        fileName := "0016_Hierarchical_Subagents.md"
+        productName := "Hierarchical Subagents"
+        published := true }
+    , { number := 17
+        fileName := "0017_Schedula.md"
+        productName := "Schedula"
         published := true } ]
 
 def plannedEntries : List RegistryEntry :=
@@ -166,6 +182,16 @@ def anunnakiAssignedNumber : Option Nat := some 14
 def sessionBusAssigned : Bool := true
 
 def sessionBusAssignedNumber : Option Nat := some 15
+
+/-- Hierarchical Subagents is numbered specification 0016. -/
+def hierarchicalSubagentsAssigned : Bool := true
+
+def hierarchicalSubagentsAssignedNumber : Option Nat := some 16
+
+/-- Schedula is numbered specification 0017. -/
+def schedulaAssigned : Bool := true
+
+def schedulaAssignedNumber : Option Nat := some 17
 
 theorem spec_spec_is_0000 : specSpecNumber = 0 := rfl
 
@@ -331,10 +357,37 @@ theorem session_bus_file :
 
 theorem session_bus_is_not_0014 : sessionBusSpecNumber ≠ 14 := by decide
 
+theorem session_bus_is_not_0016 : sessionBusSpecNumber ≠ 16 := by decide
+
 theorem session_bus_assigned : sessionBusAssigned = true := rfl
 
 theorem session_bus_number_some_15 : sessionBusAssignedNumber = some 15 :=
   rfl
+
+theorem hierarchical_subagents_is_0016 :
+    hierarchicalSubagentsSpecNumber = 16 := rfl
+
+theorem hierarchical_subagents_file :
+    hierarchicalSubagentsFileName = "0016_Hierarchical_Subagents.md" :=
+  rfl
+
+theorem hierarchical_subagents_is_not_0015 :
+    hierarchicalSubagentsSpecNumber ≠ 15 := by decide
+
+theorem hierarchical_subagents_assigned :
+    hierarchicalSubagentsAssigned = true := rfl
+
+theorem hierarchical_subagents_number_some_16 :
+    hierarchicalSubagentsAssignedNumber = some 16 :=
+  rfl
+
+theorem schedula_is_0017 : schedulaSpecNumber = 17 := rfl
+
+theorem schedula_file : schedulaFileName = "0017_Schedula.md" := rfl
+
+theorem schedula_assigned : schedulaAssigned = true := rfl
+
+theorem schedula_number_some_17 : schedulaAssignedNumber = some 17 := rfl
 
 theorem ssss_is_not_spec_0002 : ssssSpecNumber ≠ 2 := by decide
 
@@ -352,13 +405,13 @@ theorem carbonado_not_assigned : carbonadoAssigned = false := rfl
 
 theorem carbonado_number_none : carbonadoAssignedNumber = none := rfl
 
-theorem published_count_sixteen : publishedEntries.length = 16 := rfl
+theorem published_count_eighteen : publishedEntries.length = 18 := rfl
 
 theorem planned_count_zero : plannedEntries.length = 0 := rfl
 
 theorem all_entry_numbers :
     allEntries.map (fun e => e.number) =
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] :=
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] :=
   rfl
 
 theorem number_8_published :
@@ -425,6 +478,30 @@ theorem number_15_is_not_planned :
     (plannedEntries.any (fun e => e.number == 15)) = false :=
   rfl
 
+theorem number_16_published :
+    (allEntries.any (fun e => e.number == 16)) = true :=
+  rfl
+
+theorem number_16_is_published_file :
+    (publishedEntries.any (fun e => e.number == 16)) = true :=
+  rfl
+
+theorem number_16_is_not_planned :
+    (plannedEntries.any (fun e => e.number == 16)) = false :=
+  rfl
+
+theorem number_17_published :
+    (allEntries.any (fun e => e.number == 17)) = true :=
+  rfl
+
+theorem number_17_is_published_file :
+    (publishedEntries.any (fun e => e.number == 17)) = true :=
+  rfl
+
+theorem number_17_is_not_planned :
+    (plannedEntries.any (fun e => e.number == 17)) = false :=
+  rfl
+
 /-- Encode helper: tests that every published file is present use this list. -/
 def publishedBasenames : List String :=
   publishedEntries.map (fun e => e.fileName)
@@ -439,7 +516,9 @@ theorem published_filenames :
         "0012_Majestic_Memex.md",
         "0013_Lean_Machine.md",
         "0014_Anunnaki_Encoding.md",
-        "0015_Session_Bus.md"] :=
+        "0015_Session_Bus.md",
+        "0016_Hierarchical_Subagents.md",
+        "0017_Schedula.md"] :=
   rfl
 
 theorem published_basenames_are_entry_filenames :
@@ -618,6 +697,38 @@ theorem session_bus_product_name :
       ["Session Bus"] :=
   rfl
 
+theorem hierarchical_subagents_entry_published :
+    (allEntries.filter (fun e => e.number == 16)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem hierarchical_subagents_entry_filename :
+    (allEntries.filter (fun e => e.number == 16)).map (fun e => e.fileName) =
+      ["0016_Hierarchical_Subagents.md"] :=
+  rfl
+
+theorem hierarchical_subagents_product_name :
+    (publishedEntries.filter (fun e => e.number == 16)).map
+        (fun e => e.productName) =
+      ["Hierarchical Subagents"] :=
+  rfl
+
+theorem schedula_entry_published :
+    (allEntries.filter (fun e => e.number == 17)).map (fun e => e.published) =
+      [true] :=
+  rfl
+
+theorem schedula_entry_filename :
+    (allEntries.filter (fun e => e.number == 17)).map (fun e => e.fileName) =
+      ["0017_Schedula.md"] :=
+  rfl
+
+theorem schedula_product_name :
+    (publishedEntries.filter (fun e => e.number == 17)).map
+        (fun e => e.productName) =
+      ["Schedula"] :=
+  rfl
+
 theorem unlicense_entry_published :
     (allEntries.filter (fun e => e.number == 9)).map (fun e => e.published) =
       [true] :=
@@ -647,14 +758,14 @@ def ProductProgress.honestWhenWorkExists : ProductProgress → Bool
 /--
   Surmount authored markdown besides root numbered specifications.
   Residual honesty for never-real product claims scans this list
-  plus every root numbered specification. Do not shorten this list
-  relative to WordStats extra markdown.
+  plus every root numbered specification. WordStats reads this same
+  list. It is AGENTS.md, README.md, and VOCABULARY.md.
 -/
 def extraHonestyMarkdownFileNames : List String :=
-  ["AGENTS.md", "README.md", "RESIDUAL.md", "VOCABULARY.md"]
+  ["AGENTS.md", "README.md", "VOCABULARY.md"]
 
-theorem extra_honesty_markdown_files_are_four :
-    extraHonestyMarkdownFileNames.length = 4 :=
+theorem extra_honesty_markdown_files_are_three :
+    extraHonestyMarkdownFileNames.length = 3 :=
   rfl
 
 def beastdbProgress : ProductProgress := .ongoingNotReadyForUse

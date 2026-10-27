@@ -24,13 +24,24 @@ def mashSelfHostFromCSatisfiesBootstrapFixture : Bool :=
 def mashSelfHostTheorem : generatedCSatisfiesBootstrapTypecheckAsCurrentFactIsFalse :=
   mash_self_host_from_c_satisfies_bootstrap_is_false
 
-def mashCompCertVerifiedCompilationClaimedDoneTheorem :
-    historicalCompCertRequiredStepIsCurrentRuleIsFalse :=
-  mash_compcert_verified_compilation_claimed_done_is_false
+def readLiveCompCertRuleOptionalTheorem :
+    readLiveCompCertRule clause39CompCertLine clause42Item6CompCertLine =
+      some .optionalMetricNotClaimedDone :=
+  read_live_compcert_rule_is_optional_metric_not_claimed_done
 
-def mashSlakeBootstrapTypecheckClaimedDoneTheorem :
-    slakeBootstrapTypecheckFinishedAsCurrentFactIsFalse :=
-  mash_slake_bootstrap_typecheck_claimed_done_is_false
+def historicalChangelogNotRequiredCoreStepTheorem :
+    historicalReadsRequiredCoreStep historicalCompCertRequiredStepLine.text = false :=
+  historical_changelog_line_does_not_read_required_core_step
+
+def requiredCoreStepDiffersFromOptionalMetricTheorem :
+    CompCertMetricReading.requiredCoreValidationStep ≠
+      CompCertMetricReading.optionalMetricNotClaimedDone :=
+  required_core_validation_step_is_not_optional_metric
+
+def readLiveSlakeBootstrapNotClaimedDoneTheorem :
+    readLiveSlakeBootstrap clause42Item7SlakeLine clause63SlakeBootstrapLine =
+      some .notClaimedDone :=
+  read_live_slake_bootstrap_is_not_claimed_done
 
 /-- Elaboration of the rank 7 mash. The type is the sibling line denial, not the boolean flag. -/
 def mashCompCertTsoSatisfiesClause42Item6Theorem :
@@ -82,6 +93,9 @@ def expectConsFalse (name : String) (accepted : Bool) (clash : Prop)
     (isFalse : Prop) (_same : isFalse = (clash -> False))
     (_proof : isFalse) : Case :=
   expectFalse name accepted
+
+def holdProof (name : String) (b : Bool) {P : Prop} (_proof : P) : Case :=
+  expectTrue name b
 
 def pageCowCopyBytesTheorem : pageCowCopyBytes = 4096 :=
   page_cow_copy_bytes
@@ -528,12 +542,18 @@ def runCases : List Case :=
       compCertWrongEmit.ok,
     expectFalse "live CompCert verified compilation is not claimed done"
       compCertVerifiedCompilationClaimedDone,
-    expectConsFalse "treating the historical CompCert required step as the current rule is false"
-      historicalRequiredStepCountedAsCurrent
-      historicalCompCertRequiredStepIsCurrentRule
-      historicalCompCertRequiredStepIsCurrentRuleIsFalse
-      rfl
-      mashCompCertVerifiedCompilationClaimedDoneTheorem,
+    holdProof "live Clause 3.9 and Clause 4.2 item 6 read as the optional metric"
+      (readLiveCompCertRule clause39CompCertLine clause42Item6CompCertLine ==
+        some CompCertMetricReading.optionalMetricNotClaimedDone)
+      readLiveCompCertRuleOptionalTheorem,
+    holdProof "the withdrawn changelog line is not the required core step reading"
+      (historicalReadsRequiredCoreStep historicalCompCertRequiredStepLine.text == false)
+      historicalChangelogNotRequiredCoreStepTheorem,
+    holdProof "the required core step reading is not the optional metric reading"
+      (decide
+        (CompCertMetricReading.requiredCoreValidationStep ≠
+          CompCertMetricReading.optionalMetricNotClaimedDone))
+      requiredCoreStepDiffersFromOptionalMetricTheorem,
     expectConsFalse "treating CompCertTSO satisfies Clause 4.2 item 6 as the current fact is false"
       compCertTsoCountedSatisfiesClause42Item6
       compCertTsoSatisfiesClause42Item6AsCurrentFact
@@ -562,12 +582,10 @@ def runCases : List Case :=
       bootstrapWithoutTheorems.ok,
     expectFalse "live Slake bootstrap typecheck is not claimed done"
       slakeBootstrapTypecheckClaimedDone,
-    expectConsFalse "claiming the Slake bootstrap typecheck is finished is false"
-      slakeBootstrapTypecheckCountedFinished
-      slakeBootstrapTypecheckFinishedAsCurrentFact
-      slakeBootstrapTypecheckFinishedAsCurrentFactIsFalse
-      rfl
-      mashSlakeBootstrapTypecheckClaimedDoneTheorem,
+    holdProof "live Clause 4.2 item 7 and Clause 6.3 read as not claimed done"
+      (readLiveSlakeBootstrap clause42Item7SlakeLine clause63SlakeBootstrapLine ==
+        some SlakeBootstrapLiveReading.notClaimedDone)
+      readLiveSlakeBootstrapNotClaimedDoneTheorem,
     expectTrue "all Slake code must be typechecked"
       allSlakeCodeMustBeTypechecked,
     expectFalse "there is no exception for which Slake code is typechecked"

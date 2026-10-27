@@ -34,7 +34,10 @@
   0009_VOCABULARY.md MUST NOT exist. Number 0011 is Surmount Systems
   Tech Tree. Number 0012 is Majestic Memex. Number 0013 is Lean
   Machine. Number 0014 is Anunnaki Encoding. Number 0015 is the
-  session bus.
+  session bus. Number 0016 is Hierarchical Subagents. A conforming
+  hierarchical subagent program is not claimed. Number 0017 is Schedula.
+  A conforming Schedula is not claimed. This sentence does not claim
+  that the gate passed.
 -/
 
 import SpecRegistry
@@ -70,6 +73,9 @@ import AnunnakiSpec
 import AnunnakiProofs
 import SessionBusSpec
 import SessionBusProofs
+import HierarchicalSubagentsSpec
+import HierarchicalSubagentsProofs
+import SchedulaSpec
 import «0010_Surmount_Systems»
 import «0009_PDOSS»
 import «0011_Surmount_Systems_Tech_Tree»
@@ -77,6 +83,8 @@ import «0012_Majestic_Memex»
 import «0013_Lean_Machine»
 import «0014_Anunnaki_Encoding»
 import «0015_Session_Bus»
+import «0016_Hierarchical_Subagents»
+import «0017_Schedula»
 import «0002_Systems_Lean»
 import «0007_CI»
 import SystemsLeanSpec
@@ -113,6 +121,12 @@ def anunnakiSpecNumber : Nat := 14
 
 /-- Identity of numbered specification 0015. -/
 def sessionBusSpecNumber : Nat := 15
+
+/-- Identity of numbered specification 0016. -/
+def hierarchicalSubagentsSpecNumber : Nat := 16
+
+/-- Identity of numbered specification 0017. -/
+def schedulaSpecNumber : Nat := 17
 
 /-- Catalog ownership: CATE, specification 0005. Number 0009 is PDOSS. -/
 def vocabularySpecNumber : Nat := 5
@@ -235,6 +249,43 @@ theorem sibling_encoding_file_is_spec_0015 :
   rfl
 
 theorem session_bus_is_not_0014 : sessionBusSpecNumber ≠ 14 := by decide
+
+theorem hierarchical_subagents_is_0016 :
+    hierarchicalSubagentsSpecNumber = 16 := rfl
+
+theorem hierarchical_subagents_agrees_registry :
+    hierarchicalSubagentsSpecNumber =
+      SpecRegistry.hierarchicalSubagentsSpecNumber :=
+  rfl
+
+theorem hierarchical_subagents_agrees_encoding :
+    hierarchicalSubagentsSpecNumber =
+      HierarchicalSubagentsSpec.specNumber :=
+  rfl
+
+theorem sibling_encoding_file_is_spec_0016 :
+    «0016_Hierarchical_Subagents».siblingEncodingFileName =
+      "0016_Hierarchical_Subagents.lean" :=
+  rfl
+
+theorem hierarchical_subagents_is_not_0015 :
+    hierarchicalSubagentsSpecNumber ≠ 15 := by decide
+
+theorem schedula_is_0017 : schedulaSpecNumber = 17 := rfl
+
+theorem schedula_agrees_registry :
+    schedulaSpecNumber = SpecRegistry.schedulaSpecNumber :=
+  rfl
+
+theorem schedula_agrees_encoding :
+    schedulaSpecNumber = SchedulaSpec.specNumber :=
+  rfl
+
+theorem sibling_encoding_file_is_spec_0017 :
+    «0017_Schedula».siblingEncodingFileName = "0017_Schedula.lean" :=
+  rfl
+
+theorem schedula_is_not_0016 : schedulaSpecNumber ≠ 16 := by decide
 
 theorem vocabulary_is_0005 : vocabularySpecNumber = 5 := rfl
 
@@ -397,11 +448,16 @@ def ciClause47Item2ReadsByteIdentityNotClaimedTrue (s : String) : Bool :=
 
 /--
   Clause 6.3 on one sibling line: a FastC mark does not make byte identity
-  of emit true, and a FastSafeC mark does not waive byte identity of emit.
+  of emit true, a FastSafeC mark does not waive byte identity of emit,
+  byte identity of emit is required for a conforming product and is not
+  claimed true, and a FastC mark does not waive the match.
 -/
 def systemsClause63ReadsByteIdentityNotYetTrue (s : String) : Bool :=
   SystemsLean.mentionsPhrase "does not make byte identity of emit true" s &&
-    SystemsLean.mentionsPhrase "A `FastSafeC` mark does not waive byte identity of emit" s
+    SystemsLean.mentionsPhrase "A `FastSafeC` mark does not waive byte identity of emit" s &&
+    SystemsLean.mentionsPhrase "Byte identity of emit is required for a conforming product and is not claimed true" s &&
+    SystemsLean.mentionsPhrase "Byte identity of emit remains required for a conforming product and is not claimed true" s &&
+    SystemsLean.mentionsPhrase "A `FastC` mark does not waive the match" s
 
 /-- How the live byte identity sentences are read. `alreadyEqualsElf` is the claim those sentences deny. -/
 inductive ByteIdentityLiveReading where
@@ -434,31 +490,21 @@ def emitAlreadyEqualsElfAsProvedFactIsFalse : Prop :=
   emitAlreadyEqualsElfAsProvedFact → False
 
 /--
-  Live Clause 3.10 and Clause 4.7 item 2 say byte identity among emitted C,
-  headers, archives, shared objects, LLVM IR, ELF, and other intermediates
-  is required, is not claimed true, is pursued by delta reconciliation, and
-  a FastC mark does not waive the match. Live Clause 6.3 says a FastC mark
-  does not make byte identity of emit true and a FastSafeC mark does not
-  waive it. Treating emit already equals ELF as a proved fact yields False.
-  The `native_decide` step reads those sibling lines. Removing the
-  not claimed true wording, or the Clause 6.3 wording that a FastC mark
-  does not make byte identity of emit true, makes the reading `none`, so
-  this proof no longer closes.
+  Clause 3.10, Clause 4.7 item 2, and Clause 6.3 are the live byte
+  identity rule. The match among emitted C, headers, archives, shared
+  objects, LLVM IR, ELF, and other intermediates is required and is not
+  claimed true. A FastC mark does not waive the match and does not make
+  byte identity of emit true. A FastSafeC mark does not waive byte
+  identity of emit. `native_decide` reads those sibling lines. Removing
+  the wording that the match is required and is not claimed true, or the
+  Clause 6.3 wording that a FastC mark does not make byte identity of
+  emit true, makes this proof fail. This lock is not a catalog row.
 -/
-theorem claiming_emit_equals_elf_is_inconsistent :
-    emitAlreadyEqualsElfAsProvedFactIsFalse := by
-  intro h
-  unfold emitAlreadyEqualsElfAsProvedFact at h
-  have live :
-      readLiveByteIdentity
-        «0007_CI».encodedLines[114]!
-        «0007_CI».encodedLines[176]!
-        «0002_Systems_Lean».encodedLines[480]! =
-        some .notClaimedTrue := by
-    native_decide
-  rw [live] at h
-  injection h with eq
-  injection eq
+theorem read_live_byte_identity_is_not_claimed_true :
+    readLiveByteIdentity ciClause310ByteIdentityLine ciClause47Item2ByteIdentityLine
+        systemsClause63ByteIdentityLine =
+      some .notClaimedTrue := by
+  native_decide
 
 theorem claiming_beastdb_ready_is_inconsistent
     (h : SpecRegistry.beastdbProgress = .claimsReadyForUse) : False :=
@@ -518,6 +564,81 @@ theorem claiming_published_session_bus_file_absent_yields_false
 theorem number_fifteen_assignment_matches_published_file :
     numberFifteenAssignedToSessionBus = true ∧
       numberFifteenPublishedFileExists = true :=
+  And.intro rfl rfl
+
+/-- The Operator assigned number 0016 to Hierarchical Subagents. -/
+def numberSixteenAssignedToHierarchicalSubagents : Bool := true
+
+theorem number_sixteen_assigned_to_hierarchical_subagents :
+    numberSixteenAssignedToHierarchicalSubagents = true :=
+  rfl
+
+/--
+  True because the sibling line encoding names
+  `0016_Hierarchical_Subagents.md` and that encoding's specification
+  number is 16, and because `SpecRegistry.hierarchicalSubagentsFileName`
+  names the same file. This is not a constant false while that file is
+  in the tree. A conforming hierarchical subagent program is not claimed.
+  This sentence does not claim that the gate passed.
+-/
+def numberSixteenPublishedFileExists : Bool :=
+  «0016_Hierarchical_Subagents».specFileName ==
+      "0016_Hierarchical_Subagents.md" &&
+    «0016_Hierarchical_Subagents».specNumber == 16 &&
+    SpecRegistry.hierarchicalSubagentsFileName ==
+      "0016_Hierarchical_Subagents.md"
+
+theorem number_sixteen_published_file_exists :
+    numberSixteenPublishedFileExists = true :=
+  rfl
+
+/-- Claiming that published file is absent yields False. Not `rfl` of a false flag. -/
+theorem claiming_published_hierarchical_subagents_file_absent_yields_false
+    (h : numberSixteenPublishedFileExists = false) : False := by
+  have hPresent : numberSixteenPublishedFileExists = true := rfl
+  rw [hPresent] at h
+  exact Bool.noConfusion h
+
+/-- Assignment of number 0016 and the published file both hold. -/
+theorem number_sixteen_assignment_matches_published_file :
+    numberSixteenAssignedToHierarchicalSubagents = true ∧
+      numberSixteenPublishedFileExists = true :=
+  And.intro rfl rfl
+
+/-- The Operator assigned number 0017 to Schedula. -/
+def numberSeventeenAssignedToSchedula : Bool := true
+
+theorem number_seventeen_assigned_to_schedula :
+    numberSeventeenAssignedToSchedula = true :=
+  rfl
+
+/--
+  True because the sibling line encoding names `0017_Schedula.md`
+  and that encoding's specification number is 17, and because
+  `SpecRegistry.schedulaFileName` names the same file. This is not
+  a constant false while that file is in the tree. A conforming
+  Schedula is not claimed.
+-/
+def numberSeventeenPublishedFileExists : Bool :=
+  «0017_Schedula».specFileName == "0017_Schedula.md" &&
+    «0017_Schedula».specNumber == 17 &&
+    SpecRegistry.schedulaFileName == "0017_Schedula.md"
+
+theorem number_seventeen_published_file_exists :
+    numberSeventeenPublishedFileExists = true :=
+  rfl
+
+/-- Claiming that published file is absent yields False. Not `rfl` of a false flag. -/
+theorem claiming_published_schedula_file_absent_yields_false
+    (h : numberSeventeenPublishedFileExists = false) : False := by
+  have hPresent : numberSeventeenPublishedFileExists = true := rfl
+  rw [hPresent] at h
+  exact Bool.noConfusion h
+
+/-- Assignment of number 0017 and the published file both hold. -/
+theorem number_seventeen_assignment_matches_published_file :
+    numberSeventeenAssignedToSchedula = true ∧
+      numberSeventeenPublishedFileExists = true :=
   And.intro rfl rfl
 
 theorem anunnaki_is_not_0015 : anunnakiSpecNumber ≠ 15 := by decide
@@ -728,6 +849,14 @@ def companionMeaningModelsSplit : Bool :=
     !SessionBusSpec.liveContainsProofsOfThoseEncodings &&
     SessionBusSpec.markedAsSpecEncoding &&
     !SessionBusSpec.markedAsProof &&
+    HierarchicalSubagentsSpec.liveContainsSpecEncodings &&
+    !HierarchicalSubagentsSpec.liveContainsProofsOfThoseEncodings &&
+    HierarchicalSubagentsSpec.markedAsSpecEncoding &&
+    !HierarchicalSubagentsSpec.markedAsProof &&
+    SchedulaSpec.liveContainsSpecEncodings &&
+    !SchedulaSpec.liveContainsProofsOfThoseEncodings &&
+    SchedulaSpec.markedAsSpecEncoding &&
+    !SchedulaSpec.markedAsProof &&
     !FormalVibeficationSpec.conformingThisRepo
       FormalVibeficationSpec.mashedFixture
 
@@ -754,6 +883,20 @@ theorem session_bus_companion_split :
       SessionBusSpec.liveContainsProofsOfThoseEncodings = false ∧
       SessionBusSpec.markedAsSpecEncoding = true ∧
       SessionBusSpec.markedAsProof = false :=
+  And.intro rfl (And.intro rfl (And.intro rfl rfl))
+
+theorem hierarchical_subagents_companion_split :
+    HierarchicalSubagentsSpec.liveContainsSpecEncodings = true ∧
+      HierarchicalSubagentsSpec.liveContainsProofsOfThoseEncodings = false ∧
+      HierarchicalSubagentsSpec.markedAsSpecEncoding = true ∧
+      HierarchicalSubagentsSpec.markedAsProof = false :=
+  And.intro rfl (And.intro rfl (And.intro rfl rfl))
+
+theorem schedula_companion_split :
+    SchedulaSpec.liveContainsSpecEncodings = true ∧
+      SchedulaSpec.liveContainsProofsOfThoseEncodings = false ∧
+      SchedulaSpec.markedAsSpecEncoding = true ∧
+      SchedulaSpec.markedAsProof = false :=
   And.intro rfl (And.intro rfl (And.intro rfl rfl))
 
 /--
@@ -838,6 +981,8 @@ def stackIntegrates : Bool :=
     SpecRegistry.publishedEntries.any (fun e => e.number == 12) &&
     SpecRegistry.publishedEntries.any (fun e => e.number == 14) &&
     SpecRegistry.publishedEntries.any (fun e => e.number == 15) &&
+    SpecRegistry.publishedEntries.any (fun e => e.number == 16) &&
+    SpecRegistry.publishedEntries.any (fun e => e.number == 17) &&
     memexSpecNumber == SpecRegistry.memexSpecNumber &&
     MemexSpec.specNumber == SpecRegistry.memexSpecNumber &&
     SpecRegistry.anunnakiSpecNumber == 14 &&
@@ -847,6 +992,18 @@ def stackIntegrates : Bool :=
     sessionBusSpecNumber == SpecRegistry.sessionBusSpecNumber &&
     SessionBusSpec.specNumber == SpecRegistry.sessionBusSpecNumber &&
     SessionBusSpec.sessionBusSpecNumber == SpecRegistry.sessionBusSpecNumber &&
+    SpecRegistry.hierarchicalSubagentsSpecNumber == 16 &&
+    hierarchicalSubagentsSpecNumber ==
+      SpecRegistry.hierarchicalSubagentsSpecNumber &&
+    HierarchicalSubagentsSpec.specNumber ==
+      SpecRegistry.hierarchicalSubagentsSpecNumber &&
+    HierarchicalSubagentsSpec.hierarchicalSubagentsSpecNumber ==
+      SpecRegistry.hierarchicalSubagentsSpecNumber &&
+    SpecRegistry.schedulaSpecNumber == 17 &&
+    schedulaSpecNumber == SpecRegistry.schedulaSpecNumber &&
+    SchedulaSpec.specNumber == SpecRegistry.schedulaSpecNumber &&
+    SchedulaSpec.schedulaSpecNumber ==
+      SpecRegistry.schedulaSpecNumber &&
     !VocabularySpec.numberNinePublished &&
     Cate.specNumber == SpecRegistry.cateSpecNumber &&
     Cate.ownsVocabularyCatalog &&
@@ -998,6 +1155,30 @@ def stackIntegrates : Bool :=
     SessionBusSpec.markedAsSpecEncoding &&
     !SessionBusSpec.markedAsProof &&
     SessionBusSpec.requiredConformanceHolds &&
+    «0016_Hierarchical_Subagents».specFileName ==
+      "0016_Hierarchical_Subagents.md" &&
+    «0016_Hierarchical_Subagents».siblingEncodingFileName ==
+      "0016_Hierarchical_Subagents.lean" &&
+    !«0016_Hierarchical_Subagents».markedAsProof &&
+    HierarchicalSubagentsSpec.specNumber == 16 &&
+    !HierarchicalSubagentsSpec.conformingProgramClaimed &&
+    !HierarchicalSubagentsSpec.productsClaimedReadyForUse &&
+    !HierarchicalSubagentsSpec.productsClaimedNeverStarted &&
+    HierarchicalSubagentsSpec.liveContainsSpecEncodings &&
+    !HierarchicalSubagentsSpec.liveContainsProofsOfThoseEncodings &&
+    HierarchicalSubagentsSpec.markedAsSpecEncoding &&
+    !HierarchicalSubagentsSpec.markedAsProof &&
+    HierarchicalSubagentsSpec.requiredConformanceHolds &&
+    «0017_Schedula».specFileName == "0017_Schedula.md" &&
+    «0017_Schedula».siblingEncodingFileName == "0017_Schedula.lean" &&
+    !«0017_Schedula».markedAsProof &&
+    SchedulaSpec.specNumber == 17 &&
+    !SchedulaSpec.conformingSchedulaClaimed &&
+    !SchedulaSpec.productsClaimedReadyForUse &&
+    SchedulaSpec.liveContainsSpecEncodings &&
+    !SchedulaSpec.liveContainsProofsOfThoseEncodings &&
+    SchedulaSpec.markedAsSpecEncoding &&
+    !SchedulaSpec.markedAsProof &&
     !Ci.dumpTheoremsIntoNumberedMarkdown &&
     Sssss.leanMachineHasNumberedSpec &&
     Sssss.canonicalIntegration.conformingIntegration &&
@@ -1010,8 +1191,19 @@ def stackIntegrates : Bool :=
     !compositionIsProductReadiness &&
     numberFifteenAssignedToSessionBus &&
     numberFifteenPublishedFileExists &&
+    numberSixteenAssignedToHierarchicalSubagents &&
+    numberSixteenPublishedFileExists &&
+    numberSeventeenAssignedToSchedula &&
+    numberSeventeenPublishedFileExists &&
     !(anunnakiSpecNumber == 15) &&
-    !(surmountSpecNumber == 15)
+    !(surmountSpecNumber == 15) &&
+    !(anunnakiSpecNumber == 16) &&
+    !(sessionBusSpecNumber == 16) &&
+    !(surmountSpecNumber == 16) &&
+    !(anunnakiSpecNumber == 17) &&
+    !(sessionBusSpecNumber == 17) &&
+    !(hierarchicalSubagentsSpecNumber == 17) &&
+    !(surmountSpecNumber == 17)
 
 theorem surmount_integrates : stackIntegrates = true := rfl
 
