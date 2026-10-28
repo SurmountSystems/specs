@@ -1,0 +1,52 @@
+Model Context Protocol (MCP)
+=============================
+
+Canonical git repository:
+	https://github.com/modelcontextprotocol/modelcontextprotocol
+
+Local path:
+	ref/mcp (git submodule)
+
+This metadata file:
+	ref/mcp.SOURCE (sibling of the submodule directory; not inside it)
+
+Pin recorded in this tree:
+	Tag:    2026-07-28
+	Commit: 5f5440bb26a62e2cf3440b92da5a667efa03b267
+
+Why this pin:
+	Specification 0015 cites the Model Context Protocol revision dated
+	2026-07-28. That date is a tag on the publisher repository. The
+	submodule is pinned to that tag, not to the moving default branch.
+	The older GitHub path modelcontextprotocol/specification resolves to
+	this same repository. It is not a separate publisher and it is not
+	a mirror that someone else maintains.
+
+Form:
+	Form 1 git submodule from the publisher repository that maintains
+	the Model Context Protocol specification and schema.
+
+License:
+	The upstream LICENSE file at this pin says the project is moving
+	from the MIT License to Apache License 2.0. New code and
+	specification contributions are Apache 2.0. Documentation
+	contributions, other than specifications, are CC-BY-4.0.
+	Contributions that were MIT and have not been relicensed stay MIT.
+	The same file then includes the Apache License 2.0 text. Surmount
+	does not own that text. This repository's Unlicense does not
+	relicense the pin. See ref/README.md and ref/mcp/LICENSE.
+
+How to re-check the pin (from repo root; requires git permission when used
+by an agent):
+	1. git -C ref/mcp describe --tags --always
+	2. git -C ref/mcp rev-parse HEAD
+
+Do not edit files inside this submodule. Cite the tag and commit instead.
+Do not place Surmount-only metadata inside the submodule working tree.
+Canonical upstream URL remains first-class; the submodule freezes the
+reviewed pin for this repository.
+
+TOON, as specification 0015 uses that name, is the notation the product
+names through util/toon. ACP, as that specification uses that name, is
+the internal agent client protocol inside grok-oss. Neither is this
+Model Context Protocol pin.

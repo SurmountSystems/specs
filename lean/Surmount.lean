@@ -1199,6 +1199,7 @@ def stackIntegrates : Bool :=
     !(hierarchicalSubagentsSpecNumber == 17) &&
     !(surmountSpecNumber == 17)
 
-theorem surmount_integrates : stackIntegrates = true := rfl
+theorem surmount_integrates : stackIntegrates = true := by
+  native_decide
 
 end Surmount

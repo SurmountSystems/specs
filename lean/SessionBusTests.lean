@@ -16,10 +16,11 @@
   7. A conforming session bus program is not claimed.
   8. Mash of spec encodings plus proofs in one module is False.
   9. Socket path, mode 0600, client commands, the nine method names,
-     an 80 character look cap, and compact replies match the draft.
+     max_field of 80 tokens, and summary as the default detail level.
   10. The bus does not kill, reboot, or restart a session, does not
-      replace ACP, and does not let an outside agent change permissions
-      or configuration. The readonly flag effect is not specified.
+      replace ACP, and does not let an attached agent change permissions
+      or configuration. When bus.readonly is true, the act tier is
+      rejected and look, transcript, sessions, owns, and subscribe are not.
 
   This file does not import SpecRegistry or a sibling line encoding.
   Lake and flake wiring are not edited here.
@@ -99,18 +100,72 @@ def runCases : List Case :=
       (methodNames ==
         ["sessions", "look", "transcript", "owns", "interject", "queue",
           "approve", "deny", "subscribe"]),
-    expectEqNat "look field cap is 80 characters" lookFieldCap 80,
-    expectTrue "replies are compact by default" compactByDefault,
+    expectEqNat "max_field defaults to 80 tokens" maxFieldDefaultTokens 80,
+    expectTrue "summary is the default detail level" summaryIsDefaultDetail,
     expectFalse "the bus does not kill sessions" busKillsSessions,
     expectFalse "the bus does not reboot a session" busRebootsSession,
     expectFalse "the bus does not restart a service" busRestartsService,
     expectFalse "the bus does not replace ACP" replacesAcp,
-    expectFalse "an outside agent may not change permissions"
-      outsideAgentMayChangePermissions,
-    expectFalse "an outside agent may not change configuration"
-      outsideAgentMayChangeConfig,
-    expectFalse "the readonly flag effect is not specified"
-      readonlyEffectSpecified,
+    expectFalse "an attached agent may not change permissions"
+      attachedAgentMayChangePermissions,
+    expectFalse "an attached agent may not change configuration"
+      attachedAgentMayChangeConfig,
+    expectTrue "attached agent is the defined term" attachedAgentIsDefinedTerm,
+    expectTrue "the readonly effect is specified" readonlyEffectSpecified,
+    expectFalse "allow_act defaults to false" allowActDefault,
+    expectFalse "allow_approve defaults to false" allowApproveDefault,
+    expectFalse "approve does not run when both keys are false"
+      (actTierRuns false false .approve),
+    expectFalse "approve does not run when only allow_act is true"
+      (actTierRuns true false .approve),
+    expectFalse "approve does not run when only allow_approve is true"
+      (actTierRuns false true .approve),
+    expectTrue "approve runs when both keys are true"
+      (actTierRuns true true .approve),
+    expectFalse "deny does not run when both keys are false"
+      (actTierRuns false false .deny),
+    expectFalse "deny does not run when only allow_act is true"
+      (actTierRuns true false .deny),
+    expectTrue "deny runs when both keys are true"
+      (actTierRuns true true .deny),
+    expectFalse "interject does not run when allow_act is false"
+      (actTierRuns false true .interject),
+    expectTrue "interject runs on allow_act without allow_approve"
+      (actTierRuns true false .interject),
+    expectFalse "queue does not run when allow_act is false"
+      (actTierRuns false false .queue),
+    expectTrue "queue runs on allow_act without allow_approve"
+      (actTierRuns true false .queue),
+    expectTrue "readonly rejects interject" (readonlyRejectsAct true .interject),
+    expectTrue "readonly rejects queue" (readonlyRejectsAct true .queue),
+    expectTrue "readonly rejects approve" (readonlyRejectsAct true .approve),
+    expectTrue "readonly rejects deny" (readonlyRejectsAct true .deny),
+    expectFalse "readonly does not reject look" (readonlyRejectsRead true .look),
+    expectFalse "readonly does not reject transcript"
+      (readonlyRejectsRead true .transcript),
+    expectFalse "readonly does not reject sessions"
+      (readonlyRejectsRead true .sessions),
+    expectFalse "readonly does not reject owns" (readonlyRejectsRead true .owns),
+    expectFalse "readonly does not reject subscribe"
+      (readonlyRejectsRead true .subscribe),
+    expectTrue "SO_PEERCRED is required" soPeercredRequired,
+    expectEqString "directory mode is 0700" directoryMode "0700",
+    expectFalse "a 0600 socket alone does not prove the peer"
+      socketModeAloneProvesPeerUser,
+    expectEqNat "look returns summaries of 3 turns" lookTurnCount 3,
+    expectTrue "the default detail level is summary"
+      (defaultDetailLevel == .summary),
+    expectFalse "step does not add output" stepAddsOutput,
+    expectTrue "full adds tool output" fullAddsOutput,
+    expectTrue "meta is allowed by default" (contentClassAllowedByDefault .meta),
+    expectTrue "chat is allowed by default" (contentClassAllowedByDefault .chat),
+    expectTrue "call is allowed by default" (contentClassAllowedByDefault .call),
+    expectFalse "output is denied by default"
+      (contentClassAllowedByDefault .output),
+    expectTrue "transcript is deltas from a turn id" transcriptCursorIsSinceTurnId,
+    expectEqNat "an approval event bound is under one second"
+      approvalSubscribeExclusiveUpperBoundSeconds 1,
+    expectFalse "this bus does not redact tokens or keys" busRedactsToolSecrets,
     expectFalse "a conforming session bus program is not claimed"
       conformingSessionBusProgramClaimed,
     expectFalse "products are not claimed ready for use"
@@ -226,17 +281,17 @@ def runCases : List Case :=
       rfl
       mash_replaces_acp_is_false,
     expectConsFalse
-      "claiming an outside agent changes permissions is Cons False"
-      outsideAgentMayChangePermissions
-      mashOutsideAgentChangesPermissions
-      mashOutsideAgentChangesPermissionsIsFalse
+      "claiming an attached agent changes permissions is Cons False"
+      attachedAgentMayChangePermissions
+      mashAttachedAgentChangesPermissions
+      mashAttachedAgentChangesPermissionsIsFalse
       rfl
       mash_outside_agent_changes_permissions_is_false,
     expectConsFalse
-      "claiming an outside agent changes configuration is Cons False"
-      outsideAgentMayChangeConfig
-      mashOutsideAgentChangesConfig
-      mashOutsideAgentChangesConfigIsFalse
+      "claiming an attached agent changes configuration is Cons False"
+      attachedAgentMayChangeConfig
+      mashAttachedAgentChangesConfig
+      mashAttachedAgentChangesConfigIsFalse
       rfl
       mash_outside_agent_changes_config_is_false,
     expectConsFalse
@@ -254,8 +309,8 @@ def runCases : List Case :=
       rfl
       mash_markdown_substitutes_for_encodings_is_false,
     expectConsFalse
-      "claiming the readonly effect is specified is Cons False"
-      readonlyEffectSpecified
+      "claiming readonly does not reject interject is Cons False"
+      (!readonlyRejectsAct true .interject)
       mashReadonlyEffectSpecified
       mashReadonlyEffectSpecifiedIsFalse
       rfl
@@ -310,9 +365,9 @@ def runCases : List Case :=
       mashAttachStartsSecondSessionIsFalse
       rfl
       mash_attach_starts_second_session_is_false,
-    expectFalse "the outside agent does not scrape the screen" scrapesTheScreen,
+    expectFalse "the attached agent does not scrape the screen" scrapesTheScreen,
     expectConsFalse
-      "claiming the outside agent scrapes the screen is Cons False"
+      "claiming the attached agent scrapes the screen is Cons False"
       scrapesTheScreen
       mashScrapesTheScreen
       mashScrapesTheScreenIsFalse

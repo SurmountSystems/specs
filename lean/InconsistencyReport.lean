@@ -905,6 +905,11 @@ theorem session_bus_program_claimed_not_in_catalog :
       "mash_conforming_session_bus_program_claimed_is_false" = false := by
   native_decide
 
+theorem session_bus_readonly_effect_specified_not_in_catalog :
+    hasClaim "lean/SessionBusProofs.lean"
+      "mash_readonly_effect_specified_is_false" = false := by
+  native_decide
+
 def claimInCatalog (claim : String) : Bool :=
   catalog.any fun c => c.claim == claim
 

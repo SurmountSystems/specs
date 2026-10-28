@@ -212,13 +212,13 @@ theorem tool_work_runs_three_layers_deep :
 
 theorem includes_implement_loops : includesImplementLoops = true := rfl
 
-theorem fast_path_act_count_is_three : fastPathActCount = 3 := rfl
+theorem fast_path_act_count_is_four : fastPathActCount = 4 := rfl
 
-theorem fourth_fast_path_act_not_permitted :
-    fourthFastPathActPermitted = false :=
+theorem fourth_fast_path_act_permitted :
+    fourthFastPathActPermitted = true :=
   rfl
 
-theorem one_line_edit_not_on_fast_path : oneLineEditOnFastPath = false := rfl
+theorem one_line_edit_on_fast_path : oneLineEditOnFastPath = true := rfl
 
 theorem fast_path_absent_from_l2_task_description :
     fastPathInL2TaskDescription = false :=
@@ -242,35 +242,43 @@ theorem l2_has_no_tool_use (act : ToolAct) : ¬ ToolUse Layer.L2 act := by
   intro h
   cases h
 
-/-- Clause 4.4. L1 tool use is a fast path act, and that act is not an edit. -/
-theorem l1_does_not_edit (act : ToolAct) (h : ToolUse Layer.L1 act) :
-    isEdit act = false := by
+/-- Clause 4.4. An L1 edit is only the already named edit of a single line. -/
+theorem l1_edit_is_only_named_single_line (act : ToolAct) (h : ToolUse Layer.L1 act) :
+    isEdit act = false ∨ act = ToolAct.fastPath FastPathAct.alreadyNamedSingleLineEdit := by
   cases h with
-  | l1FastPath _ => rfl
+  | l1FastPath fp =>
+    cases fp with
+    | hostCommand => exact Or.inl rfl
+    | alreadyNamedPathRead => exact Or.inl rfl
+    | quoteAskedReport => exact Or.inl rfl
+    | alreadyNamedSingleLineEdit => exact Or.inr rfl
 
 theorem l3_does_not_take_fast_path (fp : FastPathAct) :
     ¬ ToolUse Layer.L3 (ToolAct.fastPath fp) := by
   intro h
   cases h
 
-/-- The one line edit is refused at every layer. It is not an allowed act. -/
+/-- An edit that is not the fast path act is refused at every layer. -/
 theorem one_line_edit_is_refused (layer : Layer) :
     ¬ ToolUse layer ToolAct.refusedOneLineEdit := by
   intro h
   cases h
 
-theorem fast_path_is_not_file_edit (fp : FastPathAct) :
-    isEdit (ToolAct.fastPath fp) = false :=
-  rfl
+theorem fast_path_edit_matches_single_line (fp : FastPathAct) :
+    isEdit (ToolAct.fastPath fp) =
+      (fp == FastPathAct.alreadyNamedSingleLineEdit) := by
+  cases fp <;> rfl
 
-theorem fast_path_act_is_one_of_three (act : FastPathAct) :
+theorem fast_path_act_is_one_of_four (act : FastPathAct) :
     act = FastPathAct.hostCommand ∨
       act = FastPathAct.alreadyNamedPathRead ∨
-      act = FastPathAct.quoteAskedReport := by
+      act = FastPathAct.quoteAskedReport ∨
+      act = FastPathAct.alreadyNamedSingleLineEdit := by
   cases act with
   | hostCommand => exact Or.inl rfl
   | alreadyNamedPathRead => exact Or.inr (Or.inl rfl)
-  | quoteAskedReport => exact Or.inr (Or.inr rfl)
+  | quoteAskedReport => exact Or.inr (Or.inr (Or.inl rfl))
+  | alreadyNamedSingleLineEdit => exact Or.inr (Or.inr (Or.inr rfl))
 
 theorem l1_tool_use_is_fast_path (act : ToolAct) (h : ToolUse Layer.L1 act) :
     ∃ fp : FastPathAct, act = ToolAct.fastPath fp := by
@@ -280,11 +288,11 @@ theorem l1_tool_use_is_fast_path (act : ToolAct) (h : ToolUse Layer.L1 act) :
 theorem tool_model_holds : toolModel :=
   And.intro l0_has_no_tool_use
     (And.intro l2_has_no_tool_use
-      (And.intro l1_does_not_edit
+      (And.intro l1_edit_is_only_named_single_line
         (And.intro l3_does_not_take_fast_path
           (And.intro one_line_edit_is_refused
-            (And.intro fast_path_is_not_file_edit
-              (And.intro fast_path_act_is_one_of_three
+            (And.intro fast_path_edit_matches_single_line
+              (And.intro fast_path_act_is_one_of_four
                 l1_tool_use_is_fast_path))))))
 
 theorem l2_does_not_grep : l2MayGrep = false := rfl
@@ -630,6 +638,27 @@ theorem required_predicates_hold : requiredPredicates :=
       (And.intro tool_model_holds finished_model_holds))
 
 theorem required_conformance_holds : requiredConformanceHolds = true := rfl
+
+theorem layer_set_is_l0_l1_l2_l3_with_no_l4 :
+    hasL4 = false ∧
+      depthIndex Layer.L0 = 0 ∧
+      depthIndex Layer.L1 = 1 ∧
+      depthIndex Layer.L2 = 2 ∧
+      depthIndex Layer.L3 = 3 := by
+  repeat (first | apply And.intro | rfl)
+
+theorem attached_agent_is_not_a_layer :
+    attachedClientIsLayer = false := rfl
+
+theorem l2_without_a_report_is_not_finished (onlySpawned : Bool) :
+    treatedAsFinished false onlySpawned = false := rfl
+
+theorem l2_token_total_at_least_sum_of_its_l3_totals
+    (l2Total : Nat) (l3Totals : List Nat)
+    (h : l2TokenTotalCoversL3s l2Total l3Totals = true) :
+    l3TokenSum l3Totals ≤ l2Total := by
+  simp [l2TokenTotalCoversL3s] at h
+  exact of_decide_eq_true (decide_eq_true h)
 
 /--
   Clause 5. Required conformance holds if and only if the required

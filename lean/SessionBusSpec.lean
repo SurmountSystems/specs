@@ -13,8 +13,8 @@
   Taking Don't Trust. Verify. Seriously:
     https://proofofkeags.com/research/2026-07-20-taking-dont-trust-verify-seriously.html
 
-  This file does not claim a conforming session bus program.
-  Approve and deny are off by default. There is no network listener.
+  conformingSessionBusProgramClaimed is false.
+  The act tier keys default to false. There is no network listener.
   The socket allows the same uid only. The transcript returns deltas only.
 
   Comments in this module use the CATE leftover unstack floor. They do
@@ -96,10 +96,11 @@ def methodNames : List String :=
   ["sessions", "look", "transcript", "owns", "interject", "queue",
     "approve", "deny", "subscribe"]
 
-/-- Look field text is capped at 80 characters. Replies are compact by default. -/
-def lookFieldCap : Nat := 80
+/-- Clause 4.5. max_field defaults to 80 tokens. That default is a specification choice. -/
+def maxFieldDefaultTokens : Nat := 80
 
-def compactByDefault : Bool := true
+/-- Clause 4.5. Summary is the default detail level. -/
+def summaryIsDefaultDetail : Bool := true
 
 /-- The bus does not kill, reboot, or restart a session. -/
 def busKillsSessions : Bool := false
@@ -108,15 +109,20 @@ def busRebootsSession : Bool := false
 
 def busRestartsService : Bool := false
 
-/-- Remote replacement of ACP, and outside permission or config edits, are out of scope. -/
+/-- Remote replacement of ACP, and attached agent permission or config edits, are out of scope. -/
 def replacesAcp : Bool := false
 
-def outsideAgentMayChangePermissions : Bool := false
+/-- Clause 4.7. An attached agent must not change permissions. -/
+def attachedAgentMayChangePermissions : Bool := false
 
-def outsideAgentMayChangeConfig : Bool := false
+/-- Clause 4.7. An attached agent must not change configuration. -/
+def attachedAgentMayChangeConfig : Bool := false
 
-/-- The draft names bus.readonly and does not state what that flag changes. -/
-def readonlyEffectSpecified : Bool := false
+/-- Clause 3. Attached agent is the defined term. -/
+def attachedAgentIsDefinedTerm : Bool := true
+
+/-- Clause 4.4. The effect of bus.readonly is specified. -/
+def readonlyEffectSpecified : Bool := true
 
 /-- This document does not claim a conforming session bus program. -/
 def conformingSessionBusProgramClaimed : Bool := false
@@ -140,7 +146,7 @@ def earlierShippedVersionClaimed : Bool := false
 /-- Clause 1. Attach does not start a second session. -/
 def attachStartsSecondSession : Bool := false
 
-/-- Clause 1. The outside agent does not scrape the screen. -/
+/-- Clause 1. The attached agent does not scrape the screen. -/
 def scrapesTheScreen : Bool := false
 
 /-- Clause 4.4 item 7. Steer methods are not claimed implemented. -/
@@ -287,17 +293,17 @@ def mashReplacesAcp : Prop :=
 def mashReplacesAcpIsFalse : Prop :=
   mashReplacesAcp → False
 
-def mashOutsideAgentChangesPermissions : Prop :=
-  outsideAgentMayChangePermissions = true
+def mashAttachedAgentChangesPermissions : Prop :=
+  attachedAgentMayChangePermissions = true
 
-def mashOutsideAgentChangesPermissionsIsFalse : Prop :=
-  mashOutsideAgentChangesPermissions → False
+def mashAttachedAgentChangesPermissionsIsFalse : Prop :=
+  mashAttachedAgentChangesPermissions → False
 
-def mashOutsideAgentChangesConfig : Prop :=
-  outsideAgentMayChangeConfig = true
+def mashAttachedAgentChangesConfig : Prop :=
+  attachedAgentMayChangeConfig = true
 
-def mashOutsideAgentChangesConfigIsFalse : Prop :=
-  mashOutsideAgentChangesConfig → False
+def mashAttachedAgentChangesConfigIsFalse : Prop :=
+  mashAttachedAgentChangesConfig → False
 
 def mashLeanProofIsTheSpec : Prop :=
   leanProofIsTheSpec = true
@@ -311,9 +317,294 @@ def mashMarkdownSubstitutesForEncodings : Prop :=
 def mashMarkdownSubstitutesForEncodingsIsFalse : Prop :=
   mashMarkdownSubstitutesForEncodings → False
 
-/-- Claiming the unread effect of bus.readonly is specified. The text does not state that effect. -/
+/-- Clause 4.4. [bus] allow_act defaults to false. -/
+def allowActDefault : Bool := false
+
+/-- Clause 4.4. [bus] allow_approve defaults to false. -/
+def allowApproveDefault : Bool := false
+
+inductive ActMethod where
+  | interject
+  | queue
+  | approve
+  | deny
+  deriving DecidableEq, Repr, BEq
+
+inductive ReadMethod where
+  | sessions
+  | look
+  | transcript
+  | owns
+  | subscribe
+  deriving DecidableEq, Repr, BEq
+
+/-- interject and queue need allow_act. approve and deny need both keys. -/
+def actTierRuns (allowAct allowApprove : Bool) (m : ActMethod) : Bool :=
+  match m with
+  | .interject => allowAct
+  | .queue => allowAct
+  | .approve => allowAct && allowApprove
+  | .deny => allowAct && allowApprove
+
+/-- When bus.readonly is true, the act tier method is rejected. -/
+def readonlyRejectsAct (readonly : Bool) (m : ActMethod) : Bool :=
+  match m with
+  | .interject => readonly
+  | .queue => readonly
+  | .approve => readonly
+  | .deny => readonly
+
+/-- look, transcript, sessions, owns, and subscribe are not rejected by bus.readonly. -/
+def readonlyRejectsRead (readonly : Bool) (_m : ReadMethod) : Bool :=
+  readonly && false
+
+/-- Clause 4.2. The server must verify the peer with SO_PEERCRED. -/
+def soPeercredRequired : Bool := true
+
+/-- Clause 4.2. The directory mode is 0700. -/
+def directoryMode : String := "0700"
+
+/-- Clause 4.2. A 0600 socket alone does not prove the peer user. -/
+def socketModeAloneProvesPeerUser : Bool := false
+
+/-- Clause 4.3. look returns summaries of the last 3 turns. -/
+def lookTurnCount : Nat := 3
+
+/-- Clause 4.5. Detail levels replace the retired tier names. -/
+inductive DetailLevel where
+  | summary
+  | step
+  | full
+  deriving DecidableEq, Repr, BEq
+
+/-- Clause 4.5. Summary is the default detail level. -/
+def defaultDetailLevel : DetailLevel := .summary
+
+/-- Clause 4.5. Step adds tool name, arguments, and exit status, and does not add output. -/
+def stepAddsOutput : Bool := false
+
+/-- Clause 4.5. Full adds tool output. -/
+def fullAddsOutput : Bool := true
+
+/-- Clause 4.5. Content classes. Output is denied by default. -/
+inductive ContentClass where
+  | «meta»
+  | chat
+  | call
+  | output
+  deriving DecidableEq, Repr, BEq
+
+def contentClassAllowedByDefault : ContentClass → Bool
+  | .meta => true
+  | .chat => true
+  | .call => true
+  | .output => false
+
+/-- Clause 4.2. Each L1 owns one socket. Plain streaming I/O. No ZeroMQ. No broker. -/
+def eachL1OwnsOneSocket : Bool := true
+
+def plainStreamingIo : Bool := true
+
+def usesZeroMq : Bool := false
+
+def usesBrokerDaemon : Bool := false
+
+/-- Clause 4.2. The session bus server, not L0, runs on the same host as the L1 sessions. -/
+def serverSameHostAsL1 : Bool := true
+
+def serverWatchesWithInotify : Bool := true
+
+/-- Clause 4.2. The session bus server must not add a network listener. -/
+def serverMayAddNetworkListener : Bool := false
+
+/-- Clause 4.2. Whether the serve command exists in a product tree is not verified here. -/
+def mcpServeCommandVerifiedInProductTree : Bool := false
+
+/-- Clause 4.2. Bind a temporary path, then rename atomically. -/
+def bindTempThenAtomicRename : Bool := true
+
+/-- Clause 4.2. A flock marks a live session. A taken lock means stale and is cleaned up. -/
+def flockMarksLiveSession : Bool := true
+
+def staleLockIsCleaned : Bool := true
+
+/-- Clause 4.2. Never unlink a live socket. -/
+def neverUnlinkLiveSocket : Bool := true
+
+/-- Clause 4.2. Abstract namespace sockets are forbidden. File descriptors are CLOEXEC. -/
+def abstractNamespaceForbidden : Bool := true
+
+def socketFdCloexec : Bool := true
+
+/-- Clause 4.2. At most 8 subscribers. Specification choice, not a measurement. -/
+def maxSubscribersPerSession : Nat := 8
+
+/-- Clause 4.2. One message is at most 64 KiB. The ring holds 1024 events. -/
+def maxMessageBytes : Nat := 64 * 1024
+
+def ringEventCount : Nat := 1024
+
+/-- 64 KiB times 1024 is 64 MiB. -/
+def ringByteBudget : Nat := 64 * 1024 * 1024
+
+/-- Clause 4.2. Listen backlog is 16. systemd socket activation is not required. -/
+def listenBacklog : Nat := 16
+
+def systemdSocketActivationRequired : Bool := false
+
+/-- Clause 4.9. The wire schema is not selected. TOON is not the wire format. -/
+def wireSchemaChosen : Bool := false
+
+def toonIsWireFormat : Bool := false
+
+def toonAtModelBoundary : Bool := true
+
+def validatorChecksFrameFirst : Bool := true
+
+def fieldIdsReused : Bool := false
+
+def unknownEventKindsSkipped : Bool := true
+
+/-- Clause 4.10. Event kinds, order, gap, and ping. -/
+def eventKinds : List String :=
+  ["session.start", "turn.start", "turn.end", "approval.needed",
+    "approval.resolved", "error", "goal.changed", "plan.changed",
+    "idle", "exit", "gap", "throttled", "ping",
+    "l2.spawned", "l2.report_written", "l2.compacted",
+    "l3.spawned", "l3.finished", "resume_from", "follow_up",
+    "exit.without_report"]
+
+/-- Clause 4.10. seq increases when the later value is greater. -/
+def seqFollows (earlier later : Nat) : Bool :=
+  decide (earlier < later)
+
+/-- Clause 4.10. A skip needs a gap. A consecutive pair does not. -/
+def gapCoversSkip (earlier later : Nat) (gapPresent : Bool) : Bool :=
+  if later <= earlier + 1 then true else gapPresent
+
+/-- Silent loss is a skip that the gap mark does not cover. -/
+def lossIsSilent (earlier later : Nat) (gapPresent : Bool) : Bool :=
+  !gapCoversSkip earlier later gapPresent
+
+def orderedWithinSession : Bool := true
+
+def orderedAcrossSessions : Bool := false
+
+def slowSubscriberStallsSession : Bool := false
+
+def subscribeSinceReplays : Bool := true
+
+def gapMeansLookOnce : Bool := true
+
+def approvalTestProgramClaimed : Bool := false
+
+def pingPeriodSeconds : Nat := 30
+
+/-- Clause 4.11. Extra Model Context Protocol tools. -/
+def mcpExtraTools : List String :=
+  ["events_since", "bus_wait"]
+
+def eventsSinceExposed : Bool := true
+
+def busWaitExposed : Bool := true
+
+def busWaitBlocksUntilEventOrTimeout : Bool := true
+
+def mcpNotificationsForwarded : Bool := true
+
+/-- Operator requirement. Current product behavior is not verified in this repository. -/
+def grokBotUsesWaitPath : Bool := true
+
+def grokBotProductBehaviorVerified : Bool := false
+
+/-- Clause 4.5. No default number for max_tokens_per_min. Omission is rejected. -/
+def maxTokensPerMinHasDefault : Bool := false
+
+def subscribeWithoutCapRejected : Bool := true
+
+def capDropsEvent : Bool := false
+
+def capLowersDetailAndEmitsThrottled : Bool := true
+
+def blockedFieldRendersWithheld : Bool := true
+
+/-- Clause 4.12. Diff and log collapse. The set of output kinds is not closed. -/
+def diffCollapsesToHunkHeaders : Bool := true
+
+def logCollapsesToErrorLines : Bool := true
+
+def collapseSetClosed : Bool := false
+
+/-- Clause 4.4. Tool output is not trusted. The secret check is not a guarantee. -/
+def toolOutputIsUntrusted : Bool := true
+
+def renderedFieldsMarkData : Bool := true
+
+def secretShapeCheckRuns : Bool := true
+
+def secretCheckIsGuarantee : Bool := false
+
+def busRedactsEverySecret : Bool := false
+
+/-- Clause 4.4. Origin bound is 1. The first act is allowed. A later act with that origin is refused. -/
+def originDepthBound : Nat := 1
+
+def actOriginAllowed : Nat → Bool
+  | 0 => true
+  | _ + 1 => false
+
+/-- Clause 4.13. Deployment permissions. Names, numbers, hosts, and the log path are not assigned. -/
+def dedicatedAgentUserRequired : Bool := true
+
+def accountNameAssigned : Bool := false
+
+def systemdNoNewPrivileges : Bool := true
+
+def systemdPrivateTmp : Bool := true
+
+def systemdProtectSystemStrict : Bool := true
+
+def protectHomeOrReadOnlyPathsSatisfies : Bool := true
+
+def cgroupNumberAssigned : Bool := false
+
+def ipAddressDenyDefault : Bool := true
+
+def allowedHostListAssigned : Bool := false
+
+def landlockOrBubblewrapRequired : Bool := true
+
+def confinementChoiceIsDeployment : Bool := true
+
+def auditLogAppendOnly : Bool := true
+
+def auditLogPathAssigned : Bool := false
+
+/-- Clause 6.3. The Lean check does not cover the live sandbox, Landlock, bubblewrap, or the tunnel. -/
+def leanCheckCoversLiveSystemd : Bool := false
+
+def leanCheckCoversLandlock : Bool := false
+
+def leanCheckCoversBubblewrap : Bool := false
+
+def leanCheckCoversTunnel : Bool := false
+
+/-- Clause 4.3. transcript stays deltas from since a turn id. -/
+def transcriptCursorIsSinceTurnId : Bool := true
+
+/-- Clause 4.3. Exclusive upper bound in seconds for an approval needed event. -/
+def approvalSubscribeExclusiveUpperBoundSeconds : Nat := 1
+
+/-- Clause 4.4. This bus does not redact tokens or keys in look or transcript. -/
+def busRedactsToolSecrets : Bool := false
+
+/-- Claim that interject still runs when bus.readonly is true. This is the negation of the reject on interject, and that negation is false. -/
+def readonlyInterjectStillRuns : Bool :=
+  !(readonlyRejectsAct true .interject)
+
+/-- Claiming an act tier method still runs when bus.readonly is true. -/
 def mashReadonlyEffectSpecified : Prop :=
-  readonlyEffectSpecified = true
+  readonlyInterjectStillRuns = true
 
 def mashReadonlyEffectSpecifiedIsFalse : Prop :=
   mashReadonlyEffectSpecified → False
@@ -373,6 +664,85 @@ def mashSpecCheckIsMeaningChecker : Prop :=
 def mashSpecCheckIsMeaningCheckerIsFalse : Prop :=
   mashSpecCheckIsMeaningChecker → False
 
+/-- Clause 4.15. The session bus server is not L0 and is not a layer. -/
+def sessionBusServerIsL0 : Bool := false
+
+def sessionBusServerIsLayer : Bool := false
+
+def l0IsClientOfSessionBusServer : Bool := true
+
+/-- Clause 4.15. The Master Control Program is an attached client. No layer list here. -/
+def masterControlProgramIsAttachedClient : Bool := true
+
+/-- Clause 4.2. Only an L1 owns a session socket. -/
+def onlyL1OwnsSessionSocket : Bool := true
+
+def l2OwnsSessionSocket : Bool := false
+
+def l3OwnsSessionSocket : Bool := false
+
+/-- Clause 4.4. Acts may address L1 or a watched L2. They do not address an L3. -/
+inductive ActAddress where
+  | l1
+  | watchedL2
+  | l3
+  deriving DecidableEq, Repr, BEq
+
+def actAddressAllowed : ActAddress → Bool
+  | .l1 => true
+  | .watchedL2 => true
+  | .l3 => false
+
+/-- Clause 4.13. An inherited sandbox does not widen the L1 sandbox. -/
+structure SandboxBits where
+  noNewPrivileges : Bool
+  privateTmp : Bool
+  protectSystemStrict : Bool
+  deriving DecidableEq, Repr
+
+def bitsWiden (child parent : SandboxBits) : Bool :=
+  (child.noNewPrivileges && !parent.noNewPrivileges) ||
+    (child.privateTmp && !parent.privateTmp) ||
+    (child.protectSystemStrict && !parent.protectSystemStrict)
+
+def l1Sandbox : SandboxBits :=
+  { noNewPrivileges := true, privateTmp := true, protectSystemStrict := true }
+
+def inheritedL2Sandbox : SandboxBits :=
+  { noNewPrivileges := true, privateTmp := true, protectSystemStrict := false }
+
+def inheritedSandboxWidensL1 : Bool := false
+
+/-- Clause 4.3 and Clause 4.16. Fields this specification owns. -/
+def sessionsLookSubagentsExposeTree : Bool := true
+
+def ownsNamesWriteSetLayer : Bool := true
+
+def restatesWriteSetRule : Bool := false
+
+def exposesLayerTokenTotals : Bool := true
+
+def exposesLayerCostTotals : Bool := true
+
+def totalsRollUpToParent : Bool := true
+
+def accountingCrossChecked : Bool := true
+
+def disagreementFlagged : Bool := true
+
+def dollarPriceSet : Bool := false
+
+def lookCarriesBuildProgress : Bool := true
+
+def lookInterruptsLongBuild : Bool := false
+
+def restatesOneJobRule : Bool := false
+
+def exitWithoutReportEventPresent : Bool := true
+
+/-- The not finished rule stays in specification 0016. -/
+def statesExitWithoutReportIsNotFinished : Bool := false
+
 /-- Required conformance holds iff every listed conjunct holds. -/
 def requiredConformanceHolds : Bool :=
   sessionBusSpecNumber == 15 &&
@@ -397,15 +767,141 @@ def requiredConformanceHolds : Bool :=
     methodNames ==
       ["sessions", "look", "transcript", "owns", "interject", "queue",
         "approve", "deny", "subscribe"] &&
-    lookFieldCap == 80 &&
-    compactByDefault &&
+    maxFieldDefaultTokens == 80 &&
+    summaryIsDefaultDetail &&
     !busKillsSessions &&
     !busRebootsSession &&
     !busRestartsService &&
     !replacesAcp &&
-    !outsideAgentMayChangePermissions &&
-    !outsideAgentMayChangeConfig &&
-    !readonlyEffectSpecified &&
+    !attachedAgentMayChangePermissions &&
+    !attachedAgentMayChangeConfig &&
+    attachedAgentIsDefinedTerm &&
+    readonlyEffectSpecified &&
+    allowActDefault == false &&
+    allowApproveDefault == false &&
+    actTierRuns false false .interject == false &&
+    actTierRuns false false .queue == false &&
+    actTierRuns false false .approve == false &&
+    actTierRuns false false .deny == false &&
+    actTierRuns true false .interject == true &&
+    actTierRuns true false .queue == true &&
+    actTierRuns true false .approve == false &&
+    actTierRuns true true .approve == true &&
+    actTierRuns true true .deny == true &&
+    readonlyRejectsAct true .interject &&
+    readonlyRejectsAct true .queue &&
+    readonlyRejectsAct true .approve &&
+    readonlyRejectsAct true .deny &&
+    readonlyRejectsAct false .interject == false &&
+    !readonlyRejectsRead true .look &&
+    !readonlyRejectsRead true .transcript &&
+    !readonlyRejectsRead true .sessions &&
+    !readonlyRejectsRead true .owns &&
+    !readonlyRejectsRead true .subscribe &&
+    soPeercredRequired &&
+    directoryMode == "0700" &&
+    socketMode == "0600" &&
+    !socketModeAloneProvesPeerUser &&
+    !networkListenerPresent &&
+    lookTurnCount == 3 &&
+    defaultDetailLevel == .summary &&
+    summaryIsDefaultDetail &&
+    stepAddsOutput == false &&
+    fullAddsOutput &&
+    contentClassAllowedByDefault .meta &&
+    contentClassAllowedByDefault .chat &&
+    contentClassAllowedByDefault .call &&
+    contentClassAllowedByDefault .output == false &&
+    eachL1OwnsOneSocket &&
+    plainStreamingIo &&
+    !usesZeroMq &&
+    !usesBrokerDaemon &&
+    serverSameHostAsL1 &&
+    serverWatchesWithInotify &&
+    !serverMayAddNetworkListener &&
+    !mcpServeCommandVerifiedInProductTree &&
+    bindTempThenAtomicRename &&
+    flockMarksLiveSession &&
+    staleLockIsCleaned &&
+    neverUnlinkLiveSocket &&
+    abstractNamespaceForbidden &&
+    socketFdCloexec &&
+    maxSubscribersPerSession == 8 &&
+    maxMessageBytes == 64 * 1024 &&
+    ringEventCount == 1024 &&
+    ringByteBudget == 64 * 1024 * 1024 &&
+    maxMessageBytes * ringEventCount == ringByteBudget &&
+    listenBacklog == 16 &&
+    !systemdSocketActivationRequired &&
+    !wireSchemaChosen &&
+    !toonIsWireFormat &&
+    toonAtModelBoundary &&
+    validatorChecksFrameFirst &&
+    !fieldIdsReused &&
+    unknownEventKindsSkipped &&
+    eventKinds ==
+      ["session.start", "turn.start", "turn.end", "approval.needed",
+        "approval.resolved", "error", "goal.changed", "plan.changed",
+        "idle", "exit", "gap", "throttled", "ping",
+        "l2.spawned", "l2.report_written", "l2.compacted",
+        "l3.spawned", "l3.finished", "resume_from", "follow_up",
+        "exit.without_report"] &&
+    seqFollows 1 2 &&
+    seqFollows 2 2 == false &&
+    gapCoversSkip 4 5 false &&
+    gapCoversSkip 4 6 true &&
+    lossIsSilent 4 6 false &&
+    lossIsSilent 4 6 true == false &&
+    orderedWithinSession &&
+    !orderedAcrossSessions &&
+    !slowSubscriberStallsSession &&
+    subscribeSinceReplays &&
+    gapMeansLookOnce &&
+    !approvalTestProgramClaimed &&
+    pingPeriodSeconds == 30 &&
+    mcpExtraTools == ["events_since", "bus_wait"] &&
+    eventsSinceExposed &&
+    busWaitExposed &&
+    busWaitBlocksUntilEventOrTimeout &&
+    mcpNotificationsForwarded &&
+    grokBotUsesWaitPath &&
+    !grokBotProductBehaviorVerified &&
+    !maxTokensPerMinHasDefault &&
+    subscribeWithoutCapRejected &&
+    !capDropsEvent &&
+    capLowersDetailAndEmitsThrottled &&
+    blockedFieldRendersWithheld &&
+    diffCollapsesToHunkHeaders &&
+    logCollapsesToErrorLines &&
+    !collapseSetClosed &&
+    toolOutputIsUntrusted &&
+    renderedFieldsMarkData &&
+    secretShapeCheckRuns &&
+    !secretCheckIsGuarantee &&
+    !busRedactsEverySecret &&
+    originDepthBound == 1 &&
+    actOriginAllowed 0 &&
+    actOriginAllowed 1 == false &&
+    dedicatedAgentUserRequired &&
+    !accountNameAssigned &&
+    systemdNoNewPrivileges &&
+    systemdPrivateTmp &&
+    systemdProtectSystemStrict &&
+    protectHomeOrReadOnlyPathsSatisfies &&
+    !cgroupNumberAssigned &&
+    ipAddressDenyDefault &&
+    !allowedHostListAssigned &&
+    landlockOrBubblewrapRequired &&
+    confinementChoiceIsDeployment &&
+    auditLogAppendOnly &&
+    !auditLogPathAssigned &&
+    !leanCheckCoversLiveSystemd &&
+    !leanCheckCoversLandlock &&
+    !leanCheckCoversBubblewrap &&
+    !leanCheckCoversTunnel &&
+    transcriptCursorIsSinceTurnId &&
+    approvalSubscribeExclusiveUpperBoundSeconds == 1 &&
+    !busRedactsToolSecrets &&
     !conformingSessionBusProgramClaimed &&
     !productsClaimedReadyForUse &&
     !productsClaimedNeverStarted &&
@@ -427,6 +923,32 @@ def requiredConformanceHolds : Bool :=
     !leanProofIsTheSpec &&
     conformingThisRepo specEncodingFixture &&
     conformingThisRepo proofFixture &&
-    !conformingThisRepo mashedFixture
+    !conformingThisRepo mashedFixture &&
+    !sessionBusServerIsL0 &&
+    !sessionBusServerIsLayer &&
+    l0IsClientOfSessionBusServer &&
+    masterControlProgramIsAttachedClient &&
+    onlyL1OwnsSessionSocket &&
+    !l2OwnsSessionSocket &&
+    !l3OwnsSessionSocket &&
+    actAddressAllowed .l1 &&
+    actAddressAllowed .watchedL2 &&
+    actAddressAllowed .l3 == false &&
+    !inheritedSandboxWidensL1 &&
+    bitsWiden inheritedL2Sandbox l1Sandbox == false &&
+    sessionsLookSubagentsExposeTree &&
+    ownsNamesWriteSetLayer &&
+    !restatesWriteSetRule &&
+    exposesLayerTokenTotals &&
+    exposesLayerCostTotals &&
+    totalsRollUpToParent &&
+    accountingCrossChecked &&
+    disagreementFlagged &&
+    !dollarPriceSet &&
+    lookCarriesBuildProgress &&
+    !lookInterruptsLongBuild &&
+    !restatesOneJobRule &&
+    exitWithoutReportEventPresent &&
+    !statesExitWithoutReportIsNotFinished
 
 end SessionBusSpec

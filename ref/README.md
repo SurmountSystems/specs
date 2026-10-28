@@ -70,6 +70,15 @@ Standards older than widespread git often have only an official PDF or plain tex
 5. **License / copyright:** The upstream `LICENSE` file states Apache License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0 . Surmount does not own that tree; the submodule is a pin of the named git. Numbered specification 0009 in this repository is Unlicense and does not relicense this pin. See `ref/btc-verified.SOURCE` and `ref/btc-verified/LICENSE`.
 6. **Reasoning:** The operator named this git URL as the Form 1 pin for CompactSize prior proof. Form 1 applies. Surmount specs cite the recorded commit.
 
+### `ref/mcp/` (Form 1: publisher git submodule)
+
+1. **Standard:** Model Context Protocol, specification revision 2026-07-28.
+2. **Form:** Git submodule of https://github.com/modelcontextprotocol/modelcontextprotocol .
+3. **Pin:** tag `2026-07-28`, commit `5f5440bb26a62e2cf3440b92da5a667efa03b267`.
+4. **Pin notes:** `ref/mcp.SOURCE` (outside the submodule).
+5. **License / copyright:** The upstream `LICENSE` file at this pin says the project is moving from the MIT License to Apache License 2.0. New code and specification contributions are Apache 2.0. Documentation contributions, other than specifications, are CC-BY-4.0. Contributions that were MIT and have not been relicensed stay MIT. The same file then includes the Apache License 2.0 text. Surmount does not own that tree. This repository's Unlicense does not relicense the pin. See `ref/mcp.SOURCE` and `ref/mcp/LICENSE`.
+6. **Reasoning:** The Model Context Protocol project maintains this git repository as the specification and schema. The older path `modelcontextprotocol/specification` resolves to this same repository. It is not a mirror that someone else maintains. Form 1 applies. Specification 0015 cites this tag and commit. `TOON` and `ACP` in that specification are not this protocol and are not pinned here.
+
 ### `ref/rfc2119/` (Form 2: direct tree copy, no publisher git)
 
 1. **Standard:** RFC 2119, Key words for use in RFCs to Indicate Requirement Levels.
@@ -164,7 +173,7 @@ Or after a normal clone:
 git submodule update --init --recursive
 ```
 
-These commands apply only to real Form 1 submodules such as `ref/semver` and `ref/btc-verified`. Form 2 pins such as `ref/rfc2119`, `ref/ecma48`, and `ref/itu_t416` are ordinary files in the Surmount git tree and need no submodule init.
+These commands apply only to real Form 1 submodules such as `ref/semver`, `ref/btc-verified`, and `ref/mcp`. Form 2 pins such as `ref/rfc2119`, `ref/ecma48`, and `ref/itu_t416` are ordinary files in the Surmount git tree and need no submodule init.
 
 ## How to add a Form 2 official publisher artifact pin
 

@@ -7,3 +7,6 @@
 [submodule "ref/btc-verified"]
 	path = ref/btc-verified
 	url = https://github.com/cryptoquick/btc-verified.git
+[submodule "ref/mcp"]
+	path = ref/mcp
+	url = https://github.com/modelcontextprotocol/modelcontextprotocol.git

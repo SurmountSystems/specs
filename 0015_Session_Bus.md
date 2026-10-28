@@ -2,31 +2,31 @@
 
 > v0.1.0 - 20261024
 >
-> Outside access to a live `grok-oss` session over a `TOON` control plane that spends few tokens
+> Attached access to a live `grok-oss` session on a local socket, with `TOON` only where text reaches a model
 
 ## 1. Scope
 
-This document specifies the session bus. An outside agent can look at a live `grok-oss` text user interface session, then act, then look again. The outside agent attaches to the session that is already running. It does not start a second session for that look. It does not scrape the screen.
+This document specifies the session bus. An attached agent can look at a live `grok-oss` text user interface session, then act, then look again. It uses the session that is already running. It does not start a second session for that look. It does not scrape the screen.
 
-This specification is number 0015. The file name is `0015_Session_Bus.md`. The source draft is `/home/hunter/0_session_bus_toon.md`.
+The source was a private draft that is not part of this repository.
 
 This document is the contract that humans read. It does not contain Lean theorem statements. Selected checkable claims are encoded in Lean under `lean/SessionBusSpec.lean` (see Clause 1.2). Proofs of those encodings live under `lean/SessionBusProofs.lean`. Every published numbered markdown file at this repository root has a sibling line encoding `NNNN_descriptive_name.lean` at that same root, with proofs in `lean/Proofs_NNNN.lean`. This document's sibling is `0015_Session_Bus.lean`. Those encodings are not this specification.
 
-The source draft names a supervising agent, a Master Control Program inside Grok Bot, as the example of an outside agent that can see every running `grok-oss` session the way a person at the keyboard can. That name is an example in the draft. This specification does not assign that role a stack number.
+The source draft names a supervising agent, a Master Control Program in Grok Bot, as an attached agent that can see every running `grok-oss` session the way a person at the keyboard can. Clause 4.15 states that this Master Control Program is an attached client and that the session bus server is not `L0` and is not a layer. That role is not a separate specification number. This specification does not assign Grok Bot a stack number.
 
-Before an outside agent starts coding work in a repository, it can see whether a live session already owns that repository.
+Before an attached agent starts coding work in a repository, it can see whether a live session already owns that repository.
 
 A conforming session bus program is not claimed. `grok-oss`, beastdb, SSSSS, Slake, and Continuous Integration are ongoing work and are not ready for use. This document does not say that those products never started.
 
 ### 1.1 Status of this document
 
-1. This document is normative for the identity of the session bus as specification 0015, the local socket, the bus client, the named methods, the safety rules in Clause 4.4, the token budget in Clause 4.5, the success criteria in Clause 4.6, and the out of scope items in Clause 4.7.
+1. This document is normative for the identity of the session bus as specification 0015, the session bus server and the `L1` sockets in Clause 4.2, the same user check, the bus client, the named methods, the act tier gate, the safety rules in Clause 4.4, the detail levels and token rules in Clause 4.5, the encoding rules in Clause 4.9, the event model in Clause 4.10, the Model Context Protocol tools in Clause 4.11, the language rules in Clause 4.12, the deployment permissions in Clause 4.13, the server is not a layer in Clause 4.15, the accounting fields in Clause 4.16, the success criteria in Clause 4.6, and the out of scope items in Clause 4.7.
 2. Versioning of this document SHALL follow [0000_spec.md](0000_spec.md) (the Surmount spec spec) and Semantic Versioning 2.0.0 (SemVer). Local path for SemVer: `ref/semver`.
-3. This specification is number 0015. The file name is `0015_Session_Bus.md`. First publication of this specification as a numbered document is version 0.1.0 dated 20261024. No earlier shipped version of this specification is claimed.
+3. This specification is number 0015. The file name is `0015_Session_Bus.md`. The version line is 0.1.0 dated 20261024. No earlier shipped version of this specification is claimed.
 4. Concise American Technical English (CATE) is specified in [0005_CATE.md](0005_CATE.md). CATE is specification 0005. CATE is not this specification.
 5. Formal Vibefication is specified in [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md). That document is specification 0008. That document is not this specification.
 6. Public Domain Open Source Software is specified in [0009_PDOSS.md](0009_PDOSS.md). That document is specification 0009. That document is not this specification. Unlicense remains the license.
-7. Anunnaki Encoding is specified in [0014_Anunnaki_Encoding.md](0014_Anunnaki_Encoding.md). That document is specification 0014. Number 0015 is not Anunnaki Encoding. This document MUST NOT be replaced by an Anunnaki Encoding file at number 0015. That Anunnaki file MUST NOT exist.
+7. Anunnaki Encoding is specified in [0014_Anunnaki_Encoding.md](0014_Anunnaki_Encoding.md), and number 0015 is this specification and is not Anunnaki Encoding, and an Anunnaki Encoding file at number 0015 MUST NOT exist.
 8. fargo has no assigned specification number. The Carbonado Network Protocol has no assigned specification number. This document does not assign 0015 to fargo or to Carbonado.
 
 ### 1.2 Spec and proof (informative)
@@ -36,7 +36,7 @@ This subsection is informative. It records how this specification relates to mac
 In languages with dependent types, a specification (what must be true) and a proof (how a model establishes those claims) are separable artifacts. Formal Vibefication, as specified in [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md), requires that the specification also be encoded in Lean as declarations of what must be true, and that proofs of those declarations live in separate Lean modules. Numbered markdown remains the contract humans read. It is not a substitute for those encodings. Lean proofs are not the specification.
 
 1. The numbered markdown at the repository root is the contract implementers and reviewers read.
-2. Companion Lean modules under `lean/SessionBusSpec.lean` encode selected claims such as this document's identity as specification 0015 with file name `0015_Session_Bus.md`, approve and deny off by default, no network listener, a socket that allows the same user id only, a transcript that returns deltas only, no claim that a conforming session bus program exists, and that a mash of spec encodings plus proofs in one module does not conform.
+2. Companion Lean modules under `lean/SessionBusSpec.lean` encode selected claims such as this document's identity as specification 0015 with file name `0015_Session_Bus.md`, the act tier keys off by default, output denied by default, no network listener, a socket that allows the same user id only, directory mode `0700` and socket mode `0600`, a `SO_PEERCRED` peer check, a transcript that returns deltas only, `seq` increasing within a session, a gap when a `seq` is missing, an origin bound of 1, detail level summary as the default, the session bus server is not `L0`, acts do not target an `L3`, an inherited sandbox does not widen the `L1` sandbox, the Master Control Program in Grok Bot is an attached client, and that spec encodings and proofs combined in one module do not conform.
 3. Proofs of those encodings live in `lean/SessionBusProofs.lean`.
 4. The sibling line encoding of this markdown is `0015_Session_Bus.lean`. Proofs of that line encoding live in `lean/Proofs_0015.lean`.
 5. Mechanical form of this file (ASCII, tabs, RFC 2119 citation, spelling, leftover unstack phrases, Residual heading, and related rules in [0000_spec.md](0000_spec.md)) remains the job of Lean `spec_check`. Spec encodings of meaning MUST NOT be treated as a second markdown form checker. `spec_check` is form, not meaning.
@@ -60,14 +60,18 @@ The following documents are indispensable for the application of this specificat
 2. Semantic Versioning 2.0.0 (SemVer). Local path: `ref/semver`.
 3. Surmount specification [0000_spec.md](0000_spec.md).
 4. Surmount specification [0008_Formal_Vibefication.md](0008_Formal_Vibefication.md).
+5. The Model Context Protocol is the publisher specification for `MCP`. Local path: `ref/mcp`. Tag `2026-07-28`, commit `5f5440bb26a62e2cf3440b92da5a667efa03b267`.
 
 ## 3. Terms
 
-1. A session is one running `grok-oss` text user interface process.
-2. An outside agent is a program that is not that session and that uses the bus client in Clause 4.2.
-3. `TOON` is the notation the source draft names through `util/toon` and `GROK_TOOL_RESULT_FORMAT`. This specification does not redefine that notation.
-4. Attach means open the socket of a session that is already running. Attach does not start a new session.
-5. `ACP` names the internal agent client protocol the source draft records as already present inside `grok-oss`. This specification does not replace `ACP`.
+1. A session is one running `grok-oss` text user interface process. [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.1 item 3 names the main session `L1`. This document does not restate that duty. Clause 4.2 states which layer owns a session socket.
+2. An attached agent is a program that is not that session and that uses the bus client in Clause 4.2.
+3. The session bus server is the program with command `grok-oss mcp-serve bus`. It is not `L0` and it is not a layer (Clause 4.15). The layer set is [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.1. This document does not restate those duties.
+4. `TOON` is the notation the source draft names through `util/toon` and `GROK_TOOL_RESULT_FORMAT`. This specification does not redefine that notation. `TOON` is not a socket wire format (Clause 4.2 and Clause 4.9).
+5. Attach means open the socket of a session that is already running. Attach does not start a new session.
+6. `ACP` names the internal agent client protocol the source draft records as already present in `grok-oss`. This specification does not replace `ACP`.
+7. A detail level is summary, step, or full, as Clause 4.5 defines those levels.
+8. A content class is meta, chat, call, or output, as Clause 4.5 defines those classes.
 
 ## 4. Requirements
 
@@ -75,98 +79,200 @@ The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, REC
 
 ### 4.1 Baseline the source draft records (informative)
 
-This subsection is informative. It records what the source draft says already exists in `grok-oss`. Those sentences are not a conformance claim that this repository proved those commands. They are not a claim that a session bus program exists.
+This subsection is informative. It records what the source draft says already exists in `grok-oss`. Those sentences are not a conformance claim that this repository proved those commands.
 
 1. The draft records internal `ACP` (`app/acp_handler`, `session/acp_session_impl`). The draft records that `grok-oss agent stdio` runs a new agent over `stdio`.
 2. The draft records `grok-oss running` with fields for process id, session id, working directory, state, model, and `subagents`. The draft also records `sessions`, `export`, and `leader list` and `leader info`.
 3. The draft records `util/toon` and `GROK_TOOL_RESULT_FORMAT` with values `auto`, `toon`, and `json`.
-4. The draft records the gap: there is no way to attach to a text user interface session that is already running. An outside agent that only sees `grok-oss running` sees a summary of one line.
+4. The draft records the gap: there is no way to attach to a text user interface session that is already running. An attached agent that only sees `grok-oss running` sees a summary of one line.
 
-### 4.2 Socket and client
+### 4.2 Architecture and socket
 
-1. Each running text user interface session MUST own one local socket.
-2. The socket path MUST be `$XDG_RUNTIME_DIR/grok-oss/<session>.sock`.
-3. The socket mode MUST be `0600`.
-4. The socket MUST allow the same user id only. The socket MUST NOT allow a different user id.
-5. The bus MUST NOT open a network listener.
-6. The client MUST be `grok-oss bus`. The form MUST be `grok-oss bus <method> [session] [fields]` over `stdio`.
-7. The client MUST use `TOON` for input and for output.
-8. A `stdio` server invoked as `grok-oss mcp-serve bus` MUST expose the same methods as tools, so Grok Bot and any `MCP` client can call them.
+1. The session bus server, command `grok-oss mcp-serve bus`, MUST run on the same host as the `L1` sessions. That server is not `L0` and is not a layer (Clause 4.15).
+2. Each `L1` MUST own one Unix socket at `$XDG_RUNTIME_DIR/grok-oss/<session>.sock`. That socket MUST use plain streaming I/O. The bus MUST NOT use `ZeroMQ`. The bus MUST NOT use a broker daemon.
+3. The session bus server MUST find sessions by watching the directory `$XDG_RUNTIME_DIR/grok-oss/` with `inotify`.
+4. The bus MUST NOT open a network listener. The session bus server MUST NOT add a network listener. How that server reaches Grok Bot is Residual (Clause 6.6). The candidate named there is Hunter's existing tunnel. That candidate is not a requirement of this clause.
+5. The socket mode MUST be `0600`. The directory `$XDG_RUNTIME_DIR/grok-oss/` MUST be mode `0700`. A `0600` socket alone does not prove the peer is the user that owns the socket.
+6. The server MUST verify the peer with `SO_PEERCRED` on every accept and MUST reject the connection when the peer user id is not the user id that owns the socket. The socket MUST NOT allow a different user id.
+7. The server MUST bind a temporary path, then rename that path atomically into `$XDG_RUNTIME_DIR/grok-oss/<session>.sock`.
+8. A `flock` on `<session>.lock` MUST mark a live session. A socket whose lock can be taken MUST be treated as stale and MUST be cleaned up. The server MUST NOT `unlink` a live socket.
+9. Abstract `namespace` sockets are forbidden. The server MUST NOT bind an abstract `namespace` socket.
+10. Socket file descriptors MUST be marked `CLOEXEC`.
+11. A session MUST have at most 8 subscribers. That limit is a specification choice, not a measurement: the session bus server plus a few attached agents is enough, and an unbounded fan out of subscribers is the injection path.
+12. One message MUST be at most `64 KiB`. That limit is a specification choice, not a measurement: the ring holds 1024 events, and `64 KiB` times 1024 is `64 MiB`.
+13. The listen backlog MUST be 16. That limit is a specification choice, not a measurement.
+14. `systemd` socket activation MAY be used. It is not required.
+15. The client MUST be `grok-oss bus`. The form MUST be `grok-oss bus <method> [session] [fields]` over `stdio`.
+16. The bus client MUST use `TOON` for input and for output. Model Context Protocol tool results MUST use `TOON`. `TOON` is produced only where data reaches a model, which means the bus client and those tool results. `TOON` MUST NOT be a socket wire format.
+17. A `stdio` server invoked as `grok-oss mcp-serve bus` MUST expose the bus methods as tools, and MUST expose the extra tools in Clause 4.11, so Grok Bot and any Model Context Protocol client can call them. The pin is `ref/mcp`. Whether that command already exists in a product tree is unverified (Clause 6.6).
+18. An `L2` MUST NOT get a session socket. An `L3` MUST NOT get a session socket. An `L2` and an `L3` are visible through their `L1`. A socket is an injection path. Clause 4.4 states which acts may address which layer. This document does not restate layer duties from [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md).
 
 ### 4.3 Methods
 
-A conforming bus MUST provide each method in this list. The tier names are the names in the source draft. This document does not add methods the draft does not name.
+A conforming bus MUST provide each method in this list. The act tier names are the names in the source draft. Clause 4.11 adds two Model Context Protocol tools.
 
-1. `sessions` returns the session id, the working directory, the repository and branch, the state (idle, working, or waiting for approval), the model, `subagents`, and the last activity. The tier is compact.
-2. `look` returns the current goal, the plan and `todos`, summaries of the last N turns, a pending approval, and the files `git` reports as dirty. The tier MAY be compact, room, or rich.
-3. `transcript` returns turns since the cursor `since:<turn_id>`. Those turns MUST be deltas only. The tier is rich.
-4. `owns` returns which session, if any, is working in a given path or repository. The tier is compact.
+1. `sessions` returns the session id, the working directory, the repository and branch, the state (idle, working, or waiting for approval), the model, `subagents`, and the last activity. `sessions`, `look`, and `subagents` expose the `L1`, `L2`, and `L3` tree with stable ids and parent links. The layer names are [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.1. This document does not restate those duties.
+2. `look` returns summaries of the last 3 turns, together with the current goal, the plan and `todos`, a pending approval, and the files `git` reports as dirty. The count is 3 because `look` already returns the goal, the plan, the pending approval, and the dirty files, and three turns is the recent context that keeps the reply short. It is a specification choice, not a measurement. The detail level MAY be summary, step, or full, as Clause 4.5 defines those levels. `look` also returns the progress and memory fields that Clause 4.10 requires for the long build named in [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.10.
+3. `transcript` returns turns since the cursor `since:<turn_id>`. Those turns MUST be deltas only. The detail level follows Clause 4.5. `transcript` MUST NOT return the full session text.
+4. `owns` returns the layer that holds the write set for a given path or repository. Disjoint write sets and parallel `L2` coordinators are [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.9. This document does not restate that write set rule. Defer to the live session, in Clause 4.6, resolves to that layer.
 5. `interject` injects a message into the running turn. That injection is the same as typing during the current turn. The tier is act.
 6. `queue` places a prompt to run after the current turn. The tier is act.
 7. `approve` and `deny` answer a pending permission prompt by id. The tier is act, and the pair is gated as in Clause 4.4.
-8. `subscribe` streams state changes for turn start, turn end, approval needed, and error. The tier is event.
+8. `subscribe` streams the event kinds in Clause 4.10. The tier is event. `subscribe since:<seq>` MUST replay missed events, as Clause 4.10 requires. An `approval.needed` event MUST reach a subscribed client in less than one second from the moment the session raises that approval. That bound MUST be checked by a test that runs from the session to the subscriber. The program that would pass that test is not claimed.
 
 ### 4.4 Safety
 
-1. The socket rules in Clause 4.2 items 4 and 5 are REQUIRED.
-2. A session MAY set `bus.readonly` to true. The source draft names that flag and does not state a further effect. This specification does not invent that effect.
-3. `approve` MUST be off by default. The configuration key the draft names is `[bus] allow_approve = false` in `~/.grok/config.toml`.
-4. `deny` is gated with `approve` in the source draft. `deny` MUST be off by default. The draft does not name a separate configuration key for `deny`.
-5. Every act from an outside agent MUST be shown in the text user interface as `[bus: <client>]` followed by the act text, so the person at the keyboard can see who steered the session.
+1. The directory mode, the socket mode, the `SO_PEERCRED` check, and the ban on a network listener in Clause 4.2 are REQUIRED.
+2. When `bus.readonly` is true, every act tier method is rejected. The act tier methods are `interject`, `queue`, `approve`, and `deny`. `look`, `transcript`, `sessions`, `owns`, and `subscribe` are not act tier methods.
+3. The act tier is off unless `[bus] allow_act` is true. The default is `[bus] allow_act = false` in `~/.grok/config.toml`. `interject` and `queue` run only when `allow_act` is true. They do not require `allow_approve`.
+4. `approve` and `deny` have a second key `[bus] allow_approve = false` by default in that same file. `approve` and `deny` run only when `allow_act` is true and `allow_approve` is true. A default install therefore lets no attached process inject a prompt or answer a permission prompt.
+5. Every act from an attached agent MUST be shown in the text user interface as `[bus: <client>]` followed by the act text, at the layer that received the act, so the person at the keyboard can see who steered the session. `interject` and `queue` MAY address an `L1`, or an `L2` that is being watched, and MUST NOT address an `L3`. No act targets an `L3`.
 6. The bus MUST NOT reboot a session. The bus MUST NOT restart a service. The bus MUST NOT kill a session.
-7. Steer methods (`interject`, `queue`, `approve`, and `deny`) MUST use the same permissions a person at that text user interface has. This document does not claim those methods are implemented.
+7. Steer methods (`interject`, `queue`, `approve`, and `deny`) MUST use the same permissions a person at that text user interface has. An attached agent MUST NOT change permissions or change configuration. `look` and `transcript` can return tool output that contains tokens or keys. This bus does not redact those values. An attached agent which can call those methods can see them. That is a hazard. The act tier gate does not remove it.
+8. Tool output from an `L1` is data that is not trusted. Rendered fields MUST mark which content is data so a reader does not treat it as instructions. This rule applies to replies and to events.
+9. A known secret shape check MUST run before the render step. The check is not a guarantee. This bus does not claim to redact every secret.
+10. Acts MUST carry an origin id. The bus MUST refuse a further act with the same origin. The bound is 1: the first act is allowed, and another act caused by that act with the same origin is refused. The reason is that an agent that a prompt injected must not steer another session. That bound is a specification choice.
 
-### 4.5 Token budget
+### 4.5 Detail and token use
 
-1. A bus reply MUST be compact by default.
-2. Text fields returned by `look` MUST be capped at 80 characters. The source draft names that cap as the same style as `OUTLINE_STRING_MAX`.
-3. `transcript` MUST return deltas from a cursor. `transcript` MUST NOT return the full session text.
+Discretion replaces compact, room, and rich. Those names MUST NOT be detail levels.
+
+1. Detail levels MUST be summary, step, and full. Summary is one line per turn. Step adds the tool name, the arguments, and the exit status, and does not add output. Full adds tool output. Summary is the default detail level.
+2. Content classes MUST be meta, chat, call, and output. Per tool rules live in `~/.grok/config.toml`. An example is `[bus.output] shell = "deny"`.
+3. The defaults MUST allow meta, chat, and call, and MUST deny output.
+4. `max_field` MUST default to 80 tokens. The source draft names an 80 character field cap in the same style as `OUTLINE_STRING_MAX`. This specification keeps that short bound and counts it in tokens. That default is a specification choice, not a measurement.
+5. A blocked field MUST render as `<withheld:CLASS>`.
+6. The detail levels, the content classes, and `max_field` MUST apply to replies and to events. `[bus] allow_act`, `[bus] allow_approve`, `bus.readonly`, and the attribution `[bus: <client>]` remain as Clause 4.4 states them.
+7. The render step MUST drop fields that have not changed since the last event, MUST use short interned keys, MUST merge bursts, and MUST truncate by tokens rather than by characters.
+8. Each subscriber MUST set `max_tokens_per_min`. This specification does not set a default number for that cap. A subscribe that omits `max_tokens_per_min` MUST be rejected.
+9. When the cap is reached, the bus MUST lower the detail level and MUST emit `throttled`. The bus MUST NOT drop the event.
 
 ### 4.6 Success criteria
 
-A program that claims conformance to this specification MUST meet every item in this list. This document does not claim that such a program exists.
+A program that claims conformance to this specification MUST meet every item in this list.
 
-1. An outside agent can list sessions and can read each session plan without scraping.
-2. Before that outside agent launches coding work, it can call `owns` and defer to the live session that already owns that repository.
+1. An attached agent can list sessions and can read each session plan without scraping.
+2. Before that attached agent launches coding work, it can call `owns` and defer to the layer that holds the write set (Clause 4.3).
 3. `interject` and `queue` round trip, and the text user interface shows the attribution in Clause 4.4 item 5.
-4. A default install exposes no network surface and does not approve by itself.
+4. A default install exposes no network surface and does not approve by itself. With `allow_act` false and `allow_approve` false, no attached process can inject a prompt or answer a permission prompt.
 
 ### 4.7 Out of scope
 
-1. Remote access and network access are out of scope. Clause 4.2 item 5 already forbids a network listener.
+1. Remote access and network access are out of scope. Clause 4.2 already forbids a network listener. The session bus server MUST NOT add one in order to reach Grok Bot.
 2. Replacing `ACP` is out of scope.
-3. Letting an outside agent change permissions or change configuration is out of scope.
+3. An attached agent changing permissions or changing configuration is out of scope.
 
-### 4.8 Work the source draft names and this document does not claim is done
+### 4.8 Work the source draft names and this document does not record as done
 
-This subsection records work streams from the source draft. None of these items is claimed done. A parenthetical file name here is not the residual record. Clause 6 is the residual record.
+This subsection records work streams from the source draft. None of these items is done in this repository. A parenthetical file name here is not the residual record. Clause 6 is the residual record.
 
 1. The draft calls the plan itself work stream W0 and says it is done when that plan is merged. This repository does not record that merge.
-2. Work stream W1 is a socket for each session in the text user interface, plus `sessions` and `look`. The draft says this is done when `grok-oss bus sessions` matches `grok-oss running`. That match is not claimed here.
-3. Work stream W2 is `transcript` deltas plus `owns`. The draft says an outside agent can then tell that a session owns `~/Projects/surmount/colibri`. That check is not claimed here.
-4. Work stream W3 is `interject` and `queue`, plus the attribution line in the text user interface. The draft says an interjection lands during the current turn and is visible. That landing is not claimed here.
-5. Work stream W4 is `subscribe` events. The draft says an event that approval is needed reaches the client in less than one second. That timing is not claimed here.
-6. Work stream W5 is `mcp-serve bus` over `stdio`. The draft says Grok Bot calls `look` through `MCP`. That call is not claimed here.
+2. Work stream W1 is a socket for each session in the text user interface, plus `sessions` and `look`. The draft says this is done when `grok-oss bus sessions` matches `grok-oss running`. That match is not done in this repository.
+3. Work stream W2 is `transcript` deltas plus `owns`. The draft says an attached agent can then tell that a session owns `~/Projects/surmount/colibri`. That check is not done in this repository.
+4. Work stream W3 is `interject` and `queue`, plus the attribution line in the text user interface. The draft says an interjection lands during the current turn and is visible. That landing is not done in this repository.
+5. Work stream W4 is `subscribe` events. The approval needed event rule is the rule in Clause 4.3 item 8 and Clause 4.10.
+6. Work stream W5 is `mcp-serve bus` over `stdio`. The draft says Grok Bot calls `look` through `MCP`. That call is not done in this repository.
 7. Work stream W6 is gated `approve` and `deny`. The draft says the gate is off by default and that tests cover the denial path. Those tests are not in this repository.
 8. The draft says product tests are Rust tests in `xai-grok-shell`, in the same style as `test_leader_stdio_integration`, and that there is no Python driver. This repository does not contain those Rust tests and does not add a Python driver.
+9. The session bus server, the socket life cycle in Clause 4.2, the event model in Clause 4.10, and the deployment permissions in Clause 4.13 are not done in this repository. A conforming session bus program is not claimed.
+
+### 4.9 Encoding
+
+1. A validator MUST check the frame before any field is read.
+2. Field identifiers MUST only be added. A field identifier MUST NOT be reused.
+3. An unknown event kind MUST be skipped.
+4. The wire schema is Residual (Clause 6.6). This specification does not select one. `TOON` MUST NOT be that wire schema (Clause 4.2).
+
+### 4.10 Event model
+
+1. Each event MUST record `seq`, a monotonic time plus a wall clock for display, the session, the kind, `turn_id`, and a summary. `seq` MUST increase within that session.
+2. The kinds MUST be `session.start`, `turn.start`, `turn.end`, `approval.needed`, `approval.resolved`, `error`, `goal.changed`, `plan.changed`, `idle`, `exit`, `gap`, `throttled`, `ping`, `l2.spawned`, `l2.report_written`, `l2.compacted`, `l3.spawned`, `l3.finished`, `resume_from`, `follow_up`, and `exit.without_report`. `l2.spawned` means an `L2` spawned. `l2.report_written` means an `L2` report was written. `l2.compacted` means an `L2` compacted. `l3.spawned` means an `L3` spawned. `l3.finished` means an `L3` finished. `exit.without_report` means an exit without a report. Whether that exit is finished is [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.9. This document does not state that rule.
+3. Each session MUST keep a ring of the last 1024 events.
+4. `subscribe since:<seq>` MUST replay missed events.
+5. A `gap` event means the client MUST call `look` once. Loss MUST be detectable. Loss MUST NOT be silent. A missing `seq` MUST be represented by a `gap` event.
+6. Events MUST be totally ordered within a session. This specification does not order events across sessions.
+7. A slow subscriber MUST NOT stall a session. The events for that subscriber MUST be merged into the latest state using a bounded queue for each connection.
+8. `approval.needed` MUST reach a subscriber in less than one second from the moment the session raises that approval. That bound MUST be checked by a test that runs from the session to the subscriber. The program that would pass that test is not claimed.
+9. The bus MUST send `ping` every 30 seconds.
+10. Events for the long build named in [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.10 MUST carry that build's progress and memory and MUST NOT interrupt that build. This document does not restate the one job rule in that clause.
+
+### 4.11 Model Context Protocol side
+
+1. The Model Context Protocol side MUST expose every bus method in Clause 4.3 as a tool.
+2. It MUST also expose `events_since(seq)` and `bus_wait(filter, timeout)`. `bus_wait` MUST block until a matching event or the time limit.
+3. The Model Context Protocol side MUST forward events as Model Context Protocol notifications for clients that can receive them.
+4. The Operator stated that Grok Bot cannot receive pushes between turns, so `bus_wait` and `events_since` MUST be the path Grok Bot uses between turns. Whether the current product behaves that way is unverified (Clause 6.6).
+
+### 4.12 Language
+
+1. Summaries MUST be plain English. Code, paths, and identifiers MUST stay verbatim.
+2. Output MUST be labeled with its language and its output kind. The examples `rust`, `diff`, and `log` are examples. The set is not closed.
+3. A `diff` MUST collapse to hunk headers. A `log` MUST collapse to error lines. A collapse rule for any other output kind is Residual (Clause 6.6). This specification does not invent that rule.
+
+### 4.13 Deployment permissions
+
+This clause is normative. It is required before the session bus server and the `L1` sessions run on a shared host such as `surmount-1`, which also holds mail and indexes.
+
+1. Before the session bus server and the `L1` sessions run on that kind of host, every item in this clause MUST hold.
+2. The deployment MUST use a dedicated agent user with no read access to mail, to index data, or to the credentials for that mail and those indexes. The account name is not assigned (Clause 6.6). This specification does not invent the account name.
+3. Each `L1` MUST use these `systemd` sandbox settings: `NoNewPrivileges`, `PrivateTmp`, and `ProtectSystem=strict`. Each `L1` MUST use `ProtectHome` or `ReadOnlyPaths`. Either one satisfies the requirement that the service cannot write the operator home except the runtime directory and that session's repository.
+4. Each `L1` MUST have a `cgroup` memory cap. The number is not set (Clause 6.6).
+5. Each `L1` MUST use `IPAddressDeny` except allowed hosts. The host list is not in this specification (Clause 6.6). The default MUST be deny.
+6. At least one of `Landlock` or `bubblewrap` MUST confine each session to its own repository. Which one a deployment uses is a deployment choice.
+7. An audit log that only grows MUST record every act with the client, the origin id, and the time. The path of that log is not set (Clause 6.6).
+8. The Lean check in this repository covers the selected claims in Clause 1.2. It does not run a live `systemd` sandbox, `Landlock`, `bubblewrap`, or the tunnel. Those four are out of reach of that check (Clause 6.6).
+9. An `L2` process and an `L3` process MUST inherit the `L1` sandbox at most and MUST NOT widen it. The settings in item 3 stay on the `L1`. [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) cites this item where it describes spawn and does not copy these settings.
+
+### 4.14 Client usage (informative)
+
+This subsection is informative. These sentences are not requirements. Unmet guidance here does not break conformance.
+
+The Master Control Program waits on events rather than polling, calls `look` at summary level only when there is a reason, reads transcript deltas by cursor, calls `owns` before any coding work, acts only on Hunter's instruction, and reports one line per session to Hunter.
+
+### 4.15 Server is not a layer
+
+1. The session bus server, command `grok-oss mcp-serve bus`, MUST NOT be called `L0` and is not a layer. [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.1 item 1 defines `L0`. The bus server is a different program, the socket process on the session host. One name for both would hide two programs. `L0` is a client of the session bus server. This document does not restate the duties in that clause.
+2. The Master Control Program in Grok Bot is an attached client (Clause 3). Whether an attached client is a layer is [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.1. This document does not copy that layer list.
+
+### 4.16 Accounting fields
+
+1. The bus MUST expose token totals and cost totals for each layer, and those totals MUST roll up to the parent layer, so an attached agent and Schedula ([0017_Schedula.md](0017_Schedula.md)) can read them without reading transcripts.
+2. The values MUST come from the session's own accounting, cross checked against `ps`, `pidstat`, or `/proc`. A disagreement MUST be flagged. This specification does not set a dollar price.
+3. An `L2` token total is at least the sum of its `L3` token totals, as [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.5 states. This document does not restate that inequality.
 
 ## 5. Required Conformance
 
 Required conformance to this specification holds if and only if every item in this list holds.
 
-1. This specification is number 0015 and the file name is `0015_Session_Bus.md` (Clause 1).
-2. Each running text user interface session owns a local socket at `$XDG_RUNTIME_DIR/grok-oss/<session>.sock` with mode `0600`, the same user id only, and no network listener (Clause 4.2).
-3. The client is `grok-oss bus` over `stdio` with `TOON` in both directions, and `grok-oss mcp-serve bus` exposes the same methods as tools (Clause 4.2).
-4. The methods are `sessions`, `look`, `transcript`, `owns`, `interject`, `queue`, `approve`, `deny`, and `subscribe`, with the tiers and results in Clause 4.3.
-5. `approve` and `deny` are off by default. `transcript` returns deltas only and does not return the full text. The bus does not kill a session (Clause 4.3, Clause 4.4, and Clause 4.5).
-6. Replies are compact by default, and `look` field text is capped at 80 characters (Clause 4.5).
-7. Remote access, replacing `ACP`, and outside changes to permissions or configuration are out of scope (Clause 4.7).
-8. A conforming session bus program is not claimed (Clause 1 and Clause 4.6).
-9. Numbered markdown remains the contract humans read. Lean spec encodings are not that markdown. Lean proofs are not the specification. A mash of spec encodings and their proofs in one module does not conform in this repository (Clause 1.2).
+1. This specification is number 0015 and the file name is `0015_Session_Bus.md` (Clause 1). A conforming session bus program is not claimed.
+2. The session bus server, command `grok-oss mcp-serve bus`, runs on the same host as the `L1` sessions. Each `L1` owns one Unix socket. An `L2` does not get a session socket. An `L3` does not get a session socket (Clause 4.2). The socket uses plain streaming I/O. The bus does not use `ZeroMQ` and does not use a broker daemon. The session bus server finds sessions with `inotify`. There is no network listener, and that server does not add one (Clause 4.2).
+3. The socket path is `$XDG_RUNTIME_DIR/grok-oss/<session>.sock` with mode `0600`, the directory `$XDG_RUNTIME_DIR/grok-oss/` is mode `0700`, and `SO_PEERCRED` on every accept requires the peer user id to be the user id that owns the socket (Clause 4.2). A `0600` socket alone does not prove the peer user.
+4. The server binds a temporary path and renames it atomically into place. A `flock` on `<session>.lock` marks a live session. A socket whose lock can be taken is stale and is cleaned up. A live socket is not removed. Abstract `namespace` sockets are forbidden. Socket file descriptors are marked `CLOEXEC` (Clause 4.2).
+5. A session has at most 8 subscribers. One message is at most `64 KiB`. The ring holds 1024 events, and that size times `64 KiB` is `64 MiB`. The listen backlog is 16. `systemd` socket activation is not required (Clause 4.2).
+6. The client is `grok-oss bus` over `stdio`. The bus client and Model Context Protocol tool results use `TOON`. `TOON` is not the socket wire format. `grok-oss mcp-serve bus` exposes the bus methods as tools (Clause 4.2 and Clause 4.11).
+7. The bus methods are `sessions`, `look`, `transcript`, `owns`, `interject`, `queue`, `approve`, `deny`, and `subscribe`, with the results in Clause 4.3. `look` uses 3 turns.
+8. `approve` and `deny` run only when `allow_act` and `allow_approve` are both true, and both keys default to false. `interject` and `queue` run only when `allow_act` is true. When `bus.readonly` is true, the act tier is rejected and `look`, `transcript`, `sessions`, `owns`, and `subscribe` are not (Clause 4.4).
+9. `transcript` returns deltas only. The bus does not kill a session, does not reboot a session, and does not restart a service (Clause 4.3 and Clause 4.4).
+10. Detail levels are summary, step, and full. Summary is the default and is one line per turn. Step adds the tool name, the arguments, and the exit status, and does not add output. Full adds tool output. Content classes are meta, chat, call, and output. Meta, chat, and call are allowed by default. Output is denied by default. `max_field` defaults to 80 tokens. A blocked field renders as `<withheld:CLASS>`. These rules apply to replies and to events (Clause 4.5).
+11. The render step drops unchanged fields, uses short interned keys, merges bursts, and truncates by tokens rather than by characters. Each subscriber sets `max_tokens_per_min`. This specification states no default for that cap. A subscribe that omits it is rejected. When the cap is reached, the bus lowers the detail level, emits `throttled`, and does not drop the event (Clause 4.5).
+12. A validator checks the frame before any field is read. Field identifiers are only added and are not reused. Unknown event kinds are skipped (Clause 4.9).
+13. Each event records `seq` (increasing within that session), a monotonic time plus a wall clock for display, the session, the kind, `turn_id`, and a summary. The kinds are the list in Clause 4.10. Each session keeps a ring of the last 1024 events. `subscribe since:<seq>` replays missed events. A `gap` event means the client calls `look` once. Loss is detectable and is not silent. Events are totally ordered within a session and are not given an order across sessions. A slow subscriber does not stall a session. `approval.needed` reaches a subscriber in less than one second, the bound is checked by a test from the session to the subscriber, and the program that would pass that test is not claimed. `ping` is sent every 30 seconds (Clause 4.3 and Clause 4.10).
+14. The Model Context Protocol side exposes every bus method, plus `events_since(seq)` and `bus_wait(filter, timeout)`. `bus_wait` blocks until a matching event or the time limit. Events are forwarded as Model Context Protocol notifications for clients that can receive them. For Grok Bot, `bus_wait` and `events_since` are the path between turns (Clause 4.11).
+15. Summaries are plain English. Code, paths, and identifiers stay verbatim. Output is labeled with its language and its output kind. A diff collapses to hunk headers. A log collapses to error lines (Clause 4.12).
+16. Tool output from an `L1` is data that is not trusted, and rendered fields mark which content is data. A known secret shape check runs before the render step and is not a guarantee. This bus does not claim to redact every secret. Acts carry an origin id. The origin bound is 1: the first act is allowed, and a further act with the same origin is refused (Clause 4.4).
+17. Before the session bus server and the `L1` sessions run on a shared host such as `surmount-1`, the deployment uses a dedicated agent user with no read access to mail, index data, or their credentials, the `systemd` sandbox settings in Clause 4.13, a `cgroup` memory cap, `IPAddressDeny` with a default of deny, at least one of `Landlock` or `bubblewrap` confining each session to its own repository, and an audit log that only grows and that records every act with client, origin id, and time (Clause 4.13). An `L2` process and an `L3` process inherit the `L1` sandbox at most and do not widen it (Clause 4.13).
+18. Remote access, replacing `ACP`, and an attached agent changing permissions or configuration are out of scope (Clause 4.7).
+19. Numbered markdown remains the contract humans read. Lean spec encodings are not that markdown. Lean proofs are not the specification. Spec encodings and proofs combined in one module do not conform in this repository (Clause 1.2).
+20. The session bus server is not `L0` and is not a layer. The Master Control Program in Grok Bot is an attached client (Clause 4.15 and Clause 3).
+21. `interject` and `queue` may address an `L1`, or an `L2` that is being watched, and cannot address an `L3`. `[bus: <client>]` shows at the layer that received the act (Clause 4.4).
+22. `sessions`, `look`, and `subagents` expose the `L1`, `L2`, and `L3` tree with stable ids and parent links. `owns` returns the layer that holds the write set (Clause 4.3).
+23. The event kinds include `l2.spawned`, `l2.report_written`, `l2.compacted`, `l3.spawned`, `l3.finished`, `resume_from`, `follow_up`, and `exit.without_report` (Clause 4.10). `look` and those events carry progress and memory for the long build named in specification 0016 and do not interrupt that build (Clause 4.3 and Clause 4.10).
+24. The bus exposes token totals and cost totals for each layer, rolled up to the parent layer, from the session's own accounting, cross checked against `ps`, `pidstat`, or `/proc`, and a disagreement is flagged. This specification does not set a dollar price (Clause 4.16).
+25. Discretion replaces compact, room, and rich. Those names are not detail levels (Clause 4.5).
 
-This specification is not itself a conforming session bus program. Meeting these items is a claim about a program that claims this specification. It is not a claim that this markdown file is that program.
+The act tier gate does not remove the hazard that `look` and `transcript` can return tool output that contains tokens or keys (Clause 4.4).
 
-Optional items (MAY, the unread effect of `bus.readonly`, and the informative baseline in Clause 4.1) do not break conformance when unmet.
+Optional items (MAY, including `systemd` socket activation, and the informative baseline in Clause 4.1 and the informative client usage in Clause 4.14) do not break conformance when unmet.
 
 ## 6. Residual
 
@@ -177,35 +283,70 @@ This section is normative for residual honesty of this document. Silence about a
 1. fargo has no numbered specification and no assigned number. This document does not create a numbered file for fargo.
 2. The Carbonado Network Protocol has no numbered specification and no assigned number. This document does not create a Carbonado file.
 3. The Surmount Systems System Prompt has no assigned number.
-4. Number 0015 is this specification. It is not Anunnaki Encoding. An Anunnaki Encoding file at number 0015 MUST NOT exist.
-5. This document does not assign a number after 0015. It does not create a file for that next number.
-6. The source draft path is `/home/hunter/0_session_bus_toon.md`. An earlier note named `/home/hunter/Downloads/0_session_bus_toon.md`. That Downloads path is not the draft this file was encoded from. While the draft was missing, this numbered file was not written. The file is in the tree now.
+4. `TOON` in this specification is the notation the product names through `util/toon`. `ACP` in this specification is the internal agent client protocol already in `grok-oss` (`app/acp_handler`, `session/acp_session_impl`). Those two have no separate publisher specification. This document does not invent a pin for them.
+5. Specification 0016 is [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md). Specification 0017 is [0017_Schedula.md](0017_Schedula.md). This document does not assign those numbers and does not rewrite those files.
+6. The source was a private draft that is not part of this repository.
 
-### 6.2 Requirements the draft leaves unspecified or unimplemented
+### 6.2 Work this repository does not record as done
 
-1. A conforming session bus program is not claimed. The work streams in Clause 4.8 are not claimed done.
-2. The draft says `look` returns summaries of the last N turns and does not name N.
-3. The draft names look tiers compact, room, and rich. It does not define how room differs from rich.
-4. The draft names `bus.readonly = true` and does not state what that flag changes.
-5. The draft names `[bus] allow_approve = false` and does not name a separate key for `deny`. This specification still requires `deny` off by default because the draft gates `deny` with `approve`.
-6. The draft names the example path `~/Projects/surmount/colibri`. This repository does not check that path.
-7. The draft names Rust tests in `xai-grok-shell`. Those tests are not in this repository.
-8. `grok-oss`, `ACP`, `MCP`, and `TOON` are named. This repository does not pin those texts under `ref/`.
-9. `lean/Surmount.lean` stores `numberFifteenPublishedFileExists` as true because `0015_Session_Bus.md` is published. Theorem `claiming_published_session_bus_file_absent_yields_false` proves that claiming the published file is absent yields False. The publication record for this file is also `lean/SpecRegistry.lean`.
-10. [0002_Systems_Lean.md](0002_Systems_Lean.md), [0010_Surmount_Systems.md](0010_Surmount_Systems.md), and [0014_Anunnaki_Encoding.md](0014_Anunnaki_Encoding.md) still contain sentences that say this numbered file is absent because the draft was missing. This document does not rewrite those files. Their sibling line encodings would have to change with them.
-11. [0005_CATE.md](0005_CATE.md) Clause 3.5 still names fourteen comment paths and does not name `lean/SessionBusSpec.lean`. `lean/LineEncodings.lean` adds that path to the comment scan. This document does not rewrite [0005_CATE.md](0005_CATE.md).
+1. A conforming session bus program is not claimed. The work streams in Clause 4.8 are not done in this repository.
+2. The draft names the example path `~/Projects/surmount/colibri`. This repository does not check that path.
+3. The draft names Rust tests in `xai-grok-shell`. Those tests are not in this repository.
+4. The program that would pass the approval timing test in Clause 4.10 is not claimed.
 
 ### 6.3 Product claims that are not ready for use
 
 1. beastdb, SSSSS, Slake, Continuous Integration, and the session bus program remain ongoing and are not ready for use. This document MUST NOT be read as claiming that those products never started.
-2. `lean/SessionBusSpec.lean` encodes selected claims. `lean/SessionBusProofs.lean` proves those claims. `0015_Session_Bus.lean` encodes the physical lines of this markdown file. `lean/Proofs_0015.lean` proves identities of that line encoding. Those modules are not a proof that a conforming session bus program exists.
+2. `lean/SessionBusSpec.lean` encodes selected claims. `lean/SessionBusProofs.lean` proves those claims. `0015_Session_Bus.lean` encodes the physical lines of this markdown file. `lean/Proofs_0015.lean` proves identities of that line encoding.
 3. Lake wiring for this specification is `lean/SessionBusSpec.lean`, `lean/SessionBusProofs.lean`, sibling `0015_Session_Bus.lean`, `lean/Proofs_0015.lean`, and the `session_bus_tests` check.
+4. That Lean check covers the selected claims in Clause 1.2, including permission bits, the peer check, `seq` increasing, a gap for a missing `seq`, act tier defaults, output denied by default, `bus.readonly` rejecting acts, and the origin bound of 1. A live `systemd` sandbox, `Landlock`, `bubblewrap`, and the tunnel are out of reach of that check. This repository does not run those four as part of the session bus meaning proofs.
+
+### 6.4 Draft points this specification resolved
+
+1. `look` returns summaries of the last 3 turns. That count is a specification choice, not a measurement (Clause 4.3).
+2. Detail levels are summary, step, and full. Summary is the default and is one line per turn. Step adds the tool name, the arguments, and the exit status, and does not add output. Full adds tool output. `max_field` defaults to 80 tokens. That default is a specification choice, not a measurement (Clause 4.5).
+3. When `bus.readonly` is true, `interject`, `queue`, `approve`, and `deny` are rejected. `look`, `transcript`, `sessions`, `owns`, and `subscribe` are not act tier methods (Clause 4.4).
+4. `[bus] allow_act` defaults to false and `[bus] allow_approve` defaults to false. `approve` and `deny` require both keys. `interject` and `queue` require `allow_act` only (Clause 4.4).
+5. A session has at most 8 subscribers, one message is at most `64 KiB`, the ring holds 1024 events, and the listen backlog is 16. Those limits are specification choices, not measurements (Clause 4.2). The origin bound is 1. That bound is a specification choice (Clause 4.4).
+
+### 6.5 Records this specification already states
+
+1. `MCP` means the Model Context Protocol. The publisher git pin is `ref/mcp` at tag `2026-07-28`, commit `5f5440bb26a62e2cf3440b92da5a667efa03b267`. `TOON` and `ACP` have no separate publisher specification, so this document does not pin them (Clause 6.1).
+2. `lean/Surmount.lean` stores `numberFifteenPublishedFileExists` as true because `0015_Session_Bus.md` is published. Theorem `claiming_published_session_bus_file_absent_yields_false` proves that claiming the published file is absent yields False. The publication record for this file is also `lean/SpecRegistry.lean`.
+3. [0002_Systems_Lean.md](0002_Systems_Lean.md) and [0010_Surmount_Systems.md](0010_Surmount_Systems.md) name the file `0015_Session_Bus.md`. Sentences in [0014_Anunnaki_Encoding.md](0014_Anunnaki_Encoding.md) about number 0015 are quoted in Clause 6.7. This item does not claim that file says the session bus file is absent.
+4. [0005_CATE.md](0005_CATE.md) Clause 3.5 still names fourteen comment paths and does not name `lean/SessionBusSpec.lean`. `lean/LineEncodings.lean` adds that path to the comment scan. This document does not rewrite [0005_CATE.md](0005_CATE.md).
+
+### 6.6 Unverified and unspecified items
+
+Each item below is unspecified or unverified for the reason in that item. This specification does not fill the gap.
+
+1. The wire schema is not selected. A search of Cargo files, Nix expressions, and the flake in this repository found no dependency on `rkyv` or on `Cap'n Proto`, and this repository has no Cargo manifest to pin either one. The reason this stays Residual is that this specification must not pick a schema those files do not already depend on. Normative encoding rules that do not need a schema are Clause 4.9.
+2. Whether the command `grok-oss mcp-serve bus` already exists in a product tree is unverified. The reason is that this repository does not contain that product tree. This document does not go read another repository. Clause 4.2 still names the command a conforming server uses.
+3. How the session bus server reaches Grok Bot is not specified beyond two points. That server MUST NOT add a network listener (Clause 4.2). Hunter's existing tunnel is the candidate. The reason the path stays Residual is that this document does not specify that tunnel and does not make the candidate a requirement.
+4. The Operator stated that Grok Bot cannot receive pushes between turns, so Clause 4.11 requires `bus_wait` and `events_since` as the path between turns. Whether the current Grok Bot product refuses pushes between turns is unverified. The reason is that this repository does not contain that product limitation. The draft sentence that Grok Bot calls `look` through `MCP` remains not done (Clause 4.8).
+5. The dedicated agent user account name is not assigned. The reason is that this specification must not invent that name (Clause 4.13).
+6. The `cgroup` memory cap number is not set. The reason is that Clause 4.13 requires a cap and does not state the number.
+7. The `IPAddressDeny` allowed host list is not in this specification. The default is deny. The reason is that Clause 4.13 requires deny by default and does not list hosts.
+8. The audit log path is not set. The reason is that Clause 4.13 requires an audit log that only grows and does not state the path.
+9. Collapse rules for output kinds other than `diff` and `log` are not stated. The reason is that Clause 4.12 states those two kinds only, and this specification does not invent a rule for another kind.
+10. `max_tokens_per_min` has no default number. The reason is that Clause 4.5 requires each subscriber to set it and rejects a subscribe that omits it, and this specification does not invent the number.
+11. Earlier text of this document called the session bus server `L0` and called the Master Control Program that server. That reading is withdrawn. Clause 4.15 is the replacement. [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md) Clause 4.1 item 1 defines `L0`. This document cites that clause and does not restate those duties. The defined term in this document for a program that is not the session and that uses the bus client remains attached agent.
+12. [0017_Schedula.md](0017_Schedula.md) says it does not claim a conforming session bus. That sentence is not made stale by this document. A conforming session bus program is not claimed. The same file's coordinator and specialist sentence is quoted in Clause 6.7.
+
+### 6.7 Sentences in other numbered specifications
+
+This document does not edit those files. Each quote is the live sentence. Stale means the sentence disagrees with a file that is already on disk. Not stale means this document does not treat the sentence as withdrawn.
+
+1. [0002_Systems_Lean.md](0002_Systems_Lean.md) says: "The Operator assigned number [0015](0015_Session_Bus.md) to the session bus. The file is `0015_Session_Bus.md` and a conforming session bus program is not claimed." That sentence does not name `L0` and does not state a hierarchical layer duty. It is not stale.
+2. [0010_Surmount_Systems.md](0010_Surmount_Systems.md) uses that same session bus sentence in more than one clause, including the clause that lists stack identities and the changelog. Those copies do not name `L0` and do not state a hierarchical layer duty. They are not stale. This document does not quote each copy in full because the shared sentence is item 1.
+3. [0014_Anunnaki_Encoding.md](0014_Anunnaki_Encoding.md) says: "Number [0015](0015_Session_Bus.md) is not this specification and is not assigned here." The same file says: "Number [0015](0015_Session_Bus.md) is not assigned in this document. This document MUST NOT steal number [0015](0015_Session_Bus.md). The next unassigned number after this specification is [0015](0015_Session_Bus.md)." The phrase "the next unassigned number" is stale because number 0015 is this session bus. The same file says: "This document MUST NOT create `0015_*.md`." That sentence is stale because `0015_Session_Bus.md` is on disk. This document does not rewrite [0014_Anunnaki_Encoding.md](0014_Anunnaki_Encoding.md).
+4. [0017_Schedula.md](0017_Schedula.md) says: "This document does not claim a conforming session bus (specification 0015, [0015_Session_Bus.md](0015_Session_Bus.md)) or a conforming hierarchical subagent program (specification 0016, [0016_Hierarchical_Subagents.md](0016_Hierarchical_Subagents.md))." That sentence is not stale. The same file says: "Relation to specification 0016: the service MAY attribute a ledger row to work that specification calls a coordinator or a specialist, and it does not claim a conforming hierarchical subagent program." That sentence does not define `L0`. It is not stale. Whether Schedula reads the accounting fields in Clause 4.16 is unverified. The reason is that this repository does not show that read.
 
 ## 7. Changelog
 
 ### 0.1.0 - 20261024
 
-First publication of the session bus as numbered specification 0015 with file name `0015_Session_Bus.md`. Records attach to a text user interface session that is already running, a local socket at `$XDG_RUNTIME_DIR/grok-oss/<session>.sock` with mode `0600` and the same user id only, no network listener, client `grok-oss bus` over `stdio` with `TOON` in both directions, and `grok-oss mcp-serve bus` for the same methods. Records methods `sessions`, `look`, `transcript`, `owns`, `interject`, `queue`, `approve`, `deny`, and `subscribe`. Records `approve` and `deny` off by default, transcript deltas only, an 80 character cap on `look` fields, attribution `[bus: <client>]`, and that the bus does not kill a session. Records that remote access, replacing `ACP`, and outside changes to permissions or configuration are out of scope. Records that a conforming session bus program is not claimed. The source draft is `/home/hunter/0_session_bus_toon.md`.
+Records the session bus as numbered specification 0015 with file name `0015_Session_Bus.md`. The version line is 0.1.0 dated 20261024. No earlier shipped version of this specification is claimed. Records attach to a text user interface session that is already running, a session bus server with command `grok-oss mcp-serve bus` on the same host as the `L1` sessions, a local socket at `$XDG_RUNTIME_DIR/grok-oss/<session>.sock` with mode `0600`, directory mode `0700`, a `SO_PEERCRED` peer check on every accept, atomic rename, a live `flock`, and no network listener. Records that the session bus server is not `L0` and is not a layer, that only an `L1` owns a session socket, and that the Master Control Program in Grok Bot is an attached client. Records `[bus] allow_act` and `[bus] allow_approve` off by default, `bus.readonly` rejecting the act tier, `look` summaries of 3 turns, detail levels summary, step, and full, content classes with output denied by default, `max_field` of 80 tokens, transcript deltas from `since:<turn_id>`, an approval event in less than one second, and an origin bound of 1. Records that `interject` and `queue` may address an `L1` or an `L2` that is being watched and cannot address an `L3`. Records token totals and cost totals for each layer, with no dollar price. Records that `look` and `transcript` can return tokens or keys and that this bus does not claim to redact every secret. Records that a conforming session bus program is not claimed. The source was a private draft that is not part of this repository.
 
 No prior public release of this specification exists.
 
@@ -217,4 +358,4 @@ This work is released into the public domain under the Unlicense as specified in
 
 Author: Hunter "cryptoquick" Beast.
 
-This specification records the session bus draft at `/home/hunter/0_session_bus_toon.md`. It does not add product goals that draft does not state.
+This specification records a private draft that is not part of this repository. Operator review set the architecture, the socket limits, the detail levels, and the deployment permissions in Clause 4. Gaps that remain are Clause 6.

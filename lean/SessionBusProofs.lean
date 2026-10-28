@@ -64,6 +64,151 @@ theorem socket_path_pattern :
 
 theorem socket_mode_is_0600 : socketMode = "0600" := rfl
 
+theorem allow_act_defaults_false : allowActDefault = false := rfl
+
+theorem allow_approve_defaults_false : allowApproveDefault = false := rfl
+
+theorem approve_requires_both_keys :
+    actTierRuns false false .approve = false ∧
+      actTierRuns true false .approve = false ∧
+      actTierRuns false true .approve = false ∧
+      actTierRuns true true .approve = true := by
+  decide
+
+theorem deny_requires_both_keys :
+    actTierRuns false false .deny = false ∧
+      actTierRuns true false .deny = false ∧
+      actTierRuns false true .deny = false ∧
+      actTierRuns true true .deny = true := by
+  decide
+
+theorem interject_requires_allow_act_not_allow_approve :
+    actTierRuns false false .interject = false ∧
+      actTierRuns false true .interject = false ∧
+      actTierRuns true false .interject = true ∧
+      actTierRuns true true .interject = true := by
+  decide
+
+theorem queue_requires_allow_act_not_allow_approve :
+    actTierRuns false false .queue = false ∧
+      actTierRuns false true .queue = false ∧
+      actTierRuns true false .queue = true ∧
+      actTierRuns true true .queue = true := by
+  decide
+
+theorem readonly_rejects_act_tier :
+    readonlyRejectsAct true .interject = true ∧
+      readonlyRejectsAct true .queue = true ∧
+      readonlyRejectsAct true .approve = true ∧
+      readonlyRejectsAct true .deny = true := by
+  decide
+
+theorem readonly_does_not_reject_look_transcript_sessions_owns_subscribe :
+    readonlyRejectsRead true .look = false ∧
+      readonlyRejectsRead true .transcript = false ∧
+      readonlyRejectsRead true .sessions = false ∧
+      readonlyRejectsRead true .owns = false ∧
+      readonlyRejectsRead true .subscribe = false := by
+  decide
+
+theorem so_peercred_is_required : soPeercredRequired = true := rfl
+
+theorem directory_mode_is_0700 : directoryMode = "0700" := rfl
+
+theorem socket_mode_alone_does_not_prove_the_peer :
+    socketModeAloneProvesPeerUser = false :=
+  rfl
+
+theorem look_turn_count_is_3 : lookTurnCount = 3 := rfl
+
+theorem permission_bits_and_peer_check :
+    directoryMode = "0700" ∧ socketMode = "0600" ∧
+      soPeercredRequired = true ∧
+      socketModeAloneProvesPeerUser = false ∧
+      networkListenerPresent = false ∧
+      serverMayAddNetworkListener = false := by
+  decide
+
+theorem seq_follows_means_increasing (earlier later : Nat)
+    (h : seqFollows earlier later = true) : earlier < later := by
+  simp [seqFollows] at h
+  exact of_decide_eq_true (decide_eq_true h)
+
+theorem seq_examples_increase :
+    seqFollows 1 2 = true ∧ seqFollows 2 2 = false ∧
+      seqFollows 5 4 = false := by
+  decide
+
+theorem consecutive_seq_is_not_silent_loss :
+    lossIsSilent 4 5 false = false := by
+  decide
+
+theorem skip_without_gap_is_silent_loss :
+    lossIsSilent 4 6 false = true := by
+  decide
+
+theorem skip_with_gap_is_not_silent_loss :
+    lossIsSilent 4 6 true = false := by
+  decide
+
+theorem gap_present_when_seq_skips (earlier later : Nat) (gapPresent : Bool)
+    (hSkip : earlier + 1 < later)
+    (hCover : gapCoversSkip earlier later gapPresent = true) :
+    gapPresent = true := by
+  simp [gapCoversSkip] at hCover
+  have hNot : ¬ later <= earlier + 1 := (Nat.not_le).mpr hSkip
+  simp [hNot] at hCover
+  exact hCover
+
+theorem output_class_defaults :
+    contentClassAllowedByDefault .meta = true ∧
+      contentClassAllowedByDefault .chat = true ∧
+      contentClassAllowedByDefault .call = true ∧
+      contentClassAllowedByDefault .output = false := by
+  decide
+
+theorem summary_is_default_detail :
+    defaultDetailLevel = .summary ∧ summaryIsDefaultDetail = true ∧
+      maxFieldDefaultTokens = 80 ∧ stepAddsOutput = false ∧
+      fullAddsOutput = true := by
+  decide
+
+theorem origin_depth_bound_is_one : originDepthBound = 1 := rfl
+
+theorem first_act_for_origin_is_allowed : actOriginAllowed 0 = true := rfl
+
+theorem further_act_same_origin_is_refused :
+    actOriginAllowed 1 = false ∧ actOriginAllowed 2 = false := by
+  decide
+
+theorem further_act_at_bound_is_refused (n : Nat)
+    (h : originDepthBound <= n) : actOriginAllowed n = false := by
+  cases n with
+  | zero =>
+    simp [originDepthBound] at h
+  | succ _ =>
+    rfl
+
+theorem ring_budget_is_message_times_events :
+    maxMessageBytes * ringEventCount = ringByteBudget := rfl
+
+theorem subscriber_cap_is_8 : maxSubscribersPerSession = 8 := rfl
+
+theorem toon_is_not_the_wire_format : toonIsWireFormat = false := rfl
+
+theorem wire_schema_not_chosen : wireSchemaChosen = false := rfl
+
+theorem transcript_is_deltas_from_a_turn_id :
+    transcriptCursorIsSinceTurnId = true ∧
+      transcriptReturnsDeltasOnly = true :=
+  And.intro rfl rfl
+
+theorem approval_subscribe_bound_is_under_one_second :
+    approvalSubscribeExclusiveUpperBoundSeconds = 1 :=
+  rfl
+
+theorem bus_does_not_redact_tool_secrets : busRedactsToolSecrets = false := rfl
+
 theorem client_command_is_grok_oss_bus : clientCommand = "grok-oss bus" :=
   rfl
 
@@ -77,9 +222,9 @@ theorem method_names :
         "approve", "deny", "subscribe"] :=
   rfl
 
-theorem look_field_cap_is_80 : lookFieldCap = 80 := rfl
+theorem max_field_default_is_80_tokens : maxFieldDefaultTokens = 80 := rfl
 
-theorem compact_by_default : compactByDefault = true := rfl
+theorem summary_default_flag : summaryIsDefaultDetail = true := rfl
 
 theorem bus_does_not_kill_sessions : busKillsSessions = false := rfl
 
@@ -89,17 +234,19 @@ theorem bus_does_not_restart_service : busRestartsService = false := rfl
 
 theorem does_not_replace_acp : replacesAcp = false := rfl
 
-theorem outside_agent_may_not_change_permissions :
-    outsideAgentMayChangePermissions = false :=
+theorem attached_agent_may_not_change_permissions :
+    attachedAgentMayChangePermissions = false :=
   rfl
 
-theorem outside_agent_may_not_change_config :
-    outsideAgentMayChangeConfig = false :=
+theorem attached_agent_may_not_change_config :
+    attachedAgentMayChangeConfig = false :=
   rfl
 
-theorem readonly_effect_is_not_specified :
-    readonlyEffectSpecified = false :=
+theorem attached_agent_is_the_defined_term :
+    attachedAgentIsDefinedTerm = true :=
   rfl
+
+theorem readonly_effect_is_specified : readonlyEffectSpecified = true := rfl
 
 theorem conforming_session_bus_program_not_claimed :
     conformingSessionBusProgramClaimed = false :=
@@ -226,12 +373,12 @@ theorem mash_replaces_acp_is_false : mashReplacesAcpIsFalse := by
   exact Bool.noConfusion h
 
 theorem mash_outside_agent_changes_permissions_is_false :
-    mashOutsideAgentChangesPermissionsIsFalse := by
+    mashAttachedAgentChangesPermissionsIsFalse := by
   intro h
   exact Bool.noConfusion h
 
 theorem mash_outside_agent_changes_config_is_false :
-    mashOutsideAgentChangesConfigIsFalse := by
+    mashAttachedAgentChangesConfigIsFalse := by
   intro h
   exact Bool.noConfusion h
 
@@ -248,6 +395,9 @@ theorem mash_markdown_substitutes_for_encodings_is_false :
 theorem mash_readonly_effect_specified_is_false :
     mashReadonlyEffectSpecifiedIsFalse := by
   intro h
+  unfold mashReadonlyEffectSpecified at h
+  have still : readonlyInterjectStillRuns = false := by decide
+  rw [still] at h
   exact Bool.noConfusion h
 
 theorem mash_markdown_file_is_conforming_program_is_false :
@@ -297,6 +447,31 @@ theorem mash_spec_check_is_meaning_checker_is_false :
 
 theorem markdown_is_not_the_program : markdownIsNotTheProgram = true := rfl
 
-theorem required_conformance_holds : requiredConformanceHolds = true := rfl
+theorem required_conformance_holds : requiredConformanceHolds = true := by
+  native_decide
+
+theorem session_bus_server_is_not_l0 :
+    sessionBusServerIsL0 = false := rfl
+
+theorem session_bus_server_is_not_a_layer :
+    sessionBusServerIsLayer = false := rfl
+
+theorem master_control_program_is_an_attached_client :
+    masterControlProgramIsAttachedClient = true := rfl
+
+theorem acts_never_target_an_l3 :
+    actAddressAllowed .l3 = false ∧ actAddressAllowed .l1 = true ∧
+      actAddressAllowed .watchedL2 = true := by
+  decide
+
+theorem inherited_sandbox_does_not_widen_l1 :
+    inheritedSandboxWidensL1 = false ∧
+      bitsWiden inheritedL2Sandbox l1Sandbox = false := by
+  decide
+
+theorem only_l1_owns_a_session_socket :
+    onlyL1OwnsSessionSocket = true ∧ l2OwnsSessionSocket = false ∧
+      l3OwnsSessionSocket = false := by
+  decide
 
 end SessionBusProofs

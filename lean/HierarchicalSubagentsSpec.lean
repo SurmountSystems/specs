@@ -177,18 +177,20 @@ def toolWorkRunsThreeLayersDeep : Bool := true
 
 def includesImplementLoops : Bool := true
 
-/-- Clause 4.4 item 3. The three fast path acts. There is no fourth constructor. -/
+/-- Clause 4.4 item 3. The four fast path acts. -/
 inductive FastPathAct where
   | hostCommand
   | alreadyNamedPathRead
   | quoteAskedReport
+  | alreadyNamedSingleLineEdit
   deriving DecidableEq, Repr, BEq
 
 /--
   Clause 4.4. L3 file work is the tool act for file work.
-  The fast path constructor is L1 only and is not an edit.
-  `refusedOneLineEdit` is named so the later notes' fourth act can be
-  refused. No `ToolUse` introduction allows it. Clause 6.4 item 1.
+  The fast path constructor is L1 only.
+  The already named edit of a single line is the fourth fast path act.
+  `refusedOneLineEdit` is an edit that is not that act.
+  No `ToolUse` introduction allows `refusedOneLineEdit`.
 -/
 inductive ToolAct where
   | l3FileWork
@@ -200,6 +202,7 @@ def isEdit (act : ToolAct) : Bool :=
   match act with
   | .l3FileWork => true
   | .refusedOneLineEdit => true
+  | .fastPath .alreadyNamedSingleLineEdit => true
   | .fastPath _ => false
 
 /-- Exactly two introductions: L3 file work, and the L1 fast path. -/
@@ -207,18 +210,18 @@ inductive ToolUse : Layer → ToolAct → Prop where
   | l3DoesFileWork : ToolUse Layer.L3 ToolAct.l3FileWork
   | l1FastPath : (act : FastPathAct) → ToolUse Layer.L1 (ToolAct.fastPath act)
 
-def fastPathActCount : Nat := 3
+def fastPathActCount : Nat := 4
 
-/-- Clause 4.4 item 4. No fourth act on that path. -/
-def fourthFastPathActPermitted : Bool := false
+/-- Clause 4.4. The fourth act is the already named edit of a single line. -/
+def fourthFastPathActPermitted : Bool := true
 
-/-- Clause 6.4 item 1. A single line edit on the fast path is out of scope. -/
-def oneLineEditOnFastPath : Bool := false
+/-- Clause 4.4 and Clause 6.4. That edit of a single line is in scope. -/
+def oneLineEditOnFastPath : Bool := true
 
 /-- Clause 4.4 item 5. The fast path does not appear in the L2 task description. -/
 def fastPathInL2TaskDescription : Bool := false
 
-/-- Clause 4.4 item 2. L1 does not edit product code or docs. -/
+/-- Clause 4.4 item 2. Aside from that fast path edit, L1 does not edit product code or docs. -/
 def l1EditsProductCode : Bool := false
 
 def l1EditsDocs : Bool := false
@@ -458,10 +461,39 @@ def rsiSaysChatReminderIsNotDurableTool : Bool := true
 /-- Clause 1. This model does not restate the session bus. -/
 def restatesSessionBus : Bool := false
 
-/-- Clause 4.1 item 7. Specification 0015 does not define these layer names. -/
+/--
+  Clause 4.1 cites 0015 Clause 4.15 for the server.
+  The layer set stays this inductive. This flag is not that cite.
+-/
 def sessionBusDefinesLayers : Bool := false
 
 def pretendsSessionBusDefinesLayers : Bool := false
+
+/-- Clause 4.1 item 7. An attached client is not a layer. -/
+def attachedClientIsLayer : Bool := false
+
+/-- Clause 4.1 item 6. There is no L4. -/
+def hasL4 : Bool := false
+
+/-- Clause 4.5 item 11. The inequality is required. -/
+def l2TotalAtLeastL3SumRequired : Bool := true
+
+def l3TokenSum (xs : List Nat) : Nat :=
+  xs.foldl (· + ·) 0
+
+def l2TokenTotalCoversL3s (l2Total : Nat) (l3Totals : List Nat) : Bool :=
+  decide (l3TokenSum l3Totals ≤ l2Total)
+
+/-- Cites of 0015. These stay false so this module does not restate bus rules. -/
+def restatesActTargets : Bool := false
+
+def restatesSocketFieldList : Bool := false
+
+def copiesSandboxSettings : Bool := false
+
+def restatesBuildProgressFields : Bool := false
+
+def restatesServerIsNotLayerReason : Bool := false
 
 def number0016IsSessionBus : Bool := false
 
@@ -610,18 +642,21 @@ def depthModel : Prop :=
     (∀ layer : Layer, depthIndex layer ≤ 3) ∧
     (∀ src tgt : Layer, CanSpawn src tgt → depthIndex tgt = depthIndex src + 1)
 
-/-- What the tool clauses require. The fast path is not an edit. -/
+/-- What the tool clauses require. The fast path edit is the single line act. -/
 def toolModel : Prop :=
   (∀ act : ToolAct, ¬ ToolUse Layer.L0 act) ∧
     (∀ act : ToolAct, ¬ ToolUse Layer.L2 act) ∧
-    (∀ act : ToolAct, ToolUse Layer.L1 act → isEdit act = false) ∧
+    (∀ act : ToolAct, ToolUse Layer.L1 act →
+      isEdit act = false ∨ act = ToolAct.fastPath FastPathAct.alreadyNamedSingleLineEdit) ∧
     (∀ fp : FastPathAct, ¬ ToolUse Layer.L3 (ToolAct.fastPath fp)) ∧
     (∀ layer : Layer, ¬ ToolUse layer ToolAct.refusedOneLineEdit) ∧
-    (∀ fp : FastPathAct, isEdit (ToolAct.fastPath fp) = false) ∧
+    (∀ fp : FastPathAct,
+      isEdit (ToolAct.fastPath fp) = (fp == FastPathAct.alreadyNamedSingleLineEdit)) ∧
     (∀ act : FastPathAct,
       act = FastPathAct.hostCommand ∨
         act = FastPathAct.alreadyNamedPathRead ∨
-        act = FastPathAct.quoteAskedReport) ∧
+        act = FastPathAct.quoteAskedReport ∨
+        act = FastPathAct.alreadyNamedSingleLineEdit) ∧
     (∀ act : ToolAct, ToolUse Layer.L1 act → ∃ fp : FastPathAct, act = ToolAct.fastPath fp)
 
 /--
@@ -679,9 +714,9 @@ def requiredFacts : Prop :=
     handoffNameConforms HandoffName.join = false ∧
     toolWorkRunsThreeLayersDeep = true ∧
     includesImplementLoops = true ∧
-    fastPathActCount = 3 ∧
-    fourthFastPathActPermitted = false ∧
-    oneLineEditOnFastPath = false ∧
+    fastPathActCount = 4 ∧
+    fourthFastPathActPermitted = true ∧
+    oneLineEditOnFastPath = true ∧
     fastPathInL2TaskDescription = false ∧
     l1EditsProductCode = false ∧
     l1EditsDocs = false ∧
@@ -784,7 +819,15 @@ def requiredFacts : Prop :=
     conformingThisRepo specEncodingFixture = true ∧
     conformingThisRepo proofFixture = true ∧
     conformingThisRepo mashedFixture = false ∧
-    hidesSplit mashedFixture = true
+    hidesSplit mashedFixture = true ∧
+    attachedClientIsLayer = false ∧
+    hasL4 = false ∧
+    l2TotalAtLeastL3SumRequired = true ∧
+    restatesActTargets = false ∧
+    restatesSocketFieldList = false ∧
+    copiesSandboxSettings = false ∧
+    restatesBuildProgressFields = false ∧
+    restatesServerIsNotLayerReason = false
 
 /--
   Clause 5. Required conformance is these facts together with the depth,
@@ -830,9 +873,9 @@ def requiredConformanceHolds : Bool :=
     !handoffNameConforms HandoffName.join &&
     toolWorkRunsThreeLayersDeep &&
     includesImplementLoops &&
-    fastPathActCount == 3 &&
-    !fourthFastPathActPermitted &&
-    !oneLineEditOnFastPath &&
+    fastPathActCount == 4 &&
+    fourthFastPathActPermitted &&
+    oneLineEditOnFastPath &&
     !fastPathInL2TaskDescription &&
     !l1EditsProductCode &&
     !l1EditsDocs &&
@@ -933,6 +976,14 @@ def requiredConformanceHolds : Bool :=
     !leanProofIsTheSpec &&
     conformingThisRepo specEncodingFixture &&
     conformingThisRepo proofFixture &&
-    !conformingThisRepo mashedFixture
+    !conformingThisRepo mashedFixture &&
+    !attachedClientIsLayer &&
+    !hasL4 &&
+    l2TotalAtLeastL3SumRequired &&
+    !restatesActTargets &&
+    !restatesSocketFieldList &&
+    !copiesSandboxSettings &&
+    !restatesBuildProgressFields &&
+    !restatesServerIsNotLayerReason
 
 end HierarchicalSubagentsSpec
